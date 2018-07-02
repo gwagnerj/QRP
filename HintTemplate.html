@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+<link rel="icon" type="image/png" href="McKetta.png" />  
+<meta Charset = "utf-8">
+<title>QRP Hints</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+$(document).ready(function(){
+		$("#GoBackButton").hide();
+		});
+</script>
+
+<!-- answers go here -->
+<script>
+var answers = ["B","C","B"], 
+    tot = answers.length;
+
+function getCheckedValue( radioName ){
+    var radios = document.getElementsByName( radioName ); // Get radio group by-name
+    for(var y=0; y<radios.length; y++)
+      if(radios[y].checked) return radios[y].value; // return the checked value
+}
+
+function getScore(){
+  var score = 0;
+  for (var i=0; i<tot; i++)
+    if(getCheckedValue("question"+i)===answers[i]) score += 1; // increment only
+  return score;
+}
+
+function returnScore(){
+
+document.formz.grade.value="Score= "+getScore()+" of "+tot
+  
+  if(getScore()==tot){
+  
+  document.formz.direct.value="Great!"
+  document.bgColor="#ceffd0"
+		$(document).ready(function(){
+			$("#GoBackButton").show();
+			});
+	} else {
+	
+	document.formz.direct.value="Try Again"
+	}
+}
+
+</script>
+</head>
+
+<body>
+<header>
+<h1>Quick Response Hints</h1>
+</header>
+
+<!-- options and questions go here copy and paste as needed use <sub> to get subscripts </sub> and <sup> to get superscripts </sup> -->
+<!-- Copy from <li> to </li> Paste and change questionx to questionx+1 in all of the options - It is recommended not to have more than 5 or so questions per hint-->
+<!-- These answers above are not secure but since they are only hints it really does not matter -->
+<ul>
+  <li>
+    <h3>How many letters are there in "JS"?</h3>
+    <input type="radio" name="question0" value="A">one<br>
+    <input type="radio" name="question0" value="B">two<br>
+    <input type="radio" name="question0" value="C">three<br>
+    <input type="radio" name="question0" value="D">four<br>
+  </li>
+  <li>
+    <h3>How many letters are there in "BMX"?</h3>
+    <input type="radio" name="question1" value="A">uno<br>
+    <input type="radio" name="question1" value="B">dos<br>
+    <input type="radio" name="question1" value="C">tres<br>
+    <input type="radio" name="question1" value="D">quatro<br>
+  </li>
+  <li>
+    <h3>How many letters are there in "A"?</h3>
+    <input type="radio" name="question2" value="A">2<br>
+    <input type="radio" name="question2" value="B">1<br>
+    <input type="radio" name="question2" value="C">3<br>
+    <input type="radio" name="question2" value="D">4<br>
+  </li>
+</ul>
+<form Name="formz">
+<input type="button" name= "processor" onclick="returnScore()" value="Check Responses">
+
+<input type="text" name="grade" value=" Score " size="25" onfocus="blur()"> &nbsp;
+<input type="text" name="direct" value=" " size="25" onfocus="blur()"> &nbsp;
+<hr>
+
+<div id ="GoBackButton">
+	<div style="width:90%;">
+	 <p align="left"><font size="4">
+
+<p><input class="bigbutton" type="button" name="cancel" id="cancel" value="Back to Problem" onClick="goBack()"></p>
+</div>
+</form>
+
+<SCRIPT>
+  // really not sure why I need two goBack functions but when I have just one it won't work with the iphone or it won't work at all
+    function goBack() {
+        		 
+		
+		var isiPad = navigator.userAgent.match(/iPad/i) != null;
+        var isiPhone = navigator.userAgent.match(/iPhone/i) != null;
+        if (isiPad || isiPhone) {
+           setTimeout( \"refresh()\", 300 );
+        } else {
+           
+		   window.close();
+		   window.history.back(true);
+        }
+    }
+	</script>
+	
+	<script>
+
+// If run this should close the page one way or the other
+function goBack() {
+	
+		setTimeout(window.close, 400); 
+		
+           window.close();
+        
+		window.history.back();
+		window.history.back();
+		window.history.back();
+}
+
+</script>
+</body>
+</html>
