@@ -84,6 +84,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 </head>
 <body>
     <div class="wrapper">
+	  <p>Proceed without login? (you will not be able to contribute to or edit the database<a href="QRPrepo.php">View Problem Repository</a>.</p>
         <h2>Login</h2>
         <p>Please fill in your credentials to login.</p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
