@@ -50,18 +50,16 @@ INSERT INTO School (s_name) VALUES('Trine University');
  
  
  CREATE TABLE Problem (
-   problem_id INTEGER NOT NULL
-     AUTO_INCREMENT KEY,
-   name VARCHAR(128),
-   email VARCHAR(128),
-	   title VARCHAR(128),
+   problem_id int NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (problem_id),
+    title VARCHAR(128),
    status VARCHAR(16),
    nm_author VARCHAR(128),
    game_prob_flag INT,
    docxfilenm VARCHAR(128),
    infilenm VARCHAR(128),
    pdffilenm VARCHAR(128),
-   school_id int,
+   users_id int,
    units_a VARCHAR(32),
    units_b VARCHAR(32),
    units_c VARCHAR(32),
@@ -96,17 +94,15 @@ INSERT INTO School (s_name) VALUES('Trine University');
    soln_pblm VARCHAR(128),
    subject VARCHAR(128),
    course VARCHAR(128),
-   primary_concept VARCHAR(128),
-   secondary_concept VARCHAR(128),
-
-   INDEX using BTREE(name),
-   CONSTRAINT FOREIGN KEY (school_id) REFERENCES School (school_id) 
+    
+   CONSTRAINT FOREIGN KEY (users_id) REFERENCES Users (users_id) 
 		ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB CHARACTER SET = utf8;
 
 
  CREATE TABLE Qa (
-    qa_id INTEGER NOT NULL AUTO_INCREMENT KEY,
+    qa_id INTEGER NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (qa_id),
     problem_id int,
 	dex int,
 	ans_a	double,
