@@ -129,7 +129,8 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 if (isset($_SESSION['username'])){
 	echo '<a href="requestPblmNum.php"><b>Request New Problem Number</b></a>';
 } else {
-	   echo '<p>log in to contribute, edit, or delete problems <a href="login.php">Login here</a>.</p>';
+	   echo '<hr>';
+	   echo '<p><h4>log in to contribute, edit, or delete problems <a href="login.php">Login here</a>.</h4></p>';
 }
 ?>
 

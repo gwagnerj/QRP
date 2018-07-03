@@ -2,6 +2,9 @@
 
 // Include config file
 require_once 'pdo.php';
+session_start();
+session_unset();
+ 
  
 // Define variables and initialize with empty values
 $username = $password = "";
@@ -74,8 +77,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<link rel="icon" type="image/png" href="McKetta.png" />  
     <meta charset="UTF-8">
-    <title>Login</title>
+<title>QRP Login</title>
+ 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
     <style type="text/css">
         body{ font: 14px sans-serif; }
@@ -84,8 +90,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 </head>
 <body>
     <div class="wrapper">
-	  <p>Proceed without login? (you will not be able to contribute to or edit the database<a href="QRPrepo.php">View Problem Repository</a>.</p>
-        <h2>Login</h2>
+	
+        <h2>Quick Response Problems Login</h2>
         <p>Please fill in your credentials to login.</p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
@@ -102,6 +108,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <input type="submit" class="btn btn-primary" value="Login">
             </div>
             <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
+			<br/>
+			 <p><h3>Proceed without login? </h3></p>
+			 <p>(you will not be able to contribute or edit)</p>
+	  <p><a href="QRPrepo.php">View Problem Repository</a>.</p>
         </form>
     </div>
 </body>

@@ -23,22 +23,32 @@ if ( ! isset($_GET['problem_id']) ) {
 	$file_pathdocx='uploads/'.$docxfilenm;
 	$file_pathinput='uploads/'.$inputdata;
 	$file_pathpdf='uploads/'.$pdffilenm;
+?>	
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+<link rel="icon" type="image/png" href="McKetta.png" />  
+<meta Charset = "utf-8">
+<title>QRProblems</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+</head>
+
+<body>
+<header>
+<h2>Quick Response Download</h2>
+</header>	
 	
-	
-	
-	
-	echo 'Click on files to download';
+<?php	
+	echo 'Click on files to download - you will need to merge input data with your class list using the merger workbook';
 	echo "<br>";
 	echo "<br>";
     echo "<a href='".$file_pathdocx."'>".$docxfilenm."</a>";
 	echo "<br>";
     echo "<a href='".$file_pathinput."'>".$inputdata."</a>";
 	echo "<br>";
-    echo "<a href='".$file_pathpdf."'>".$pdffilenm."</a>";	
-	echo "<br>";
 	echo "<hr>";
-	 echo "<p> The latest template to generate the problem files for students using your class list is below </p>";	
-	  echo "<p> for non game problems - You will have to enable macros to use it </p>";	
+	 echo "<p> The template to generate problem files for students is below. ";	
+	  echo "You will have to enable macros to use it. </p>";	
     echo "<a href='downloads/QRP Merger A500C.xlsm'> QRP Merger </a>";	
 	echo "<br>";	
 	
@@ -46,26 +56,10 @@ if ( ! isset($_GET['problem_id']) ) {
 
 ?>
 
+
+
+<p>Edit Problem Meta Data</p>
 <p> </p>
 <a href="QRPRepo.php">Finished or Cancel</a>
-
-<!--
-
-$stmt = $pdo->prepare("SELECT name, users2_id FROM users2 where users2_id = :xyz");
-$stmt->execute(array(":xyz" => $_GET['users2_id']));
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
-if ( $row === false ) {
-    $_SESSION['error'] = 'Bad value for users2_id';
-    header( 'Location: QRPRepo.php' ) ;
-    return;
-} 
-
-?>
-<p>Confirm: Download <?= htmlentities($row['name']) ?></p>
-
-<form method="post">
-<input type="hidden" name="users2_id" value="<?= $row['users2_id'] ?>">
-<input type="submit" value="Download" name="download">
-<a href="QRPRepo.php">Finished or Cancel</a>
-</form>
--->
+</body>
+</html>
