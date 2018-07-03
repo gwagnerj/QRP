@@ -22,6 +22,16 @@
    INDEX USING BTREE (s_name)
  ) ENGINE = INNODB CHARACTER SET = utf8; */
  
+ 
+  /*insert data into the school table just to play*/
+ 
+ /* INSERT INTO School (s_name) VALUES('Rice University');
+ INSERT INTO School (s_name) VALUES('University of Colorado');
+ INSERT INTO School (s_name) VALUES('University of Houston');
+ INSERT INTO School (s_name) VALUES('UHCL');
+INSERT INTO School (s_name) VALUES('Trine University'); */
+ 
+ 
 
  CREATE TABLE IF NOT EXISTS `Users` (
   `users_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -29,6 +39,7 @@
    `first` varchar(50) NOT NULL,
     `last` varchar(50) NOT NULL,
 	`email` varchar(50) NOT NULL,
+	`forgot_pswd` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
    `university` varchar(255) NOT NULL,
     `security` varchar(15) NOT NULL,
@@ -58,19 +69,7 @@
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
  
- 
- 
- 
- 
- /*insert data into the school table just to play*/
- 
- /* INSERT INTO School (s_name) VALUES('Rice University');
- INSERT INTO School (s_name) VALUES('University of Colorado');
- INSERT INTO School (s_name) VALUES('University of Houston');
- INSERT INTO School (s_name) VALUES('UHCL');
-INSERT INTO School (s_name) VALUES('Trine University'); */
- 
- 
+
  
  CREATE TABLE Problem (
    problem_id int NOT NULL AUTO_INCREMENT,

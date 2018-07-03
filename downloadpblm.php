@@ -47,7 +47,7 @@ if ( ! isset($_GET['problem_id']) ) {
     echo "<a href='".$file_pathinput."'>".$inputdata."</a>";
 	echo "<br>";
 	echo "<hr>";
-	 echo "<p> The template to generate problem files for students is below. ";	
+	 echo "<p> The latest merger workbook is below. ";	
 	  echo "You will have to enable macros to use it. </p>";	
     echo "<a href='downloads/QRP Merger A500C.xlsm'> QRP Merger </a>";	
 	echo "<br>";	
