@@ -16,7 +16,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $username_err = "Please enter a username.";
     } else{
         // Prepare a select statement
-        $sql = "SELECT id FROM users WHERE username = :username";
+        $sql = "SELECT users_id FROM Users WHERE username = :username";
         
         if($stmt = $pdo->prepare($sql)){
             // Bind variables to the prepared statement as parameters
@@ -115,7 +115,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $param_username = $username;
             $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
             $param_university = $university;
-			 $param_security = low;
+			 $param_security = 'contrib';  //its either contrib or admin
 			 $param_email = $email;
 		     $param_first = $first; 
 		     $param_last = $last;
