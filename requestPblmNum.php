@@ -5,29 +5,22 @@ $username=$_SESSION['username'];
 
 // get the name email and school name using the username from the users table
 
-	$sql = " SELECT * FROM users where username = :username";
+	$sql = " SELECT * FROM Users where username = :username";
 						$stmt = $pdo->prepare($sql);
 						$stmt->execute(array(
-						':username' => $username);
+						':username' => $username));
 						$row = $stmt->fetch(PDO::FETCH_ASSOC);
 						$first = $row['first'];
-						echo $first;
-						echo '<br>;
 						$last = $row['last'];
-						echo $last;
-						echo '<br>;
 						$email = $row['email'];
-						echo $email;
-						echo '<br>;
 						$security = $row['security'];
 						// $school_id=$row['school_id'];
 						$name = $first. " " . $last;
-						echo $name;
-						echo '<br>;
 						$university=$row['university'];
+						$users_id=$row['users_id'];
 						
 if(isset($_POST['title'])){	
-	if ( isset($_POST['title'])  and isset($_POST['s_name'])) {
+	if ( isset($_POST['title']) ) {
 
 		// Data validation
 		if ( strlen($_POST['title']) < 5 ) {
@@ -59,16 +52,14 @@ if(isset($_POST['title'])){
 						$row = $stmt->fetch(PDO::FETCH_ASSOC);
 						$school_id=$row['school_id']; */
 	  
-	  $sql = "INSERT INTO Problem (name, email, title,nm_author, game_prob_flag, school_id, subject, course, primary_concept, secondary_concept, status)	
-	  VALUES (:name, :email, :title,:nm_author, :game_prob_flag,:school_id,:subject, :course, :primary_concept, :secondary_concept,:status)";
+	  $sql = "INSERT INTO Problem (users_id, title, nm_author, game_prob_flag, subject, course, primary_concept, secondary_concept, status)	
+	  VALUES (:users_id, :title,:nm_author, :game_prob_flag, :subject, :course, :primary_concept, :secondary_concept,:status)";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
-				':name' => $name,
-				':email' => $email,
+				':users_id' => $users_id,
 				':title' => $_POST['title'],
 				':nm_author' => $nm_author,				
 				':game_prob_flag' => $game_prob_flag,
-				':school_id' => $school_id,
 				':subject' => $_POST['subject'],
 				':course' => $_POST['course'],
 				':primary_concept' => $_POST['p_concept'],
@@ -115,7 +106,7 @@ if(isset($_POST['title'])){
 
 }
 
-// Get the school names from the database so we can use them in drop down selection box
+/* // Get the school names from the database so we can use them in drop down selection box
 $sql="SELECT DISTINCT s_name from School ORDER BY s_name";
 $stmt = $pdo->query($sql);
 // I'm pretty sure this is not the best way but I/m just going to read it into an array variable 
@@ -123,7 +114,7 @@ $i=0;
 while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	$s_name[$i]=htmlentities($row['s_name']);
 	$i=$i+1;
-}
+} */
 
 ?>
 <!DOCTYPE html>
@@ -145,33 +136,33 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <form  method="POST" >
 <p></p>
 
-<p>a Provisional Title:
+<p>a Problem Title:
 <input type="text" name="title" ></p>
 <p> The Author of the Base-Case (if different than Contributor):
 <input type="text" name="nm_author" ></p>
 <p>
 
-<p>Discipline:
+<p>Discipline (e.g. Chemical Engineering):
 <input type="text" name="subject" ></p>
 
-<p>Course Name:
+<p>Course Name (e.g. Thermodynamics):
 <input type="text" name="course" ></p>
 
-<p>Primary Concept:
+<p>Primary Concept (e.g. Ideal gas law):
 <input type="text" name="p_concept" ></p>
 
-<p>Secondary Concept:
+<p>Secondary Concept (e.g. Unit Conversion):
 <input type="text" name="s_concept" ></p>
 
 <input type="checkbox" name="game" Value = "checked"> This is a Game Problem</p>
-<label> School:
+<!--<label> School:
 		<select required name = "s_name">
 			<option> --Select the School or Organization (Required)--</option>
 			<?php foreach ($s_name as $values){?>
 			<option><?php echo $values;?></option>
 			<?php }?>
 		</select>
-	</label> 
+	</label> -->
 <p></p>
 <p><input  type="submit" value="Get Problem Number"/>
 

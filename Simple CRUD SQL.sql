@@ -14,23 +14,43 @@
 
 
  
- CREATE TABLE School (
+ /* CREATE TABLE School (
     school_id int NOT NULL AUTO_INCREMENT, 
     PRIMARY KEY (school_id),
     s_name varchar(127),
    CONSTRAINT s_name UNIQUE,
    INDEX USING BTREE (s_name)
- ) ENGINE = INNODB CHARACTER SET = utf8;
+ ) ENGINE = INNODB CHARACTER SET = utf8; */
  
 
- CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+ CREATE TABLE IF NOT EXISTS `Users` (
+  `users_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
    `university` varchar(255) NOT NULL,
-    `security` int(2) NOT NULL,
+    `security` varchar(15) NOT NULL,
+   diff_stu_1 int,
+   diff_stu_2 int,
+   diff_stu_3 int,
+   diff_stu_4 int,
+   diff_stu_5 int,
+   diff_inst_1 int,
+   diff_inst_2 int,
+   diff_inst_3 int,
+   diff_inst_4 int,
+   diff_inst_5 int,
+   eff_stu_1 int,
+   eff_stu_2 int,
+   eff_stu_3 int,
+   eff_stu_4 int,
+   eff_stu_5 int,
+   eff_inst_1 int,
+   eff_inst_2 int,
+   eff_inst_3 int,
+   eff_inst_4 int,
+   eff_inst_5 int,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`users_id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -41,17 +61,19 @@
  
  /*insert data into the school table just to play*/
  
- INSERT INTO School (s_name) VALUES('Rice University');
+ /* INSERT INTO School (s_name) VALUES('Rice University');
  INSERT INTO School (s_name) VALUES('University of Colorado');
  INSERT INTO School (s_name) VALUES('University of Houston');
  INSERT INTO School (s_name) VALUES('UHCL');
-INSERT INTO School (s_name) VALUES('Trine University');
+INSERT INTO School (s_name) VALUES('Trine University'); */
  
  
  
  CREATE TABLE Problem (
    problem_id int NOT NULL AUTO_INCREMENT,
     PRIMARY KEY (problem_id),
+    primary_concept VARCHAR(128),
+   secondary_concept VARCHAR(128),
     title VARCHAR(128),
    status VARCHAR(16),
    nm_author VARCHAR(128),
@@ -94,6 +116,27 @@ INSERT INTO School (s_name) VALUES('Trine University');
    soln_pblm VARCHAR(128),
    subject VARCHAR(128),
    course VARCHAR(128),
+   diff_contrib int,
+   diff_stu_1 int,
+   diff_stu_2 int,
+   diff_stu_3 int,
+   diff_stu_4 int,
+   diff_stu_5 int,
+   diff_inst_1 int,
+   diff_inst_2 int,
+   diff_inst_3 int,
+   diff_inst_4 int,
+   diff_inst_5 int,
+   eff_stu_1 int,
+   eff_stu_2 int,
+   eff_stu_3 int,
+   eff_stu_4 int,
+   eff_stu_5 int,
+   eff_inst_1 int,
+   eff_inst_2 int,
+   eff_inst_3 int,
+   eff_inst_4 int,
+   eff_inst_5 int,
     
    CONSTRAINT FOREIGN KEY (users_id) REFERENCES Users (users_id) 
 		ON DELETE CASCADE ON UPDATE CASCADE

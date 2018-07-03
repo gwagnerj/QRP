@@ -3,21 +3,17 @@ session_start();
 require_once "pdo.php";
 
 if ( isset($_POST['name']) or isset($_POST['email'])
-     or isset($_POST['title']) or isset($_POST['s_name']) ) {
+     or isset($_POST['title'])  ) {
 
    // Data validation
 	
-	if ( strlen($_POST['name']) < 1 || strlen($_POST['title']) < 1) {
-        $_SESSION['error'] = 'Missing data';
+	if ( strlen($_POST['title']) < 1) {
+        $_SESSION['error'] = 'Valid title missing';
         header("Location: editpblm.php?problem_id=".$_POST['problem_id']);
         return;
     }
 
-    if ( strpos($_POST['email'],'@') === false ) {
-        $_SESSION['error'] = 'Bad data';
-        header("Location: editpblm.php?problem_id=".$_POST['problem_id']);
-        return;
-    }
+   
 	$problem_id=$_POST['problem_id'];
 
 	
@@ -531,13 +527,7 @@ if ( isset($_POST['name']) or isset($_POST['email'])
 		
 		
 		
-// get the new school_id if it has been updated
-		
-		
-			$stmt = $pdo->prepare("SELECT * FROM School where s_name = :xyz");
-			$stmt->execute(array(":xyz" => $_POST['s_name']));
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			$school_id=$row['school_id'];
+
 	
 		
 			$_SESSION['success'] = 'Record updated';
@@ -621,7 +611,7 @@ if ( isset($_POST['name']) or isset($_POST['email'])
 				
 			// this should conserve the data already input and 
 	//die();
-	$sql = "SELECT * FROM Problem JOIN School JOIN Qa ON (Problem.school_id=School.school_id AND Qa.problem_id=Problem.problem_id AND Qa.dex=1 )";
+	$sql = "SELECT * FROM Problem JOIN Qa ON ( Qa.problem_id=Problem.problem_id AND Qa.dex=1 )";
 	$stmt = $pdo->prepare($sql);
 	$stmt->execute(array(
 	));
@@ -637,15 +627,13 @@ if ( isset($_POST['name']) or isset($_POST['email'])
 		$status = "New Compl";
 		
 	}
-    $sql = "UPDATE Problem SET name = :name,
-            email = :email, title = :title,school_id=:school_id,status = :status
+    $sql = "UPDATE Problem SET 
+			title = :title,
+			status = :status
             WHERE problem_id = :problem_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(
-        ':name' => $_POST['name'],
-        ':email' => $_POST['email'],
         ':title' => $_POST['title'],
-		':school_id' => $row['school_id'],
         ':problem_id' => $_POST['problem_id'],
 		':status' => $status));
     $_SESSION['success'] = 'Record updated';
@@ -679,8 +667,7 @@ if ( isset($_SESSION['error']) ) {
     unset($_SESSION['error']);
 }
 
-$n = htmlentities($row['name']);
-$e = htmlentities($row['email']);
+
 $p = htmlentities($row['title']);
 $gf = htmlentities($row['game_prob_flag']);
 //print_r($gf);
@@ -688,22 +675,9 @@ $in = htmlentities($row['infilenm']);
 
 $df = htmlentities($row['docxfilenm']);
 $problem_id = $row['problem_id'];
-$school_id= $row['school_id'];
 
-// now get the current school name
-$stmt = $pdo->prepare("SELECT * FROM School where school_id = :xyz");
-$stmt->execute(array(":xyz" => $school_id));
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
-$s = htmlentities($row['s_name']);
 
-$sql="SELECT DISTINCT s_name from School ORDER BY s_name";
-$stmt = $pdo->query($sql);
-// I'm pretty sure this is not the best way but I/m just going to read it into an array variable 
-$i=0;
-while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
-	$s_name[$i]=htmlentities($row['s_name']);
-	$i=$i+1;
-}
+
 
 
 ?>
@@ -724,21 +698,11 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 
 <p>Edit Problem Meta Data</p>
 <form action="" method="post" enctype="multipart/form-data">
-<p>Name:
-<input type="text" name="name" value="<?= $n ?>"></p>
-<p>Email:
-<input type="text" name="email" value="<?= $e ?>"></p>
+
 <p>title:
 <input type="text" name="title" value="<?= $p ?>"></p>
 <p>
-<label> School or Organization:
-		<select required name = "s_name">
-			<option selected = "selected"> <?php echo $s ?></option>
-			<?php foreach ($s_name as $values){?>
-			<option><?php echo $values;?></option>
-			<?php }?>
-		</select>
-	</label> 
+
 
 </p>
 <p>Answers File: <input type='file' accept='.csv' name='Qa'/></p>
