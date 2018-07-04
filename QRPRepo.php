@@ -58,7 +58,19 @@ $preview="Null";
 			$preview='uploads/'.htmlentities($_POST['soln_preview']);
 		}
 
-
+		//find out what kind of security level they have if they are logged in 
+		if(isset($_SESSION['username'])){
+			$username=$_SESSION['username'];
+		$sql = " SELECT * FROM Users where username = :username";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+				':username' => $username));
+				$row = $stmt->fetch(PDO::FETCH_ASSOC);
+				$security = $row['security'];
+				$users_id=$row['users_id'];
+		}
+		
+		
 echo('<table border="1">'."\n");
 	echo("</td><td>");
 	echo('<b>Problem Num</b>');
@@ -83,7 +95,7 @@ echo('<table border="1">'."\n");
     echo("</td><td>");
 	 echo('<b>Soln</b>');
 	echo("</td></tr>\n");
-$qstmnt="SELECT Problem.problem_id AS problem_id,Users.first AS name,Users.email as email,Problem.title as title,Problem.status as status, Problem.soln_pblm as soln_pblm,Problem.game_prob_flag as game_prob_flag, Problem.nm_author as nm_author,Problem.docxfilenm as docxfilenm,Problem.infilenm as infilenm,Problem.pdffilenm as pdffilenm, Users.university as s_name
+$qstmnt="SELECT Problem.problem_id AS problem_id,Users.username AS username, Users.first AS name,Users.email as email,Problem.title as title,Problem.status as status, Problem.soln_pblm as soln_pblm,Problem.game_prob_flag as game_prob_flag, Problem.nm_author as nm_author,Problem.docxfilenm as docxfilenm,Problem.infilenm as infilenm,Problem.pdffilenm as pdffilenm, Users.university as s_name
 FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id;";
 $stmt = $pdo->query($qstmnt);
 while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
@@ -105,7 +117,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	echo(htmlentities($row['nm_author']));
     
     echo("</td><td>");
-	if(isset($_SESSION['username'])){
+	if($row['username']==$username or $security=='admin'){
     echo('<a href="editpblm.php?problem_id='.$row['problem_id'].'">Edit</a> / ');
     echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
 	}
@@ -113,8 +125,9 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	  echo("</td><td>");
 	echo('<form action = "QRPRepo.php" method = "POST" > <input type = "hidden" name = "preview" value ="'.$row['pdffilenm'].'"><input type = "submit" value ="PreView"></form>');
    	  echo("</td><td>");
+	if(isset($_SESSION['username'])){
 	echo('<form action = "QRPRepo.php" method = "POST" > <input type = "hidden" name = "soln_preview" value ="'.$row['soln_pblm'].'"><input type = "submit" value ="PreView"></form>');
-
+	}
    echo("</td></tr>\n");
 	
 }
@@ -128,6 +141,10 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <?php
 if (isset($_SESSION['username'])){
 	echo '<a href="requestPblmNum.php"><b>Request New Problem Number</b></a>';
+	echo '<br>';
+	echo '<br>';
+	echo '<hr>';
+	echo '<a href="login.php"><b>logout</b></a>';
 } else {
 	   echo '<hr>';
 	   echo '<p><h4>log in to contribute, edit, or delete problems <a href="login.php">Login here</a>.</h4></p>';

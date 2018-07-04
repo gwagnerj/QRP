@@ -39,7 +39,7 @@ if ( ! isset($_GET['problem_id']) ) {
 </header>	
 	
 <?php	
-	echo 'Click on files to download - you will need to merge input data with your class list using the merger workbook';
+	echo 'Click on file names to download both - you will need to merge input data and your class list into the problem statement using the merger workbook';
 	echo "<br>";
 	echo "<br>";
     echo "<a href='".$file_pathdocx."'>".$docxfilenm."</a>";
