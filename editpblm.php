@@ -141,6 +141,47 @@ if ( isset($_POST['name']) or isset($_POST['email'])
 				$_SESSION['success'] = $_SESSION['success'].'solnFile upload successful';
 			}
 		} 
+	//Get the solution book name  that was uploaded
+		if($_FILES['solnbook']['name']) {
+			$filename=explode(".",$_FILES['solnbook']['name']); // divides the file into its name and extension puts it into an array
+			if ($filename[1]=='xlsm'){ // this is the extension
+				$xlsmfile=addslashes($_FILES['solnbook']['tmp_name']);
+				$xlsmname=addslashes($_FILES['solnbook']['name']);
+				$xlsmfile=file_get_contents($xlsmfile);
+				$xlsmname = $_FILES['solnbook']['name'];
+				$tmp_xlsmname =  $_FILES['solnbook']['tmp_name'];
+				$location = "uploads/"; // This is the local file directory name where the files get saved
+			}
+
+			$sql = "UPDATE Problem SET  soln_book = :xlsmfilenm 	
+					WHERE problem_id=:problem_id";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(':xlsmfilenm'=> $xlsmname,	':problem_id' => $_POST['problem_id']));
+
+			if (fnmatch("P*_x_*",$xlsmname,FNM_CASEFOLD ) ){
+					$newxlsmNm = $xlsmname;
+			}
+			elseif($xlsmfname !=="" ) {
+					$newxlsmNm = "P".$problem_id."_x_".$xlsmname;
+			} else {
+					$newxlsmNm = "P".$problem_id."_x_solnbook.xlsm";
+			}
+		
+			$sql = "UPDATE Problem SET soln_book = :newxlsmNm WHERE problem_id = :pblm_num";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+				':newxlsmNm' => $newxlsmNm,
+				':pblm_num' => $_POST['problem_id']));
+		
+		//upload file
+			$pathName = 'uploads/'.$newxlsmNm;
+			if (move_uploaded_file($_FILES['solnbook']['tmp_name'], $pathName)){
+				
+				$_SESSION['success'] = $_SESSION['success'].'xlsmFile upload successful';
+			}
+		} 	
+
+		
 		
 		// now get input data
 	if($_FILES['inputdata']['name']) {
@@ -674,11 +715,14 @@ $gf = htmlentities($row['game_prob_flag']);
 $in = htmlentities($row['infilenm']);
 
 $df = htmlentities($row['docxfilenm']);
+$sb = htmlentities($row['soln_book']);
+ 
 $problem_id = $row['problem_id'];
 
+	$file_pathdocx='uploads/'.$df;
+	$file_pathsb='uploads/'.$sb;
 
-
-
+	
 
 ?>
 <!DOCTYPE html>
@@ -694,6 +738,18 @@ $problem_id = $row['problem_id'];
 <header>
 <h2>Quick Response Problems</h2>
 </header>
+
+<?php	
+	if(strlen($sb)>2) {
+		
+			echo 'Current solution workbook to this problem - click to download';
+			echo "<br>";
+			echo "<br>";
+			echo "<a href='".$file_pathsb."'>".$sb."</a>";
+			echo "<br>";
+			echo "<hr>";
+	}
+	?>
 
 
 <p>Edit Problem Meta Data</p>
@@ -715,7 +771,11 @@ $problem_id = $row['problem_id'];
 
 <p>Problem statement file: <input type='file' accept='.docx' name='docxfile'/></p>
 <p>Base-case  file: <input type='file' accept='.pdf' name='pdffile'/></p>
-<p>Worked out Solution  file: <input type='file' accept='.pdf' name='solnfile'/></p>
+<p>Worked out pdf Solution file: <input type='file' accept='.pdf' name='solnfile'/></p>
+<p> Median time estimate for students to solve in whole minutes:
+<input type="integer" name="time_est" ></p>
+<p>
+<p>Solution Spreadsheet (this is optional and only visible to contributor): <input type='file' accept='.xlsm' name='solnbook'/></p>
 <p><hr></p>
 <input type="hidden" name="problem_id" value="<?= $problem_id ?>">
 <p><input type="submit" value="Update"/>

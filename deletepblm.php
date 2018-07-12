@@ -23,6 +23,7 @@ if ( isset($_POST['delete']) && isset($_POST['problem_id']) ) {
 	$hint[8]=$data['hint_i'];
 	$hint[9]=$data['hint_j'];
 	$soln_pblm=$data['soln_pblm'];
+	$soln_book=$data['soln_book'];
 	
 // Now delete the row from the database
 	$sql = "DELETE FROM Problem WHERE problem_id = :zip";
@@ -43,6 +44,7 @@ if ( isset($_POST['delete']) && isset($_POST['problem_id']) ) {
 		unlink('uploads/'.$hint[$i]); // unlink is the command to delete a file	
 	}
 	unlink('uploads/'.$soln_pblm);
+	unlink('uploads/'.$soln_book);
 	
     header( 'Location: QRPRepo.php' ) ;
     return;
