@@ -180,9 +180,14 @@ if ( isset($_POST['name']) or isset($_POST['email'])
 				$_SESSION['success'] = $_SESSION['success'].'xlsmFile upload successful';
 			}
 		} 	
-
-		
-		
+// put the time estimate into the database
+if (isset($_POST['time_est'])){
+		$sql = "UPDATE Problem SET time_est_contrib = :timeest WHERE problem_id = :pblm_num";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(
+				':timeest' => $_POST['time_est'],
+				':pblm_num' => $_POST['problem_id']));
+}	
 		// now get input data
 	if($_FILES['inputdata']['name']) {
 			$filename=explode(".",$_FILES['inputdata']['name']); // divides the file into its name and extension puts it into an array
