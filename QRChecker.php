@@ -129,26 +129,80 @@ if ( $row === false ) {
 	$tol['i']=$probData['tol_i']*0.001;	
 	$tol['j']=$probData['tol_j']*0.001;	
 	
-	$hinta = $probData['hint_a'];
-	$hintaPath="uploads/".$hinta;
-	$hintb = $probData['hint_b'];
-	$hintbPath="uploads/".$hintb;
-	$hintc = $probData['hint_c'];
-	$hintcPath="uploads/".$hintc;
-	$hintd = $probData['hint_d'];
-	$hintdPath="uploads/".$hintd;
-	$hinte = $probData['hint_e'];
-	$hintePath="uploads/".$hinte;
-	$hintf = $probData['hint_f'];
-	$hintfPath="uploads/".$hintf;
-	$hintg = $probData['hint_g'];
-	$hintgPath="uploads/".$hintg;
-	$hinth = $probData['hint_h'];
-	$hinthPath="uploads/".$hinth;
-	$hinti = $probData['hint_i'];
-	$hintiPath="uploads/".$hinti;
-	$hintj = $probData['hint_j'];
-	$hintjPath="uploads/".$hintj;
+	
+	if (strlen($probData['hint_a'])>1){
+		$hinta = $probData['hint_a'];
+		$hintaPath="uploads/".$hinta;
+	}
+	else {
+		$hintaPath ="uploads/default_hints.html";	
+	}
+	if (strlen($probData['hint_b'])>1){
+		$hintb = $probData['hint_b'];
+		$hintbPath="uploads/".$hintb;
+	}
+	else {
+		$hintbPath ="uploads/default_hints.html";	
+	}
+if (strlen($probData['hint_c'])>1){
+		$hintc = $probData['hint_c'];
+		$hintcPath="uploads/".$hintc;
+	}
+	else {
+		$hintcPath ="uploads/default_hints.html";	
+	}
+if (strlen($probData['hint_d'])>1){
+		$hintd = $probData['hint_d'];
+		$hintdPath="uploads/".$hintd;
+	}
+	else {
+		$hintdPath ="uploads/default_hints.html";	
+	}
+	if (strlen($probData['hint_e'])>1){
+		$hinte = $probData['hint_e'];
+		$hintePath="uploads/".$hinte;
+	}
+	else {
+		$hintePath ="uploads/default_hints.html";	
+	}
+	if (strlen($probData['hint_f'])>1){
+		$hintf = $probData['hint_f'];
+		$hintfPath="uploads/".$hintf;
+	}
+	else {
+		$hintfPath ="uploads/default_hints.html";	
+	}
+	if (strlen($probData['hint_g'])>1){
+		$hintg = $probData['hint_g'];
+		$hintgPath="uploads/".$hintg;
+	}
+	else {
+		$hintgPath ="uploads/default_hints.html";	
+	}
+	if (strlen($probData['hint_h'])>1){
+		$hinth = $probData['hint_h'];
+		$hinthPath="uploads/".$hinth;
+	}
+	else {
+		$hinthPath ="uploads/default_hints.html";	
+	}
+
+	if (strlen($probData['hint_i'])>1){
+		$hinti = $probData['hint_i'];
+		$hintiPath="uploads/".$hinti;
+	}
+	else {
+		$hintiPath ="uploads/default_hints.html";	
+	}
+	if (strlen($probData['hint_j'])>1){
+		$hintj = $probData['hint_j'];
+		$hintjPath="uploads/".$hintj;
+	}
+	else {
+		$hintjPath ="uploads/default_hints.html";	
+	}
+	
+
 	
 	$unit = array_slice($row,22,20);  // dows the same thing but easier so long as the table always has the same structure
 	//print_r($unit);
