@@ -42,15 +42,7 @@ if(isset($_POST['title'])){
 		}
 		
 		
-		
-// need to get the school_id either from the post data or from a query
-						
-			/* 			$sql = " SELECT school_id FROM School where s_name = :s_name";
-						$stmt = $pdo->prepare($sql);
-						$stmt->execute(array(
-						':s_name' => $_POST['s_name']));
-						$row = $stmt->fetch(PDO::FETCH_ASSOC);
-						$school_id=$row['school_id']; */
+
 	  
 	  $sql = "INSERT INTO Problem (users_id, title, nm_author, game_prob_flag, subject, course, primary_concept, secondary_concept, status)	
 	  VALUES (:users_id, :title,:nm_author, :game_prob_flag, :subject, :course, :primary_concept, :secondary_concept,:status)";

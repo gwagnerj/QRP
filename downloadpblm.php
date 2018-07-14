@@ -14,8 +14,21 @@ if ( ! isset($_GET['problem_id']) ) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':zip' => $_GET['problem_id']));
 	$data = $stmt -> fetch();
-	//print_r ($data);
-	//die ();
+	
+	// check to see if this is a new problem and they want the start over file issued
+	if ($data['status']=='num issued'){
+	// put code in here to set ask then go to downloadDocx
+	// may set some session variables
+		$pblm_num=$data['problem_id'];
+		$game_prob_flag=$data['game_prob_flag'];
+		$_SESSION['success'] = 'The status of this problem is num issued - the next step has not been completed. Your problem number is '.$pblm_num;
+		$_SESSION['game_prob_flag']=$game_prob_flag;
+		$file_name = 'p'.$pblm_num.'_'.$game_prob_flag.'_'.$data['title'];
+		$_SESSION['file_name']=$file_name; 
+	 	header( 'Location: downloadDocx.php' ) ;
+		return;
+	}
+	
 	$docxfilenm=$data['docxfilenm'];
 	$inputdata=$data['infilenm'];
 	$pdffilenm=$data['pdffilenm'];

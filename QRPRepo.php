@@ -118,15 +118,15 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
     
     echo("</td><td>");
 	if($row['username']==$username or $security=='admin'){
-    echo('<a href="editpblm.php?problem_id='.$row['problem_id'].'">Edit</a> / ');
-    echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
+		echo('<a href="editpblm.php?problem_id='.$row['problem_id'].'">Edit</a> / ');
+		echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
 	}
 	echo('<a href="downloadpblm.php?problem_id='.$row['problem_id'].'">Download</a>');
 	  echo("</td><td>");
 	echo('<form action = "QRPRepo.php" method = "POST" > <input type = "hidden" name = "preview" value ="'.$row['pdffilenm'].'"><input type = "submit" value ="PreView"></form>');
    	  echo("</td><td>");
 	if(isset($_SESSION['username'])){
-	echo('<form action = "QRPRepo.php" method = "POST" > <input type = "hidden" name = "soln_preview" value ="'.$row['soln_pblm'].'"><input type = "submit" value ="PreView"></form>');
+		echo('<form action = "QRPRepo.php" method = "POST" > <input type = "hidden" name = "soln_preview" value ="'.$row['soln_pblm'].'"><input type = "submit" value ="PreView"></form>');
 	}
    echo("</td></tr>\n");
 	
