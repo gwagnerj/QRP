@@ -8,7 +8,6 @@ if ( ! isset($_GET['problem_id']) ) {
   header('Location: QRPRepo.php');
   return;
 }
-  
 	
     $sql = "SELECT * FROM Problem WHERE problem_id = :zip";
     $stmt = $pdo->prepare($sql);
@@ -28,7 +27,6 @@ if ( ! isset($_GET['problem_id']) ) {
 	 	header( 'Location: downloadDocx.php' ) ;
 		return;
 	}
-	
 	$docxfilenm=$data['docxfilenm'];
 	$inputdata=$data['infilenm'];
 	$pdffilenm=$data['pdffilenm'];
@@ -64,12 +62,8 @@ if ( ! isset($_GET['problem_id']) ) {
 	  echo "You will have to enable macros to use it. </p>";	
     echo "<a href='downloads/QRP Merger A500C.xlsm'> QRP Merger </a>";	
 	echo "<br>";	
-	
-   
 
 ?>
-
-
 
 <p>Edit Problem Meta Data</p>
 <p> </p>
