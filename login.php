@@ -111,7 +111,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			<br/>
 			 <p><h3>Proceed without login? </h3></p>
 			 <p>(you will not be able to contribute or edit)</p>
-	  <p><a href="QRPrepo.php">View Problem Repository</a>.</p>
+	  <p><a href="QRPRepo.php">View Problem Repository</a>.</p>
         </form>
     </div>
 </body>
