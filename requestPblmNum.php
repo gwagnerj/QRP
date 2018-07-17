@@ -44,8 +44,8 @@ if(isset($_POST['title'])){
 		
 
 	  
-	  $sql = "INSERT INTO Problem (users_id, title, nm_author, game_prob_flag, subject, course, primary_concept, secondary_concept, status)	
-	  VALUES (:users_id, :title,:nm_author, :game_prob_flag, :subject, :course, :primary_concept, :secondary_concept,:status)";
+	  $sql = "INSERT INTO Problem (users_id, title, nm_author, game_prob_flag, subject, course, primary_concept, secondary_concept, status, specif_ref)	
+	  VALUES (:users_id, :title,:nm_author, :game_prob_flag, :subject, :course, :primary_concept, :secondary_concept,:status, :specref)";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
 				':users_id' => $users_id,
@@ -56,7 +56,8 @@ if(isset($_POST['title'])){
 				':course' => $_POST['course'],
 				':primary_concept' => $_POST['p_concept'],
 				':secondary_concept' => $_POST['s_concept'],
-				':status' => 'num issued'));
+				':status' => 'num issued',
+				':specref' => $_POST['spec_ref']));
 				
 			$pblm_num=$pdo->lastInsertId();
 			
@@ -97,14 +98,7 @@ if(isset($_POST['title'])){
 	}
 
 }
-// put the time estimate into the database
-if (isset($_POST['spec_ref'])){
-		$sql = "UPDATE Problem SET specif_ref = :specref WHERE problem_id = :pblm_num";
-		$stmt = $pdo->prepare($sql);
-		$stmt->execute(array(
-				':specref' => $_POST['spec_ref'],
-				':pblm_num' => $pblm_num));
-}	
+
 
 /* // Get the school names from the database so we can use them in drop down selection box
 $sql="SELECT DISTINCT s_name from School ORDER BY s_name";
@@ -142,6 +136,9 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <input type="text" name="nm_author" ></p>
 <p>
 
+<p>Specific Reference (e.g. Felder 4th ex 3.2):
+<input type="text" name="spec_ref" ></p>
+
 <p>Discipline (e.g. Chemical Engineering):
 <input type="text" name="subject" ></p>
 
@@ -154,8 +151,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <p>Secondary Concept (e.g. Unit Conversion):
 <input type="text" name="s_concept" ></p>
 
-<p>Specific Reference (e.g. Felder 4th ex 3.2):
-<input type="text" name="spec_ref" ></p>
+
 
 <input type="checkbox" name="game" Value = "checked"> This is a Game Problem</p>
 <!--<label> School:
