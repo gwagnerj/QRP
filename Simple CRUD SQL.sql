@@ -142,7 +142,7 @@ INSERT INTO School (s_name) VALUES('Trine University'); */
    eff_inst_4 int,
    eff_inst_5 int,
    link_to_web_full VARCHAR(128),
-    
+    specif_ref VARCHAR(128), 
    CONSTRAINT FOREIGN KEY (users_id) REFERENCES Users (users_id) 
 		ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB CHARACTER SET = utf8;

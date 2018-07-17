@@ -97,6 +97,14 @@ if(isset($_POST['title'])){
 	}
 
 }
+// put the time estimate into the database
+if (isset($_POST['spec_ref'])){
+		$sql = "UPDATE Problem SET specif_ref = :specref WHERE problem_id = :pblm_num";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(
+				':specref' => $_POST['spec_ref'],
+				':pblm_num' => $pblm_num));
+}	
 
 /* // Get the school names from the database so we can use them in drop down selection box
 $sql="SELECT DISTINCT s_name from School ORDER BY s_name";
@@ -145,6 +153,9 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 
 <p>Secondary Concept (e.g. Unit Conversion):
 <input type="text" name="s_concept" ></p>
+
+<p>Specific Reference (e.g. Felder 4th ex 3.2):
+<input type="text" name="spec_ref" ></p>
 
 <input type="checkbox" name="game" Value = "checked"> This is a Game Problem</p>
 <!--<label> School:

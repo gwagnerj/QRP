@@ -188,6 +188,23 @@ if (isset($_POST['time_est'])){
 				':timeest' => $_POST['time_est'],
 				':pblm_num' => $_POST['problem_id']));
 }	
+
+// put the time estimate into the database
+if (isset($_POST['diff_est'])){
+		$sql = "UPDATE Problem SET diff_contrib = :diffest WHERE problem_id = :pblm_num";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(
+				':diffest' => $_POST['diff_est'],
+				':pblm_num' => $_POST['problem_id']));
+}	
+if (isset($_POST['web_ref'])){
+		$sql = "UPDATE Problem SET link_to_web_full = :webref WHERE problem_id = :pblm_num";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(
+				':webref' => $_POST['web_ref'],
+				':pblm_num' => $_POST['problem_id']));
+}	
+
 		// now get input data
 	if($_FILES['inputdata']['name']) {
 			$filename=explode(".",$_FILES['inputdata']['name']); // divides the file into its name and extension puts it into an array
@@ -779,8 +796,12 @@ $problem_id = $row['problem_id'];
 <p>Worked out pdf Solution file: <input type='file' accept='.pdf' name='solnfile'/></p>
 <p> Median time estimate for students to solve in whole minutes:
 <input type="integer" name="time_est" ></p>
+<p> Estimated difficulty 1=easy 5=difficult:
+<input type="integer" name="diff_est" ></p>
+<p> link to web solution (if available):
+<input type="text" name="web_ref" ></p>
 <p>
-<p>Solution Spreadsheet (this is optional and only visible to contributor): <input type='file' accept='.xlsm' name='solnbook'/></p>
+<p>Solution Spreadsheet (this is optional and only visible to contributor)- will increase upload time: <input type='file' accept='.xlsm' name='solnbook'/></p>
 <p><hr></p>
 <input type="hidden" name="problem_id" value="<?= $problem_id ?>">
 <p><input type="submit" value="Update"/>
