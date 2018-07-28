@@ -6,10 +6,19 @@ session_start();
 <html lang = "en">
 <head>
 <link rel="icon" type="image/png" href="McKetta.png" />  
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <meta Charset = "utf-8">
 <title>QRP Repo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
-
+<style>
+div {
+    /*background-color: #eee;*/
+    width: 100%;
+    height: 100%;
+    border: 1px dotted black;
+    overflow: auto;
+}
+</style>
 <style type="text/css">
 body {
    margin: 0;
@@ -29,8 +38,6 @@ body {
     height: 100%;
 }
 </style>
-
-
 
 </head>
 
@@ -70,8 +77,8 @@ $preview="Null";
 				$users_id=$row['users_id'];
 		}
 		
-		
-echo('<table border="1">'."\n");
+echo ('<div class="w3-container">');		
+echo('<table  border="1" >'."\n");
 	echo("</td><td>");
 	echo('<b>Problem Num</b>');
 	echo("</td><td>");
@@ -129,7 +136,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		echo('<form action = "QRPRepo.php" method = "POST" > <input type = "hidden" name = "soln_preview" value ="'.$row['soln_pblm'].'"><input type = "submit" value ="PreView"></form>');
 	}
    echo("</td></tr>\n");
-	
+echo ('</div>');	
 }
 //echo ('"'.$preview.'"');
 ?>

@@ -395,7 +395,7 @@ if(isset($_POST['dex_num']) && $index<=200 && $index>0 && $dispAnsflag)
 
 
 <p> Problem Number: <?php echo ($_SESSION['problem_id']) ?> </p>
-
+<p> Bonus Value: <?php echo ($_SESSION['bonus']) ?> </p>
 
 
 <form autocomplete="off" method="POST" >
