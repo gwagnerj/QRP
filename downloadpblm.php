@@ -27,6 +27,18 @@ if ( ! isset($_GET['problem_id']) ) {
 	 	header( 'Location: downloadDocx.php' ) ;
 		return;
 	}
+	if ($data['status']=='New Compl'){
+	// put code in here to set ask then go to downloadDocx
+	// may set some session variables
+		$pblm_num=$data['problem_id'];
+		$game_prob_flag=$data['game_prob_flag'];
+		$_SESSION['success'] = 'The status of this problem is num issued - the next step has not been completed. Your problem number is '.$pblm_num;
+		$_SESSION['game_prob_flag']=$game_prob_flag;
+		$file_name = 'p'.$pblm_num.'_'.$game_prob_flag.'_'.$data['title'];
+		$_SESSION['file_name']=$file_name; 
+	 
+	}
+	
 	$docxfilenm=$data['docxfilenm'];
 	$inputdata=$data['infilenm'];
 	$pdffilenm=$data['pdffilenm'];
@@ -50,7 +62,13 @@ if ( ! isset($_GET['problem_id']) ) {
 </header>	
 	
 <?php	
+	if($game_prob_flag == 1){
+	echo 'Click on file name to download';
+	
+	}
+	else {
 	echo 'Click on file names to download both - you will need to merge input data and your class list into the problem statement using the merger workbook';
+	}
 	echo "<br>";
 	echo "<br>";
     echo "<a href='".$file_pathdocx."'>".$docxfilenm."</a>";
@@ -58,15 +76,15 @@ if ( ! isset($_GET['problem_id']) ) {
     echo "<a href='".$file_pathinput."'>".$inputdata."</a>";
 	echo "<br>";
 	echo "<hr>";
-	 echo "<p> The latest merger workbook is below. ";	
+	if($game_prob_flag == 0){
+
+	echo "<p> The latest merger workbook is below. ";	
 	  echo "You will have to enable macros to use it. </p>";	
     echo "<a href='downloads/QRP Merger A500C.xlsm'> QRP Merger </a>";	
 	echo "<br>";	
-
+	}
 ?>
-
-<p>Edit Problem Meta Data</p>
-<p> </p>
+<br>
 <a href="QRPRepo.php">Finished or Cancel</a>
 </body>
 </html>

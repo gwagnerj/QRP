@@ -142,7 +142,24 @@ INSERT INTO School (s_name) VALUES('Trine University'); */
    eff_inst_4 int,
    eff_inst_5 int,
    link_to_web_full VARCHAR(128),
-    specif_ref VARCHAR(128), 
+    specif_ref VARCHAR(128),
+   nv_1 VARCHAR(32),
+   nv_2 VARCHAR(32),
+   nv_3 VARCHAR(32),
+   nv_4 VARCHAR(32),
+   nv_5 VARCHAR(32),
+   nv_6 VARCHAR(32),
+   nv_7 VARCHAR(32),
+   nv_8 VARCHAR(32),
+   nv_9 VARCHAR(32),
+   nv_10 VARCHAR(32),
+   nv_11 VARCHAR(32),
+   nv_12 VARCHAR(32),
+   nv_13 VARCHAR(32),
+   nv_14 VARCHAR(32),
+   htmlfilenm VARCHAR(128),
+   tertiary_concept VARCHAR(128),
+ 
    CONSTRAINT FOREIGN KEY (users_id) REFERENCES Users (users_id) 
 		ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB CHARACTER SET = utf8;
@@ -163,17 +180,40 @@ INSERT INTO School (s_name) VALUES('Trine University'); */
 	ans_h	double,
 	ans_i	double,
 	ans_j	double,
-	g1	VARCHAR(64),
-	g2	VARCHAR(64),
-	g3	VARCHAR(64),
+	g1	VARCHAR(512),
+	g2	VARCHAR(512),
+	g3	VARCHAR(512),
+	CONSTRAINT FOREIGN KEY (Problem_ID) REFERENCES Problem (problem_id) 
+		ON DELETE CASCADE ON UPDATE CASCADE
+ ) ENGINE = INNODB CHARACTER SET = utf8;
+ 
+ CREATE TABLE Input (
+    input_id INTEGER NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (input_id),
+    problem_id int,
+	dex int,
+	v_1	VARCHAR(512),
+	v_2	VARCHAR(512),
+	v_3	VARCHAR(512),
+	v_4	VARCHAR(512),
+	v_5	VARCHAR(512),
+	v_6	VARCHAR(512),
+	v_7	VARCHAR(512),
+	v_8	VARCHAR(512),
+	v_9	VARCHAR(512),
+	v_10	VARCHAR(512),
+	v_11	VARCHAR(512),
+	v_12	VARCHAR(512),
+	v_13	VARCHAR(512),
+	v_14	VARCHAR(512),
+	
 	CONSTRAINT FOREIGN KEY (Problem_ID) REFERENCES Problem (problem_id) 
 		ON DELETE CASCADE ON UPDATE CASCADE
  ) ENGINE = INNODB CHARACTER SET = utf8;
  
  
  
- 
- 
+ ALTER TABLE `problem` ADD `nv_1` VARCHAR(32) NOT NULL AFTER `specif_ref`, ADD `nv_2` VARCHAR(32) NOT NULL AFTER `nv_1`, ADD `nv_3` VARCHAR(32) NOT NULL AFTER `nv_2`, ADD `nv_4` VARCHAR(32) NOT NULL AFTER `nv_3`, ADD `nv_5` VARCHAR(32) NOT NULL AFTER `nv_4`, ADD `nv_6` VARCHAR(32) NOT NULL AFTER `nv_5`, ADD `nv_7` VARCHAR(32) NOT NULL AFTER `nv_6`, ADD `nv_8` VARCHAR(32) NOT NULL AFTER `nv_7`, ADD `nv_9` VARCHAR(32) NOT NULL AFTER `nv_8`, ADD `nv_10` VARCHAR(32) NOT NULL AFTER `nv_9`, ADD `nv_11` VARCHAR(32) NOT NULL AFTER `nv_10`, ADD `nv_12` VARCHAR(32) NOT NULL AFTER `nv_11`, ADD `nv_13` VARCHAR(32) NOT NULL AFTER `nv_12`, ADD `nv_14` VARCHAR(32) NOT NULL AFTER `nv_13`;
  
  
  
