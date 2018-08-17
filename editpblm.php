@@ -349,7 +349,7 @@ if (isset($_POST['web_ref'])){
 			//upload the subdirectory of picture files
 			
 			
-			if(isset($_FILES['filesHTML']['name'])) {
+			if(isset($_FILES['picfiles']['name'])) {
 				
 				$sql = " SELECT * FROM Problem where problem_id = :problem_id";
 						$stmt = $pdo->prepare($sql);
@@ -362,19 +362,40 @@ if (isset($_POST['web_ref'])){
 				$preg ='p';
 				
 				$dirnm = 'uploads/'.preg_replace($regex,$preg,$dirnm);
-				echo $dirnm;
-				die();
-				
+				//echo $dirnm;
+				//die();
+				if(!file_exists($dirnm)){
 								mkdir($dirnm);
-								
+				}			
 				$dirnm = $dirnm."/";
-				foreach ($_FILES['files']['name'] as $i => $name) {
-					if (strlen($_FILES['files']['name'][$i]) > 1) {
-						if (move_uploaded_file($_FILES['files']['tmp_name'][$i], $dirnm.$name)) {
-							$count++;
+				
+				// Count # of uploaded files in array
+					$total = count($_FILES['picfiles']['name']);
+
+					// Loop through each file
+					for( $i=0 ; $i < $total ; $i++ ) {
+
+					  //Get the temp file path
+					  $tmpFilePath = $_FILES['picfiles']['tmp_name'][$i];
+
+					  //Make sure we have a file path
+					  if ($tmpFilePath != ""){
+						//Setup our new file path
+						$newFilePath = $dirnm . $_FILES['picfiles']['name'][$i];
+						/* echo $newFilePath;
+						echo '<hr>';
+						echo $tmpFilePath;
+						Die(); */
+
+						//Upload the file into the temp dir
+						if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+
+						  //Handle other code here
+
 						}
+					  }
 					}
-				}
+				
 			}		
 			
 			
@@ -927,7 +948,7 @@ $problem_id = $row['problem_id'];
 <?php if(!$gf){ // only have this input if it is not a game problem
 	?>  
 <p>html Problem Statement File: <input type='file' accept='.htm' name='htmlfile'/></p>
-<p> html Problem Associated Directory Containing Pictures (only if pictures are used): <input type="file" name="files[]" id="filesHTML" multiple="" directory="" webkitdirectory="" mozdirectory="">
+<p> html Problem Associated Directory Containing Pictures (only if pictures are used): <input type="file" name="picfiles[]" id="HTMLPics" multiple="" directory="" webkitdirectory="" mozdirectory="">
 <?php } 
 ?>
 
