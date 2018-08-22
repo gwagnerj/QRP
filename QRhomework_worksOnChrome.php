@@ -13,6 +13,9 @@ if(isset($_POST['stu_name'])){
 	
 } 
 
+
+
+
 if(isset($_POST['problem_id'])){
 	
 	$problem_id = htmlentities($_POST['problem_id']);
@@ -64,6 +67,8 @@ Try "ctrl +" and "ctrl -" for resizing and "ctrl p" for printing</font></p>
 
 	<p><input type = "submit" value="Submit" id="submit_id" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>
+
+	
 <script>
 	
 	$(document).ready(function(){
@@ -114,16 +119,19 @@ Try "ctrl +" and "ctrl -" for resizing and "ctrl p" for printing</font></p>
 			localStorage.setItem('index',inde);
 			
 			
-			window.location.href='uploads/'+openup;
+			window.location.href="uploads/"+openup;
 			} else {
 	
 	alert('not a homework problem');
+			}
+			
 			
   });
  	}
 	else{
 		
 		Alert ('invalid user input');
+		
 		
 	}
 });

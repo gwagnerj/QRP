@@ -8,7 +8,7 @@ session_start();
 
  } */
  
- If (strlen($_SESSION['stu_name'])<1){
+ /* If (strlen($_SESSION['stu_name'])<1){
 	 $_SESSION['error'] = 'Name is required';
 	 return;
  }
@@ -21,7 +21,7 @@ session_start();
  If ($_SESSION['index']>200 ){
 	 $_SESSION['error'] = 'Index should be between 2 and 200';
 	  return;
- }
+ } */
 
 
  
