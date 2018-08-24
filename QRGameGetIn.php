@@ -92,36 +92,34 @@ if ( isset($_SESSION['success']) ) {
 ?>
 
 
-<svg  width="400" height="200" >
-  <rect  fill="white" stroke="blue" stroke-width="5" width="300" height = "75" x="15"/>
-  <text x="125" y="50" text-anchor="middle" fill="black" font-size="25"> <?php echo ($_SESSION['g1']);?></text>
+<svg  width="500" height="100" >
+  <rect  fill="white" stroke="blue" stroke-width="5" width="400" height = "75" x="15"/>
+  <text x="200" y="50" text-anchor="middle" fill="black" font-size="25"> <?php echo ($_SESSION['g1']);?></text>
 </svg>
 
 
-<svg height="200" width="400">
-  <ellipse cx="130" cy="70" rx="100" ry="40"
+<svg height="140" width="500">
+  <ellipse cx="200" cy="70" rx="200" ry="40"
   style="fill:white ;stroke:red;stroke-width:4" />
-   <text x="130" y="80" text-anchor="middle" fill="black" font-size="25"> <?php echo ($_SESSION['g2']);?></text>
+   <text x="200" y="80" text-anchor="middle" fill="black" font-size="25"> <?php echo ($_SESSION['g2']);?></text>
 </svg>
 
 
 
-<svg  width="400" height="200" >
-  <polygon  fill="white" stroke="green" stroke-width="4" points="60,10 200,10 230,60 30,60"/>
-  <text x="125" y="50" text-anchor="middle" fill="black" font-size="25"> <?php echo ($_SESSION['g3']);?></text>
+<svg  width="500" height="100" >
+  <polygon  fill="white" stroke="green" stroke-width="4" points="60,10 450,10 480,60 30,60"/>
+  <text x="250" y="50" text-anchor="middle" fill="black" font-size="25"> <?php echo ($_SESSION['g3']);?></text>
 </svg>
 
 
 
 
-<form action = "QRGameGetGuess.php" method = "GET" >
+<form action = "QRGameCheck.php" method = "GET" >
 <!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
 	
-	<p><b><input type = "submit" value="Go to Guess" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
+	<p><b><input type = "submit" value="Go to Checker" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
 	</form>
 
 </body>
 </html>
-
-
 
