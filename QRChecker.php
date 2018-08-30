@@ -421,7 +421,7 @@ echo '</table>'	;
 <form autocomplete="off" method="POST" >
 <!-- <p>Problem Number: <input type="text" name="problem_number" ></p> -->
 <!-- <p> Please put in your index number </p> -->
-<p><font color=#003399>Index Number: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p>
+<p><font color=#003399>PIN: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p>
 <p> <strong> Fill in - then select "Check" </strong></p>
 
 
