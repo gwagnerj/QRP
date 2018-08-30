@@ -54,13 +54,13 @@ if ( isset($_SESSION['success']) ) {
 
  
 ?>
-<p> Add information, click on submit and print the page that is generated<br>
-<font color = 'blue' size='2'> note - you may want to resize before printing.
-Try "ctrl +" and "ctrl -" for resizing and "ctrl p" for printing</font></p>
+<p> Add information, click on submit and <p>
+<h3>Print the page that is generated with ctrl P<h3><br>
+<font color = 'blue' size='2'> Try "ctrl +" and "ctrl -" for resizing the display</font></p>
 <form method = POST>
 	<p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
 	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> min="1" Max = "100000" required></p>
-	<p><font color=#003399>Index Number: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> min="2" Max="200" ></p>
+	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> min="2" Max="200" ></p>
 
 	<p><input type = "submit" value="Submit" id="submit_id" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>

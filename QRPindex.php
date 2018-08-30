@@ -38,7 +38,7 @@ $gs_num = "";
 
 <form action = "QRChecker.php" method = "GET" autocomplete="off">
 	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p>
-	<p><font color=#003399>Index Number: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($index))?>"  ></p>
+	<p><font color=#003399>PIN: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($index))?>"  ></p>
 	<!-- <p><font color=#003399>Grading Scheme Number: </font><input type="text" name="gs_num" size=3 value="<?php echo (htmlentities($gs_num))?>"  ></p> -->
 
 	<p><input type = "submit" value="Submit" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
