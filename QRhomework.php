@@ -109,6 +109,15 @@ if ( isset($_SESSION['success']) ) {
 			localStorage.setItem(arr.nv_9,arr.v_9);
 			localStorage.setItem('nv_10',arr.nv_10);
 			localStorage.setItem(arr.nv_10,arr.v_10);
+			localStorage.setItem('nv_11',arr.nv_11);
+			localStorage.setItem(arr.nv_11,arr.v_11);
+			localStorage.setItem('nv_12',arr.nv_12);
+			localStorage.setItem(arr.nv_12,arr.v_12);
+			localStorage.setItem('nv_13',arr.nv_13);
+			localStorage.setItem(arr.nv_13,arr.v_13);
+			localStorage.setItem('nv_14',arr.nv_14);
+			localStorage.setItem(arr.nv_14,arr.v_14);
+			
 			
 			localStorage.setItem('title',arr.title);
 			localStorage.setItem('stu_name',s_name);
