@@ -57,7 +57,7 @@ if ( isset($_SESSION['success']) ) {
 
 <h3>Print the problem statement with "Ctrl P"</h3>
 <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>
-<form method = POST>
+<form method="POST">
 	<p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
 	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> min="1" Max = "100000" required></p>
 	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> min="2" Max="200" ></p>
@@ -69,67 +69,73 @@ if ( isset($_SESSION['success']) ) {
 <script>
 	
 	$(document).ready(function(){
-	$('input#submit_id').on('click',function(){
-	var inde = $('input#index_id').val();
-	var problem = $('input#prob_id').val();
-	var s_name = $('input#stu_name_id').val();
+	$('input#submit_id').on('click',function(event){
+		event.preventDefault();
+		var inde = $('input#index_id').val();
+		var problem = $('input#prob_id').val();
+		var s_name = $('input#stu_name_id').val();
 	
 	
 	if($.trim(problem) != '' && problem > 0 && problem < 100000 && inde>=2 && inde<=200){
-	//alert(1);
-		 $.post('fetchpblminput.php',{problem_id : problem, index : inde },function(data){
-		
+	// alert(1);
+	
+		 $.post('fetchpblminput.php', {problem_id : problem, index : inde }, function(data){
 			
 			var arr = JSON.parse(data);
+		// Get the html file name from the database
+			
 			var openup = arr.htmlfilenm;
+			
+		//	alert(openup);
+			
 			var game = arr.game_prob_flag;
 			var prob_num = arr.problem_id;
 			
-
-			
+			console.log('arr', arr);
 			
 			if (game==0){
-			localStorage.setItem('nv_1',arr.nv_1);
-			localStorage.setItem(arr.nv_1,arr.v_1);
-			localStorage.setItem('nv_2',arr.nv_2);
-			localStorage.setItem(arr.nv_2,arr.v_2);
-			localStorage.setItem('nv_3',arr.nv_3);
-			localStorage.setItem(arr.nv_3,arr.v_3);
-			localStorage.setItem('nv_4',arr.nv_4);
-			localStorage.setItem(arr.nv_4,arr.v_4);
-			localStorage.setItem('nv_5',arr.nv_5);
-			localStorage.setItem(arr.nv_5,arr.v_5);
-			localStorage.setItem('nv_6',arr.nv_6);
-			localStorage.setItem(arr.nv_6,arr.v_6);
-			localStorage.setItem('nv_7',arr.nv_7);
-			localStorage.setItem(arr.nv_7,arr.v_7);
-			localStorage.setItem('nv_8',arr.nv_8);
-			localStorage.setItem(arr.nv_8,arr.v_8);
-			localStorage.setItem('nv_9',arr.nv_9);
-			localStorage.setItem(arr.nv_9,arr.v_9);
-			localStorage.setItem('nv_10',arr.nv_10);
-			localStorage.setItem(arr.nv_10,arr.v_10);
-			localStorage.setItem('nv_11',arr.nv_11);
-			localStorage.setItem(arr.nv_11,arr.v_11);
-			localStorage.setItem('nv_12',arr.nv_12);
-			localStorage.setItem(arr.nv_12,arr.v_12);
-			localStorage.setItem('nv_13',arr.nv_13);
-			localStorage.setItem(arr.nv_13,arr.v_13);
-			localStorage.setItem('nv_14',arr.nv_14);
-			localStorage.setItem(arr.nv_14,arr.v_14);
+				localStorage.setItem('nv_1',arr.nv_1);
+				localStorage.setItem(arr.nv_1,arr.v_1);
+				localStorage.setItem('nv_2',arr.nv_2);
+				localStorage.setItem(arr.nv_2,arr.v_2);
+				localStorage.setItem('nv_3',arr.nv_3);
+				localStorage.setItem(arr.nv_3,arr.v_3);
+				localStorage.setItem('nv_4',arr.nv_4);
+				localStorage.setItem(arr.nv_4,arr.v_4);
+				localStorage.setItem('nv_5',arr.nv_5);
+				localStorage.setItem(arr.nv_5,arr.v_5);
+				localStorage.setItem('nv_6',arr.nv_6);
+				localStorage.setItem(arr.nv_6,arr.v_6);
+				localStorage.setItem('nv_7',arr.nv_7);
+				localStorage.setItem(arr.nv_7,arr.v_7);
+				localStorage.setItem('nv_8',arr.nv_8);
+				localStorage.setItem(arr.nv_8,arr.v_8);
+				localStorage.setItem('nv_9',arr.nv_9);
+				localStorage.setItem(arr.nv_9,arr.v_9);
+				localStorage.setItem('nv_10',arr.nv_10);
+				localStorage.setItem(arr.nv_10,arr.v_10);
+				localStorage.setItem('nv_11',arr.nv_11);
+				localStorage.setItem(arr.nv_11,arr.v_11);
+				localStorage.setItem('nv_12',arr.nv_12);
+				localStorage.setItem(arr.nv_12,arr.v_12);
+				localStorage.setItem('nv_13',arr.nv_13);
+				localStorage.setItem(arr.nv_13,arr.v_13);
+				localStorage.setItem('nv_14',arr.nv_14);
+				localStorage.setItem(arr.nv_14,arr.v_14);
+				
+				
+				localStorage.setItem('title',arr.title);
+				localStorage.setItem('stu_name',s_name);
+				localStorage.setItem('problem_id',problem);
+				localStorage.setItem('index',inde);
 			
-			
-			localStorage.setItem('title',arr.title);
-			localStorage.setItem('stu_name',s_name);
-			localStorage.setItem('problem_id',problem);
-			localStorage.setItem('index',inde);
-			
-			
+		// redirect the browser to the problem file
+		
 			window.location.href="uploads/"+openup;
-			} else {
+	 		} else {
 	
 	alert('not a homework problem');
-			}
+			} 
 			
 			
   });
