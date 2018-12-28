@@ -174,6 +174,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	if($row['username']==$username or $security=='admin'){
 		echo('<a href="editpblm.php?problem_id='.$row['problem_id'].'">Edit</a> / ');
 		echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
+		echo('<a href="suspendpblm.php?problem_id='.$row['problem_id'].'">Susp-unSus</a> / ');
 	}
 	echo('<a href="downloadpblm.php?problem_id='.$row['problem_id'].'">Download</a>');
 	  echo("</td><td>");

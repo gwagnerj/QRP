@@ -46,12 +46,6 @@ if ( isset($_GET['problem_id']) and  isset($_GET['dex_num'])) {
 		}		
 		//$_SESSION['wrongC']=$wrongCount; 
 	
-	
-	
-	
-	
-	
-	
 }
 	
 	// initialize some variables
@@ -116,7 +110,15 @@ if ( $row === false ) {
 		return;
 	}	
 	$probData=$row;	
-	//echo $probData['tol_a'];
+	
+	$probStatus = $probData['status'];
+	if ($probStatus =='suspended'){
+		$_SESSION['error'] = 'problem has been suspended, check back later';
+		header( 'Location: QRPindex.php' ) ;
+		return;	
+		
+		
+	}
 	
 	$tol['a']=$probData['tol_a']*0.001;	
 	$tol['b']=$probData['tol_b']*0.001;
@@ -385,8 +387,10 @@ if(isset($_POST['dex_num']) && $index<=200 && $index>0 && $dispAnsflag)
 			for ($j=0;$j<=9;$j++){
 				$baseAns[$corr_key[$j]]=$row[$ansFormat_key[$j]];
 			}
-			
 	
+	
+	// time to delay before accepting any more input		
+	$time_sleep = 5;
 	
 	
 	

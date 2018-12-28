@@ -1,10 +1,10 @@
 <?php
 if(isset($_SESSION['numPlayers'])){
 	session_destroy();
-}
+
 //session_destroy();	
  unset($_SESSION['numPlayers']);
-
+}
 session_start();
 
 ?>
