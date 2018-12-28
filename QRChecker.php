@@ -233,16 +233,7 @@ if (strlen($probData['hint_d'])>1){
 		$index = $_POST['dex_num']+0;
 	}	
 
-	// keep track of the number of tries the student makes
-if(!($_SESSION['count'])){
-	$_SESSION['count'] = 1;
-
-	$count=1;
-}else{
-	$count = $_SESSION['count'] + 1;
-	$_SESSION['count'] = $count;
-
-}
+	
 // read the student responses into an array
 	$resp['a']=$_POST['a']+0;
 	$resp['b']=$_POST['b']+0;
@@ -258,6 +249,74 @@ if(!($_SESSION['count'])){
 	
 //print_r( $tol);
 //echo '<br>';
+
+// keep track of the number of tries the student makes
+	if(!($_SESSION['count'])){
+		$_SESSION['count'] = 1;
+		$changed_a = false;
+		$_SESSION['respon_a']= $resp['a'];
+			$changed_b = false;
+		$_SESSION['respon_b']= $resp['b'];
+			$changed_c = false;
+		$_SESSION['respon_c']= $resp['c'];
+			$changed_d = false;
+		$_SESSION['respon_d']= $resp['d'];
+			$changed_e = false;
+		$_SESSION['respon_e']= $resp['e'];
+			$changed_f = false;
+		$_SESSION['respon_f']= $resp['f'];
+			$changed_g = false;
+		$_SESSION['respon_g']= $resp['g'];
+			$changed_h = false;
+		$_SESSION['respon_h']= $resp['h'];
+			$changed_i = false;
+		$_SESSION['respon_i']= $resp['i'];
+			$changed_j = false;
+		$_SESSION['respon_j']= $resp['j'];
+		$count=1;
+		
+		// used to see if the user is updating the value 
+		/* for ($j=0;$j<9;$j++){
+			$_SESSION['$respon'[$j]]= 0;
+			// $_SESSION['$changed'[$j]]= false;
+			$_SESSION['$respon'[$j]]=$resp[$j];
+			$changed[$j] = false;
+		 }  */
+		
+	}else{
+		$count = $_SESSION['count'] + 1;
+		$_SESSION['count'] = $count;
+		
+		if ($_SESSION['respon_a']== $resp['a']){
+			$changed_a = false;
+		} else  {
+		
+			$changed_a = true;
+			$_SESSION[respon_a]= $resp['a'];
+		}
+		if ($_SESSION['respon_b']== $resp['b']){
+			$changed_b = false;
+		} else  {
+		
+			$changed_b = true;
+			$_SESSION[respon_b]= $resp['b'];
+		}
+		/* for ($j=0;$j<9;$j++){
+				if($_SESSION['$respon'[$j]] == $resp[$j]){
+					$changed[$j] = false;
+				} else {
+					$changed[$j] = true;
+				}
+			$_SESSION['$respon'[$j]] = $resp[$j];	
+		} */
+
+	}
+
+
+
+
+
+
 //}	 
 	For ($j=0; $j<=9; $j++) {
 		if($partsFlag[$j]) {
@@ -308,6 +367,14 @@ if(!($_SESSION['count'])){
 		}
 	}
 
+	// time to delay before accepting any more input
+	// So after 4 tries on a part the system will delay for 2 seconds before another input is selected (if $time_sleep1_trip is 4 and $time_sleep1 is 2
+	$time_sleep1 = 2;  // time delay in seconds
+	$time_sleep1_trip = 4;  // number of trieals it talkes to trip the time delay
+	$time_sleep2 = 5;  // additional time if hit the next limit
+	$time_sleep2_trip = 8;
+	
+	
 	
 	/* echo($resp[$resp_key[0]]);
 	echo("<br>");
@@ -389,8 +456,7 @@ if(isset($_POST['dex_num']) && $index<=200 && $index>0 && $dispAnsflag)
 			}
 	
 	
-	// time to delay before accepting any more input		
-	$time_sleep = 5;
+	
 	
 	
 	
@@ -433,7 +499,12 @@ echo '</table>'	;
 
 
 if ($partsFlag[0]){ ?> 
-<p> a): <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b><?php if (isset($_POST['dex_num']) and @$wrongCount[0]>$hintLimit and $corr['a']=="Not Correct"){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  </p>
+<p> a): <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b>
+<?php if (isset($_POST['dex_num']) and @$wrongCount[0]>$hintLimit and $corr['a']=="Not Correct"){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>
+<?php if (isset($_POST['dex_num']) and $changed_a and @$wrongCount[0]>$time_sleep1_trip and $corr['a']=="Not Correct"){echo('time delay 1'), sleep($time_sleep1);} ?>
+<?php if (isset($_POST['dex_num']) and $changed_a and @$wrongCount[0]>$time_sleep2_trip and $corr['a']=="Not Correct"){echo('time delay 2'), sleep($time_sleep2);} ?>
+
+  </p>
 <?php } 
 if ($partsFlag[1]){ ?> 
 <p> b): <input [ type=number]{width: 5%;} name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?> &nbsp - <b><?php echo ($corr['b']) ?> </b><?php if (isset($_POST['dex_num']) and @$wrongCount[1]>$hintLimit and $corr['b']=="Not Correct"){echo '<a href="'.$hintbPath.'"target = "_blank"> hints for this part </a>';} ?>  </p>
