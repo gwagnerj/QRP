@@ -294,13 +294,79 @@ if (strlen($probData['hint_d'])>1){
 			$changed_a = true;
 			$_SESSION[respon_a]= $resp['a'];
 		}
+		
 		if ($_SESSION['respon_b']== $resp['b']){
 			$changed_b = false;
 		} else  {
 		
 			$changed_b = true;
-			$_SESSION[respon_b]= $resp['b'];
+			$_SESSION['respon_b']= $resp['b'];
 		}
+		
+		if ($_SESSION['respon_c']== $resp['c']){
+			$changed_c = false;
+		} else  {
+		
+			$changed_c = true;
+			$_SESSION[respon_c]= $resp['c'];
+		}
+		
+		if ($_SESSION['respon_d']== $resp['d']){
+			$changed_d = false;
+		} else  {
+		
+			$changed_d = true;
+			$_SESSION['respon_d']= $resp['d'];
+		}
+		
+		if ($_SESSION['respon_e']== $resp['e']){
+			$changed_e = false;
+		} else  {
+		
+			$changed_e = true;
+			$_SESSION['respon_e']= $resp['e'];
+		}
+		
+		if ($_SESSION['respon_f']== $resp['f']){
+			$changed_f = false;
+		} else  {
+		
+			$changed_f = true;
+			$_SESSION['respon_f']= $resp['f'];
+		}
+		
+		if ($_SESSION['respon_g']== $resp['g']){
+			$changed_g = false;
+		} else  {
+		
+			$changed_g = true;
+			$_SESSION['respon_g']= $resp['g'];
+		}
+		
+		if ($_SESSION['respon_h']== $resp['h']){
+			$changed_h = false;
+		} else  {
+		
+			$changed_h = true;
+			$_SESSION['respon_h']= $resp['h'];
+		}
+		
+		if ($_SESSION['respon_i']== $resp['i']){
+			$changed_i = false;
+		} else  {
+		
+			$changed_i = true;
+			$_SESSION['respon_i']= $resp['i'];
+		}
+		
+		if ($_SESSION['respon_j']== $resp['j']){
+			$changed_j = false;
+		} else  {
+		
+			$changed_j = true;
+			$_SESSION['respon_j']= $resp['j'];
+		}
+		
 		/* for ($j=0;$j<9;$j++){
 				if($_SESSION['$respon'[$j]] == $resp[$j]){
 					$changed[$j] = false;
@@ -368,11 +434,11 @@ if (strlen($probData['hint_d'])>1){
 	}
 
 	// time to delay before accepting any more input
-	// So after 4 tries on a part the system will delay for 2 seconds before another input is selected (if $time_sleep1_trip is 4 and $time_sleep1 is 2
+	// So after 4 tries on a part the system will delay for 2 seconds before another input is selected (if $time_sleep1_trip is 5 and $time_sleep1 is 2
 	$time_sleep1 = 2;  // time delay in seconds
-	$time_sleep1_trip = 4;  // number of trieals it talkes to trip the time delay
+	$time_sleep1_trip = 5;  // number of trieals it talkes to trip the time delay
 	$time_sleep2 = 5;  // additional time if hit the next limit
-	$time_sleep2_trip = 8;
+	$time_sleep2_trip = 10;
 	
 	
 	
@@ -501,37 +567,81 @@ echo '</table>'	;
 if ($partsFlag[0]){ ?> 
 <p> a): <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b>
 <?php if (isset($_POST['dex_num']) and @$wrongCount[0]>$hintLimit and $corr['a']=="Not Correct"){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>
-<?php if (isset($_POST['dex_num']) and $changed_a and @$wrongCount[0]>$time_sleep1_trip and $corr['a']=="Not Correct"){echo('time delay 1'), sleep($time_sleep1);} ?>
-<?php if (isset($_POST['dex_num']) and $changed_a and @$wrongCount[0]>$time_sleep2_trip and $corr['a']=="Not Correct"){echo('time delay 2'), sleep($time_sleep2);} ?>
-
+<?php if (isset($_POST['dex_num']) and $changed_a and @$wrongCount[0]>$time_sleep1_trip and @$wrongCount[0]< $time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+<?php if (isset($_POST['dex_num']) and $changed_a and @$wrongCount[0]>=$time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
   </p>
 <?php } 
+
 if ($partsFlag[1]){ ?> 
-<p> b): <input [ type=number]{width: 5%;} name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?> &nbsp - <b><?php echo ($corr['b']) ?> </b><?php if (isset($_POST['dex_num']) and @$wrongCount[1]>$hintLimit and $corr['b']=="Not Correct"){echo '<a href="'.$hintbPath.'"target = "_blank"> hints for this part </a>';} ?>  </p>
+<p> b): <input [ type=number]{width: 5%;} name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?> &nbsp - <b><?php echo ($corr['b']) ?> </b>
+<?php if (isset($_POST['dex_num']) and @$wrongCount[1]>$hintLimit and $corr['b']=="Not Correct"){echo '<a href="'.$hintbPath.'"target = "_blank"> hints for this part </a>';} ?>  
+<?php if (isset($_POST['dex_num']) and $changed_b and @$wrongCount[1]>$time_sleep1_trip and @$wrongCount[1]< $time_sleep2_trip and $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+<?php if (isset($_POST['dex_num']) and $changed_b and @$wrongCount[1]>=$time_sleep2_trip and $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+</p>
 <?php } 
+
 if ($partsFlag[2]){ ?> 
-<p> c): <input [ type=number]{width: 5%;} name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b><?php if (isset($_POST['dex_num']) and @$wrongCount[2]>$hintLimit and $corr['c']=="Not Correct"){echo '<a href="'.$hintcPath.'"target = "_blank"> hints for this part </a>';} ?>  </p>
+<p> c): <input [ type=number]{width: 5%;} name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b>
+<?php if (isset($_POST['dex_num']) and @$wrongCount[2]>$hintLimit and $corr['c']=="Not Correct"){echo '<a href="'.$hintcPath.'"target = "_blank"> hints for this part </a>';} ?>  
+<?php if (isset($_POST['dex_num']) and $changed_c and @$wrongCount[2]>$time_sleep1_trip and @$wrongCount[2]< $time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+<?php if (isset($_POST['dex_num']) and $changed_c and @$wrongCount[2]>=$time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+</p>
 <?php } 
+
 if ($partsFlag[3]){ ?> 
-<p> d): <input [ type=number]{width: 5%;} name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b><?php if (isset($_POST['dex_num']) and @$wrongCount[3]>$hintLimit and $corr['d']=="Not Correct"){echo '<a href="'.$hintdPath.'"target = "_blank"> hints for this part </a>';} ?>  </p>
+<p> d): <input [ type=number]{width: 5%;} name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b>
+<?php if (isset($_POST['dex_num']) and @$wrongCount[3]>$hintLimit and $corr['d']=="Not Correct"){echo '<a href="'.$hintdPath.'"target = "_blank"> hints for this part </a>';} ?> 
+<?php if (isset($_POST['dex_num']) and $changed_d and @$wrongCount[3]>$time_sleep1_trip and @$wrongCount[3]< $time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+<?php if (isset($_POST['dex_num']) and $changed_d and @$wrongCount[3]>=$time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+</p>
 <?php } 
+
 if ($partsFlag[4]){ ?> 
-<p> e): <input [ type=number]{width: 5%;} name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b><?php if (isset($_POST['dex_num']) and @$wrongCount[4]>$hintLimit and $corr['e']=="Not Correct"){echo '<a href="'.$hintePath.'"target = "_blank"> hints for this part </a>';} ?>  </p>
+<p> e): <input [ type=number]{width: 5%;} name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b>
+<?php if (isset($_POST['dex_num']) and @$wrongCount[4]>$hintLimit and $corr['e']=="Not Correct"){echo '<a href="'.$hintePath.'"target = "_blank"> hints for this part </a>';} ?>  
+<?php if (isset($_POST['dex_num']) and $changed_e and @$wrongCount[4]>$time_sleep1_trip and @$wrongCount[4]< $time_sleep1_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+<?php if (isset($_POST['dex_num']) and $changed_e and @$wrongCount[4]>=$time_sleep2_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+</p>
 <?php } 
+
 if ($partsFlag[5]){ ?> 
-<p> f): <input [ type=number]{width: 5%;} name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b><?php if (isset($_POST['dex_num']) and @$wrongCount[5]>$hintLimit and $corr['f']=="Not Correct"){echo '<a href="'.$hintfPath.'"target = "_blank"> hints for this part </a>';} ?>  </p>
+<p> f): <input [ type=number]{width: 5%;} name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b>
+<?php if (isset($_POST['dex_num']) and @$wrongCount[5]>$hintLimit and $corr['f']=="Not Correct"){echo '<a href="'.$hintfPath.'"target = "_blank"> hints for this part </a>';} ?>  
+<?php if (isset($_POST['dex_num']) and $changed_f and @$wrongCount[5]>$time_sleep1_trip and @$wrongCount[5]< $time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+<?php if (isset($_POST['dex_num']) and $changed_f and @$wrongCount[5]>=$time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+</p>
 <?php } 
+
 if ($partsFlag[6]){ ?> 
-<p> g): <input [ type=number]{width: 5%;} name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b><?php if (isset($_POST['dex_num']) and @$wrongCount[6]>$hintLimit and $corr['g']=="Not Correct"){echo '<a href="'.$hintgPath.'"target = "_blank"> hints for this part </a>';} ?>  </p>
+<p> g): <input [ type=number]{width: 5%;} name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b>
+<?php if (isset($_POST['dex_num']) and @$wrongCount[6]>$hintLimit and $corr['g']=="Not Correct"){echo '<a href="'.$hintgPath.'"target = "_blank"> hints for this part </a>';} ?>  
+<?php if (isset($_POST['dex_num']) and $changed_g and @$wrongCount[6]>$time_sleep1_trip and @$wrongCount[6]< $time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+<?php if (isset($_POST['dex_num']) and $changed_g and @$wrongCount[6]>=$time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+</p>
 <?php } 
+
 if ($partsFlag[7]){ ?> 
-<p> h): <input [ type=number]{width: 5%;} name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo($unit[7]) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b><?php if (isset($_POST['dex_num']) and @$wrongCount[7]>$hintLimit and $corr['h']=="Not Correct"){echo '<a href="'.$hinthPath.'"target = "_blank"> hints for this part </a>';} ?>  </p>
+<p> h): <input [ type=number]{width: 5%;} name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo($unit[7]) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b>
+<?php if (isset($_POST['dex_num']) and @$wrongCount[7]>$hintLimit and $corr['h']=="Not Correct"){echo '<a href="'.$hinthPath.'"target = "_blank"> hints for this part </a>';} ?>  
+<?php if (isset($_POST['dex_num']) and $changed_h and @$wrongCount[7]>$time_sleep1_trip and @$wrongCount[7]< $time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+<?php if (isset($_POST['dex_num']) and $changed_h and @$wrongCount[7]>=$time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+</p>
 <?php } 
+
 if ($partsFlag[8]){ ?> 
-<p> i): <input [ type=number]{width: 5%;} name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b><?php if (isset($_POST['dex_num']) and @$wrongCount[8]>$hintLimit and $corr['i']=="Not Correct"){echo '<a href="'.$hintiPath.'"target = "_blank"> hints for this part </a>';} ?>  </p>
+<p> i): <input [ type=number]{width: 5%;} name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b>
+<?php if (isset($_POST['dex_num']) and @$wrongCount[8]>$hintLimit and $corr['i']=="Not Correct"){echo '<a href="'.$hintiPath.'"target = "_blank"> hints for this part </a>';} ?>  
+<?php if (isset($_POST['dex_num']) and $changed_i and @$wrongCount[8]>$time_sleep1_trip and @$wrongCount[8]< $time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+<?php if (isset($_POST['dex_num']) and $changed_i and @$wrongCount[8]>=$time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+</p>
 <?php } 
+
 if ($partsFlag[9]){ ?> 
-<p> j): <input [ type=number]{width: 5%;} name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b><?php if (isset($_POST['dex_num']) and @$wrongCount[9]>$hintLimit and $corr['j']=="Not Correct"){echo '<a href="'.$hintjPath.'"target = "_blank"> hints for this part </a>';} ?>  </p>
+<p> j): <input [ type=number]{width: 5%;} name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b>
+<?php if (isset($_POST['dex_num']) and @$wrongCount[9]>$hintLimit and $corr['j']=="Not Correct"){echo '<a href="'.$hintjPath.'"target = "_blank"> hints for this part </a>';} ?>  
+<?php if (isset($_POST['dex_num']) and $changed_j and @$wrongCount[9]>$time_sleep1_trip and @$wrongCount[9]< $time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+<?php if (isset($_POST['dex_num']) and $changed_j and @$wrongCount[9]>=$time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+</p>
 <?php } 
 
 
