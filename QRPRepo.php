@@ -142,6 +142,9 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
     echo("</th><th>");
 	 echo('<b>Soln</b>');
 	echo("</th></tr>\n");
+	
+	// add the effectiveness and rating stuff here so I can either display it or compute the average and display that along with the total ratings
+	
 $qstmnt="SELECT Problem.problem_id AS problem_id,Users.username AS username, Users.first AS name,Problem.subject as subject,Problem.course as course,Problem.primary_concept as p_concept,Problem.secondary_concept as s_concept,Problem.title as title,Problem.specif_ref as ref,Problem.status as status, Problem.soln_pblm as soln_pblm,Problem.game_prob_flag as game_prob_flag, Problem.nm_author as nm_author,Problem.docxfilenm as docxfilenm,Problem.infilenm as infilenm,Problem.pdffilenm as pdffilenm, Users.university as s_name
 FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id;";
 $stmt = $pdo->query($qstmnt);
