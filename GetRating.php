@@ -7,16 +7,51 @@
 	$effectiveness = $_POST['effectiveness'];
 	$difficulty = $_POST['difficulty'];
 	$performance = $_POST['performance'];
-	
-	
-	print $effectiveness;
-	print $difficulty;
-	print $performance;
+	// print $effectiveness;
+	// print $difficulty;
+	//print $performance;
 
+// put the values in the data base
+
+  // Get the correct effectiveness and difficulty  rating from database add 1 to it and put it back
+  if (isset($_SESSION['problem_id'])){ // get the correct value for the problem number parameter
+		
+	 $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(':problem_id' => $_SESSION['problem_id']));
+	$data = $stmt -> fetch();	
+		
+	$nm_diff = 'diff_stu_'.$_POST['difficulty'];
+	$nm_eff = 'eff_stu_'.$_POST['effectiveness'];	
+		
+	$val_diff = $data[$nm_diff]+1;	
+	$val_eff = $data[$nm_eff]+1;
 	
+	
+		$sql = "UPDATE Problem SET $nm_diff = :nmdiff WHERE problem_id = :pblm_num";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(
+				':nmdiff' => $val_diff,
+				':pblm_num' => $_SESSION['problem_id']));
+				
+		$sql = "UPDATE Problem SET $nm_eff = :nmeff WHERE problem_id = :pblm_num";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(
+				':nmeff' => $val_eff,
+				':pblm_num' => $_SESSION['problem_id']));		
+				
+		
+
+// change the headers to the rtnCode.php
+
+		header( 'Location: rtnCode.php' ) ;
+		return;		
+}	
+
+
  } else {
  
-	print ('All values must be entered');
+	print ('All catagories must be entered');
  
  
  }
@@ -47,7 +82,7 @@
 	<input type="radio" name="effectiveness" value = 3 id = "three" size= 20  >
 	<input type="radio" name="effectiveness" value = 4 id = "four" size= 20  >
 	<input type="radio" name="effectiveness" value = 5 id = "five" size= 20  >
-	very effective</td></tr><tr>
+	very effective</td></tr><tr></tr><tr></tr><tr></tr><tr>
 	
 	<td>Difficulty:  &nbsp &nbsp </td><td> easy
 	<input type="radio" name="difficulty" value = 1  id = "one" size= 20  >
@@ -55,9 +90,9 @@
 	<input type="radio" name="difficulty" value = 3 id = "three" size= 20  >
 	<input type="radio" name="difficulty" value = 4 id = "four" size= 20  >
 	<input type="radio" name="difficulty" value = 5 id = "five" size= 20  >
-	very difficult</td></tr><tr>
+	very difficult</td></tr><tr></tr><tr></tr><tr></tr><tr>
 	
-	<td>Your Performance: &nbsp &nbsp </td><td> bad
+	<td>My Performance: &nbsp &nbsp </td><td> bad
 	<input type="radio" name="performance" value = 1 id = "one" size= 20  >
 	<input type="radio" name="performance" value = 2 id = "two" size= 20  >
 	<input type="radio" name="performance" value = 3 id = "three" size= 20  >
