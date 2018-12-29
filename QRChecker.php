@@ -292,7 +292,7 @@ if (strlen($probData['hint_d'])>1){
 		} else  {
 		
 			$changed_a = true;
-			$_SESSION[respon_a]= $resp['a'];
+			$_SESSION['respon_a']= $resp['a'];
 		}
 		
 		if ($_SESSION['respon_b']== $resp['b']){
@@ -377,6 +377,7 @@ if (strlen($probData['hint_d'])>1){
 		} */
 
 	}
+
 
 
 
