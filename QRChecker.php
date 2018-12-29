@@ -663,12 +663,12 @@ if ($partsFlag[9]){ ?>
 <p><input type = "submit" value="Finished"/> </p>
 </form> -->
 
-<form action="rtnCode.php" method="POST">
+<form action="GetRating.php" method="POST">
  <hr>
 <p><b><font Color="red">When Finished:</font></b></p>
   <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
   <?php $_SESSION['score'] = $PScore; $_SESSION['index'] = $index; $_SESSION['count'] = $count; ?>
- <b><input type="submit" value="Get rtn Code" style = "width: 30%; background-color:yellow "></b>
+ <b><input type="submit" value="Rate & Get rtn Code" style = "width: 30%; background-color:yellow "></b>
  <p><br> </p>
  <hr>
 </form>

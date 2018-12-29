@@ -1,6 +1,25 @@
 <?php
  session_start();
-  
+  Require_once "pdo.php";
+ 
+ if (isset($_POST['effectiveness']) and isset($_POST['difficulty']) and isset($_POST['performance'])){
+	
+	$effectiveness = $_POST['effectiveness'];
+	$difficulty = $_POST['difficulty'];
+	$performance = $_POST['performance'];
+	
+	
+	print $effectiveness;
+	print $difficulty;
+	print $performance;
+
+	
+ } else {
+ 
+	print ('All values must be entered');
+ 
+ 
+ }
  
 
 ?>
@@ -19,20 +38,45 @@
 <!--<h1>this is an application that Gets the rating of the problem from the student</h1>-->
 </header>
 <main>
-<h3>Problems attempt to give you practice with and allow discovery of certain concepts</h3>
-<p><font color = 'blue' size='2'> Please rate honestly </font></p>
+<h3>The problems attempted to give you practice with and allow discovery of certain concepts</h3>
+<p><font color = 'blue' size='4'> Please rate honestly </font></p>
 <form method="POST">
-	<p><font color=#003399>Effectiveness (5 = very effective 1 = not effective)</font><input type="text" name="effectiveness" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
-	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> min="1" Max = "100000" required></p>
-	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> min="2" Max="200" ></p>
+	<table><tr><td>Effectiveness: &nbsp &nbsp </td><td> not effective
+	<input type="radio" name="effectiveness" value = 1 id = "one" size= 20  >
+	<input type="radio" name="effectiveness" value = 2 id = "two" size= 20  >
+	<input type="radio" name="effectiveness" value = 3 id = "three" size= 20  >
+	<input type="radio" name="effectiveness" value = 4 id = "four" size= 20  >
+	<input type="radio" name="effectiveness" value = 5 id = "five" size= 20  >
+	very effective</td></tr><tr>
+	
+	<td>Difficulty:  &nbsp &nbsp </td><td> easy
+	<input type="radio" name="difficulty" value = 1  id = "one" size= 20  >
+	<input type="radio" name="difficulty" value = 2 id = "two" size= 20  >
+	<input type="radio" name="difficulty" value = 3 id = "three" size= 20  >
+	<input type="radio" name="difficulty" value = 4 id = "four" size= 20  >
+	<input type="radio" name="difficulty" value = 5 id = "five" size= 20  >
+	very difficult</td></tr><tr>
+	
+	<td>Your Performance: &nbsp &nbsp </td><td> bad
+	<input type="radio" name="performance" value = 1 id = "one" size= 20  >
+	<input type="radio" name="performance" value = 2 id = "two" size= 20  >
+	<input type="radio" name="performance" value = 3 id = "three" size= 20  >
+	<input type="radio" name="performance" value = 4 id = "four" size= 20  >
+	<input type="radio" name="performance" value = 5 id = "five" size= 20  >
+	great</td></tr></table>
+	
 
-	<p><input type = "submit" value="Submit" id="submit_id" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
-	</form>
 
 
 <p><br></p>
+ 
+ <hr>
+<p><b><font Color="red">When Finished:</font></b></p>
+  <b><input type="submit" value="Get rtn Code" style = "width: 30%; background-color:yellow "></b>
+ <p><br> </p>
+ <hr>
+</form>
 
-<a href="rtnCode.php"><b> Get Rtn Code</b></a>
 
 </main>
 
