@@ -4,6 +4,15 @@ var stu_name = localStorage.getItem('stu_name');
 var index = localStorage.getItem('index');
 var title = localStorage.getItem('title');
 
+// replace the url to qrproblems.org/prob to qrproblems.org/QRChecker.php?problem_id=problem_id&=index
+
+var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&dex_num='+index;
+console.log (newHref);
+$("a[href='https://qrproblems.org/prob']").prop('href', newHref);
+
+
+
+
 var nvar1 = localStorage.getItem('nv_1'); 
 console.log(nvar1);
 
@@ -349,10 +358,6 @@ for (i=numPara+1;i<numPara_tot;i++){
 	}
 	
 }	
-
-
-
-
 
 
   
