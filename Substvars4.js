@@ -142,7 +142,7 @@ $(document).ready(function(){
   var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______");
    
   $('p:first').before(Head_txt1,Head_txt3,'<hr>');
-   $('p:first').before('\xa0\xa0<img border=0 width=50 height=50 id="McKetta_head" src="QRMcKetta.png"><hr>');
+  $('p:first').before('\xa0\xa0<img border=0 width=50 height=50 id="McKetta_head" src="QRMcKetta.png"><hr>');
 
 
 
@@ -302,7 +302,7 @@ for (i=0;i<numPara;i++){
 // replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=index
 
 var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&dex_num='+index;
-//console.log (newHref);
+console.log (newHref);
 var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
 //var oldHref = $('a').attr('href');
 //console.log (oldHref);
@@ -312,9 +312,20 @@ var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
 $('#directions a').prop('href', newHref);
 // $("a".oldHref).prop('href', newHref);
 
+// genrate an QRcode dynamically using the newHref  This had to be pretty large before the QR reader can read it
 
 
+/* let qrcode = new QRCode("output", {
+	text: newHref,
+	width:100,
+	height:100,
+	colorDark:"#990000",
+	colorLight:"#ffffff",
+	corectLevel: QRCode.CorrectLevel.M
+}); */
 
+//qrcode.clear();
+//qrcode.makeCode(newHref);
 
 // build arrays for the basecase values 
 
