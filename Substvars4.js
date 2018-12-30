@@ -4,11 +4,7 @@ var stu_name = localStorage.getItem('stu_name');
 var index = localStorage.getItem('index');
 var title = localStorage.getItem('title');
 
-// replace the url to qrproblems.org/prob to qrproblems.org/QRChecker.php?problem_id=problem_id&=index
 
-var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&dex_num='+index;
-console.log (newHref);
-$("a[href='https://qrproblems.org/prob']").prop('href', newHref);
 
 
 
@@ -302,6 +298,22 @@ for (i=0;i<numPara;i++){
 	}
 	
 }	
+
+// replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=index
+
+var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&dex_num='+index;
+//console.log (newHref);
+var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
+//var oldHref = $('a').attr('href');
+//console.log (oldHref);
+
+
+//selects the first anchor tag in the directions div and replaces it with the particular url
+$('#directions a').prop('href', newHref);
+// $("a".oldHref).prop('href', newHref);
+
+
+
 
 
 // build arrays for the basecase values 
