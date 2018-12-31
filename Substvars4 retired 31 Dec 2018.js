@@ -10,8 +10,10 @@ var title = localStorage.getItem('title');
 
 
 var nvar1 = localStorage.getItem('nv_1'); 
+console.log(nvar1);
 
 var var1 = localStorage.getItem(nvar1);
+ console.log(var1);
 
 
 nvar1 = "##"+nvar1+",.+?##";
@@ -150,16 +152,6 @@ $(document).ready(function(){
 $(function(){
 // put the button in the document	
 	$('p:first').before('show/hide: <button id="directionsbutton">directions</button> <button id="pblmbutton">pblm statement</button>  <button id="basecasebutton">base-case</button> <button id="reflectionbutton">Reflections</button>') ;
-	$('p:first').before('  <button id="refl" style = "height:17px">Reflect</button> <button id="expl" style = "height:17px">Explore</button>  <button id="conn" style = "height:17px">Connect</button> <button id="soci" style = "height:17px">Society</button>') ;
-	
-	$('#refl').hide();
-	$('#expl').hide();
-	$('#conn').hide();
-	$('#soci').hide();
-	
-	
-	
-	
 	
 	
 	
@@ -234,76 +226,7 @@ $("#box3-start").nextUntil("#box3-end").wrapAll("<div id='old_basecase'></div>")
 
 $("#box4-start").nextUntil("#box4-end").wrapAll("<div id='reflections'></div>");
 
-
-
-
-// Search thru the reflections and put a div for the first one i) Reflect
- $( "#Reflections p" ).each(function( index ) {
-   var current_content =  $(this).text();
-   // put in a div element at the start of the markup
-  if( current_content.indexOf("i) Reflect") !=-1) {
-	  $(this).closest('p').before('<div id="box5-start">');
-  }
- // put the end of the div after the closing markup tag 
-      if( current_content.indexOf("ii) Explore") !=-1) {
-	  
-     $(this).closest('p').before('<div id="box5-end">');
-  }
-});
-// put all the content between the tags in a div
-
-$("#box5-start").nextUntil("#box5-end").wrapAll("<div id='reflect'></div>");
-
-
-// Search thru the reflections and put a div for the first one ii) Explore
- $( "#Reflections p" ).each(function( index ) {
-   var current_content =  $(this).text();
-   // put in a div element at the start of the markup
-  if( current_content.indexOf("ii) Explore") !=-1) {
-	  $(this).closest('p').before('<div id="box6-start">');
-  }
- // put the end of the div after the closing markup tag 
-      if( current_content.indexOf("iii) Connect") !=-1) {
-	  
-     $(this).closest('p').before('<div id="box6-end">');
-  }
-});
-// put all the content between the tags in a div
-
-$("#box6-start").nextUntil("#box6-end").wrapAll("<div id='explor'></div>");
-
-// Search thru the reflections and put a div for the first one iii) Connect
- $( "#Reflections p" ).each(function( index ) {
-   var current_content =  $(this).text();
-   // put in a div element at the start of the markup
-  if( current_content.indexOf("iii) Connect") !=-1) {
-	  $(this).closest('p').before('<div id="box7-start">');
-  }
- // put the end of the div after the closing markup tag 
-      if( current_content.indexOf("iv) S") !=-1) {
-	  
-     $(this).closest('p').before('<div id="box7-end">');
-  }
-});
-// put all the content between the tags in a div
-
-$("#box7-start").nextUntil("#box7-end").wrapAll("<div id='connec'></div>");
-
-
-// Search thru the reflections and put a div for the first one iv) S (left it as this so it could be changed to just society instead of safety and society
- $( "#Reflections p" ).each(function( index ) {
-   var current_content =  $(this).text();
-   // put in a div element at the start of the markup
-  if( current_content.indexOf("iv) S") !=-1) {
-	  $(this).closest('p').before('<div id="box8-start">');
-  }
- // put the end of the div after the closing markup tag 
-     
-});
-// put all the content between the tags in a div
-
-$("#box8-start").nextUntil("#box4-end").wrapAll("<div id='societ'></div>");
-
+   
    // Cloning the problem staement to get the basecase
 
   var problem_st = document.getElementById('problem');
@@ -333,7 +256,7 @@ var numPara_basecase = document.getElementById('basecase').getElementsByTagName(
 // console.log(numPara_tot);
 // console.log(numPara_basecase);
 var numPara = numPara_tot - numPara_basecase;
-// console.log(numPara);
+console.log(numPara);
 
 for (i=0;i<numPara;i++){
 	// if the caption exists get the title of it
@@ -379,7 +302,7 @@ for (i=0;i<numPara;i++){
 // replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=index
 
 var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&dex_num='+index;
-// console.log (newHref);
+console.log (newHref);
 var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
 //var oldHref = $('a').attr('href');
 //console.log (oldHref);
@@ -579,22 +502,14 @@ for (i=numPara+1;i<numPara_tot;i++){
 
 
 // this is to change the color of the buttons depending on the state
-var white1 = false;
+var white1 = false
 var bgcolor1;
-var white2 = false;
+var white2 = false
 var bgcolor2;
-var white3 = true;
+var white3 = true
 var bgcolor3;
-var white4 = true;
+var white4 = true
 var bgcolor4;
-var white5 = true;
-var bgcolor5;
-var white6 = true;
-var bgcolor6;
-var white7 = true;
-var bgcolor7;
-var white8 = true;
-var bgcolor8;
 
 // turn don't display basecase or reflections 
 
@@ -605,8 +520,6 @@ var bgcolor8;
    bgcolor4 = $('#reflectionbutton').css('backgroundColor'); 
    $("#reflections").toggle();
   $('#reflectionbutton').css("background-color", "lightgray");
-  
-  
 
    // toggle the content between show and hide on click of the button
     $('#directionsbutton').click(function(e){
@@ -653,78 +566,22 @@ var bgcolor8;
 	 
    $('#reflectionbutton').click(function(e){
          e.preventDefault();
-		   if (white4 = ! white4) {
+		   if (white4 = !white4) {
             bgcolor4 = $(this).css('backgroundColor');
             $(this).css("background-color", "lightgray");
-			
-			
-			$('#refl').hide();
-			$('#expl').hide();
-			$('#conn').hide();
-			$('#soci').hide();
-			
-
         } else {
             $(this).css("background-color", bgcolor4);
-			$('#refl').show();
-			$('#expl').show();
-			$('#conn').show();
-			$('#soci').show();
         }
+		 
+		 
+		 
+		 
         $("#reflections").toggle();
+		
 		  $("#reflections").css("background-color", "ivory");
 		   $("#reflections").css("border-style", "solid");
-     });
-	 
-	 
-$('#refl').click(function(e){
-         e.preventDefault();
-		  if (white5 = !white5) {
-             $(this).css("background-color", bgcolor5);
 		
-        } else {
-			bgcolor5 = $(this).css('backgroundColor');
-            $(this).css("background-color", "lightgray");
-        }
-		$("#reflect").toggle();
      });
-	 
-	$('#expl').click(function(e){
-         e.preventDefault();
-		  if (white6 = !white6) {
-             $(this).css("background-color", bgcolor6);
-		
-        } else {
-			bgcolor6 = $(this).css('backgroundColor');
-            $(this).css("background-color", "lightgray");
-        }
-		$("#explor").toggle();
-     });
-
-$('#conn').click(function(e){
-         e.preventDefault();
-		  if (white7 = !white7) {
-             $(this).css("background-color", bgcolor7);
-		
-        } else {
-			bgcolor7 = $(this).css('backgroundColor');
-            $(this).css("background-color", "lightgray");
-        }
-		$("#connec").toggle();
-     });
-$('#soci').click(function(e){
-         e.preventDefault();
-		  if (white8 = !white8) {
-             $(this).css("background-color", bgcolor7);
-		
-        } else {
-			bgcolor8 = $(this).css('backgroundColor');
-            $(this).css("background-color", "lightgray");
-        }
-		$("#societ").toggle();
-     });
-
-
 
  
 });
