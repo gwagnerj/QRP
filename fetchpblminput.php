@@ -23,7 +23,7 @@ session_start();
 	  return;
  } */
 
-
+// getting stuff from the problem table
  
     $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
     $stmt = $pdo->prepare($sql);
