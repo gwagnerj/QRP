@@ -12,18 +12,5 @@ Copy the lines of cope below and put them right before the </head tag>
 
 Copy the line of code below and put it Just before the </body> tag very close to the end of the document
 
-<script src="../Substvars4.js"></script>
+<script src="../Substvars.js"></script>
 
-
-
-
-
-
-// if reHeaders doesn't work
-
-
-
-
-
-<script src="qrcode.js"></script>
-<script src="../refHeaders.js"></script>
