@@ -4,8 +4,17 @@ var stu_name = localStorage.getItem('stu_name');
 var index = localStorage.getItem('index');
 var title = localStorage.getItem('title');
 
-
-
+/* 			localStorage.setItem('contrib_first',contrib_first);
+			localStorage.setItem('contrib_last',contrib_last);
+			localStorage.setItem('contrib_university',contrib_university);
+			localStorage.setItem('nm_author',arr.nm_author);
+			localStorage.setItem('specif_ref',arr.specif_ref);
+ */
+var contrib_first = localStorage.getItem('contrib_first');
+var contrib_last = localStorage.getItem('contrib_last');
+var contrib_university = localStorage.getItem('contrib_university');
+var nm_author = localStorage.getItem('nm_author');
+var specif_ref = localStorage.getItem('specif_ref');
 
 
 
@@ -137,9 +146,19 @@ var oEndMU = new RegExp(sEndMU,"g");
 $(document).ready(function(){
 	
   var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Problem: "+problem_id+"\xa0\xa0"+"PIN: " + index +"\xa0\xa0 ");
-  var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______");
-   
-  $('p:first').before(Head_txt1,Head_txt3,'<hr>');
+  
+  var auth_field = (nm_author.length > 1 ? "\xa0\xa0 by: \xa0"+nm_author : "");
+  var ref_field = (specif_ref.length > 1 ? "\xa0\xa0 similar to: \xa0"+specif_ref : "");
+  var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0  Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field);
+  
+ // var Head_txt4 = $("<p></p>").text("Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field );
+ 
+
+
+// $('p:first').before(Head_txt4);
+ $('p:first').before(Head_txt1,Head_txt3,'<hr>');
+ 
+  
   $('p:first').before('\xa0\xa0<img border=0 width=50 height=50 id="McKetta_head" src="QRMcKetta.png"><hr>');
 
 

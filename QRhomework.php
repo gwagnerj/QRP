@@ -90,10 +90,17 @@ if ( isset($_SESSION['success']) ) {
 			
 			var game = arr.game_prob_flag;
 			var status = arr.status;
-			// console.log(status);
 			var prob_num = arr.problem_id;
-			// alert (status);
+			var contrib_first = arr.first;
+			var contrib_last = arr.last;
+			var contrib_university = arr.university;
+			localStorage.setItem('contrib_first',contrib_first);
+			localStorage.setItem('contrib_last',contrib_last);
+			localStorage.setItem('contrib_university',contrib_university);
+			localStorage.setItem('nm_author',arr.nm_author);
+			localStorage.setItem('specif_ref',arr.specif_ref);
 			
+			console.log(contrib_first);
 		//	console.log('arr', arr);
 			if (status !== 'suspended'){
 				if (game==0){

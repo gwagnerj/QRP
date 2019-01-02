@@ -29,13 +29,22 @@ session_start();
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':problem_id' => $_POST['problem_id']));
 	$data = $stmt -> fetch();
-	
 	// need to put some error checking here
-	
-
 		$rows=$data;
 // query the input table for the actual input values
-		
+	
+
+	 $users_id = $rows['users_id'];
+	
+	$sql = "SELECT * FROM Users WHERE users_id = :users_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(':users_id' => $users_id));
+	$data2 = $stmt -> fetch();
+		$row_user=$data2;
+		$rows=array_merge($rows,$row_user);
+	
+
+	
  
 	$stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
 	$stmt->execute(array(":problem_id" => $_POST['problem_id'], ":dex" => $_POST['index']));
