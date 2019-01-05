@@ -401,11 +401,12 @@ var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_
 // console.log (newHref);
 var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
 //var oldHref = $('a').attr('href');
-//console.log (oldHref);
+// console.log (newHref);
 
 
 //selects the first anchor tag in the directions div and replaces it with the particular url
 $('#directions a').prop('href', newHref);
+$('#directions a').prop('target', '_blank');
 // $("a".oldHref).prop('href', newHref);
 
 // genrate an QRcode dynamically using the newHref  This had to be pretty large before the QR reader can read it
