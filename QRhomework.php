@@ -4,6 +4,14 @@ session_start();
 $stu_name = '';
 $problem_id= '';
 $index='';
+/* 
+Was setting this up to do more php input validation - but have put it off
+$PIN_LLimit = 1;
+$PIN_ULimit = 200;
+$prob_LLimit = 1;
+$prob_ULimit = 100000;
+$PIN_Check = array('options'=>array('min_range'=>$PIN_LLimit,'max_range'=>$PIN_ULimit,));
+$prob_Check = array('options'=>array('min_range'=>$prob_LLimit,'max_range'=>$prob_ULimit,)); */
 
 if(isset($_POST['stu_name'])){
 	
@@ -16,13 +24,22 @@ if(isset($_POST['stu_name'])){
 if(isset($_POST['problem_id'])){
 	
 	$problem_id = htmlentities($_POST['problem_id']);
+	
 	$_SESSION['problem_id']=$problem_id;
 }
 
 if(isset($_POST['index'])){
 	
 	$index = htmlentities($_POST['index']);
+	/*
+		See comment above
+	if(filter_var($index,FILTER_VALIDATE_INT,$PIN_Check) === FALSE){
+		set($_SESSION['error']);
+		echo'invalid data';
+	} */
 	$_SESSION['index']=$index;
+	
+	
 }
 
 ?>
@@ -59,8 +76,8 @@ if ( isset($_SESSION['success']) ) {
 <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>
 <form method="POST">
 	<p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
-	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> min="1" Max = "100000" required></p>
-	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> min="2" Max="200" ></p>
+	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
+	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> ></p>
 
 	<p><input type = "submit" value="Submit" id="submit_id" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>
@@ -76,13 +93,24 @@ if ( isset($_SESSION['success']) ) {
 		var s_name = $('input#stu_name_id').val();
 		var statusFlag=true;
 	
-	if($.trim(problem) != '' && problem > 0 && problem < 100000 && inde>=2 && inde<=200){
+	if($.trim(problem) != '' && problem > 0 && problem < 100000 && inde>=1 && inde<=200){
 	// alert(1);
 	
 		 $.post('fetchpblminput.php', {problem_id : problem, index : inde }, function(data){
 			
-			var arr = JSON.parse(data);
+			try{
+				var arr = JSON.parse(data);
+			}
+			catch(err) {
+				alert ('problem data unavailable');
+			}
+		
+		
+		
 		// Get the html file name from the database
+			
+			
+			
 			
 			var openup = arr.htmlfilenm;
 			
@@ -253,7 +281,7 @@ if ( isset($_SESSION['success']) ) {
  	}
 	else{
 		
-		Alert ('invalid user input');
+		alert ('invalid user input');
 		
 		
 	}

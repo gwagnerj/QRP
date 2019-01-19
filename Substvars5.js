@@ -778,7 +778,16 @@ $(document).ready(function(){
 	
 // if we are sent a 0 or 1 for the PIN we should display just the base-case without directions headers or 
 
-	$('#Header_stuff').hide();	
+	if (index =='1'){
+	
+		$('#directions').hide();
+		$('#Header_stuff').hide();	
+		var bc_message = "QR"+problem_id+"-BC";
+		 $('body').prepend(bc_message).css("fontSize","8px");
+	}
+	
+	
+	
 		});
 
 		
