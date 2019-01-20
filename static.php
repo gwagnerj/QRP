@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+
 $stu_name = '';
 $problem_id= '';
 $index='';
@@ -13,13 +14,13 @@ $prob_ULimit = 100000;
 $PIN_Check = array('options'=>array('min_range'=>$PIN_LLimit,'max_range'=>$PIN_ULimit,));
 $prob_Check = array('options'=>array('min_range'=>$prob_LLimit,'max_range'=>$prob_ULimit,)); */
 
-if(isset($_POST['stu_name'])){
+/* if(isset($_POST['stu_name'])){
 	
 	
 	$stu_name = htmlentities($_POST['stu_name']);
 	$_SESSION['stu_name']=$stu_name;
 	
-} 
+}  */
 
 if(isset($_POST['problem_id'])){
 	
@@ -75,7 +76,7 @@ if ( isset($_SESSION['success']) ) {
 <h3>Print the problem statement with "Ctrl P"</h3>
 <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>
 <form method="POST">
-	<p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
+	<!-- <p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p> -->
 	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
 	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> ></p>
 
@@ -111,7 +112,7 @@ if ( isset($_SESSION['success']) ) {
 			
 			
 			
-			
+			var static_f = true;
 			var openup = arr.htmlfilenm;
 			
 			// alert(openup);
@@ -122,7 +123,6 @@ if ( isset($_SESSION['success']) ) {
 			var contrib_first = arr.first;
 			var contrib_last = arr.last;
 			var contrib_university = arr.university;
-			var static_f = false;
 			localStorage.setItem('contrib_first',contrib_first);
 			localStorage.setItem('contrib_last',contrib_last);
 			localStorage.setItem('contrib_university',contrib_university);
@@ -164,7 +164,7 @@ if ( isset($_SESSION['success']) ) {
 					
 					
 					localStorage.setItem('title',arr.title);
-					localStorage.setItem('stu_name',s_name);
+					//localStorage.setItem('stu_name',s_name);
 					localStorage.setItem('problem_id',problem);
 					localStorage.setItem('index',inde);
 					localStorage.setItem('static_flag',static_f);

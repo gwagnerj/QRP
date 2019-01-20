@@ -3,6 +3,7 @@ var problem_id = localStorage.getItem('problem_id');
 var stu_name = localStorage.getItem('stu_name');
 var index = localStorage.getItem('index');
 var title = localStorage.getItem('title');
+var static_flag = localStorage.getItem('static_flag');
 
 /* 			localStorage.setItem('contrib_first',contrib_first);
 			localStorage.setItem('contrib_last',contrib_last);
@@ -145,609 +146,656 @@ var oEndMU = new RegExp(sEndMU,"g");
 
 $(document).ready(function(){
 	
-  var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Problem: "+problem_id+"\xa0\xa0"+"PIN: " + index +"\xa0\xa0 ");
-  
-  var auth_field = (nm_author.length > 1 ? "\xa0\xa0 by: \xa0"+nm_author : "");
-  var ref_field = (specif_ref.length > 1 ? "\xa0\xa0 similar to: \xa0"+specif_ref : "");
-  var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0  Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field);
-  
- // var Head_txt4 = $("<p></p>").text("Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field );
- 
-
-
-// $('p:first').before(Head_txt4);
- $('p:first').before(Head_txt1,Head_txt3,'<hr>');
- 
-  
-  $('p:first').before('\xa0\xa0<img border=0 width=50 height=50 id="McKetta_head" src="QRMcKetta.png"><hr>');
-
-
-
-
-//put real tags in the document to manipulate
- 
-$(function(){
-// put the button in the document	
-	$('p:first').before('show/hide: <button id="directionsbutton">directions</button> <button id="pblmbutton">pblm statement</button>  <button id="basecasebutton">base-case</button> <button id="reflectionbutton">Reflections</button>') ;
-	$('p:first').before('  <button id="refl" style = "height:17px">Reflect</button> <button id="expl" style = "height:17px">Explore</button>  <button id="conn" style = "height:17px">Connect</button> <button id="soci" style = "height:17px">Society</button>') ;
-	
-	$('#refl').hide();
-	$('#expl').hide();
-	$('#conn').hide();
-	$('#soci').hide();
-	
-	
-	
-	
-	
-	
-	
-// Search thru all of the document looking for the markups and put divs for those
- $( "p" ).each(function( index ) {
-   var current_content =  $(this).text();
-   // put in a div element at the start of the markup
-  if( current_content.indexOf("v==") !=-1) {
-	  $(this).closest('p').before('<div id="box1-start">');
-  }
- // put the end of the div after the closing markup tag 
-      if( current_content.indexOf("==v") !=-1) {
+	  var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Problem: "+problem_id+"\xa0\xa0"+"PIN: " + index +"\xa0\xa0 ");
 	  
-     $(this).closest('p').after('<div id="box1-end">');
-  }
-});
-// put all the content between the tags in a div
-
-$("#box1-start").nextUntil("#box1-end").wrapAll("<div id='directions'></div>");
-
-// Search thru all of the document looking for the markups and put divs for those
- $( "p" ).each(function( index ) {
-   var current_content =  $(this).text();
-   // put in a div element at the start of the markup
-  if( current_content.indexOf("t==") !=-1) {
-	  $(this).closest('p').before('<div id="box2-start">');
-  }
- // put the end of the div after the closing markup tag 
-      if( current_content.indexOf("==t") !=-1) {
+	  var auth_field = (nm_author.length > 1 ? "\xa0\xa0 by: \xa0"+nm_author : "");
+	  var ref_field = (specif_ref.length > 1 ? "\xa0\xa0 similar to: \xa0"+specif_ref : "");
+	  var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0  Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field);
 	  
-     $(this).closest('p').after('<div id="box2-end">');
-  }
-});
-// put all the content between the tags in a div
-
-$("#box2-start").nextUntil("#box2-end").wrapAll("<div id='problem'></div>");
+	 // var Head_txt4 = $("<p></p>").text("Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field );
+	 
 
 
-// Search thru all of the document looking for the markups and put divs for those
- $( "p" ).each(function( index ) {
-   var current_content =  $(this).text();
-   // put in a div element at the start of the markup
-  if( current_content.indexOf("x==") !=-1) {
-	  $(this).closest('p').before('<div id="box3-start">');
-  }
- // put the end of the div after the closing markup tag 
-      if( current_content.indexOf("==u") !=-1) {
+	// $('p:first').before(Head_txt4);
+	 $('p:first').before(Head_txt1,Head_txt3,'<hr>');
+	 
 	  
-     $(this).closest('p').after('<div id="box3-end">');
-  }
-});
-// put all the content between the tags in a div
-
-$("#box3-start").nextUntil("#box3-end").wrapAll("<div id='old_basecase'></div>");
- $("#old_basecase").hide();
-
-
-// Search thru all of the document looking for the markups and put divs for those
- $( "p" ).each(function( index ) {
-   var current_content =  $(this).text();
-   // put in a div element at the start of the markup
-  if( current_content.indexOf("w==") !=-1) {
-	  $(this).closest('p').before('<div id="box4-start">');
-  }
- // put the end of the div after the closing markup tag 
-      if( current_content.indexOf("==w") !=-1) {
-	  
-     $(this).closest('p').after('<div id="box4-end">');
-  }
-});
-// put all the content between the tags in a div
-
-$("#box4-start").nextUntil("#box4-end").wrapAll("<div id='reflections'></div>");
+	  $('p:first').before('\xa0\xa0<img border=0 width=50 height=50 id="McKetta_head" src="QRMcKetta.png"><hr>');
 
 
 
 
-// Search thru the reflections and put a div for the first one i) Reflect
- $( "#Reflections p" ).each(function( index ) {
-   var current_content =  $(this).text();
-   // put in a div element at the start of the markup
-  if( current_content.indexOf("i) Reflect") !=-1) {
-	  $(this).closest('p').before('<div id="box5-start">');
-  }
- // put the end of the div after the closing markup tag 
-      if( current_content.indexOf("ii) Explore") !=-1) {
-	  
-     $(this).closest('p').before('<div id="box5-end">');
-  }
-});
-// put all the content between the tags in a div
-
-$("#box5-start").nextUntil("#box5-end").wrapAll("<div id='reflect'></div>");
-
-
-// Search thru the reflections and put a div for the first one ii) Explore
- $( "#Reflections p" ).each(function( index ) {
-   var current_content =  $(this).text();
-   // put in a div element at the start of the markup
-  if( current_content.indexOf("ii) Explore") !=-1) {
-	  $(this).closest('p').before('<div id="box6-start">');
-  }
- // put the end of the div after the closing markup tag 
-      if( current_content.indexOf("iii) Connect") !=-1) {
-	  
-     $(this).closest('p').before('<div id="box6-end">');
-  }
-});
-// put all the content between the tags in a div
-
-$("#box6-start").nextUntil("#box6-end").wrapAll("<div id='explor'></div>");
-
-// Search thru the reflections and put a div for the first one iii) Connect
- $( "#Reflections p" ).each(function( index ) {
-   var current_content =  $(this).text();
-   // put in a div element at the start of the markup
-  if( current_content.indexOf("iii) Connect") !=-1) {
-	  $(this).closest('p').before('<div id="box7-start">');
-  }
- // put the end of the div after the closing markup tag 
-      if( current_content.indexOf("iv) S") !=-1) {
-	  
-     $(this).closest('p').before('<div id="box7-end">');
-  }
-});
-// put all the content between the tags in a div
-
-$("#box7-start").nextUntil("#box7-end").wrapAll("<div id='connec'></div>");
-
-
-// Search thru the reflections and put a div for the first one iv) S (left it as this so it could be changed to just society instead of safety and society
- $( "#Reflections p" ).each(function( index ) {
-   var current_content =  $(this).text();
-   // put in a div element at the start of the markup
-  if( current_content.indexOf("iv) S") !=-1) {
-	  $(this).closest('p').before('<div id="box8-start">');
-  }
- // put the end of the div after the closing markup tag 
-     
-});
-// put all the content between the tags in a div
-
-$("#box8-start").nextUntil("#box4-end").wrapAll("<div id='societ'></div>");
-
-   // Cloning the problem staement to get the basecase
-
-  var problem_st = document.getElementById('problem');
-var clone = problem_st.cloneNode(true);
-clone.id = "basecase";
-
-document.body.appendChild(clone);
-	
-   $('#basecase').prepend('<h2>Base-Case</h2>');
-    $('#reflections').prepend('<h2>Reflections</h2>');
-
-// build arrays for the values and names
-var name_array=[];
-var value_array=[];
-
-for (i=0;i<14;i++){
-	var j = i+1;
-	var nm_elem = 'var'+j
-	 name_array = name_array.concat('var'+j);
-	 value_array = value_array.concat(eval(nm_elem));
- 
-}
-
-// Search thru all of the paragraphs in the problem statement or reflections looking for the image markups 
-var numPara_tot = document.getElementsByTagName('p').length
-var numPara_basecase = document.getElementById('basecase').getElementsByTagName('p').length
-// console.log(numPara_tot);
-// console.log(numPara_basecase);
-var numPara = numPara_tot - numPara_basecase;
-// console.log(numPara);
-
-for (i=0;i<numPara;i++){
-	// if the caption exists get the title of it
-	var xxx = document.querySelectorAll('p')[i].outerHTML;
-	
-	var yyy = xxx.indexOf('MsoCaption');
-	
-	if (yyy!= -1){
-				var capNum = xxx.indexOf("</p>");
+	//put real tags in the document to manipulate
+	 
+		$(function(){
 			
-				var figNum = xxx.slice(capNum-2,capNum).trim();
+			// put a div in that starts from the start of the document and includes the buttons and heder stuff
+		
+				$(".WordSection1").prepend('<div id="box0_start">');
+				 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			 // put the end of the div before the closing markup tag 
+				  if( current_content.indexOf("v==") !=-1) {
+				 $(this).closest('p').before('<div id="box0_end">');
+			  }
+			});
+				$("#box0_start").nextUntil("#box0_end").wrapAll("<div id='Header_stuff'></div>");
 				
+			
+			
+			
+			
+			
+			// put the button in the document	
+				$('p:first').before('show/hide: <button id="directionsbutton">directions</button> <button id="pblmbutton">pblm statement</button>  <button id="basecasebutton">base-case</button> <button id="reflectionbutton">Reflections</button>') ;
+				$('p:first').before('  <button id="refl" style = "height:17px">Reflect</button> <button id="expl" style = "height:17px">Explore</button>  <button id="conn" style = "height:17px">Connect</button> <button id="soci" style = "height:17px">Society</button>') ;
+				
+				$('#refl').hide();
+				$('#expl').hide();
+				$('#conn').hide();
+				$('#soci').hide();
+				
+				
+				
+				
+				
+				
+				
+			// Search thru all of the document looking for the markups and put divs for those
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			   // put in a div element at the start of the markup
+			  if( current_content.indexOf("v==") !=-1) {
+				  $(this).closest('p').before('<div id="box1-start">');
+			  }
+			 // put the end of the div after the closing markup tag 
+				  if( current_content.indexOf("==v") !=-1) {
+				  
+				 $(this).closest('p').after('<div id="box1-end">');
+			  }
+			});
+			// put all the content between the tags in a div
 
-				var indexStart = xxx.indexOf("##");
-				var indexEnd = xxx.indexOf(",img",indexStart);
-				var cap_var_title = xxx.slice(indexStart+2,indexEnd)+'_'+figNum;
-				var found = false;
+			$("#box1-start").nextUntil("#box1-end").wrapAll("<div id='directions'></div>");
+			
+			
+		
+
+
+			
+			
+			
+			
+			
+
+			// Search thru all of the document looking for the markups and put divs for those
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			   // put in a div element at the start of the markup
+			  if( current_content.indexOf("t==") !=-1) {
+				  $(this).closest('p').before('<div id="box2-start">');
+			  }
+			 // put the end of the div after the closing markup tag 
+				  if( current_content.indexOf("==t") !=-1) {
+				  
+				 $(this).closest('p').after('<div id="box2-end">');
+			  }
+			});
+			// put all the content between the tags in a div
+
+			$("#box2-start").nextUntil("#box2-end").wrapAll("<div id='problem'></div>");
+
+
+			// Search thru all of the document looking for the markups and put divs for those
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			   // put in a div element at the start of the markup
+			  if( current_content.indexOf("x==") !=-1) {
+				  $(this).closest('p').before('<div id="box3-start">');
+			  }
+			 // put the end of the div after the closing markup tag 
+				  if( current_content.indexOf("==u") !=-1) {
+				  
+				 $(this).closest('p').after('<div id="box3-end">');
+			  }
+			});
+			// put all the content between the tags in a div
+
+			$("#box3-start").nextUntil("#box3-end").wrapAll("<div id='old_basecase'></div>");
+			 $("#old_basecase").hide();
+
+
+			// Search thru all of the document looking for the markups and put divs for those
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			   // put in a div element at the start of the markup
+			  if( current_content.indexOf("w==") !=-1) {
+				  $(this).closest('p').before('<div id="box4-start">');
+			  }
+			 // put the end of the div after the closing markup tag 
+				  if( current_content.indexOf("==w") !=-1) {
+				  
+				 $(this).closest('p').after('<div id="box4-end">');
+			  }
+			});
+			// put all the content between the tags in a div
+
+			$("#box4-start").nextUntil("#box4-end").wrapAll("<div id='reflections'></div>");
+
+
+
+
+			// Search thru the reflections and put a div for the first one i) Reflect
+			 $( "#Reflections p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			   // put in a div element at the start of the markup
+			  if( current_content.indexOf("i) Reflect") !=-1) {
+				  $(this).closest('p').before('<div id="box5-start">');
+			  }
+			 // put the end of the div after the closing markup tag 
+				  if( current_content.indexOf("ii) Explore") !=-1) {
+				  
+				 $(this).closest('p').before('<div id="box5-end">');
+			  }
+			});
+			// put all the content between the tags in a div
+
+			$("#box5-start").nextUntil("#box5-end").wrapAll("<div id='reflect'></div>");
+
+
+			// Search thru the reflections and put a div for the first one ii) Explore
+			 $( "#Reflections p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			   // put in a div element at the start of the markup
+			  if( current_content.indexOf("ii) Explore") !=-1) {
+				  $(this).closest('p').before('<div id="box6-start">');
+			  }
+			 // put the end of the div after the closing markup tag 
+				  if( current_content.indexOf("iii) Connect") !=-1) {
+				  
+				 $(this).closest('p').before('<div id="box6-end">');
+			  }
+			});
+			// put all the content between the tags in a div
+
+			$("#box6-start").nextUntil("#box6-end").wrapAll("<div id='explor'></div>");
+
+			// Search thru the reflections and put a div for the first one iii) Connect
+			 $( "#Reflections p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			   // put in a div element at the start of the markup
+			  if( current_content.indexOf("iii) Connect") !=-1) {
+				  $(this).closest('p').before('<div id="box7-start">');
+			  }
+			 // put the end of the div after the closing markup tag 
+				  if( current_content.indexOf("iv) S") !=-1) {
+				  
+				 $(this).closest('p').before('<div id="box7-end">');
+			  }
+			});
+			// put all the content between the tags in a div
+
+			$("#box7-start").nextUntil("#box7-end").wrapAll("<div id='connec'></div>");
+
+
+			// Search thru the reflections and put a div for the first one iv) S (left it as this so it could be changed to just society instead of safety and society
+			 $( "#Reflections p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			   // put in a div element at the start of the markup
+			  if( current_content.indexOf("iv) S") !=-1) {
+				  $(this).closest('p').before('<div id="box8-start">');
+			  }
+			 // put the end of the div after the closing markup tag 
+				 
+			});
+			// put all the content between the tags in a div
+
+			$("#box8-start").nextUntil("#box4-end").wrapAll("<div id='societ'></div>");
+
+			   // Cloning the problem staement to get the basecase
+
+			  var problem_st = document.getElementById('problem');
+			var clone = problem_st.cloneNode(true);
+			clone.id = "basecase";
+
+			document.body.appendChild(clone);
 				
-				// for each caption test it against the variable values if one is the same delete the caption but if there is not one delete the caption
-				// and the paragraph above it which should contain the figure
+			   $('#basecase').prepend('<h2>Base-Case</h2>');
+				$('#reflections').prepend('<h2>Reflections</h2>');
+
+			// build arrays for the values and names
+			var name_array=[];
+			var value_array=[];
+
+			for (i=0;i<14;i++){
+				var j = i+1;
+				var nm_elem = 'var'+j
+				 name_array = name_array.concat('var'+j);
+				 value_array = value_array.concat(eval(nm_elem));
+			 
+			}
+
+			// Search thru all of the paragraphs in the problem statement or reflections looking for the image markups 
+			var numPara_tot = document.getElementsByTagName('p').length
+			var numPara_basecase = document.getElementById('basecase').getElementsByTagName('p').length
+			// console.log(numPara_tot);
+			// console.log(numPara_basecase);
+			var numPara = numPara_tot - numPara_basecase;
+			// console.log(numPara);
+
+			for (i=0;i<numPara;i++){
+				// if the caption exists get the title of it
+				var xxx = document.querySelectorAll('p')[i].outerHTML;
 				
-				for (j=0;j<14;j++){
-					if(cap_var_title == value_array[j]){
-						found = true
-						document.querySelectorAll('p')[i].hidden = true;
+				var yyy = xxx.indexOf('MsoCaption');
+				
+				if (yyy!= -1){
+							var capNum = xxx.indexOf("</p>");
+						
+							var figNum = xxx.slice(capNum-2,capNum).trim();
+							
+
+							var indexStart = xxx.indexOf("##");
+							var indexEnd = xxx.indexOf(",img",indexStart);
+							var cap_var_title = xxx.slice(indexStart+2,indexEnd)+'_'+figNum;
+							var found = false;
+							
+							// for each caption test it against the variable values if one is the same delete the caption but if there is not one delete the caption
+							// and the paragraph above it which should contain the figure
+							
+							for (j=0;j<14;j++){
+								if(cap_var_title == value_array[j]){
+									found = true
+									document.querySelectorAll('p')[i].hidden = true;
+								}
+							}	
+								if (found){
+									
+									found = false;
+								} else	{
+									//set the caption to hidden and the previous paragraph to hidden
+								//	console.log('im here');
+									
+									document.querySelectorAll('p')[i].hidden = true;
+									document.querySelectorAll('p')[i-1].hidden = true;
+									
+								}
+				}
+				
+			}	
+
+			// replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=index
+
+			var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&dex_num='+index;
+			// console.log (newHref);
+			var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
+			//var oldHref = $('a').attr('href');
+			// console.log (newHref);
+
+
+			//selects the first anchor tag in the directions div and replaces it with the particular url
+			$('#directions a').prop('href', newHref);
+			$('#directions a').prop('target', '_blank');
+			// $("a".oldHref).prop('href', newHref);
+
+			// genrate an QRcode dynamically using the newHref  This had to be pretty large before the QR reader can read it
+
+
+			/* let qrcode = new QRCode("output", {
+				text: newHref,
+				width:100,
+				height:100,
+				colorDark:"#990000",
+				colorLight:"#ffffff",
+				corectLevel: QRCode.CorrectLevel.M
+			}); */
+
+			//qrcode.clear();
+			//qrcode.makeCode(newHref);
+
+			// build arrays for the basecase values 
+
+			var value_array_bc=[];
+
+			for (i=0;i<14;i++){
+				var j = i+1;
+				var nm_elem = 'bc_var'+j
+				 
+				 value_array_bc = value_array_bc.concat(eval(nm_elem));
+			 
+			}
+
+			// Search thru all of the paragraphs in the basecase  looking for the image markups 
+
+			for (i=numPara+1;i<numPara_tot;i++){
+				// if the caption exists get the title of it
+				var xxx = document.querySelectorAll('p')[i].outerHTML;
+				
+				var yyy = xxx.indexOf('MsoCaption');
+				
+				if (yyy!= -1){
+							var capNum = xxx.indexOf("</p>");
+						
+							var figNum = xxx.slice(capNum-2,capNum).trim();
+							
+
+							var indexStart = xxx.indexOf("##");
+							var indexEnd = xxx.indexOf(",img",indexStart);
+							var cap_var_title = xxx.slice(indexStart+2,indexEnd)+'_'+figNum;
+							var found = false;
+							
+							// for each caption test it against the variable values if one is the same delete the caption but if there is not one delete the caption
+							// and the paragraph above it which should contain the figure
+							
+							for (j=0;j<14;j++){
+								if(cap_var_title == value_array_bc[j]){
+									found = true
+									document.querySelectorAll('p')[i].hidden = true;
+								}
+							}	
+								if (found){
+									
+									found = false;
+								} else	{
+									//set the caption to hidden and the previous paragraph to hidden
+								//	console.log('im here');
+									
+									document.querySelectorAll('p')[i].hidden = true;
+									document.querySelectorAll('p')[i-1].hidden = true;
+									
+								}
+				}
+				
+			}	
+
+
+			  
+			   // replace the variables in the problem statement
+			   
+			  $('#problem').html(function(){
+			   return $(this).html().replace(oNvar1,var1 ); });
+			  $('#problem').html(function(){
+			   return $(this).html().replace(oNvar2,var2 ); });
+			   $('#problem').html(function(){
+			   return $(this).html().replace(oNvar3,var3 ); });
+			   $('#problem').html(function(){
+			   return $(this).html().replace(oNvar4,var4 ); });
+			   $('#problem').html(function(){
+			   return $(this).html().replace(oNvar5,var5 ); });
+				$('#problem').html(function(){
+			   return $(this).html().replace(oNvar6,var6 ); });
+				$('#problem').html(function(){
+			   return $(this).html().replace(oNvar7,var7 ); });
+				$('#problem').html(function(){
+			   return $(this).html().replace(oNvar8,var8 ); });
+				$('#problem').html(function(){
+			   return $(this).html().replace(oNvar9,var9 ); });
+				$('#problem').html(function(){
+			   return $(this).html().replace(oNvar10,var10 ); });
+				$('#problem').html(function(){
+			   return $(this).html().replace(oNvar11,var11 ); });
+				$('#problem').html(function(){
+			   return $(this).html().replace(oNvar12,var12 ); });
+				$('#problem').html(function(){
+			   return $(this).html().replace(oNvar13,var13 ); });
+				$('#problem').html(function(){
+			   return $(this).html().replace(oNvar14,var14 ); });
+			   
+			   
+			   // substitute the values into the relections if there is any in that section
+			  $('#reflections').html(function(){
+			   return $(this).html().replace(oNvar1,var1 ); });
+			  $('#reflections').html(function(){
+			   return $(this).html().replace(oNvar2,var2 ); });
+			   $('#reflections').html(function(){
+			   return $(this).html().replace(oNvar3,var3 ); });
+			   $('#reflections').html(function(){
+			   return $(this).html().replace(oNvar4,var4 ); });
+			   $('#reflections').html(function(){
+			   return $(this).html().replace(oNvar5,var5 ); });
+				$('#reflections').html(function(){
+			   return $(this).html().replace(oNvar6,var6 ); });
+				$('#reflections').html(function(){
+			   return $(this).html().replace(oNvar7,var7 ); });
+				$('#reflections').html(function(){
+			   return $(this).html().replace(oNvar8,var8 ); });
+				$('#reflections').html(function(){
+			   return $(this).html().replace(oNvar9,var9 ); });
+				$('#reflections').html(function(){
+			   return $(this).html().replace(oNvar10,var10 ); });
+				$('#reflections').html(function(){
+			   return $(this).html().replace(oNvar11,var11 ); });
+				$('#reflections').html(function(){
+			   return $(this).html().replace(oNvar12,var12 ); });
+				$('#reflections').html(function(){
+			   return $(this).html().replace(oNvar13,var13 ); });
+				$('#reflections').html(function(){
+			   return $(this).html().replace(oNvar14,var14 ); });
+
+			  // fill in the student name and index number 
+			   
+			 // substitute in the basecase
+			 
+			  $('#basecase').html(function(){
+			   return $(this).html().replace(oNvar1,bc_var1 ); });
+			  $('#basecase').html(function(){
+			   return $(this).html().replace(oNvar2,bc_var2 ); });
+			   $('#basecase').html(function(){
+			   return $(this).html().replace(oNvar3,bc_var3 ); });
+			   $('#basecase').html(function(){
+			   return $(this).html().replace(oNvar4,bc_var4 ); });
+			   $('#basecase').html(function(){
+			   return $(this).html().replace(oNvar5,bc_var5 ); });
+				$('#basecase').html(function(){
+			   return $(this).html().replace(oNvar6,bc_var6 ); });
+				$('#basecase').html(function(){
+			   return $(this).html().replace(oNvar7,bc_var7 ); });
+				$('#basecase').html(function(){
+			   return $(this).html().replace(oNvar8,bc_var8 ); });
+				$('#basecase').html(function(){
+			   return $(this).html().replace(oNvar9,bc_var9 ); });
+				$('#basecase').html(function(){
+			   return $(this).html().replace(oNvar10,bc_var10 ); });
+				$('#basecase').html(function(){
+			   return $(this).html().replace(oNvar11,bc_var11 ); });
+				$('#basecase').html(function(){
+			   return $(this).html().replace(oNvar12,bc_var12 ); });
+				$('#basecase').html(function(){
+			   return $(this).html().replace(oNvar13,bc_var13 ); });
+				$('#basecase').html(function(){
+			   return $(this).html().replace(oNvar14,bc_var14 ); });
+			 
+			 
+			 
+			  // now get rid of the markup
+			  
+			   $("p").html(function(){
+			   return $(this).html().replace(oBeginMU,"" ); }); 
+				$("p").html(function(){
+			   return $(this).html().replace("p==","" ); });
+				$("p").html(function(){
+			   return $(this).html().replace("P==","" ); });
+				$("p").html(function(){
+			   return $(this).html().replace("==p",")" ); });
+			  $("p").html(function(){
+			   return $(this).html().replace("==P",")" ); });
+			  $("p").html(function(){
+			  return $(this).html().replace(oEndMU,"" ); });
+
+
+
+
+
+
+			// this is to change the color of the buttons depending on the state
+			var white1 = false;
+			var bgcolor1;
+			var white2 = false;
+			var bgcolor2;
+			var white3 = true;
+			var bgcolor3;
+			var white4 = true;
+			var bgcolor4;
+			var white5 = true;
+			var bgcolor5;
+			var white6 = true;
+			var bgcolor6;
+			var white7 = true;
+			var bgcolor7;
+			var white8 = true;
+			var bgcolor8;
+
+			// turn don't display basecase or reflections 
+
+			  bgcolor3 = $('#basecasebutton').css('backgroundColor');
+			   $("#basecase").toggle();
+				$('#basecasebutton').css("background-color", "lightgray");
+				
+			   bgcolor4 = $('#reflectionbutton').css('backgroundColor'); 
+			   $("#reflections").toggle();
+			  $('#reflectionbutton').css("background-color", "lightgray");
+			  
+			  
+
+			   // toggle the content between show and hide on click of the button
+				$('#directionsbutton').click(function(e){
+					 e.preventDefault();
+					 // console.log("hello1");
+					 if (white1 = !white1) {
+						bgcolor1 = $(this).css('backgroundColor');
+						$(this).css("background-color", "lightgray");
+					} else {
+						$(this).css("background-color", bgcolor1);
 					}
-				}	
-					if (found){
-						
-						found = false;
-					} else	{
-						//set the caption to hidden and the previous paragraph to hidden
-					//	console.log('im here');
-						
-						document.querySelectorAll('p')[i].hidden = true;
-						document.querySelectorAll('p')[i-1].hidden = true;
-						
+					 
+					$("#directions").toggle();
+				 });
+				 
+			   $('#pblmbutton').click(function(e){
+					 e.preventDefault();
+					  if (white2 = !white2) {
+						bgcolor2 = $(this).css('backgroundColor');
+						$(this).css("background-color", "lightgray");
+					} else {
+						$(this).css("background-color", bgcolor2);
 					}
+					 
+					$("#problem").toggle();
+				 });
+			 
+			  $('#basecasebutton').click(function(e){
+					 e.preventDefault();
+					  if (white3 = !white3) {
+						bgcolor3 = $(this).css('backgroundColor');
+						$(this).css("background-color", "lightgray");
+					} else {
+						$(this).css("background-color", bgcolor3);
+					}
+					 
+					
+					$("#basecase").toggle();
+					  $("#basecase").css("background-color", "azure");
+					   $("#basecase").css("border-style", "solid");
+					  
+					
+				 });
+				 
+			   $('#reflectionbutton').click(function(e){
+					 e.preventDefault();
+					   if (white4 = ! white4) {
+						bgcolor4 = $(this).css('backgroundColor');
+						$(this).css("background-color", "lightgray");
+						
+						
+						$('#refl').hide();
+						$('#expl').hide();
+						$('#conn').hide();
+						$('#soci').hide();
+						
+
+					} else {
+						$(this).css("background-color", bgcolor4);
+						$('#refl').show();
+						$('#expl').show();
+						$('#conn').show();
+						$('#soci').show();
+					}
+					$("#reflections").toggle();
+					  $("#reflections").css("background-color", "ivory");
+					   $("#reflections").css("border-style", "solid");
+				 });
+				 
+				 
+			$('#refl').click(function(e){
+					 e.preventDefault();
+					  if (white5 = !white5) {
+						 $(this).css("background-color", bgcolor5);
+					
+					} else {
+						bgcolor5 = $(this).css('backgroundColor');
+						$(this).css("background-color", "lightgray");
+					}
+					$("#reflect").toggle();
+				 });
+				 
+				$('#expl').click(function(e){
+					 e.preventDefault();
+					  if (white6 = !white6) {
+						 $(this).css("background-color", bgcolor6);
+					
+					} else {
+						bgcolor6 = $(this).css('backgroundColor');
+						$(this).css("background-color", "lightgray");
+					}
+					$("#explor").toggle();
+				 });
+
+			$('#conn').click(function(e){
+					 e.preventDefault();
+					  if (white7 = !white7) {
+						 $(this).css("background-color", bgcolor7);
+					
+					} else {
+						bgcolor7 = $(this).css('backgroundColor');
+						$(this).css("background-color", "lightgray");
+					}
+					$("#connec").toggle();
+				 });
+			$('#soci').click(function(e){
+					 e.preventDefault();
+					  if (white8 = !white8) {
+						 $(this).css("background-color", bgcolor7);
+					
+					} else {
+						bgcolor8 = $(this).css('backgroundColor');
+						$(this).css("background-color", "lightgray");
+					}
+					$("#societ").toggle();
+				 });
+
+
+	// $('#Header_stuff').css("background-color", "lightgray");	
+	// $('#Header_stuff').css("opacity", "0.2");	
+	
+// if we are sent a 0 or 1 for the PIN we should display just the base-case without directions headers or 
+	
+	//console.log(static_flag);
+	
+	if (index =='1' || static_flag == 'true'){
+	
+		$('#directions').hide();
+		$('#Header_stuff').hide();	
+		var bc_message = "QR"+problem_id+"-"+index;
+		 $('body').prepend(bc_message).css("fontSize","8px");
 	}
 	
-}	
-
-// replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=index
-
-var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&dex_num='+index;
-// console.log (newHref);
-var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
-//var oldHref = $('a').attr('href');
-// console.log (newHref);
-
-
-//selects the first anchor tag in the directions div and replaces it with the particular url
-$('#directions a').prop('href', newHref);
-$('#directions a').prop('target', '_blank');
-// $("a".oldHref).prop('href', newHref);
-
-// genrate an QRcode dynamically using the newHref  This had to be pretty large before the QR reader can read it
-
-
-/* let qrcode = new QRCode("output", {
-	text: newHref,
-	width:100,
-	height:100,
-	colorDark:"#990000",
-	colorLight:"#ffffff",
-	corectLevel: QRCode.CorrectLevel.M
-}); */
-
-//qrcode.clear();
-//qrcode.makeCode(newHref);
-
-// build arrays for the basecase values 
-
-var value_array_bc=[];
-
-for (i=0;i<14;i++){
-	var j = i+1;
-	var nm_elem = 'bc_var'+j
-	 
-	 value_array_bc = value_array_bc.concat(eval(nm_elem));
- 
-}
-
-// Search thru all of the paragraphs in the basecase  looking for the image markups 
-
-for (i=numPara+1;i<numPara_tot;i++){
-	// if the caption exists get the title of it
-	var xxx = document.querySelectorAll('p')[i].outerHTML;
 	
-	var yyy = xxx.indexOf('MsoCaption');
 	
-	if (yyy!= -1){
-				var capNum = xxx.indexOf("</p>");
-			
-				var figNum = xxx.slice(capNum-2,capNum).trim();
-				
+		});
 
-				var indexStart = xxx.indexOf("##");
-				var indexEnd = xxx.indexOf(",img",indexStart);
-				var cap_var_title = xxx.slice(indexStart+2,indexEnd)+'_'+figNum;
-				var found = false;
-				
-				// for each caption test it against the variable values if one is the same delete the caption but if there is not one delete the caption
-				// and the paragraph above it which should contain the figure
-				
-				for (j=0;j<14;j++){
-					if(cap_var_title == value_array_bc[j]){
-						found = true
-						document.querySelectorAll('p')[i].hidden = true;
-					}
-				}	
-					if (found){
-						
-						found = false;
-					} else	{
-						//set the caption to hidden and the previous paragraph to hidden
-					//	console.log('im here');
-						
-						document.querySelectorAll('p')[i].hidden = true;
-						document.querySelectorAll('p')[i-1].hidden = true;
-						
-					}
-	}
-	
-}	
-
-
-  
-   // replace the variables in the problem statement
-   
-  $('#problem').html(function(){
-   return $(this).html().replace(oNvar1,var1 ); });
-  $('#problem').html(function(){
-   return $(this).html().replace(oNvar2,var2 ); });
-   $('#problem').html(function(){
-   return $(this).html().replace(oNvar3,var3 ); });
-   $('#problem').html(function(){
-   return $(this).html().replace(oNvar4,var4 ); });
-   $('#problem').html(function(){
-   return $(this).html().replace(oNvar5,var5 ); });
-    $('#problem').html(function(){
-   return $(this).html().replace(oNvar6,var6 ); });
-    $('#problem').html(function(){
-   return $(this).html().replace(oNvar7,var7 ); });
-    $('#problem').html(function(){
-   return $(this).html().replace(oNvar8,var8 ); });
-    $('#problem').html(function(){
-   return $(this).html().replace(oNvar9,var9 ); });
-    $('#problem').html(function(){
-   return $(this).html().replace(oNvar10,var10 ); });
-    $('#problem').html(function(){
-   return $(this).html().replace(oNvar11,var11 ); });
-    $('#problem').html(function(){
-   return $(this).html().replace(oNvar12,var12 ); });
-    $('#problem').html(function(){
-   return $(this).html().replace(oNvar13,var13 ); });
-    $('#problem').html(function(){
-   return $(this).html().replace(oNvar14,var14 ); });
-   
-   
-   // substitute the values into the relections if there is any in that section
-  $('#reflections').html(function(){
-   return $(this).html().replace(oNvar1,var1 ); });
-  $('#reflections').html(function(){
-   return $(this).html().replace(oNvar2,var2 ); });
-   $('#reflections').html(function(){
-   return $(this).html().replace(oNvar3,var3 ); });
-   $('#reflections').html(function(){
-   return $(this).html().replace(oNvar4,var4 ); });
-   $('#reflections').html(function(){
-   return $(this).html().replace(oNvar5,var5 ); });
-    $('#reflections').html(function(){
-   return $(this).html().replace(oNvar6,var6 ); });
-    $('#reflections').html(function(){
-   return $(this).html().replace(oNvar7,var7 ); });
-    $('#reflections').html(function(){
-   return $(this).html().replace(oNvar8,var8 ); });
-    $('#reflections').html(function(){
-   return $(this).html().replace(oNvar9,var9 ); });
-    $('#reflections').html(function(){
-   return $(this).html().replace(oNvar10,var10 ); });
-    $('#reflections').html(function(){
-   return $(this).html().replace(oNvar11,var11 ); });
-    $('#reflections').html(function(){
-   return $(this).html().replace(oNvar12,var12 ); });
-    $('#reflections').html(function(){
-   return $(this).html().replace(oNvar13,var13 ); });
-    $('#reflections').html(function(){
-   return $(this).html().replace(oNvar14,var14 ); });
-
-  // fill in the student name and index number 
-   
- // substitute in the basecase
- 
-  $('#basecase').html(function(){
-   return $(this).html().replace(oNvar1,bc_var1 ); });
-  $('#basecase').html(function(){
-   return $(this).html().replace(oNvar2,bc_var2 ); });
-   $('#basecase').html(function(){
-   return $(this).html().replace(oNvar3,bc_var3 ); });
-   $('#basecase').html(function(){
-   return $(this).html().replace(oNvar4,bc_var4 ); });
-   $('#basecase').html(function(){
-   return $(this).html().replace(oNvar5,bc_var5 ); });
-    $('#basecase').html(function(){
-   return $(this).html().replace(oNvar6,bc_var6 ); });
-    $('#basecase').html(function(){
-   return $(this).html().replace(oNvar7,bc_var7 ); });
-    $('#basecase').html(function(){
-   return $(this).html().replace(oNvar8,bc_var8 ); });
-    $('#basecase').html(function(){
-   return $(this).html().replace(oNvar9,bc_var9 ); });
-    $('#basecase').html(function(){
-   return $(this).html().replace(oNvar10,bc_var10 ); });
-    $('#basecase').html(function(){
-   return $(this).html().replace(oNvar11,bc_var11 ); });
-    $('#basecase').html(function(){
-   return $(this).html().replace(oNvar12,bc_var12 ); });
-    $('#basecase').html(function(){
-   return $(this).html().replace(oNvar13,bc_var13 ); });
-    $('#basecase').html(function(){
-   return $(this).html().replace(oNvar14,bc_var14 ); });
- 
- 
- 
-  // now get rid of the markup
-  
-   $("p").html(function(){
-   return $(this).html().replace(oBeginMU,"" ); }); 
-    $("p").html(function(){
-   return $(this).html().replace("p==","" ); });
-    $("p").html(function(){
-   return $(this).html().replace("P==","" ); });
-    $("p").html(function(){
-   return $(this).html().replace("==p",")" ); });
-  $("p").html(function(){
-   return $(this).html().replace("==P",")" ); });
-  $("p").html(function(){
-  return $(this).html().replace(oEndMU,"" ); });
-
-
-
-
-
-
-// this is to change the color of the buttons depending on the state
-var white1 = false;
-var bgcolor1;
-var white2 = false;
-var bgcolor2;
-var white3 = true;
-var bgcolor3;
-var white4 = true;
-var bgcolor4;
-var white5 = true;
-var bgcolor5;
-var white6 = true;
-var bgcolor6;
-var white7 = true;
-var bgcolor7;
-var white8 = true;
-var bgcolor8;
-
-// turn don't display basecase or reflections 
-
-  bgcolor3 = $('#basecasebutton').css('backgroundColor');
-   $("#basecase").toggle();
-    $('#basecasebutton').css("background-color", "lightgray");
-	
-   bgcolor4 = $('#reflectionbutton').css('backgroundColor'); 
-   $("#reflections").toggle();
-  $('#reflectionbutton').css("background-color", "lightgray");
-  
-  
-
-   // toggle the content between show and hide on click of the button
-    $('#directionsbutton').click(function(e){
-         e.preventDefault();
-		 // console.log("hello1");
-		 if (white1 = !white1) {
-            bgcolor1 = $(this).css('backgroundColor');
-            $(this).css("background-color", "lightgray");
-        } else {
-            $(this).css("background-color", bgcolor1);
-        }
-		 
-        $("#directions").toggle();
-     });
-	 
-   $('#pblmbutton').click(function(e){
-         e.preventDefault();
-		  if (white2 = !white2) {
-            bgcolor2 = $(this).css('backgroundColor');
-            $(this).css("background-color", "lightgray");
-        } else {
-            $(this).css("background-color", bgcolor2);
-        }
-		 
-        $("#problem").toggle();
-     });
- 
-  $('#basecasebutton').click(function(e){
-         e.preventDefault();
-		  if (white3 = !white3) {
-            bgcolor3 = $(this).css('backgroundColor');
-            $(this).css("background-color", "lightgray");
-        } else {
-            $(this).css("background-color", bgcolor3);
-        }
-		 
 		
-        $("#basecase").toggle();
-		  $("#basecase").css("background-color", "azure");
-		   $("#basecase").css("border-style", "solid");
-		  
-		
-     });
-	 
-   $('#reflectionbutton').click(function(e){
-         e.preventDefault();
-		   if (white4 = ! white4) {
-            bgcolor4 = $(this).css('backgroundColor');
-            $(this).css("background-color", "lightgray");
-			
-			
-			$('#refl').hide();
-			$('#expl').hide();
-			$('#conn').hide();
-			$('#soci').hide();
-			
-
-        } else {
-            $(this).css("background-color", bgcolor4);
-			$('#refl').show();
-			$('#expl').show();
-			$('#conn').show();
-			$('#soci').show();
-        }
-        $("#reflections").toggle();
-		  $("#reflections").css("background-color", "ivory");
-		   $("#reflections").css("border-style", "solid");
-     });
-	 
-	 
-$('#refl').click(function(e){
-         e.preventDefault();
-		  if (white5 = !white5) {
-             $(this).css("background-color", bgcolor5);
-		
-        } else {
-			bgcolor5 = $(this).css('backgroundColor');
-            $(this).css("background-color", "lightgray");
-        }
-		$("#reflect").toggle();
-     });
-	 
-	$('#expl').click(function(e){
-         e.preventDefault();
-		  if (white6 = !white6) {
-             $(this).css("background-color", bgcolor6);
-		
-        } else {
-			bgcolor6 = $(this).css('backgroundColor');
-            $(this).css("background-color", "lightgray");
-        }
-		$("#explor").toggle();
-     });
-
-$('#conn').click(function(e){
-         e.preventDefault();
-		  if (white7 = !white7) {
-             $(this).css("background-color", bgcolor7);
-		
-        } else {
-			bgcolor7 = $(this).css('backgroundColor');
-            $(this).css("background-color", "lightgray");
-        }
-		$("#connec").toggle();
-     });
-$('#soci').click(function(e){
-         e.preventDefault();
-		  if (white8 = !white8) {
-             $(this).css("background-color", bgcolor7);
-		
-        } else {
-			bgcolor8 = $(this).css('backgroundColor');
-            $(this).css("background-color", "lightgray");
-        }
-		$("#societ").toggle();
-     });
-
-
-
  
-});
+
 
  });
  
