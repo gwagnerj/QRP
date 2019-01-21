@@ -64,7 +64,7 @@ if ( isset($_POST['name']) or isset($_POST['email'])
 
 
 //Get the filename from the pdffile (base-case) that was uploaded
-		if($_FILES['pdffile']['name']) {
+	/* 	if($_FILES['pdffile']['name']) {
 			$filename=explode(".",$_FILES['pdffile']['name']); // divides the file into its name and extension puts it into an array
 			if ($filename[1]=='pdf'){ // this is the extension
 				$pdffile=addslashes($_FILES['pdffile']['tmp_name']);
@@ -101,7 +101,7 @@ if ( isset($_POST['name']) or isset($_POST['email'])
 				
 				$_SESSION['success'] = $_SESSION['success'].'PdfFile upload successful';
 			}
-		} 
+		}  */
 		
 		//Get the filename from the solnfile if it was uploaded
 		if($_FILES['solnfile']['name']) {
@@ -927,45 +927,48 @@ $problem_id = $row['problem_id'];
 	?>
 
 
-<p>Edit Problem Meta Data</p>
+<p>Edit Problem Data</p>
 <form action="" method="post" enctype="multipart/form-data">
-
-<p>title:
+<br/>
+<p>Title:
 <input type="text" name="title" value="<?= $p ?>"></p>
 <p>
 
 
 </p>
-<p>Answers File: <input type='file' accept='.csv' name='Qa'/></p>
+<p>Answers File - csv: <input type='file' accept='.csv' name='Qa'/></p>
 
 <?php if(!$gf){ // only have this input if it is not a game problem
 	?>  
-<p><font color="black">Input File: </font><input type='file' accept='.csv'  name='inputdata'/></p>
+<p><font color="black">Input File - csv: </font><input type='file' accept='.csv'  name='inputdata'/></p>
 <?php } 
 ?>
 
-<p>Problem Statement File: <input type='file' accept='.docx' name='docxfile'/></p>
+
 <?php if(!$gf){ // only have this input if it is not a game problem
 	?>  
-<p>html Problem Statement File: <input type='file' accept='.htm' name='htmlfile'/></p>
-<p> html Problem Associated Directory Containing Pictures (only if pictures are used): <input type="file" name="picfiles[]" id="HTMLPics" multiple="" directory="" webkitdirectory="" mozdirectory="">
+<p>Html Problem Statement File: <input type='file' accept='.htm' name='htmlfile'/></p>
+<p> Html Problem Associated Directory Containing Pictures (only if figures are used): <input type="file" name="picfiles[]" id="HTMLPics" multiple="" directory="" webkitdirectory="" mozdirectory="">
 <?php } 
 ?>
 
-<p>Base-case  file: <input type='file' accept='.pdf' name='pdffile'/></p>
+<!--<p>Base-case  file: <input type='file' accept='.pdf' name='pdffile'/></p> -->
 <p>Worked out pdf Solution file: <input type='file' accept='.pdf' name='solnfile'/></p>
-<p> Median time estimate for students to solve in whole minutes:
+<p> Median time estimate for your students to solve in whole minutes:
 <input type="integer" name="time_est" ></p>
-<p> Estimated difficulty 1=easy 5=difficult:
+<p> Predict how your students will rate the difficulty 1=easy 5=difficult:
 <input type="integer" name="diff_est" ></p>
 <p> link to web solution (if available):
 <input type="text" name="web_ref" ></p>
-<p>
-<p>Solution Spreadsheet (this is optional and only visible to contributor)- will increase upload time: <input type='file' accept='.xlsm' name='solnbook'/></p>
+<br/>
+<p>Optional (archive):</p>
+<p>Problem Statement File - docx: <input type='file' accept='.docx' name='docxfile'/></p>
+<p>Solution Spreadsheet - xlsm (only visible to contributor): <input type='file' accept='.xlsm' name='solnbook'/></p>
 <p><hr></p>
 <input type="hidden" name="problem_id" value="<?= $problem_id ?>">
-<p><input type="submit" value="Update"/>
+<p><input type="submit" value="Update" id="Update_btn"/>
 <a href="QRPRepo.php">Cancel</a></p>
+<style>#Update_btn{background-color: lightyellow }</style>
 <p><hr></p>
 <p>hint_a file: <input type='file' accept='.html' name='hint_aFile'/></p>
 <p>hint_b file: <input type='file' accept='.html' name='hint_bFile'/></p>

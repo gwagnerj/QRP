@@ -49,16 +49,14 @@ if(isset($_POST['index'])){
 <head>
 <link rel="icon" type="image/png" href="McKetta.png" />  
 <meta Charset = "utf-8">
-<title>QRHomework</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 </head>
 
 <body>
-<header>
-<h1>Quick Response Homework </h1>
-</header>
+
 
 <?php
 if ( isset($_SESSION['error']) ) {
@@ -77,7 +75,7 @@ if ( isset($_SESSION['success']) ) {
 <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>
 <form method="POST">
 	<p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p> -->
-	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
+	<p><font color=#003399>Problem Number: </font><input type="hidden" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
 	
 	<!-- 
 	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> ></p>
