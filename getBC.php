@@ -4,7 +4,7 @@ session_start();
 
 //$stu_name = '';
 $problem_id= '';
-$index='';
+//$index='';
 /* 
 Was setting this up to do more php input validation - but have put it off
 $PIN_LLimit = 1;
@@ -73,25 +73,27 @@ if ( isset($_SESSION['success']) ) {
  
 ?>
 
-<h3>Print the problem statement with "Ctrl P"</h3>
+<!-- <h3>Print the problem statement with "Ctrl P"</h3>
 <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>
 <form method="POST">
-	<!-- <p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p> -->
+	<p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p> -->
 	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
+	
+	<!-- 
 	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> ></p>
 
 	<p><input type = "submit" value="Submit" id="submit_id" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
-	</form>
-
+	</form> 
+-->
 	
 <script>
 	
 	$(document).ready(function(){
-	$('input#submit_id').on('click',function(event){
-		event.preventDefault();
-		var inde = $('input#index_id').val();
+//	$('input#submit_id').on('click',function(event){
+//		event.preventDefault();
+		var inde = 1;
 		var problem = $('input#prob_id').val();
-		var s_name = $('input#stu_name_id').val();
+		
 		var statusFlag=true;
 	
 	if($.trim(problem) != '' && problem > 0 && problem < 100000 && inde>=1 && inde<=200){
@@ -286,7 +288,7 @@ if ( isset($_SESSION['success']) ) {
 		
 		
 	}
-});
+//});
 });
 </script>
 
