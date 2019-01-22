@@ -14,3 +14,27 @@ Copy the line of code below and put it Just before the </body> tag very close to
 
 <script src="../Substvars.js"></script>
 
+
+
+
+
+
+
+
+Trial header files
+
+<link rel="icon" type="image/png" href="McKetta.png" />  
+ <title>QRHomework</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
+<script>
+function loadScript(url)
+{    
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+    head.appendChild(script);
+}
+
+loadScript('/jsLibraries.js');
+</script>
