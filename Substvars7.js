@@ -148,9 +148,9 @@ $(document).ready(function(){
 	
 	  var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Problem: "+problem_id+"\xa0\xa0"+"PIN: " + index +"\xa0\xa0 ");
 	  
-	  var auth_field = (nm_author.length > 1 ? "\xa0\xa0 by: \xa0"+nm_author : "");
-	  var ref_field = (specif_ref.length > 1 ? "\xa0\xa0 similar to: \xa0"+specif_ref : "");
-	  var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0  Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field);
+	  var auth_field = (nm_author.length > 1 ? "\xa0 by\xa0"+nm_author : "");
+	  var ref_field = (specif_ref.length > 1 ? "\xa0\xa0 similar to\xa0"+specif_ref : "");
+	  var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0  Contributed by\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field);
 	  
 	 // var Head_txt4 = $("<p></p>").text("Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field );
 	 
@@ -785,8 +785,8 @@ $(document).ready(function(){
 	
 		$('#directions').hide();
 		$('#Header_stuff').hide();	
-		var bc_message = "QR"+problem_id+"--"+index+ " "+title+""+Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field;
-		console.log(bc_message);
+		var bc_message = "QR"+problem_id+"-PIN-"+index+ " "+title+" - contributed by:"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field;
+	
 		 $('body').prepend(bc_message).css("fontSize","8px");
 	}
 	
