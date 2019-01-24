@@ -703,22 +703,22 @@ $(document).ready(function(){
 			   $('#reflectionbutton').click(function(e){
 					 e.preventDefault();
 					   if (white4 = ! white4) {
-							bgcolor4 = $(this).css('backgroundColor');
-							$(this).css("background-color", "lightgray");
-							
-							
-							$('#refl').hide();
-							$('#expl').hide();
-							$('#conn').hide();
-							$('#soci').hide();
+						bgcolor4 = $(this).css('backgroundColor');
+						$(this).css("background-color", "lightgray");
+						
+						
+						$('#refl').hide();
+						$('#expl').hide();
+						$('#conn').hide();
+						$('#soci').hide();
 						
 
 					} else {
-							$(this).css("background-color", bgcolor4);
-							$('#refl').show();
-							$('#expl').show();
-							$('#conn').show();
-							$('#soci').show();
+						$(this).css("background-color", bgcolor4);
+						$('#refl').show();
+						$('#expl').show();
+						$('#conn').show();
+						$('#soci').show();
 					}
 					$("#reflections").toggle();
 					  $("#reflections").css("background-color", "ivory");
@@ -785,11 +785,6 @@ $(document).ready(function(){
 	
 		$('#directions').hide();
 		$('#Header_stuff').hide();	
-		if (index == '1'){
-			$('#reflections').show();	
-			$('#reflections').before('<hr>');
-			
-		}
 		var bc_message = "QR"+problem_id+"-PIN-"+index+ " "+title+" - contributed by:"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field;
 	
 		 $('body').prepend(bc_message).css("fontSize","8px");
