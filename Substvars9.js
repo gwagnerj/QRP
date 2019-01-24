@@ -296,11 +296,42 @@ $(document).ready(function(){
 				  if( current_content.indexOf("ii) Explore") !=-1) {
 				  
 				 $(this).closest('p').before('<div id="box5-end">');
+				 
+				 // try adding a text box to in this before box5-end
+				 
+				
+					
+				 
+				 
+				 
+				 
+				 
+				 
 			  }
+			  
+			 
+			  
+			  
+			  
 			});
+			
+			
+			
+			
+			
+			
+			
 			// put all the content between the tags in a div
 
 			$("#box5-start").nextUntil("#box5-end").wrapAll("<div id='reflect'></div>");
+
+
+					
+
+
+
+
+
 
 
 			// Search thru the reflections and put a div for the first one ii) Explore
@@ -352,7 +383,12 @@ $(document).ready(function(){
 
 			$("#box8-start").nextUntil("#box4-end").wrapAll("<div id='societ'></div>");
 
-			   // Cloning the problem staement to get the basecase
+
+
+
+
+
+			  // Cloning the problem staement to get the basecase
 
 			  var problem_st = document.getElementById('problem');
 			var clone = problem_st.cloneNode(true);
@@ -716,6 +752,18 @@ $(document).ready(function(){
 					} else {
 							$(this).css("background-color", bgcolor4);
 							$('#refl').show();
+						// trying to add a text box after the reflections
+							/* $('#reflect').show();
+							$('#reflect').addClass('nex-text-div')
+								.html( $('<input type="textbox"/>').addClass( 'someclass' ) )
+								//.append( $('<button/>').addClass( 'remove' ).text( 'Remove' ) )
+								.insertAfter( '#reflect' ); */
+							
+							
+							
+							
+							
+							
 							$('#expl').show();
 							$('#conn').show();
 							$('#soci').show();
@@ -774,6 +822,8 @@ $(document).ready(function(){
 				 });
 
 
+
+
 	// $('#Header_stuff').css("background-color", "lightgray");	
 	// $('#Header_stuff').css("opacity", "0.2");	
 	
@@ -787,7 +837,6 @@ $(document).ready(function(){
 		$('#Header_stuff').hide();	
 		if (index == '1'){
 			$('#reflections').show();	
-			$('#reflect').hide();	
 			$('#reflections').before('<hr>');
 			
 		}

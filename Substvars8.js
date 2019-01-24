@@ -787,7 +787,7 @@ $(document).ready(function(){
 		$('#Header_stuff').hide();	
 		if (index == '1'){
 			$('#reflections').show();	
-			$('#reflect').hide();	
+			$('#reflect').hide();
 			$('#reflections').before('<hr>');
 			
 		}
