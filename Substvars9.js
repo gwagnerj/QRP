@@ -736,13 +736,18 @@ $(document).ready(function(){
 					
 				 });
 				 
-				 // make a text box for reflections response and a button to remove it 
+				 
+				 
 				 $('#box6-start').addClass('nex-text-div')
-								.html( $('<input type="textbox"/>').addClass( 'reflect_class' ) )
+								.html( $('<textarea id= "reflect_box" placeholder = "Type or paste reflect response here - text only.  This system does not save your response - print with ctrl P when finished"  rows="1" cols = "150"/></textarea>').addClass( 'reflect_class' ) ) 
 								.append( $('<button/>').addClass( 'remove' ).text( 'Remove' ) )
 								.append( $('<button/>').addClass( 'display' ).text( 'Add Textbox' ) )
 								.insertAfter( '#box6-start' );
+								
+								
 								$('.display').hide();
+								
+								//$('.reflect_class').css.style.width = '300px';
 				 
 			   $('#reflectionbutton').click(function(e){
 					 e.preventDefault();
@@ -846,7 +851,36 @@ $(document).ready(function(){
 			});
 			
 			
+			//resize the textbox
 			
+			 $('#reflect_box').on('input propertychange keyup change', function(){ this.rows = this.value.match(/\n/g).length + 1 });
+			
+			
+			
+			
+			
+			
+			/* $(document).on('click', 'button.resize_refl', function( e ){		
+				e.preventDefault();
+				
+				var text = jQuery('#reflect_box').val(),
+				
+				// look for any "\n" occurences
+				matches = text.match(/\n/g),
+				breaks = matches ? matches.length : 2;
+				console.log("hello3");
+			jQuery('#reflect_box').attr('rows',breaks + 2);
+			}); */
+
+			
+	// dynamically change the size of the textbox
+		/* 	$(".reflect_class").keypress(function() {
+			var textLength = $(".reflect_class").val().length;
+			if (textLength % 50 == 0) {
+				var height = textLength/50;
+				$(".reflect_class").css('height', 20+(height*20));
+        }	
+			});	 */
 			
 			
 
