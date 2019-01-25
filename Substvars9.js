@@ -752,17 +752,20 @@ $(document).ready(function(){
 					} else {
 							$(this).css("background-color", bgcolor4);
 							$('#refl').show();
-						// trying to add a text box after the reflections
-							/* $('#reflect').show();
-							$('#reflect').addClass('nex-text-div')
+							// trying to add a text box after the reflections
+							//$('#reflect').show();
+							
+							$('#box6-start').addClass('nex-text-div')
 								.html( $('<input type="textbox"/>').addClass( 'someclass' ) )
-								//.append( $('<button/>').addClass( 'remove' ).text( 'Remove' ) )
-								.insertAfter( '#reflect' ); */
+								.append( $('<button/>').addClass( 'remove' ).text( 'Remove' ) )
+								.insertAfter( '#box6-start' );
 							
-							
-							
-							
-							
+							$(document).on('click', 'button.remove', function( e ){		
+								e.preventDefault();
+								$('#box6-start').closest('div.nex-text-div').remove();
+								
+								
+							});
 							
 							$('#expl').show();
 							$('#conn').show();
@@ -784,6 +787,7 @@ $(document).ready(function(){
 						$(this).css("background-color", "lightgray");
 					}
 					$("#reflect").toggle();
+					$('.nex-text-div').toggle();
 				 });
 				 
 				$('#expl').click(function(e){
@@ -840,7 +844,7 @@ $(document).ready(function(){
 			$('#reflections').before('<hr>');
 			
 		}
-		var bc_message = "QR"+problem_id+"-PIN-"+index+ " "+title+" - contributed by:"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field;
+		var bc_message = "QR"+problem_id+"-PIN-"+index+ " "+title+" - contributed by "+contrib_first+contrib_last+"\xa0 from\xa0"+contrib_university+ref_field+ auth_field;
 	
 		 $('body').prepend(bc_message).css("fontSize","8px");
 	}
