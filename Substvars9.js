@@ -736,14 +736,24 @@ $(document).ready(function(){
 					
 				 });
 				 
+				 // make a text box for reflections response and a button to remove it 
+				 $('#box6-start').addClass('nex-text-div')
+								.html( $('<input type="textbox"/>').addClass( 'reflect_class' ) )
+								.append( $('<button/>').addClass( 'remove' ).text( 'Remove' ) )
+								.append( $('<button/>').addClass( 'display' ).text( 'Add Textbox' ) )
+								.insertAfter( '#box6-start' );
+								$('.display').hide();
+				 
 			   $('#reflectionbutton').click(function(e){
 					 e.preventDefault();
 					   if (white4 = ! white4) {
 							bgcolor4 = $(this).css('backgroundColor');
 							$(this).css("background-color", "lightgray");
 							
-							
+						// hide the sub buttons	
 							$('#refl').hide();
+							$('.nex-text-div').hide();
+							
 							$('#expl').hide();
 							$('#conn').hide();
 							$('#soci').hide();
@@ -755,17 +765,10 @@ $(document).ready(function(){
 							// trying to add a text box after the reflections
 							//$('#reflect').show();
 							
-							$('#box6-start').addClass('nex-text-div')
-								.html( $('<input type="textbox"/>').addClass( 'someclass' ) )
-								.append( $('<button/>').addClass( 'remove' ).text( 'Remove' ) )
-								.insertAfter( '#box6-start' );
+							$('.nex-text-div').show();
+								
+														
 							
-							$(document).on('click', 'button.remove', function( e ){		
-								e.preventDefault();
-								$('#box6-start').closest('div.nex-text-div').remove();
-								
-								
-							});
 							
 							$('#expl').show();
 							$('#conn').show();
@@ -825,8 +828,27 @@ $(document).ready(function(){
 					$("#societ").toggle();
 				 });
 
-
-
+// toggle the text box buttons
+			$(document).on('click', 'button.remove', function( e ){		
+				e.preventDefault();
+				
+				$('.reflect_class').hide();
+				$('.remove').hide();
+				$('.display').show();
+			});
+			
+			$(document).on('click', 'button.display', function( e ){		
+				e.preventDefault();
+				
+				$('.reflect_class').show();
+				$('.remove').show();
+				$('.display').hide();
+			});
+			
+			
+			
+			
+			
 
 	// $('#Header_stuff').css("background-color", "lightgray");	
 	// $('#Header_stuff').css("opacity", "0.2");	
