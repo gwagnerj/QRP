@@ -3,8 +3,8 @@
   Require_once "pdo.php";
  
  $score = $_SESSION['score'];
-
- 
+//$score = 10;
+// echo($score);
  
  if (isset($_POST['effectiveness']) and isset($_POST['difficulty']) and isset($_POST['performance'])){
 	
@@ -63,6 +63,15 @@
 
 ?>
 
+<link rel="icon" type="image/png" href="McKetta.png" />  
+ <title>QRHomework</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang = "en">
 <head>
@@ -79,21 +88,33 @@
 <main>
 <h3>The problems attempted to give you practice with and allow discovery of certain concepts</h3>
 <p><font color = 'blue' size='4'> Please answer honestly </font></p>
+
+
+
+
+	<input type="hidden" name="score_val" id = "score" size= 20  value="<?php echo($score);?>" >
+
+
+
+
 <form method="POST">
 
 <!-- Give them additional questions if they did not get a good score  -->
+<!--<p> <div id = 'score' type = 'input' name = 'score_val' value = "<?php echo($stu_name);?>">  </div> This is where it would go </p> -->
 
 
 
 
-
-
-
-
-
-
-
-
+<div id = "not_perfect"> 
+<table><tr><td>Why are you not getting a perfect score?: &nbsp &nbsp </td><td> not effective
+	<input type="radio" name="not_perfect" value = 1 id = "one" size= 20  >
+	<input type="radio" name="not_perfect" value = 2 id = "two" size= 20  >
+	<input type="radio" name="not_perfect" value = 3 id = "three" size= 20  >
+	<input type="radio" name="not_perfect" value = 4 id = "four" size= 20  >
+	<input type="radio" name="not_perfect" value = 5 id = "five" size= 20  >
+	very effective</td></tr><tr></tr><tr></tr><tr></tr><tr>
+</table>
+</div>
 	<table><tr><td>Effectiveness: Caused me to think or provided effective reinforcment practice: &nbsp &nbsp </td><td> not effective
 	<input type="radio" name="effectiveness" value = 1 id = "one" size= 20  >
 	<input type="radio" name="effectiveness" value = 2 id = "two" size= 20  >
@@ -117,7 +138,7 @@
 	<input type="radio" name="performance" value = 4 id = "four" size= 20  >
 	<input type="radio" name="performance" value = 5 id = "five" size= 20  >
 	little room for improvement</td></tr></table>
-	
+	</div>
 
 
 
@@ -129,7 +150,27 @@
  <p><br> </p>
  <hr>
 </form>
+<script>
 
+
+
+
+
+
+$(document).ready(function(){
+	
+	var score = $('input#score').val();
+	
+	if (score == 0){
+		
+	console.log(score);
+	$('#not_perfect').hide();
+	
+	}
+	
+	});
+
+</script>
 
 </main>
 
