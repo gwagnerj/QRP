@@ -737,17 +737,22 @@ $(document).ready(function(){
 				 });
 				 
 				 
-				 
-				 $('#box6-start').addClass('nex-text-div')
+				 // make the text boxes with the buttons for each of the 4 reflection areas
+								$('#box5-end').addClass('nex-text-div')
 								.html( $('<textarea id= "reflect_box" placeholder = "Type or paste reflect response here - text only.  This system does not save your response - print with ctrl P when finished"  rows="1" cols = "150"/></textarea>').addClass( 'reflect_class' ) ) 
 								.append( $('<button/>').addClass( 'remove' ).text( 'Remove' ) )
 								.append( $('<button/>').addClass( 'display' ).text( 'Add Textbox' ) )
-								.insertAfter( '#box6-start' );
-								
-								
+								.insertAfter( '#box5-end' );
 								$('.display').hide();
 								
-								//$('.reflect_class').css.style.width = '300px';
+								
+								 $('#box6-end').addClass('nex-text-div2')
+								.html( $('<textarea id= "explore_box" placeholder = "Type or paste explore response here - text only.  This system does not save your response - print with ctrl P when finished"  rows="1" cols = "150"/></textarea>').addClass( 'explore_class' ) ) 
+								.append( $('<button/>').addClass( 'remove2' ).text( 'Remove' ) )
+								.append( $('<button/>').addClass( 'display2' ).text( 'Add Textbox' ) )
+								.insertAfter( '#box6-end' );
+								$('.display2').hide();
+								
 				 
 			   $('#reflectionbutton').click(function(e){
 					 e.preventDefault();
@@ -760,6 +765,7 @@ $(document).ready(function(){
 							$('.nex-text-div').hide();
 							
 							$('#expl').hide();
+							$('.nex-text-div2').hide();
 							$('#conn').hide();
 							$('#soci').hide();
 						
@@ -771,11 +777,8 @@ $(document).ready(function(){
 							//$('#reflect').show();
 							
 							$('.nex-text-div').show();
-								
-														
-							
-							
 							$('#expl').show();
+							$('.nex-text-div2').show();
 							$('#conn').show();
 							$('#soci').show();
 					}
@@ -808,6 +811,7 @@ $(document).ready(function(){
 						$(this).css("background-color", "lightgray");
 					}
 					$("#explor").toggle();
+					$('.nex-text-div2').toggle();
 				 });
 
 			$('#conn').click(function(e){
@@ -849,6 +853,24 @@ $(document).ready(function(){
 				$('.remove').show();
 				$('.display').hide();
 			});
+			
+			// toggle the text box buttons on the explore
+			$(document).on('click', 'button.remove2', function( e ){		
+				e.preventDefault();
+				
+				$('.explore_class').hide();
+				$('.remove2').hide();
+				$('.display2').show();
+			});
+			
+			$(document).on('click', 'button.display2', function( e ){		
+				e.preventDefault();
+				
+				$('.explore_class').show();
+				$('.remove2').show();
+				$('.display2').hide();
+			});
+			
 			
 			
 			//resize the textbox
