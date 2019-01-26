@@ -905,13 +905,7 @@ $(document).ready(function(){
 		$('#Header_stuff').hide();	
 		if (index == '1'){
 			$('#reflections').show();	
-			$('.nex-text-div').hide();
-			$('.nex-text-div2').hide();
-			$('.nex-text-div3').hide();
-			$('.nex-text-div4').hide();
-			
 			$('#reflections').before('<hr>');
-			
 			
 		}
 		var bc_message = "QR"+problem_id+"-PIN-"+index+ " "+title+" - contributed by "+contrib_first+contrib_last+"\xa0 from\xa0"+contrib_university+ref_field+ auth_field;

@@ -2,6 +2,10 @@
  session_start();
   Require_once "pdo.php";
  
+ $score = $_SESSION['score'];
+
+ 
+ 
  if (isset($_POST['effectiveness']) and isset($_POST['difficulty']) and isset($_POST['performance'])){
 	
 	$effectiveness = $_POST['effectiveness'];
@@ -74,9 +78,23 @@
 </header>
 <main>
 <h3>The problems attempted to give you practice with and allow discovery of certain concepts</h3>
-<p><font color = 'blue' size='4'> Please rate honestly </font></p>
+<p><font color = 'blue' size='4'> Please answer honestly </font></p>
 <form method="POST">
-	<table><tr><td>Cuased me to think of provided effective paractice: &nbsp &nbsp </td><td> not effective
+
+<!-- Give them additional questions if they did not get a good score  -->
+
+
+
+
+
+
+
+
+
+
+
+
+	<table><tr><td>Effectiveness: Caused me to think or provided effective reinforcment practice: &nbsp &nbsp </td><td> not effective
 	<input type="radio" name="effectiveness" value = 1 id = "one" size= 20  >
 	<input type="radio" name="effectiveness" value = 2 id = "two" size= 20  >
 	<input type="radio" name="effectiveness" value = 3 id = "three" size= 20  >
@@ -84,7 +102,7 @@
 	<input type="radio" name="effectiveness" value = 5 id = "five" size= 20  >
 	very effective</td></tr><tr></tr><tr></tr><tr></tr><tr>
 	
-	<td>Took a long time or involved multiple complex topics:  &nbsp &nbsp </td><td> easy
+	<td>Difficulty: Took a long time or involved multiple complex concepts:  &nbsp &nbsp </td><td> easy
 	<input type="radio" name="difficulty" value = 1  id = "one" size= 20  >
 	<input type="radio" name="difficulty" value = 2 id = "two" size= 20  >
 	<input type="radio" name="difficulty" value = 3 id = "three" size= 20  >
@@ -92,7 +110,7 @@
 	<input type="radio" name="difficulty" value = 5 id = "five" size= 20  >
 	very difficult</td></tr><tr></tr><tr></tr><tr></tr><tr>
 	
-	<td>My Performance: &nbsp &nbsp </td><td> much room for improvement
+	<td>Performance: How I performed on the problem: &nbsp &nbsp </td><td> much room for improvement
 	<input type="radio" name="performance" value = 1 id = "one" size= 20  >
 	<input type="radio" name="performance" value = 2 id = "two" size= 20  >
 	<input type="radio" name="performance" value = 3 id = "three" size= 20  >
