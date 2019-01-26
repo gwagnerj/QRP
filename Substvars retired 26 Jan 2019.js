@@ -1,11 +1,6 @@
 
 var problem_id = localStorage.getItem('problem_id');
 var stu_name = localStorage.getItem('stu_name');
-var name_length = stu_name.length;
-if(name_length<1){
-	stu_name = "__________________________";
-
-}
 var index = localStorage.getItem('index');
 var title = localStorage.getItem('title');
 var static_flag = localStorage.getItem('static_flag');
@@ -153,9 +148,9 @@ $(document).ready(function(){
 	
 	  var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Problem: "+problem_id+"\xa0\xa0"+"PIN: " + index +"\xa0\xa0 ");
 	  
-	  var auth_field = (nm_author.length > 1 ? " by "+nm_author : "");
-	  var ref_field = (specif_ref.length > 1 ? " similar to\xa0"+specif_ref : "");
-	  var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0  Contributed by\xa0"+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field);
+	  var auth_field = (nm_author.length > 1 ? "\xa0 by\xa0"+nm_author : "");
+	  var ref_field = (specif_ref.length > 1 ? "\xa0\xa0 similar to\xa0"+specif_ref : "");
+	  var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0  Contributed by\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field);
 	  
 	 // var Head_txt4 = $("<p></p>").text("Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field );
 
@@ -702,7 +697,7 @@ $(document).ready(function(){
 								$('#box5-end').addClass('nex-text-div')
 								.html( $('<textarea id= "reflect_box" placeholder = "Type or paste reflect response here - text only.  This system does not save your response - print with ctrl P (or equivalent) when finished"  rows="1" cols = "150"/></textarea>').addClass( 'reflect_class' ) ) 
 								.append( $('<button/>').addClass( 'remove' ).text( 'Remove' ) )
-								.append( $('<button/>').addClass( 'display' ).text( 'reflect' ) )
+								.append( $('<button/>').addClass( 'display' ).text( 'reflect textbox' ) )
 								.insertAfter( '#box5-end' );
 								$('.display').hide();
 								
@@ -710,21 +705,21 @@ $(document).ready(function(){
 								 $('#box6-end').addClass('nex-text-div2')
 								.html( $('<textarea id= "explore_box" placeholder ="Explore"  rows="1" cols = "150"/></textarea>').addClass( 'explore_class' ) ) 
 								.append( $('<button/>').addClass( 'remove2' ).text( 'Remove' ) )
-								.append( $('<button/>').addClass( 'display2' ).text( 'explore' ) )
+								.append( $('<button/>').addClass( 'display2' ).text( 'explore textbox' ) )
 								.insertAfter( '#box6-end' );
 								$('.display2').hide();
 								
 								 $('#box7-end').addClass('nex-text-div3')
 								.html( $('<textarea id= "connect_box" placeholder ="Connect" rows="1" cols = "150"/></textarea>').addClass( 'connect_class' ) ) 
 								.append( $('<button/>').addClass( 'remove3' ).text( 'Remove' ) )
-								.append( $('<button/>').addClass( 'display3' ).text( 'connect' ) )
+								.append( $('<button/>').addClass( 'display3' ).text( 'connect textbox' ) )
 								.insertAfter( '#box7-end' );
 								$('.display3').hide();
 								
 								 $('#box4-end').addClass('nex-text-div4')
-								.html( $('<textarea id= "society_box" placeholder ="Safety & Society" rows="1" cols = "150"/></textarea>').addClass( 'society_class' ) ) 
+								.html( $('<textarea id= "society_box" placeholder ="Science & Society" rows="1" cols = "150"/></textarea>').addClass( 'society_class' ) ) 
 								.append( $('<button/>').addClass( 'remove4' ).text( 'Remove' ) )
-								.append( $('<button/>').addClass( 'display4' ).text( 'society' ) )
+								.append( $('<button/>').addClass( 'display4' ).text( 'society textbox' ) )
 								.insertAfter( '#box8-end' );
 								$('.display4').hide();
 								

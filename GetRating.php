@@ -76,7 +76,7 @@
 <h3>The problems attempted to give you practice with and allow discovery of certain concepts</h3>
 <p><font color = 'blue' size='4'> Please rate honestly </font></p>
 <form method="POST">
-	<table><tr><td>Effectiveness: &nbsp &nbsp </td><td> not effective
+	<table><tr><td>Cuased me to think of provided effective paractice: &nbsp &nbsp </td><td> not effective
 	<input type="radio" name="effectiveness" value = 1 id = "one" size= 20  >
 	<input type="radio" name="effectiveness" value = 2 id = "two" size= 20  >
 	<input type="radio" name="effectiveness" value = 3 id = "three" size= 20  >
@@ -84,7 +84,7 @@
 	<input type="radio" name="effectiveness" value = 5 id = "five" size= 20  >
 	very effective</td></tr><tr></tr><tr></tr><tr></tr><tr>
 	
-	<td>Difficulty:  &nbsp &nbsp </td><td> easy
+	<td>Took a long time or involved multiple complex topics:  &nbsp &nbsp </td><td> easy
 	<input type="radio" name="difficulty" value = 1  id = "one" size= 20  >
 	<input type="radio" name="difficulty" value = 2 id = "two" size= 20  >
 	<input type="radio" name="difficulty" value = 3 id = "three" size= 20  >
@@ -92,13 +92,13 @@
 	<input type="radio" name="difficulty" value = 5 id = "five" size= 20  >
 	very difficult</td></tr><tr></tr><tr></tr><tr></tr><tr>
 	
-	<td>My Performance: &nbsp &nbsp </td><td> bad
+	<td>My Performance: &nbsp &nbsp </td><td> much room for improvement
 	<input type="radio" name="performance" value = 1 id = "one" size= 20  >
 	<input type="radio" name="performance" value = 2 id = "two" size= 20  >
 	<input type="radio" name="performance" value = 3 id = "three" size= 20  >
 	<input type="radio" name="performance" value = 4 id = "four" size= 20  >
 	<input type="radio" name="performance" value = 5 id = "five" size= 20  >
-	great</td></tr></table>
+	little room for improvement</td></tr></table>
 	
 
 
