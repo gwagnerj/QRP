@@ -153,17 +153,12 @@ $(document).ready(function(){
 	  var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0  Contributed by\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field);
 	  
 	 // var Head_txt4 = $("<p></p>").text("Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field );
-	 
-
 
 	// $('p:first').before(Head_txt4);
 	 $('p:first').before(Head_txt1,Head_txt3,'<hr>');
 	 
 	  
 	  $('p:first').before('\xa0\xa0<img border=0 width=50 height=50 id="McKetta_head" src="QRMcKetta.png"><hr>');
-
-
-
 
 	//put real tags in the document to manipulate
 	 
@@ -180,11 +175,6 @@ $(document).ready(function(){
 			  }
 			});
 				$("#box0_start").nextUntil("#box0_end").wrapAll("<div id='Header_stuff'></div>");
-				
-			
-			
-			
-			
 			
 			// put the button in the document	
 				$('p:first').before('show/hide: <button id="directionsbutton">directions</button> <button id="pblmbutton">pblm statement</button>  <button id="basecasebutton">base-case</button> <button id="reflectionbutton">Reflections</button>') ;
@@ -194,11 +184,6 @@ $(document).ready(function(){
 				$('#expl').hide();
 				$('#conn').hide();
 				$('#soci').hide();
-				
-				
-				
-				
-				
 				
 				
 			// Search thru all of the document looking for the markups and put divs for those
@@ -217,15 +202,6 @@ $(document).ready(function(){
 			// put all the content between the tags in a div
 
 			$("#box1-start").nextUntil("#box1-end").wrapAll("<div id='directions'></div>");
-			
-			
-		
-
-
-			
-			
-			
-			
 			
 
 			// Search thru all of the document looking for the markups and put divs for those
@@ -282,9 +258,6 @@ $(document).ready(function(){
 
 			$("#box4-start").nextUntil("#box4-end").wrapAll("<div id='reflections'></div>");
 
-
-
-
 			// Search thru the reflections and put a div for the first one i) Reflect
 			 $( "#Reflections p" ).each(function( index ) {
 			   var current_content =  $(this).text();
@@ -299,40 +272,12 @@ $(document).ready(function(){
 				 
 				 // try adding a text box to in this before box5-end
 				 
-				
-					
-				 
-				 
-				 
-				 
-				 
-				 
 			  }
-			  
-			 
-			  
-			  
-			  
 			});
-			
-			
-			
-			
-			
-			
 			
 			// put all the content between the tags in a div
 
 			$("#box5-start").nextUntil("#box5-end").wrapAll("<div id='reflect'></div>");
-
-
-					
-
-
-
-
-
-
 
 			// Search thru the reflections and put a div for the first one ii) Explore
 			 $( "#Reflections p" ).each(function( index ) {
@@ -354,7 +299,8 @@ $(document).ready(function(){
 			// Search thru the reflections and put a div for the first one iii) Connect
 			 $( "#Reflections p" ).each(function( index ) {
 			   var current_content =  $(this).text();
-			   // put in a div element at the start of the markup
+			  
+			  // put in a div element at the start of the markup
 			  if( current_content.indexOf("iii) Connect") !=-1) {
 				  $(this).closest('p').before('<div id="box7-start">');
 			  }
@@ -376,7 +322,17 @@ $(document).ready(function(){
 			  if( current_content.indexOf("iv) S") !=-1) {
 				  $(this).closest('p').before('<div id="box8-start">');
 			  }
-			 // put the end of the div after the closing markup tag 
+			
+			// put the end of the div after the closing markup tag 
+			 
+			// $("p:last").before('<div id="box8-end">');
+
+
+			 if( current_content.indexOf("iv) S") !=-1) {
+				  
+				 $(this).closest('p').after('<div id="box8-end">');
+			 }
+			 
 				 
 			});
 			// put all the content between the tags in a div
@@ -741,7 +697,7 @@ $(document).ready(function(){
 								$('#box5-end').addClass('nex-text-div')
 								.html( $('<textarea id= "reflect_box" placeholder = "Type or paste reflect response here - text only.  This system does not save your response - print with ctrl P when finished"  rows="1" cols = "150"/></textarea>').addClass( 'reflect_class' ) ) 
 								.append( $('<button/>').addClass( 'remove' ).text( 'Remove' ) )
-								.append( $('<button/>').addClass( 'display' ).text( 'Add Textbox' ) )
+								.append( $('<button/>').addClass( 'display' ).text( 'reflect textbox' ) )
 								.insertAfter( '#box5-end' );
 								$('.display').hide();
 								
@@ -749,9 +705,23 @@ $(document).ready(function(){
 								 $('#box6-end').addClass('nex-text-div2')
 								.html( $('<textarea id= "explore_box" placeholder = "Type or paste explore response here - text only.  This system does not save your response - print with ctrl P when finished"  rows="1" cols = "150"/></textarea>').addClass( 'explore_class' ) ) 
 								.append( $('<button/>').addClass( 'remove2' ).text( 'Remove' ) )
-								.append( $('<button/>').addClass( 'display2' ).text( 'Add Textbox' ) )
+								.append( $('<button/>').addClass( 'display2' ).text( 'explore textbox' ) )
 								.insertAfter( '#box6-end' );
 								$('.display2').hide();
+								
+								 $('#box7-end').addClass('nex-text-div3')
+								.html( $('<textarea id= "connect_box" placeholder = "Type or paste connect response here - text only.  This system does not save your response - print with ctrl P when finished"  rows="1" cols = "150"/></textarea>').addClass( 'connect_class' ) ) 
+								.append( $('<button/>').addClass( 'remove3' ).text( 'Remove' ) )
+								.append( $('<button/>').addClass( 'display3' ).text( 'connect textbox' ) )
+								.insertAfter( '#box7-end' );
+								$('.display3').hide();
+								
+								 $('#box4-end').addClass('nex-text-div4')
+								.html( $('<textarea id= "society_box" placeholder = "Type or paste society response here - text only.  This system does not save your response - print with ctrl P when finished"  rows="1" cols = "150"/></textarea>').addClass( 'society_class' ) ) 
+								.append( $('<button/>').addClass( 'remove4' ).text( 'Remove' ) )
+								.append( $('<button/>').addClass( 'display4' ).text( 'society textbox' ) )
+								.insertAfter( '#box8-end' );
+								$('.display4').hide();
 								
 				 
 			   $('#reflectionbutton').click(function(e){
@@ -767,8 +737,9 @@ $(document).ready(function(){
 							$('#expl').hide();
 							$('.nex-text-div2').hide();
 							$('#conn').hide();
+							$('.nex-text-div3').hide();
 							$('#soci').hide();
-						
+							$('.nex-text-div4').hide();
 
 					} else {
 							$(this).css("background-color", bgcolor4);
@@ -780,7 +751,9 @@ $(document).ready(function(){
 							$('#expl').show();
 							$('.nex-text-div2').show();
 							$('#conn').show();
+							$('.nex-text-div3').show();
 							$('#soci').show();
+							$('.nex-text-div4').show();
 					}
 					$("#reflections").toggle();
 					  $("#reflections").css("background-color", "ivory");
@@ -824,6 +797,7 @@ $(document).ready(function(){
 						$(this).css("background-color", "lightgray");
 					}
 					$("#connec").toggle();
+					$('.nex-text-div3').toggle();
 				 });
 			$('#soci').click(function(e){
 					 e.preventDefault();
@@ -835,6 +809,7 @@ $(document).ready(function(){
 						$(this).css("background-color", "lightgray");
 					}
 					$("#societ").toggle();
+					$('.nex-text-div4').toggle();
 				 });
 
 // toggle the text box buttons
@@ -871,43 +846,49 @@ $(document).ready(function(){
 				$('.display2').hide();
 			});
 			
+			// toggle the text box buttons on the connect
+			$(document).on('click', 'button.remove3', function( e ){		
+				e.preventDefault();
+				
+				$('.connect_class').hide();
+				$('.remove3').hide();
+				$('.display3').show();
+			});
+			
+			$(document).on('click', 'button.display3', function( e ){		
+				e.preventDefault();
+				
+				$('.connect_class').show();
+				$('.remove3').show();
+				$('.display3').hide();
+			});
+			
+				// toggle the text box buttons on the society
+			$(document).on('click', 'button.remove4', function( e ){		
+				e.preventDefault();
+				
+				$('.society_class').hide();
+				$('.remove4').hide();
+				$('.display4').show();
+			});
+			
+			$(document).on('click', 'button.display4', function( e ){		
+				e.preventDefault();
+				
+				$('.society_class').show();
+				$('.remove4').show();
+				$('.display4').hide();
+			});
+			
 			
 			
 			//resize the textbox
 			
 			 $('#reflect_box').on('input propertychange keyup change', function(){ this.rows = this.value.match(/\n/g).length + 1 });
+			$('#explore_box').on('input propertychange keyup change', function(){ this.rows = this.value.match(/\n/g).length + 1 });
+			$('#connect_box').on('input propertychange keyup change', function(){ this.rows = this.value.match(/\n/g).length + 1 });
+			$('#society_box').on('input propertychange keyup change', function(){ this.rows = this.value.match(/\n/g).length + 1 });
 			
-			
-			
-			
-			
-			
-			/* $(document).on('click', 'button.resize_refl', function( e ){		
-				e.preventDefault();
-				
-				var text = jQuery('#reflect_box').val(),
-				
-				// look for any "\n" occurences
-				matches = text.match(/\n/g),
-				breaks = matches ? matches.length : 2;
-				console.log("hello3");
-			jQuery('#reflect_box').attr('rows',breaks + 2);
-			}); */
-
-			
-	// dynamically change the size of the textbox
-		/* 	$(".reflect_class").keypress(function() {
-			var textLength = $(".reflect_class").val().length;
-			if (textLength % 50 == 0) {
-				var height = textLength/50;
-				$(".reflect_class").css('height', 20+(height*20));
-        }	
-			});	 */
-			
-			
-
-	// $('#Header_stuff').css("background-color", "lightgray");	
-	// $('#Header_stuff').css("opacity", "0.2");	
 	
 // if we are sent a 0 or 1 for the PIN we should display just the base-case without directions headers or 
 	
