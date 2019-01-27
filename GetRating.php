@@ -3,7 +3,7 @@
   Require_once "pdo.php";
  
  $score = $_SESSION['score'];
-$score = 100;
+
 // echo($score);
  
  if ((isset($_POST['effectiveness']) and isset($_POST['difficulty']) and isset($_POST['confidence'])and isset($_POST['t_take1'])and isset($_POST['t_take2'])and isset($_POST['t_b4due']))
@@ -50,14 +50,14 @@ $score = 100;
 							':nmeff' => $val_eff,
 							':pblm_num' => $_SESSION['problem_id']));		
 							
-					
-
+		  }				
+	}
 			// change the headers to the rtnCode.php
 
 					header( 'Location: rtnCode.php' ) ;
 					return;		
-	}	
-}
+		
+
 
  } else {
  
@@ -65,7 +65,7 @@ $score = 100;
  
  
  }
- 
+					
 
 ?>
 
