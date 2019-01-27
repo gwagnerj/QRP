@@ -112,7 +112,7 @@
 
 
 <div id = "not_perfect"> 
-If I had to do it all over again, I would have: (responses are annonmous - selct all that apply) <br> 
+If I had to do it all over again, I would have: (select all that apply) <br> 
 	&nbsp &nbsp <input type="checkbox" name="not_perfect" value = 1 id = "one" size= 20  >&nbsp &nbsp started earlier <br>
 	&nbsp &nbsp <input type="checkbox" name="not_perfect" value = 2 id = "two" size= 20  > &nbsp &nbsp sought help after an honest attempt at both my problem and the base-case  <br>
 	&nbsp &nbsp <input type="checkbox" name="not_perfect" value = 3 id = "three" size= 20  >&nbsp &nbsp  spent more time in understanding what the problem was asking <br>
