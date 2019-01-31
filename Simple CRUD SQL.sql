@@ -165,6 +165,104 @@ INSERT INTO School (s_name) VALUES('Trine University'); */
 ) ENGINE=InnoDB CHARACTER SET = utf8;
 
 
+ALTER TABLE problem 
+  ADD not_perfect_1 int,
+  ADD not_perfect_2 int,
+  ADD not_perfect_3 int,
+  ADD not_perfect_4 int,
+  ADD not_perfect_5 int,
+  ADD not_perfect_6 int,
+  ADD not_perfect_7 int,
+  ADD not_perfect_8 int,
+  ADD not_perfect_9 int,
+  
+  ADD t_take1_1 int,
+  ADD t_take1_2 int,
+  ADD t_take1_3 int,
+  ADD t_take1_4 int,
+  ADD t_take1_5 int,
+  ADD t_take1_6 int,
+  ADD t_take1_7 int,
+  
+  
+  ADD t_take1_np_1 int,
+  ADD t_take1_np_2 int,
+  ADD t_take1_np_3 int,
+  ADD t_take1_np_4 int,
+  ADD t_take1_np_5 int,
+  ADD t_take1_np_6 int,
+  ADD t_take1_np_7 int,
+ 
+  
+  ADD t_take2_1 int,
+  ADD t_take2_2 int,
+  ADD t_take2_3 int,
+  ADD t_take2_4 int,
+  ADD t_take2_5 int,
+  ADD t_take2_6 int,
+  ADD t_take2_7 int,
+  
+  
+  ADD t_b4due_1 int,
+  ADD t_b4due_2 int,
+  ADD t_b4due_3 int,
+  ADD t_b4due_4 int,
+  ADD t_b4due_5 int,
+  ADD t_b4due_6 int,
+  ADD t_b4due_7 int,
+  
+  
+  ADD t_b4due_np_1 int,
+  ADD t_b4due_np_2 int,
+  ADD t_b4due_np_3 int,
+  ADD t_b4due_np_4 int,
+  ADD t_b4due_np_5 int,
+  ADD t_b4due_np_6 int,
+  ADD t_b4due_np_7 int,
+ 
+  
+  ADD confidence_1 int,
+  ADD confidence_2 int,
+  ADD confidence_3 int,
+  ADD confidence_4 int,
+  ADD confidence_5 int,
+  
+  
+  ADD confidence_np_1 int,
+  ADD confidence_np_2 int,
+  ADD confidence_np_3 int,
+  ADD confidence_np_4 int,
+  ADD confidence_np_5 int,
+  
+  ADD too_long_1 int,
+  ADD too_long_2 int,
+  ADD too_long_3 int,
+  ADD too_long_4 int,
+  ADD too_long_5 int,
+  ADD too_long_6 int,
+  ADD too_long_7 int,
+  ADD too_long_8 int,
+  ADD too_long_9 int,
+  
+  ADD prob_comments text,
+  ADD sug_hints text,
+  ADD qr_comments text
+  ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  CREATE TABLE Qa (
     qa_id INTEGER NOT NULL AUTO_INCREMENT,
     PRIMARY KEY (qa_id),
