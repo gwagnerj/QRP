@@ -456,7 +456,7 @@ if (strlen($probData['hint_d'])>1){
 	
 	  // we are coming through the first time
 	
-	$PScore=round($score/$probParts*1000)/10;  
+	$PScore=round($score/$probParts*100);  
 	$rand= rand(100000,999999);  // sets up the rtn code on other page
 	$rand2=rand(0,9);				// sets up the rtn code on the other page
 	$_SESSION['rand']=$rand;
