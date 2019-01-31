@@ -165,7 +165,7 @@ INSERT INTO School (s_name) VALUES('Trine University'); */
 ) ENGINE=InnoDB CHARACTER SET = utf8;
 
 
-ALTER TABLE problem 
+ALTER TABLE Problem 
   ADD not_perfect_1 int,
   ADD not_perfect_2 int,
   ADD not_perfect_3 int,
