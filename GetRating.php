@@ -3,7 +3,7 @@
   Require_once "pdo.php";
  
  $score = $_SESSION['score'];
-
+// $score = 100;
 // echo($score);
  
  if ((isset($_POST['effectiveness']) and isset($_POST['difficulty']) and isset($_POST['confidence'])and isset($_POST['t_take1'])and isset($_POST['t_take2'])and isset($_POST['t_b4due']))
@@ -114,7 +114,7 @@
 <div id = "not_perfect"> 
 If I had to do it all over again, I would have: (select all that apply) <br> 
 	&nbsp &nbsp <input type="checkbox" name="not_perfect" value = 1 id = "one" size= 20  >&nbsp &nbsp started earlier <br>
-	&nbsp &nbsp <input type="checkbox" name="not_perfect" value = 2 id = "two" size= 20  > &nbsp &nbsp sought help after an honest attempt at both my problem and the base-case  <br>
+	&nbsp &nbsp <input type="checkbox" name="not_perfect" value = 2 id = "two" size= 20  >&nbsp &nbsp sought help after an honest attempt at both my problem and the base-case  <br>
 	&nbsp &nbsp <input type="checkbox" name="not_perfect" value = 3 id = "three" size= 20  >&nbsp &nbsp  spent more time in understanding what the problem was asking <br>
 	&nbsp &nbsp <input type="checkbox" name="not_perfect" value = 4 id = "four" size= 20  >&nbsp &nbsp   used different tools to solve the problem <br>
 	&nbsp &nbsp <input type="checkbox" name="not_perfect" value = 5 id = "five" size= 20  >&nbsp &nbsp  been more systematic in my problem solving approach <br>
@@ -126,7 +126,7 @@ If I had to do it all over again, I would have: (select all that apply) <br>
 <div id = "time_take1"> 
 Estimate how long you spent on just this problem <br> 
 	&nbsp &nbsp <input type="radio" name="t_take1" value = 1 id = "one" size= 20  >&nbsp &nbsp less than 5 min <br>
-	&nbsp &nbsp <input type="radio" name="t_take1" value = 2 id = "two" size= 20  > &nbsp &nbsp 5 - 15 min  <br>
+	&nbsp &nbsp <input type="radio" name="t_take1" value = 2 id = "two" size= 20  >&nbsp &nbsp 5 - 15 min  <br>
 	&nbsp &nbsp <input type="radio" name="t_take1" value = 3 id = "three" size= 20  >&nbsp &nbsp  15 - 30 min <br>
 	&nbsp &nbsp <input type="radio" name="t_take1" value = 4 id = "four" size= 20  >&nbsp &nbsp   30 - 60 min <br>
 	&nbsp &nbsp <input type="radio" name="t_take1" value = 5 id = "five" size= 20  >&nbsp &nbsp  1 - 2 hrs <br>
@@ -138,7 +138,7 @@ Estimate how long you spent on just this problem <br>
 <div id = "time_take1_np"> 
 Estimate how long you spent on just this problem <br> 
 	&nbsp &nbsp <input type="radio" name="t_take1_np" value = 1 id = "one" size= 20  >&nbsp &nbsp less than 5 min <br>
-	&nbsp &nbsp <input type="radio" name="t_take1_np" value = 2 id = "two" size= 20  > &nbsp &nbsp 5 - 15 min  <br>
+	&nbsp &nbsp <input type="radio" name="t_take1_np" value = 2 id = "two" size= 20  >&nbsp &nbsp 5 - 15 min  <br>
 	&nbsp &nbsp <input type="radio" name="t_take1_np" value = 3 id = "three" size= 20  >&nbsp &nbsp  15 - 30 min <br>
 	&nbsp &nbsp <input type="radio" name="t_take1_np" value = 4 id = "four" size= 20  >&nbsp &nbsp   30 - 60 min <br>
 	&nbsp &nbsp <input type="radio" name="t_take1_np" value = 5 id = "five" size= 20  >&nbsp &nbsp  1 - 2 hrs <br>
@@ -150,7 +150,7 @@ Estimate how long you spent on just this problem <br>
 <div id = "time_take2"> 
 Estimate how long it would now take you to solve a very similar problem <br> 
 	&nbsp &nbsp <input type="radio" name="t_take2" value = 1 id = "one" size= 20  >&nbsp &nbsp less than 5 min <br>
-	&nbsp &nbsp <input type="radio" name="t_take2" value = 2 id = "two" size= 20  > &nbsp &nbsp 5 - 15 min  <br>
+	&nbsp &nbsp <input type="radio" name="t_take2" value = 2 id = "two" size= 20  >&nbsp &nbsp 5 - 15 min  <br>
 	&nbsp &nbsp <input type="radio" name="t_take2" value = 3 id = "three" size= 20  >&nbsp &nbsp  15 - 30 min <br>
 	&nbsp &nbsp <input type="radio" name="t_take2" value = 4 id = "four" size= 20  >&nbsp &nbsp   30 - 60 min <br>
 	&nbsp &nbsp <input type="radio" name="t_take2" value = 5 id = "five" size= 20  >&nbsp &nbsp  1 - 2 hrs <br>
@@ -162,7 +162,7 @@ Estimate how long it would now take you to solve a very similar problem <br>
 <div id = "time_start"> 
 How long before it was due did you first look at the problem <br> 
 	&nbsp &nbsp <input type="radio" name="t_b4due" value = 1 id = "one" size= 20  >&nbsp &nbsp less than 1 hr <br>
-	&nbsp &nbsp <input type="radio" name="t_b4due" value = 2 id = "two" size= 20  > &nbsp &nbsp 1 - 5 hrs  <br>
+	&nbsp &nbsp <input type="radio" name="t_b4due" value = 2 id = "two" size= 20  >&nbsp &nbsp 1 - 5 hrs  <br>
 	&nbsp &nbsp <input type="radio" name="t_b4due" value = 3 id = "three" size= 20  >&nbsp &nbsp  5 - 12 hrs <br>
 	&nbsp &nbsp <input type="radio" name="t_b4due" value = 4 id = "four" size= 20  >&nbsp &nbsp   12 - 24 hrs <br>
 	&nbsp &nbsp <input type="radio" name="t_b4due" value = 5 id = "five" size= 20  >&nbsp &nbsp  1 - 2 days <br>
@@ -175,7 +175,7 @@ How long before it was due did you first look at the problem <br>
 <div id = "time_start_np"> 
 How long before it was due did you first look at the problem <br> 
 	&nbsp &nbsp <input type="radio" name="t_b4due_np" value = 1 id = "one" size= 20  >&nbsp &nbsp less than 1 hr <br>
-	&nbsp &nbsp <input type="radio" name="t_b4due_np" value = 2 id = "two" size= 20  > &nbsp &nbsp 1 - 5 hrs  <br>
+	&nbsp &nbsp <input type="radio" name="t_b4due_np" value = 2 id = "two" size= 20  >&nbsp &nbsp 1 - 5 hrs  <br>
 	&nbsp &nbsp <input type="radio" name="t_b4due_np" value = 3 id = "three" size= 20  >&nbsp &nbsp  5 - 12 hrs <br>
 	&nbsp &nbsp <input type="radio" name="t_b4due_np" value = 4 id = "four" size= 20  >&nbsp &nbsp   12 - 24 hrs <br>
 	&nbsp &nbsp <input type="radio" name="t_b4due_np" value = 5 id = "five" size= 20  >&nbsp &nbsp  1 - 2 days <br>
@@ -235,7 +235,7 @@ How long before it was due did you first look at the problem <br>
 	<div id = "too_long_div"> 
 If I had to do it all over again I would have:  <br> 
 	&nbsp &nbsp <input type="checkbox" name="too_long" value = 1 id = "one" size= 20  >&nbsp &nbsp looked at the problem ealier so I could have come up with a more efficient solution strategy <br>
-	&nbsp &nbsp <input type="checkbox" name="too_long" value = 2 id = "two" size= 20  > &nbsp &nbsp sought help earlier <br>
+	&nbsp &nbsp <input type="checkbox" name="too_long" value = 2 id = "two" size= 20  >&nbsp &nbsp sought help earlier <br>
 	&nbsp &nbsp <input type="checkbox" name="too_long" value = 3 id = "three" size= 20  >&nbsp &nbsp  spent more time in understanding what the problem was asking <br>
 	&nbsp &nbsp <input type="checkbox" name="too_long" value = 4 id = "four" size= 20  >&nbsp &nbsp   used different tools to solve the problemd <br>
 	&nbsp &nbsp <input type="checkbox" name="too_long" value = 5 id = "five" size= 20  >&nbsp &nbsp  been more systematic in my problem solving approach <br>
@@ -244,7 +244,21 @@ If I had to do it all over again I would have:  <br>
 </div>
 	
 	
+	<div id = "p_comments_div"> 
+	Comments or suggestions for this problem:  <br>
+		&nbsp &nbsp <textarea name="p_comments" id = "one" cols = "100" rows = "2" placeholder = "optional" ></textarea>
+	</div>		
+	
+	
+	<div id = "hints_div"> 
+	Suggestions for hint topics for this problem:  <br>
+		&nbsp &nbsp <textarea name="hints" id = "one" cols = "100" rows = "2" placeholder = "optional" ></textarea>
+	</div>	
 
+	<div id = "qr_comments_div"> 
+	Comments or suggestions for the QRhomework system:  <br>
+		&nbsp &nbsp <textarea name="qr_comments" id = "one" cols = "100" rows = "2" placeholder = "optional" ></textarea>
+	</div>		
  
  <hr>
 <p><b><font Color="red">When Finished:</font></b></p>
@@ -274,6 +288,7 @@ $(document).ready(function(){
 	$('#conf_div').show();
 	$('#time_take1_np').hide();
 	$('#time_take1').show();
+	
 	
 	} else {
 		
