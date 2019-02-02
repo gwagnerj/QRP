@@ -46,10 +46,25 @@ table.a {
 	
 </style>
 						
-	<!-- THis is from Simple jQuery Dropdown Table Filter Plugin - ddtf.js    
+	<!-- THis is from Simple jQuery Dropdown Table Filter Plugin - ddtf.js    -->
 	
-						<script src="//code.jquery.com/jquery-1.11.3.min.js"></script> -->
+						<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 						<script src="ddtf.js"></script> 
+						
+						
+		<!-- THis is from DataTable jquery plugin   -->				
+						
+						<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+  
+						<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+		
+	
+			<!-- THis is from sparklines jquery plugin   -->	
+
+			<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.js"></script>
+	
+					<!--	<script src="sparklines.js"></script>   -->
+	
 	
 </head>
 
@@ -59,6 +74,18 @@ table.a {
 <p> <font size = '1' color = 'Blue'>(Try "ctrl +" or "ctrl -" to resize)</font>
 </header>
 
+
+
+<div id="sparklinedash">
+    <span class="bar"></span>
+  </div>
+  
+  
+  
+  
+  
+  
+  
 <?php
 if ( isset($_SESSION['error']) ) {
     echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
@@ -105,18 +132,24 @@ if (isset($_SESSION['username'])){
 	   echo '<p><h4>log in to contribute, edit, or delete problems <a href="login.php">Login here</a>.</h4></p>';
 }
 
+echo('<br> bulshit');
+echo('<script>const data = [0, 5, 6, 10, 9, 12,]
+			const config = {type: "bar",height: "50", barWidth: "10",resize: true,barSpacing: "5", barColor: "#7ace4c"}
+		$("#sparklinedash").sparkline(data, config)</script>');
+		
+		
 
 echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	
 //echo ('<div class="w3-container">');	
 
 	
-
-
+	 echo("<thead>");
+//echo(breakit)
 	echo("</td><th>");
 	echo('<b>Num</b>');
 	echo("</th><th>");
-	echo('<b>Game?</b>');
+	echo('<b>eff</b>');
     echo("</th><th>");
 	echo('<b>Contrib</b>');
     echo("</th><th>");
@@ -142,6 +175,9 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
     echo("</th><th>");
 	 echo('<b>Soln</b>');
 	echo("</th></tr>\n");
+	 echo("</thead>");
+	 
+	  echo("<tbody>");
 	
 	// add the effectiveness and rating stuff here so I can either display it or compute the average and display that along with the total ratings
 	
@@ -150,9 +186,23 @@ FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id;";
 $stmt = $pdo->query($qstmnt);
 while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
     echo "<tr><td>";
+	
+	echo ('<div class = "probnum">');
+	
 	echo(htmlentities($row['problem_id']));
+	echo ('</div>');
+	
     echo("</td><td>");	
-	echo(htmlentities($row['game_prob_flag']));
+	
+	// echo ('<script>var nm = "#sparklinedash"+$(#probnum).$row["problem_id"]</script>');
+	echo('<script> var data2 = [20, 50, 60, 80, 50]
+			 var config2 = {type: "bar",height: "50", barWidth: "10",resize: true,barSpacing: "5", barColor: "#7ace4c"}
+			// var nm = "sparklinedash"+$(".probnum");
+			// console.log(nm);
+		$(".sparklinedash2").sparkline(data2, config2)</script>');
+	echo ('<div class = "sparklinedash2">
+    <span class="bar"></span>
+  </div>');	
     echo("</td><td>");
 	echo(htmlentities($row['name']));
     echo("</td><td>");
@@ -187,12 +237,13 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		echo('<form action = "QRPRepo.php" method = "POST" > <input type = "hidden" name = "soln_preview" value ="'.$row['soln_pblm'].'"><input type = "submit" value ="PreView"></form>');
 	}
    echo("</td></tr>\n");
+     echo("</tbody>");
 echo ('</div>');	
 }
 //echo ('"'.$preview.'"');
 ?>
-<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-<script src="ddtf.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="ddtf.js"></script>  -->
 <script>
 	jQuery('#table_format').ddTableFilter();
 </script>
