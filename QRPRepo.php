@@ -221,14 +221,23 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	if(!isset($row["eff_stu_4"])){$eff_stu_4 = 0;} else {$eff_stu_4 = $row["eff_stu_4"];}
 	if(!isset($row["eff_stu_5"])){$eff_stu_5 = 0;} else {$eff_stu_5 = $row["eff_stu_5"];}
 	
+	if(!isset($row["confidence_np_1"])){$confidence_np_1 = 0;} else {$confidence_np_1 = $row["confidence_np_1"];}
+	if(!isset($row["confidence_np_2"])){$confidence_np_2 = 0;} else {$confidence_np_2 = $row["confidence_np_2"];}
+	if(!isset($row["confidence_np_3"])){$confidence_np_3 = 0;} else {$confidence_np_3 = $row["confidence_np_3"];}
+	if(!isset($row["confidence_np_4"])){$confidence_np_4 = 0;} else {$confidence_np_4 = $row["confidence_np_4"];}
+	if(!isset($row["confidence_np_5"])){$confidence_np_5 = 0;} else {$confidence_np_5 = $row["confidence_np_5"];}
+	
+	$confidence_np_tot = $confidence_np_1+$confidence_np_2+$confidence_np_3+$confidence_np_4+$confidence_np_5;
+	
 	$eff_stu_tot = $eff_stu_1+$eff_stu_2+$eff_stu_3+$eff_stu_4+$eff_stu_5;
 	
 	if($eff_stu_tot==0) {
 		
 	echo('nd');	
 	} else {
-		 echo('<span class="inlinebar">'.$eff_stu_1.", ".$eff_stu_2.", ".$eff_stu_3.", ".$eff_stu_4.", ".$eff_stu_5.'</span>');	
-
+		 echo('<span class="inlinebar1">'.$eff_stu_1.", ".$eff_stu_2.", ".$eff_stu_3.", ".$eff_stu_4.", ".$eff_stu_5.'</span>');	
+				echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eff'."</font>");
+			echo('<br><font size="1"> n ='.$eff_stu_tot."</font>");
 	}
 	
   
@@ -240,11 +249,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	if(!isset($row["diff_stu_4"])){$diff_stu_4 = 0;} else {$diff_stu_4 = $row["diff_stu_4"];}
 	if(!isset($row["diff_stu_5"])){$diff_stu_5 = 0;} else {$diff_stu_5 = $row["diff_stu_5"];}
 	
-	if(!isset($row["confidence_np_1"])){$confidence_np_1 = 0;} else {$confidence_np_1 = $row["confidence_np_1"];}
-	if(!isset($row["confidence_np_2"])){$confidence_np_2 = 0;} else {$confidence_np_2 = $row["confidence_np_2"];}
-	if(!isset($row["confidence_np_3"])){$confidence_np_3 = 0;} else {$confidence_np_3 = $row["confidence_np_3"];}
-	if(!isset($row["confidence_np_4"])){$confidence_np_4 = 0;} else {$confidence_np_4 = $row["confidence_np_4"];}
-	if(!isset($row["confidence_np_5"])){$confidence_np_5 = 0;} else {$confidence_np_5 = $row["confidence_np_5"];}
+	
 	
 	$confidence_np_tot = $confidence_np_1+$confidence_np_2+$confidence_np_3+$confidence_np_4+$confidence_np_5;
 	
@@ -259,9 +264,10 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		
 	echo('nd');	
 	} else {
-		 echo('<span class="inlinebar">'.$diff_stu_1.", ".$diff_stu_2.", ".$diff_stu_3.", ".$diff_stu_4.", ".$diff_stu_5.'</span>');
-			echo('<br><font size="2"> < 100 ='.$percent_np.' %'."</font>");
-	
+		 echo('<span class="inlinebar2">'.$diff_stu_1.", ".$diff_stu_2.", ".$diff_stu_3.", ".$diff_stu_4.", ".$diff_stu_5.'</span>');
+			echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; diff'."</font>");
+			echo('<br><font size="1"> n_tot ='.$tot_attempt."</font>");
+			echo('<br><font size="1"> < 100 ='.$percent_np.' %'."</font>");
 	}
     echo("</td><td>");
 	echo(htmlentities($row['name']));
@@ -306,7 +312,8 @@ echo ('</div>');
 <script src="ddtf.js"></script>  -->
 <script>
 	 jQuery('#table_format').ddTableFilter();
-	$(".inlinebar").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
+	$(".inlinebar1").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
+	$(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
 </script>
 
 </table>
