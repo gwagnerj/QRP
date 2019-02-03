@@ -236,8 +236,8 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	echo('nd');	
 	} else {
 		 echo('<span class="inlinebar1">'.$eff_stu_1.", ".$eff_stu_2.", ".$eff_stu_3.", ".$eff_stu_4.", ".$eff_stu_5.'</span>');	
-				echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eff'."</font>");
-			echo('<br><font size="1"> n ='.$eff_stu_tot."</font>");
+				echo('<br><font size="1"> &nbsp;&nbsp; eff'."</font>");
+			echo('<font size="1"> &nbsp;&nbsp; n ='.$eff_stu_tot."</font>");
 	}
 	
   
@@ -266,8 +266,12 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	} else {
 		 echo('<span class="inlinebar2">'.$diff_stu_1.", ".$diff_stu_2.", ".$diff_stu_3.", ".$diff_stu_4.", ".$diff_stu_5.'</span>');
 			echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; diff'."</font>");
-			echo('<br><font size="1"> n_tot ='.$tot_attempt."</font>");
-			echo('<br><font size="1"> < 100 ='.$percent_np.' %'."</font>");
+			
+			
+			if ($percent_np!=0){
+					echo('<br><font size="1"> n_tot ='.$tot_attempt."</font>");
+					echo('<br><font size="1"> < 100 ='.$percent_np.' %'."</font>");
+			}
 	}
     echo("</td><td>");
 	echo(htmlentities($row['name']));
