@@ -132,11 +132,15 @@ if (isset($_SESSION['username'])){
 	   echo '<p><h4>log in to contribute, edit, or delete problems <a href="login.php">Login here</a>.</h4></p>';
 }
 
-echo('<br> bulshit');
-echo('<script>const data = [0, 5, 6, 10, 9, 12,]
+
+/* echo('<script>const data = [0, 5, 6, 10, 9, 12,]
 			const config = {type: "bar",height: "50", barWidth: "10",resize: true,barSpacing: "5", barColor: "#7ace4c"}
 		$("#sparklinedash").sparkline(data, config)</script>');
 		
+	echo ('<span id="inlinebar4">1,2,3,4,3</span>');
+	
+	echo ('<script>$("#inlinebar4").sparkline("html",{type: "bar", resize: true, barColor: "#7ace4c"});</script>'); */
+
 		
 
 echo ('<table id="table_format" class = "a" border="1" >'."\n");
@@ -150,6 +154,8 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	echo('<b>Num</b>');
 	echo("</th><th>");
 	echo('<b>eff</b>');
+    echo("</th><th>");
+	echo('<b>diff</b>');
     echo("</th><th>");
 	echo('<b>Contrib</b>');
     echo("</th><th>");
@@ -181,28 +187,82 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	
 	// add the effectiveness and rating stuff here so I can either display it or compute the average and display that along with the total ratings
 	
-$qstmnt="SELECT Problem.problem_id AS problem_id,Users.username AS username, Users.first AS name,Problem.subject as subject,Problem.course as course,Problem.primary_concept as p_concept,Problem.secondary_concept as s_concept,Problem.title as title,Problem.specif_ref as ref,Problem.status as status, Problem.soln_pblm as soln_pblm,Problem.game_prob_flag as game_prob_flag, Problem.nm_author as nm_author,Problem.docxfilenm as docxfilenm,Problem.infilenm as infilenm,Problem.pdffilenm as pdffilenm, Users.university as s_name
+$qstmnt="SELECT Problem.problem_id AS problem_id,Users.username AS username, Users.first AS name,Problem.subject as subject,Problem.course as course,Problem.primary_concept as p_concept,
+Problem.secondary_concept as s_concept,Problem.title as title,Problem.specif_ref as ref,Problem.status as status, Problem.soln_pblm as soln_pblm,Problem.game_prob_flag as game_prob_flag, 
+Problem.nm_author as nm_author,Problem.docxfilenm as docxfilenm,Problem.infilenm as infilenm,Problem.pdffilenm as pdffilenm,
+Problem.eff_stu_1 as eff_stu_1,Problem.eff_stu_2 as eff_stu_2,Problem.eff_stu_3 as eff_stu_3,Problem.eff_stu_4 as eff_stu_4,Problem.eff_stu_5 as eff_stu_5,
+Problem.diff_stu_1 as diff_stu_1,Problem.diff_stu_2 as diff_stu_2,Problem.diff_stu_3 as diff_stu_3,Problem.diff_stu_4 as diff_stu_4,Problem.diff_stu_5 as diff_stu_5,
+Problem.t_take1_1 as t_take1_1,Problem.t_take1_2 as t_take1_2,Problem.t_take1_3 as t_take1_3,Problem.t_take1_4 as t_take1_4,Problem.t_take1_5 as t_take1_5,Problem.t_take1_6 as t_take1_6,Problem.t_take1_7 as t_take1_7,
+Problem.t_take1_np_1 as t_take1_np_1,Problem.t_take1_np_2 as t_take1_np_2,Problem.t_take1_np_3 as t_take1_np_3,Problem.t_take1_np_4 as t_take1_np_4,Problem.t_take1_np_5 as t_take1_np_5, Problem.t_take1_np_6 as t_take1_np_6,Problem.t_take1_np_7 as t_take1_np_7,
+Problem.t_take2_1 as t_take2_1,Problem.t_take2_2 as t_take2_2,Problem.t_take2_3 as t_take2_3,Problem.t_take2_4 as t_take2_4,Problem.t_take2_5 as t_take2_5,Problem.t_take2_6 as t_take2_6,Problem.t_take2_7 as t_take2_7,
+Problem.t_b4due_1 as t_b4due_1,Problem.t_b4due_2 as t_b4due_2,Problem.t_b4due_3 as t_b4due_3,Problem.t_b4due_4 as t_b4due_4,Problem.t_b4due_5 as t_b4due_5,Problem.t_b4due_6 as t_b4due_6,Problem.t_b4due_7 as t_b4due_7,
+Problem.t_b4due_np_1 as t_b4due_np_1,Problem.t_b4due_np_2 as t_b4due_np_2,Problem.t_b4due_np_3 as t_b4due_np_3,Problem.t_b4due_np_4 as t_b4due_np_4,Problem.t_b4due_np_5 as t_b4due_np_5, Problem.t_b4due_np_6 as t_b4due_np_6, Problem.t_b4due_np_7 as t_b4due_np_7,
+Problem.confidence_1 as confidence_1,Problem.confidence_2 as confidence_2,Problem.confidence_3 as confidence_3,Problem.confidence_4 as confidence_4,Problem.confidence_5 as confidence_5,
+Problem.confidence_np_1 as confidence_np_1,Problem.confidence_np_2 as confidence_np_2,Problem.confidence_np_3 as confidence_np_3,Problem.confidence_np_4 as confidence_np_4,Problem.confidence_np_5 as confidence_np_5,
+
+
+
+ Users.university as s_name
 FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id;";
 $stmt = $pdo->query($qstmnt);
 while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
     echo "<tr><td>";
 	
-	echo ('<div class = "probnum">');
+	// echo ('<div class = "probnum">');
 	
 	echo(htmlentities($row['problem_id']));
-	echo ('</div>');
+	// echo ('</div>');
 	
     echo("</td><td>");	
 	
-	// echo ('<script>var nm = "#sparklinedash"+$(#probnum).$row["problem_id"]</script>');
-	echo('<script> var data2 = [20, 50, 60, 80, 50]
-			 var config2 = {type: "bar",height: "50", barWidth: "10",resize: true,barSpacing: "5", barColor: "#7ace4c"}
-			// var nm = "sparklinedash"+$(".probnum");
-			// console.log(nm);
-		$(".sparklinedash2").sparkline(data2, config2)</script>');
-	echo ('<div class = "sparklinedash2">
-    <span class="bar"></span>
-  </div>');	
+	if(!isset($row["eff_stu_1"])){$eff_stu_1 = 0;} else {$eff_stu_1 = $row["eff_stu_1"];}
+	if(!isset($row["eff_stu_2"])){$eff_stu_2 = 0;} else {$eff_stu_2 = $row["eff_stu_2"];}
+	if(!isset($row["eff_stu_3"])){$eff_stu_3 = 0;} else {$eff_stu_3 = $row["eff_stu_3"];}
+	if(!isset($row["eff_stu_4"])){$eff_stu_4 = 0;} else {$eff_stu_4 = $row["eff_stu_4"];}
+	if(!isset($row["eff_stu_5"])){$eff_stu_5 = 0;} else {$eff_stu_5 = $row["eff_stu_5"];}
+	
+	$eff_stu_tot = $eff_stu_1+$eff_stu_2+$eff_stu_3+$eff_stu_4+$eff_stu_5;
+	
+	if($eff_stu_tot==0) {
+		
+	echo('nd');	
+	} else {
+		 echo('<span class="inlinebar">'.$eff_stu_1.", ".$eff_stu_2.", ".$eff_stu_3.", ".$eff_stu_4.", ".$eff_stu_5.'</span>');	
+
+	}
+	
+  
+    echo("</td><td>");
+	
+	if(!isset($row["diff_stu_1"])){$diff_stu_1 = 0;} else {$diff_stu_1 = $row["diff_stu_1"];}
+	if(!isset($row["diff_stu_2"])){$diff_stu_2 = 0;} else {$diff_stu_2 = $row["diff_stu_2"];}
+	if(!isset($row["diff_stu_3"])){$diff_stu_3 = 0;} else {$diff_stu_3 = $row["diff_stu_3"];}
+	if(!isset($row["diff_stu_4"])){$diff_stu_4 = 0;} else {$diff_stu_4 = $row["diff_stu_4"];}
+	if(!isset($row["diff_stu_5"])){$diff_stu_5 = 0;} else {$diff_stu_5 = $row["diff_stu_5"];}
+	
+	if(!isset($row["confidence_np_1"])){$confidence_np_1 = 0;} else {$confidence_np_1 = $row["confidence_np_1"];}
+	if(!isset($row["confidence_np_2"])){$confidence_np_2 = 0;} else {$confidence_np_2 = $row["confidence_np_2"];}
+	if(!isset($row["confidence_np_3"])){$confidence_np_3 = 0;} else {$confidence_np_3 = $row["confidence_np_3"];}
+	if(!isset($row["confidence_np_4"])){$confidence_np_4 = 0;} else {$confidence_np_4 = $row["confidence_np_4"];}
+	if(!isset($row["confidence_np_5"])){$confidence_np_5 = 0;} else {$confidence_np_5 = $row["confidence_np_5"];}
+	
+	$confidence_np_tot = $confidence_np_1+$confidence_np_2+$confidence_np_3+$confidence_np_4+$confidence_np_5;
+	
+	$diff_stu_tot = $diff_stu_1+$diff_stu_2+$diff_stu_3+$diff_stu_4+$diff_stu_5;
+	$tot_attempt = $confidence_np_tot+$diff_stu_tot;
+	if($tot_attempt!=0){
+		$percent_np = round($confidence_np_tot/($confidence_np_tot+$diff_stu_tot)*100);
+	} else {
+		$percent_np= '';
+	}
+	if($diff_stu_tot==0) {
+		
+	echo('nd');	
+	} else {
+		 echo('<span class="inlinebar">'.$diff_stu_1.", ".$diff_stu_2.", ".$diff_stu_3.", ".$diff_stu_4.", ".$diff_stu_5.'</span>');
+			echo('<br><font size="2"> < 100 ='.$percent_np.' %'."</font>");
+	
+	}
     echo("</td><td>");
 	echo(htmlentities($row['name']));
     echo("</td><td>");
@@ -245,7 +305,8 @@ echo ('</div>');
 <!-- <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="ddtf.js"></script>  -->
 <script>
-	jQuery('#table_format').ddTableFilter();
+	 jQuery('#table_format').ddTableFilter();
+	$(".inlinebar").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
 </script>
 
 </table>
