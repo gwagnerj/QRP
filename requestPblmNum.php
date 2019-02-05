@@ -162,7 +162,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 
 
 
-<input type="checkbox" name="game" Value = "checked"> This is a Game Problem</p>
+<!-- <input type="checkbox" name="game" Value = "checked"> This is a Game Problem</p> -->
 <!--<label> School:
 		<select required name = "s_name">
 			<option> --Select the School or Organization (Required)--</option>
