@@ -156,6 +156,8 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	echo('<b>eff</b>');
     echo("</th><th>");
 	echo('<b>diff</b>');
+	 echo("</th><th>");
+	echo('<b>t_b4due</b>');
     echo("</th><th>");
 	echo('<b>Contrib</b>');
     echo("</th><th>");
@@ -273,7 +275,33 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 					echo('<br><font size="1"> < 100 ='.$percent_np.' %'."</font>");
 			}
 	}
-    echo("</td><td>");
+     echo("</td><td>");
+	 	if(!isset($row["t_b4due_1"])){$t_b4due_1 = 0;} else {$t_b4due_1 = $row["t_b4due_1"];}
+		if(!isset($row["t_b4due_2"])){$t_b4due_2 = 0;} else {$t_b4due_2 = $row["t_b4due_2"];}
+		if(!isset($row["t_b4due_3"])){$t_b4due_3 = 0;} else {$t_b4due_3 = $row["t_b4due_3"];}
+		if(!isset($row["t_b4due_4"])){$t_b4due_4 = 0;} else {$t_b4due_4 = $row["t_b4due_4"];}
+		if(!isset($row["t_b4due_5"])){$t_b4due_5 = 0;} else {$t_b4due_5 = $row["t_b4due_5"];}
+	 	if(!isset($row["t_b4due_6"])){$t_b4due_6 = 0;} else {$t_b4due_6 = $row["t_b4due_6"];}
+	 
+		if(!isset($row["t_b4due_np_1"])){$t_b4due_np_1 = 0;} else {$t_b4due_np_1 = $row["t_b4due_np_1"];}
+		if(!isset($row["t_b4due_np_2"])){$t_b4due_np_2 = 0;} else {$t_b4due_np_2 = $row["t_b4due_np_2"];}
+		if(!isset($row["t_b4due_np_3"])){$t_b4due_np_3 = 0;} else {$t_b4due_np_3 = $row["t_b4due_np_3"];}
+		if(!isset($row["t_b4due_np_4"])){$t_b4due_np_4 = 0;} else {$t_b4due_np_4 = $row["t_b4due_np_4"];}
+		if(!isset($row["t_b4due_np_5"])){$t_b4due_np_5 = 0;} else {$t_b4due_np_5 = $row["t_b4due_np_5"];}
+	 	if(!isset($row["t_b4due_np_6"])){$t_b4due_np_6 = 0;} else {$t_b4due_np_6 = $row["t_b4due_np_6"];}
+	 
+		if ($tot_attempt ==0){
+			echo('nd');	
+		} else {
+	 
+			 echo('<span class="inlinebar2">'.$t_b4due_6.": ".$t_b4due_np_6." ,".$t_b4due_5.": ".$t_b4due_np_5.", ".$t_b4due_4.": ".$t_b4due_np_4." , ".$t_b4due_3.": ".$t_b4due_np_3.", ".$t_b4due_2.": ".$t_b4due_np_2." ,".$t_b4due_1.": ".$t_b4due_np_1.'</span>');
+			echo('<br><font size="1"> &nbsp; early &nbsp;&nbsp;&nbsp;&nbsp; late'."</font>");
+			echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t_b4due'."</font>");
+	 
+		}
+	 
+	
+	echo("</td><td>");
 	echo(htmlentities($row['name']));
     echo("</td><td>");
 	echo(htmlentities($row['ref']));
