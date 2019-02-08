@@ -241,7 +241,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	
 	if($eff_stu_tot==0) {
 		
-	echo('nd');	
+	echo(' ');	
 	} else {
 		 echo('<span class="inlinebar1">'.$eff_stu_1.", ".$eff_stu_2.", ".$eff_stu_3.", ".$eff_stu_4.", ".$eff_stu_5.'</span>');	
 				echo('<br><font size="1"> &nbsp;&nbsp; eff'."</font>");
@@ -270,7 +270,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	}
 	if($diff_stu_tot==0) {
 		
-	echo('nd');	
+	echo(' ');	
 	} else {
 		 echo('<span class="inlinebar2">'.$diff_stu_1.", ".$diff_stu_2.", ".$diff_stu_3.", ".$diff_stu_4.", ".$diff_stu_5.'</span>');
 			echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; diff'."</font>");
@@ -296,8 +296,13 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		if(!isset($row["t_b4due_np_5"])){$t_b4due_np_5 = 0;} else {$t_b4due_np_5 = $row["t_b4due_np_5"];}
 	 	if(!isset($row["t_b4due_np_6"])){$t_b4due_np_6 = 0;} else {$t_b4due_np_6 = $row["t_b4due_np_6"];}
 	 
-		if ($tot_attempt ==0){
-			echo('nd');	
+	 
+		$t_b4due_tot = $t_b4due_1+$t_b4due_2+$t_b4due_3+$t_b4due_4+$t_b4due_5+$t_b4due_6;
+		$t_b4due_np_tot = $t_b4due_np_1+$t_b4due_np_2+$t_b4due_np_3+$t_b4due_np_4+$t_b4due_np_5+$t_b4due_np_6;
+		$tot_tb4due=$t_b4due_tot+$t_b4due_np_tot;
+	 
+		if ($tot_tb4due ==0){
+			echo(' ');	
 		} else {
 	 
 			 echo('<span class="inlinebar2">'.$t_b4due_6.": ".$t_b4due_np_6." ,".$t_b4due_5.": ".$t_b4due_np_5.", ".$t_b4due_4.": ".$t_b4due_np_4." , ".$t_b4due_3.": ".$t_b4due_np_3.", ".$t_b4due_2.": ".$t_b4due_np_2." ,".$t_b4due_1.": ".$t_b4due_np_1.'</span>');
@@ -355,30 +360,19 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <!-- <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="ddtf.js"></script>  -->
 <script>
-	$(document).ready( function () {
-    $('#table_format').DataTable();
-
-	
-	
-	
-	} );
 	
 	$(".inlinebar1").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
 	$(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
 	
+	$(document).ready( function () {
+    $('#table_format').DataTable();
+
+	
+	} );
 	
 	
 	// jQuery('#table_format').ddTableFilter();
 	 
-
-
-
-
-
-
-
-
-	// jQuery('#table_format').DataTable();
 	
 </script>
 
