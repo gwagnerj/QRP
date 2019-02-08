@@ -155,6 +155,8 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	 echo("</th><th>");
 	echo('<b>t_b4due</b>');
     echo("</th><th>");
+	echo('<b>t_spent</b>');
+    echo("</th><th>");
 	echo('<b>Contrib</b>');
     echo("</th><th>");
 	echo('<b>Ref</b>');
@@ -232,7 +234,13 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		
 	echo(' ');	
 	} else {
-		 echo('<span class="inlinebar1">'.$eff_stu_1.", ".$eff_stu_2.", ".$eff_stu_3.", ".$eff_stu_4.", ".$eff_stu_5.'</span>');	
+		
+		$tot_eff_score =  $eff_stu_1*1+$eff_stu_2*2+$eff_stu_3*3+$eff_stu_4*4+$eff_stu_5*5;
+		$ave_eff = round($tot_eff_score/$eff_stu_tot*10)/10;
+		
+		echo('<font size="2"> ave = '.$ave_eff);
+		
+		echo('<span class="inlinebar1">'.$eff_stu_1.", ".$eff_stu_2.", ".$eff_stu_3.", ".$eff_stu_4.", ".$eff_stu_5.'</span>');	
 				echo('<br><font size="1"> &nbsp;&nbsp; eff'."</font>");
 			echo('<font size="1"> &nbsp;&nbsp; n ='.$eff_stu_tot."</font>");
 	}
@@ -246,8 +254,6 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	if(!isset($row["diff_stu_4"])){$diff_stu_4 = 0;} else {$diff_stu_4 = $row["diff_stu_4"];}
 	if(!isset($row["diff_stu_5"])){$diff_stu_5 = 0;} else {$diff_stu_5 = $row["diff_stu_5"];}
 	
-	
-	
 	$confidence_np_tot = $confidence_np_1+$confidence_np_2+$confidence_np_3+$confidence_np_4+$confidence_np_5;
 	
 	$diff_stu_tot = $diff_stu_1+$diff_stu_2+$diff_stu_3+$diff_stu_4+$diff_stu_5;
@@ -259,9 +265,13 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	}
 	if($diff_stu_tot==0) {
 		
-	echo(' ');	
+		echo(' ');	
 	} else {
-		 echo('<span class="inlinebar2">'.$diff_stu_1.", ".$diff_stu_2.", ".$diff_stu_3.", ".$diff_stu_4.", ".$diff_stu_5.'</span>');
+		
+			$tot_diff_score =  $diff_stu_1*1+$diff_stu_2*2+$diff_stu_3*3+$diff_stu_4*4+$diff_stu_5*5;
+			$ave_diff = round($tot_diff_score/$diff_stu_tot*10)/10;
+			echo('<font size="2"> ave = '.$ave_diff);
+			echo('<span class="inlinebar2">'.$diff_stu_1.", ".$diff_stu_2.", ".$diff_stu_3.", ".$diff_stu_4.", ".$diff_stu_5.'</span>');
 			echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; diff'."</font>");
 			
 			
@@ -277,6 +287,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		if(!isset($row["t_b4due_4"])){$t_b4due_4 = 0;} else {$t_b4due_4 = $row["t_b4due_4"];}
 		if(!isset($row["t_b4due_5"])){$t_b4due_5 = 0;} else {$t_b4due_5 = $row["t_b4due_5"];}
 	 	if(!isset($row["t_b4due_6"])){$t_b4due_6 = 0;} else {$t_b4due_6 = $row["t_b4due_6"];}
+		if(!isset($row["t_b4due_7"])){$t_b4due_7 = 0;} else {$t_b4due_7 = $row["t_b4due_7"];}
 	 
 		if(!isset($row["t_b4due_np_1"])){$t_b4due_np_1 = 0;} else {$t_b4due_np_1 = $row["t_b4due_np_1"];}
 		if(!isset($row["t_b4due_np_2"])){$t_b4due_np_2 = 0;} else {$t_b4due_np_2 = $row["t_b4due_np_2"];}
@@ -284,24 +295,62 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		if(!isset($row["t_b4due_np_4"])){$t_b4due_np_4 = 0;} else {$t_b4due_np_4 = $row["t_b4due_np_4"];}
 		if(!isset($row["t_b4due_np_5"])){$t_b4due_np_5 = 0;} else {$t_b4due_np_5 = $row["t_b4due_np_5"];}
 	 	if(!isset($row["t_b4due_np_6"])){$t_b4due_np_6 = 0;} else {$t_b4due_np_6 = $row["t_b4due_np_6"];}
+		if(!isset($row["t_b4due_np_7"])){$t_b4due_np_7 = 0;} else {$t_b4due_np_7 = $row["t_b4due_np_7"];}
 	 
-	 
-		$t_b4due_tot = $t_b4due_1+$t_b4due_2+$t_b4due_3+$t_b4due_4+$t_b4due_5+$t_b4due_6;
-		$t_b4due_np_tot = $t_b4due_np_1+$t_b4due_np_2+$t_b4due_np_3+$t_b4due_np_4+$t_b4due_np_5+$t_b4due_np_6;
+		$t_b4due_tot = $t_b4due_1+$t_b4due_2+$t_b4due_3+$t_b4due_4+$t_b4due_5+$t_b4due_6+$t_b4due_7;
+		$t_b4due_np_tot = $t_b4due_np_1+$t_b4due_np_2+$t_b4due_np_3+$t_b4due_np_4+$t_b4due_np_5+$t_b4due_np_6+$t_b4due_np_7;
 		$tot_tb4due=$t_b4due_tot+$t_b4due_np_tot;
 	 
 		if ($tot_tb4due ==0){
 			echo(' ');	
 		} else {
 	 
-			 echo('<span class="inlinebar2">'.$t_b4due_6.": ".$t_b4due_np_6." ,".$t_b4due_5.": ".$t_b4due_np_5.", ".$t_b4due_4.": ".$t_b4due_np_4." , ".$t_b4due_3.": ".$t_b4due_np_3.", ".$t_b4due_2.": ".$t_b4due_np_2." ,".$t_b4due_1.": ".$t_b4due_np_1.'</span>');
-			echo('<br><font size="1"> &nbsp; early &nbsp;&nbsp;&nbsp;&nbsp; late'."</font>");
+			 echo('<span class="inlinebar2">'.$t_b4due_7.": ".$t_b4due_np_7." ,".$t_b4due_6.": ".$t_b4due_np_6." ,".$t_b4due_5.": ".$t_b4due_np_5.", ".$t_b4due_4.": ".$t_b4due_np_4." , ".$t_b4due_3.": ".$t_b4due_np_3.", ".$t_b4due_2.": ".$t_b4due_np_2." ,".$t_b4due_1.": ".$t_b4due_np_1.'</span>');
+			echo('<br><font size="1">  early &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; late'."</font>");
 			echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t_b4due'."</font>");
 	 
 		}
 	 
 	
 	echo("</td><td>");
+	
+		if(!isset($row["t_take1_1"])){$t_take1_1 = 0;} else {$t_take1_1 = $row["t_take1_1"];}
+		if(!isset($row["t_take1_2"])){$t_take1_2 = 0;} else {$t_take1_2 = $row["t_take1_2"];}
+		if(!isset($row["t_take1_3"])){$t_take1_3 = 0;} else {$t_take1_3 = $row["t_take1_3"];}
+		if(!isset($row["t_take1_4"])){$t_take1_4 = 0;} else {$t_take1_4 = $row["t_take1_4"];}
+		if(!isset($row["t_take1_5"])){$t_take1_5 = 0;} else {$t_take1_5 = $row["t_take1_5"];}
+	 	if(!isset($row["t_take1_6"])){$t_take1_6 = 0;} else {$t_take1_6 = $row["t_take1_6"];}
+	
+	 
+		if(!isset($row["t_take1_np_1"])){$t_take1_np_1 = 0;} else {$t_take1_np_1 = $row["t_take1_np_1"];}
+		if(!isset($row["t_take1_np_2"])){$t_take1_np_2 = 0;} else {$t_take1_np_2 = $row["t_take1_np_2"];}
+		if(!isset($row["t_take1_np_3"])){$t_take1_np_3 = 0;} else {$t_take1_np_3 = $row["t_take1_np_3"];}
+		if(!isset($row["t_take1_np_4"])){$t_take1_np_4 = 0;} else {$t_take1_np_4 = $row["t_take1_np_4"];}
+		if(!isset($row["t_take1_np_5"])){$t_take1_np_5 = 0;} else {$t_take1_np_5 = $row["t_take1_np_5"];}
+	 	if(!isset($row["t_take1_np_6"])){$t_take1_np_6 = 0;} else {$t_take1_np_6 = $row["t_take1_np_6"];}
+		
+	 
+		$t_take1_tot = $t_take1_1+$t_take1_2+$t_take1_3+$t_take1_4+$t_take1_5+$t_take1_6;
+		$t_take1_np_tot = $t_take1_np_1+$t_take1_np_2+$t_take1_np_3+$t_take1_np_4+$t_take1_np_5+$t_take1_np_6;
+		$tot_take1=$t_take1_tot+$t_take1_np_tot;
+	 
+		if ($tot_take1 ==0){
+			echo(' ');	
+		} else {
+	 
+			 echo('<span class="inlinebar2">'.$t_take1_6.": ".$t_take1_np_6." ,".$t_take1_5.": ".$t_take1_np_5.", ".$t_take1_4.": ".$t_take1_np_4." , ".$t_take1_3.": ".$t_take1_np_3.", ".$t_take1_2.": ".$t_take1_np_2." ,".$t_take1_1.": ".$t_take1_np_1.'</span>');
+			echo('<br><font size="1"><5min &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;>3h'."</font>");
+			echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t spent'."</font>");
+	 
+		}
+	
+	
+	
+	//echo(htmlentities($row['name']));
+    echo("</td><td>");
+	
+	
+	
 	echo(htmlentities($row['name']));
     echo("</td><td>");
 	echo(htmlentities($row['ref']));
