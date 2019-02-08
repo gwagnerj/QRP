@@ -52,16 +52,18 @@ table.a {
 						<script src="ddtf.js"></script> 
 						
 						
-						<link rel="stylesheet" type="text/css" href="datatables.min.css"/>
+				<!--		<link rel="stylesheet" type="text/css" href="datatables.min.css"/>
  
 						<script type="text/javascript" src="datatables.min.js"></script>
 						
-		<!-- THis is from DataTable jquery plugin 		
+						-->
+						
+		<!-- THis is from DataTable jquery plugin 	  -->		
 						
 						<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
   
 						<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-		  -->		
+			
 	
 			<!-- THis is from sparklines jquery plugin   -->	
 
@@ -354,9 +356,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <script src="ddtf.js"></script>  -->
 <script>
 	$(document).ready( function () {
-    $('#table_format').DataTable({
-		"sDom": 'W<"clear">lfrtip'
-	});
+    $('#table_format').DataTable();
 
 	
 	
