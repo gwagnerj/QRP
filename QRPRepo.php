@@ -81,16 +81,6 @@ table.a {
 </header>
 
 
-
-<div id="sparklinedash">
-    <span class="bar"></span>
-  </div>
-  
-  
-  
-  
-  
-  
   
 <?php
 if ( isset($_SESSION['error']) ) {
@@ -173,9 +163,8 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	 echo("</th><th>");
 	 echo('<b>course</b>');
     echo("</th><th>");
-	echo('<b>Concept 1</b>');
-    echo("</th><th>");
-	echo('<b>Concept 2</b>');
+	echo('<b>Concepts </b>');
+    
     echo("</th><th>");
     echo('<b>Title</b>');
     echo("</th><th>");
@@ -321,10 +310,15 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	echo("</td><td>");  
 	echo(htmlentities($row['course']));
     echo("</td><td>");
-	echo(htmlentities($row['p_concept']));
+	
+	$sec_des="";
+	if(strlen($row['s_concept'])!=0){$sec_des="<br>2)&nbsp;";}
+	
+	
+	echo("1)&nbsp;".htmlentities($row['p_concept']).$sec_des.htmlentities($row['s_concept']));
     echo("</td><td>");
-	echo(htmlentities($row['s_concept']));
-    echo("</td><td>");
+	//echo(htmlentities($row['s_concept']));
+   // echo("</td><td>");
     echo(htmlentities($row['title']));
     echo("</td><td>");
 	echo($row['status']);
