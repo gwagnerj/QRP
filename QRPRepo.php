@@ -305,10 +305,21 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 			echo(' ');	
 		} else {
 	 
+			$max_cat=max($t_b4due_1+$t_b4due_np_1,$t_b4due_2+$t_b4due_np_2,$t_b4due_3+$t_b4due_np_3,$t_b4due_4+$t_b4due_np_4,$t_b4due_5+$t_b4due_np_5,$t_b4due_6+$t_b4due_np_6,$t_b4due_7+$t_b4due_np_7);
+			
+			echo('<font size="1">mode = ');
+			if($max_cat == $t_b4due_1+$t_b4due_np_1){echo("< 1h");}
+			if($max_cat == $t_b4due_2+$t_b4due_np_2){echo(" 1-5h");}
+			if($max_cat == $t_b4due_3+$t_b4due_np_3){echo(" 5-12h");}
+			if($max_cat == $t_b4due_4+$t_b4due_np_4){echo(" 12-24h");}
+			if($max_cat == $t_b4due_5+$t_b4due_np_5){echo(" 1-2d");}
+			if($max_cat == $t_b4due_6+$t_b4due_np_6){echo(" 2-7d");}
+			if($max_cat == $t_b4due_7+$t_b4due_np_7){echo(" >1wk");}
+	 
 			 echo('<span class="inlinebar2">'.$t_b4due_7.": ".$t_b4due_np_7." ,".$t_b4due_6.": ".$t_b4due_np_6." ,".$t_b4due_5.": ".$t_b4due_np_5.", ".$t_b4due_4.": ".$t_b4due_np_4." , ".$t_b4due_3.": ".$t_b4due_np_3.", ".$t_b4due_2.": ".$t_b4due_np_2." ,".$t_b4due_1.": ".$t_b4due_np_1.'</span>');
 			echo('<br><font size="1">  early &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; late'."</font>");
 			echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t_b4due'."</font>");
-	 
+			echo('</font>');
 		}
 	 
 	
@@ -337,11 +348,21 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		if ($tot_take1 ==0){
 			echo(' ');	
 		} else {
+			
+			$max_cat=max($t_take1_1+$t_take1_np_1,$t_take1_2+$t_take1_np_2,$t_take1_3+$t_take1_np_3,$t_take1_4+$t_take1_np_4,$t_take1_5+$t_take1_np_5,$t_take1_6+$t_take1_np_6);
+			
+			echo('<font size="1">mode = ');
+			if($max_cat == $t_take1_1+$t_take1_np_1){echo("< 5m");}
+			if($max_cat == $t_take1_2+$t_take1_np_2){echo(" 5-15m");}
+			if($max_cat == $t_take1_3+$t_take1_np_3){echo(" 15-30m");}
+			if($max_cat == $t_take1_4+$t_take1_np_4){echo(" 30-60m");}
+			if($max_cat == $t_take1_5+$t_take1_np_5){echo(" 1-3h");}
+			if($max_cat == $t_take1_6+$t_take1_np_6){echo(" >3h");}
 	 
 			 echo('<span class="inlinebar2">'.$t_take1_6.": ".$t_take1_np_6." ,".$t_take1_5.": ".$t_take1_np_5.", ".$t_take1_4.": ".$t_take1_np_4." , ".$t_take1_3.": ".$t_take1_np_3.", ".$t_take1_2.": ".$t_take1_np_2." ,".$t_take1_1.": ".$t_take1_np_1.'</span>');
 			echo('<br><font size="1"><5min &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;>3h'."</font>");
 			echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t spent'."</font>");
-	 
+			echo('</font>');
 		}
 	
 	
