@@ -52,12 +52,16 @@ table.a {
 						<script src="ddtf.js"></script> 
 						
 						
-		<!-- THis is from DataTable jquery plugin   -->				
+						<link rel="stylesheet" type="text/css" href="datatables.min.css"/>
+ 
+						<script type="text/javascript" src="datatables.min.js"></script>
+						
+		<!-- THis is from DataTable jquery plugin 		
 						
 						<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
   
 						<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-		
+		  -->		
 	
 			<!-- THis is from sparklines jquery plugin   -->	
 
@@ -149,7 +153,7 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 
 	
 	 echo("<thead>");
-//echo(breakit)
+
 	echo("</td><th>");
 	echo('<b>Num</b>');
 	echo("</th><th>");
@@ -335,17 +339,47 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		echo('<form action = "QRPRepo.php" method = "POST" > <input type = "hidden" name = "soln_preview" value ="'.$row['soln_pblm'].'"><input type = "submit" value ="PreView"></form>');
 	}
    echo("</td></tr>\n");
-     echo("</tbody>");
-echo ('</div>');	
+     
 }
+
+	echo("</tbody>");
+	 echo("</table>");
+	echo ('</div>');	
+
+
+
 //echo ('"'.$preview.'"');
 ?>
 <!-- <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="ddtf.js"></script>  -->
 <script>
-	 jQuery('#table_format').ddTableFilter();
+	$(document).ready( function () {
+    $('#table_format').DataTable({
+		"sDom": 'W<"clear">lfrtip'
+	});
+
+	
+	
+	
+	} );
+	
 	$(".inlinebar1").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
 	$(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
+	
+	
+	
+	// jQuery('#table_format').ddTableFilter();
+	 
+
+
+
+
+
+
+
+
+	// jQuery('#table_format').DataTable();
+	
 </script>
 
 </table>
