@@ -359,7 +359,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 			if($max_cat == $t_take1_5+$t_take1_np_5){echo(" 1-3h");}
 			if($max_cat == $t_take1_6+$t_take1_np_6){echo(" >3h");}
 	 
-			 echo('<span class="inlinebar2">'.$t_take1_6.": ".$t_take1_np_6." ,".$t_take1_5.": ".$t_take1_np_5.", ".$t_take1_4.": ".$t_take1_np_4." , ".$t_take1_3.": ".$t_take1_np_3.", ".$t_take1_2.": ".$t_take1_np_2." ,".$t_take1_1.": ".$t_take1_np_1.'</span>');
+			 echo('<span class="inlinebar2">'.$t_take1_1.": ".$t_take1_np_1." ,".$t_take1_2.": ".$t_take1_np_2.", ".$t_take1_3.": ".$t_take1_np_3." , ".$t_take1_4.": ".$t_take1_np_4.", ".$t_take1_5.": ".$t_take1_np_5." ,".$t_take1_6.": ".$t_take1_np_6.'</span>');
 			echo('<br><font size="1"><5min &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;>3h'."</font>");
 			echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t spent'."</font>");
 			echo('</font>');
