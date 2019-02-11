@@ -1,9 +1,14 @@
 <?php
-
+require_once "pdo.php";
 session_start();
 $stu_name = '';
 $problem_id= '';
 $index='';
+$iid='';
+$instr_last='';
+
+// first time thru set scriptflag to zero - this will turn to 1 if the script ran
+if (!isset($sc_flag)){$sc_flag=0;}
 /* 
 Was setting this up to do more php input validation - but have put it off
 $PIN_LLimit = 1;
@@ -23,6 +28,13 @@ if(isset($_POST['stu_name'])){
 
 if(isset($_POST['problem_id'])){
 	
+	$problem_id = htmlentities($_POST['problem_id']);
+	
+	$_SESSION['problem_id']=$problem_id;
+}
+
+if(isset($_POST['problem_id'])){
+	echo ('im here');
 	$problem_id = htmlentities($_POST['problem_id']);
 	
 	$_SESSION['problem_id']=$problem_id;
@@ -78,8 +90,11 @@ if ( isset($_SESSION['success']) ) {
 	<p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
 	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
 	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> ></p>
-
-	<p><input type = "submit" value="Submit" id="submit_id" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
+	<p><font color=#003399>Instructor ID: </font><input type="text" name="iid" id="iid" size=5 value=<?php echo($iid);?> >
+	<font color=#003399> or Instructor Last Name: </font><input type="text" name="instr_last" id="instructor_last" size=20 value=<?php echo($instr_last);?> ></p>
+	<p><font color=#003399>script_flag: </font><input type="number" name="s_flag" id="script_flag" size=3 value=<?php echo($sc_flag);?> ></p>
+	
+	<p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>
 
 	
@@ -105,17 +120,12 @@ if ( isset($_SESSION['success']) ) {
 				alert ('problem data unavailable');
 			}
 		
-		
-		
 		// Get the html file name from the database
-			
-			
-			
 			
 			var openup = arr.htmlfilenm;
 			
-			// alert(openup);
 			
+			// alert(openup);
 			var game = arr.game_prob_flag;
 			var status = arr.status;
 			var prob_num = arr.problem_id;
@@ -256,6 +266,11 @@ if ( isset($_SESSION['success']) ) {
 			
 		// alert (statusFlag);
 
+		// should run the php in the model to test the user input make sure the instructor ID or last name is vaiid and create and entry in the temp table if there 
+		// isnt one and read the status if there is one and put it in the hidden html or get it via Json and AJAX
+		
+	
+		
 		window.location.href="uploads/"+openup;
 				} else {
 		

@@ -249,11 +249,12 @@ ALTER TABLE Problem
   ADD qr_comments text
   ;
 
-CREATE TABLE IF NOT EXISTS `Temp` (
-  `temp_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `Student` (
+  `student_id` int(11) NOT NULL AUTO_INCREMENT,
   `instr_last` varchar(50) NOT NULL,
    `iid` varchar(16) NOT NULL,
    `university` varchar(255) NOT NULL,
+   time_create time,
    prog_pp1 int,
    time_pp1 time,
    prog_pp2 int,
@@ -269,15 +270,27 @@ CREATE TABLE IF NOT EXISTS `Temp` (
   time_post_pblm2 time,
   post_pblm3 int,
   time_post_pblm3 time,
-  'created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`temp_id`),
- ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`student_id`)
+  );
 
 
 
-
-
-
+CREATE TABLE IF NOT EXISTS `Assign` (
+  `assign_id` int(11) NOT NULL AUTO_INCREMENT,
+  `instr_last` varchar(50) NOT NULL,
+   `iid` varchar(16) NOT NULL,
+   `university` varchar(255) NOT NULL,
+   assign_t_created time,
+   prob_num int,
+   pp_flag1 int,
+   pp_flag2 int,
+    pp_flag3 int,
+    pp_flag4 int,
+	 postp_flag1 int,
+	 postp_flag2 int,
+	 postp_flag3 int,
+  PRIMARY KEY (`assign_id`)
+  );
 
 
 
