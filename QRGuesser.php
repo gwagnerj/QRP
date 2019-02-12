@@ -7,7 +7,7 @@
 Require_once "pdo.php";
 
 // first do some error checking on the input.  If it is not OK set the session failure and send them back to QRPIndex.
-if ( ! isset($_GET['problem_id']) ) {
+/* if ( ! isset($_GET['problem_id']) ) {
   $_SESSION['error'] = "Missing problem number";
   header('Location: QRPindex.php');
   return;
@@ -37,9 +37,13 @@ if ( isset($_GET['problem_id']) and  isset($_GET['dex_num'])) {
 
 	$_SESSION['index'] = $_GET['dex_num'];
 	
-}
+} */
 	
 	// initialize some variables
+	
+		$_SESSION['index']=22;
+		$_SESSION['problem_id']=176;
+
 	
 	$probParts=0;
 	//$partsFlag = array('a'=>false,'b'=>false,'c'=>false,'d'=>false,'e'=>false,'f'=>false,'g'=>false,'h'=>false,'i'=>false,'j'=>false);
@@ -110,7 +114,7 @@ if ( $row === false ) {
 	
 	
 		
-	}
+	
 	
 	?>
 
@@ -146,51 +150,51 @@ if ( $row === false ) {
 
 
 if ($partsFlag[0]){ ?> 
-<p> a): <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?>
+<p> a): <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php if ($resp['a']!=0){echo (htmlentities($resp['a']));}?>" required > <?php echo($unit[0]) ?>
   </p>
 <?php } 
 
 if ($partsFlag[1]){ ?> 
-<p> b): <input [ type=number]{width: 5%;} name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?>
+<p> b): <input [ type=number]{width: 5%;} name="b" size = 10% value="<?php if ($resp['b']!=0){echo (htmlentities($resp['b']));}?>" required > <?php echo($unit[1]) ?>
 </p>
 <?php } 
 
 if ($partsFlag[2]){ ?> 
-<p> c): <input [ type=number]{width: 5%;} name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> 
+<p> c): <input [ type=number]{width: 5%;} name="c" size = 10% value="<?php if ($resp['c']!=0){echo (htmlentities($resp['c']));}?>" required> <?php echo($unit[2]) ?> 
 </p>
 <?php } 
 
 if ($partsFlag[3]){ ?> 
-<p> d): <input [ type=number]{width: 5%;} name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> 
+<p> d): <input [ type=number]{width: 5%;} name="d" size = 10% value="<?php if ($resp['d']!=0){echo (htmlentities($resp['d']));}?>" required> <?php echo($unit[3]) ?> 
 </p>
 <?php } 
 
 if ($partsFlag[4]){ ?> 
-<p> e): <input [ type=number]{width: 5%;} name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?>
+<p> e): <input [ type=number]{width: 5%;} name="e" size = 10% value="<?php if ($resp['e']!=0){echo (htmlentities($resp['e']));}?>" required > <?php echo($unit[4]) ?>
 <?php } 
 
 if ($partsFlag[5]){ ?> 
-<p> f): <input [ type=number]{width: 5%;} name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> 
+<p> f): <input [ type=number]{width: 5%;} name="f" size = 10% value="<?php if ($resp['f']!=0){echo (htmlentities($resp['f']));}?>" required> <?php echo($unit[5]) ?> 
 </p>
 <?php } 
 
 if ($partsFlag[6]){ ?> 
-<p> g): <input [ type=number]{width: 5%;} name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> 
+<p> g): <input [ type=number]{width: 5%;} name="g" size = 10% value="<?php if ($resp['g']!=0){echo (htmlentities($resp['g']));}?>" required> <?php echo($unit[6]) ?> 
 </p>
 <?php } 
 
 if ($partsFlag[7]){ ?> 
-<p> h): <input [ type=number]{width: 5%;} name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo($unit[7]) ?> 
+<p> h): <input [ type=number]{width: 5%;} name="h" size = 10% value="<?php if ($resp['h']!=0){echo (htmlentities($resp['h']));}?>" required> <?php echo($unit[7]) ?> 
 </p>
 <?php } 
 
 if ($partsFlag[8]){ ?> 
-<p> i): <input [ type=number]{width: 5%;} name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?>
+<p> i): <input [ type=number]{width: 5%;} name="i" size = 10% value="<?php if ($resp['i']!=0){echo (htmlentities($resp['i']));}?>" required> <?php echo($unit[8]) ?>
 </p>
 <?php } 
 
 if ($partsFlag[9]){ ?> 
-<p> j): <input [ type=number]{width: 5%;} name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?>
+<p> j): <input [ type=number]{width: 5%;} name="j" size = 10% value="<?php if ($resp['j']!=0){echo (htmlentities($resp['j']));}?>" required> <?php echo($unit[9]) ?>
 </p>
 <?php } 
 
