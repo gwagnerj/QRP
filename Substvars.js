@@ -914,7 +914,7 @@ $(document).ready(function(){
 			
 			
 		}
-		var bc_message = "QR"+problem_id+"-PIN-"+index+ " "+title+" - contributed by "+contrib_first+contrib_last+"\xa0 from\xa0"+contrib_university+ref_field+ auth_field;
+		var bc_message = "QR"+problem_id+"-PIN-"+index+ " "+title+" - contributed by "+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field;
 	
 		 $('body').prepend(bc_message).css("fontSize","8px");
 	}
