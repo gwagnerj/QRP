@@ -49,16 +49,17 @@ table.a {
 	<!-- THis is from Simple jQuery Dropdown Table Filter Plugin - ddtf.js    -->
 	
 						<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-						<script src="ddtf.js"></script> 
+				<!--		<script src="ddtf.js"></script> -->
 						
 						
-				<!--		<link rel="stylesheet" type="text/css" href="datatables.min.css"/>
+						<link rel="stylesheet" type="text/css" href="datatables.min.css"/> 
+						<link rel="stylesheet" type="text/css" href="DataTables-1.10.18/extras/css/ColumnFilterWidgets.css"/> 
  
 						<script type="text/javascript" src="datatables.min.js"></script>
+						<script type="text/javascript" charset="utf-8" src="DataTables-1.10.18/extras/js/ColumnFilterWidgets.js"></script>
 						
-						-->
 						
-		<!-- THis is from DataTable jquery plugin 	  -->		
+		<!-- THis is from DataTable jquery plugin 	 		
 						
 						<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
   
@@ -421,21 +422,20 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 
 //echo ('"'.$preview.'"');
 ?>
-<!-- <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-<script src="ddtf.js"></script>  -->
+
 <script>
 	
 	$(".inlinebar1").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
 	$(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
 	
 	$(document).ready( function () {
-    $('#table_format').DataTable();
+    $('#table_format').DataTable({"sDom": 'W<"clear">lfrtip'});
 
-	
+	// jQuery('#table_format').ddTableFilter();
 	} );
 	
 	
-	// jQuery('#table_format').ddTableFilter();
+	
 	 
 	
 </script>

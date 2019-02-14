@@ -40,7 +40,7 @@ if ( isset($_GET['problem_id']) and  isset($_GET['dex_num'])) {
 } */
 	
 	// initialize some variables
-	
+	// put this in to get the file up needs to be removed when ready for prime time
 		$_SESSION['index']=22;
 		$_SESSION['problem_id']=176;
 
