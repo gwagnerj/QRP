@@ -44,6 +44,14 @@ table.a {
     width: 100%;    
 	}
 	
+.column-filter-widget { float:left; padding: 5px; }
+.column-filter-widget select { display: block; }
+.column-filter-widgets a.filter-term { display: block; text-decoration: none; padding-left: 10px; font-size: 90%; }
+.column-filter-widgets a.filter-term:hover { text-decoration: line-through !important; }
+.column-filter-widget-selected-terms { clear:left; }
+	
+	
+	
 </style>
 						
 	<!-- THis is from Simple jQuery Dropdown Table Filter Plugin - ddtf.js    -->
@@ -53,9 +61,11 @@ table.a {
 						
 						
 						<link rel="stylesheet" type="text/css" href="datatables.min.css"/> 
-						<link rel="stylesheet" type="text/css" href="DataTables-1.10.18/extras/css/ColumnFilterWidgets.css"/> 
- 
 						<script type="text/javascript" src="datatables.min.js"></script>
+						
+				<!--		<link rel="stylesheet" type="text/css" href="DataTables-1.10.18/extras/css/ColumnFilterWidgets.css"/> 
+				-->
+						
 						<script type="text/javascript" charset="utf-8" src="DataTables-1.10.18/extras/js/ColumnFilterWidgets.js"></script>
 						
 						
@@ -64,7 +74,7 @@ table.a {
 						<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
   
 						<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-			
+		 -->		
 	
 			<!-- THis is from sparklines jquery plugin   -->	
 
@@ -121,14 +131,16 @@ $preview="Null";
 if (isset($_SESSION['username'])){
 	echo '<a href="requestPblmNum.php"><b>Request New Problem Number</b></a>';
 	echo '<br>';
-	echo '<br>';
 	echo '<hr>';
 	echo '<a href="login.php"><b>logout</b></a>';
+	echo ' <p> </p> ';
+	echo ' <b> Filter Criteria: </b>';
 } else {
 	   echo '<hr>';
 	   echo '<p><h4>log in to contribute, edit, or delete problems <a href="login.php">Login here</a>.</h4></p>';
+	   echo '<br>';
 }
-
+	
 
 /* echo('<script>const data = [0, 5, 6, 10, 9, 12,]
 			const config = {type: "bar",height: "50", barWidth: "10",resize: true,barSpacing: "5", barColor: "#7ace4c"}
@@ -148,38 +160,38 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	 echo("<thead>");
 
 	echo("</td><th>");
-	echo('<b>Num</b>');
+	echo('Num');
 	echo("</th><th>");
-	echo('<b>eff</b>');
+	echo('eff');
     echo("</th><th>");
-	echo('<b>diff</b>');
+	echo('diff');
 	 echo("</th><th>");
-	echo('<b>t_b4due</b>');
+	echo('t_b4due');
     echo("</th><th>");
-	echo('<b>t_spent</b>');
+	echo('t_spent');
     echo("</th><th>");
-	echo('<b>Contrib</b>');
+	echo('Contrib');
     echo("</th><th>");
-	echo('<b>Ref</b>');
+	echo('Ref');
     echo("</th><th>");
-    echo('<b>Discip</b>');
+    echo('Discip');
 	 echo("</th><th>");
-	 echo('<b>course</b>');
+	 echo('Course');
     echo("</th><th>");
-	echo('<b>Concepts </b>');
+	echo('Concepts ');
     
     echo("</th><th>");
-    echo('<b>Title</b>');
+    echo('Title');
     echo("</th><th>");
-	echo('<b>Status</b>');
+	echo('Status');
     echo("</th><th>");
-	echo('<b>Author</b>');
+	echo('Author');
     echo("</th><th>");
-	 echo('<b>Functions</b>');
+	 echo('Functions');
 	   echo("</th><th>");
-	 echo('<b>Base-Case</b>');
+	 echo('Base-Case');
     echo("</th><th>");
-	 echo('<b>Soln</b>');
+	 echo('Soln');
 	echo("</th></tr>\n");
 	 echo("</thead>");
 	 
@@ -429,14 +441,18 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	$(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
 	
 	$(document).ready( function () {
-    $('#table_format').DataTable({"sDom": 'W<"clear">lfrtip'});
-
+    $('#table_format').DataTable({"sDom": 'W<"clear">lfrtip',
+		"oColumnFilterWidgets": {
+		"aiExclude": [ 0,1,2,3,4,6,10,13,14,15 ] }});
+	
+//	 $(".column-filter-widget").css({"float":"left","padding": "5px"});
+//	$(".column-filter-widget").css({"background-color":"lightyellow","padding": "5px"});
+//	 $(".column-filter-widget").css({"display":"block"});
+	// $(".column-filter-widgets").css({" display": "block", "text-decoration": "none", "padding-left": "10px", "font-size": "90%"});
+	
 	// jQuery('#table_format').ddTableFilter();
 	} );
 	
-	
-	
-	 
 	
 </script>
 
