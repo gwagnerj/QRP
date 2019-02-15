@@ -165,6 +165,19 @@ INSERT INTO School (s_name) VALUES('Trine University'); */
 ) ENGINE=InnoDB CHARACTER SET = utf8;
 
 
+
+ALTER TABLE Problem 
+	ADD preprob_3 VARCHAR(127),
+	ADD preprob_4 VARCHAR(127),
+	ADD postprob_1 VARCHAR(127),
+	ADD postprob_2 VARCHAR(127),
+	ADD postprob_3 VARCHAR(127)
+  ;
+
+
+
+
+
 ALTER TABLE Problem 
   ADD not_perfect_1 int,
   ADD not_perfect_2 int,
