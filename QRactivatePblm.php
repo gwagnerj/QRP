@@ -126,7 +126,7 @@ if(isset($_POST['Assig_num'])){
     // Close connection
     unset($pdo);
 
-}
+
 	
 
 	
@@ -148,27 +148,27 @@ if(isset($_POST['Assig_num'])){
        
         <form  method="post">
 		
-			<input type= "text" Name="Assig_num" required>
+			<input type= "text" Name="Assig_num" size="1" required> Assignment Number <br>
            <?php 
 				if(! empty(trim($problem_data['preprob_3']))){
-					echo ('<input type="checkbox" name="Prelim_MC" value="Prelim_MC_q"> Preliminary Multiple Choice Question <br>');
+					echo ('&nbsp;&nbsp;<input type="checkbox" name="Prelim_MC" value="Prelim_MC_q"> Preliminary Multiple Choice Question <br>');
 				}
 			
 				if(! empty(trim($problem_data['preprob_4']))){
-					echo ('<input type="checkbox" name="Mics" value="Prelim_misc"> Additional Preliminary Activities <br>');
+					echo ('&nbsp;&nbsp; <input type="checkbox" name="Mics" value="Prelim_misc"> Additional Preliminary Activities <br>');
 				}
 			?>
 			
 			
-			<input type="checkbox" name="guess" value="Prelim_guess"> Preliminary Estimates <br>
-			<input type="checkbox" name="q_on_q" value="Prelim_q_on_q"> Questions about the Question <br>
-			<p> Reflections:</p>
+			<p><input type="checkbox" name="guess" value="Prelim_guess"> Preliminary Estimates </p>
+			<p><input type="checkbox" name="q_on_q" value="Prelim_q_on_q"> Questions about the Question </p>
+			 Reflections:<br>
 			
-			<input type="checkbox" name="reflect" value="reflection_reflect"> Reflect  <br>
-			<input type="checkbox" name="explore" value="reflection_explore"> Explore  <br>
-			<input type="checkbox" name="connect" value="reflection_connect"> Connect  <br>
-			<input type="checkbox" name="society" value="reflection_society"> Society  <br>
-			<input type = "submit">
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="reflect" value="reflection_reflect"> Reflect  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="explore" value="reflection_explore"> Explore  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="connect" value="reflection_connect"> Connect  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="society" value="reflection_society"> Society  <br>
+			<p><input type = "submit"></p>
 			
 			
 			
