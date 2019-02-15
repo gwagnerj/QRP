@@ -60,8 +60,8 @@ table.a {
 				<!--		<script src="ddtf.js"></script> -->
 						
 						
-						<link rel="stylesheet" type="text/css" href="datatables.min.css"/> 
-						<script type="text/javascript" src="datatables.min.js"></script>
+						<link rel="stylesheet" type="text/css" href="DataTables-1.10.18/css/jquery.dataTables.css"/> 
+						<script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
 						
 				<!--		<link rel="stylesheet" type="text/css" href="DataTables-1.10.18/extras/css/ColumnFilterWidgets.css"/> 
 				-->
@@ -123,9 +123,6 @@ $preview="Null";
 				$security = $row['security'];
 				$users_id=$row['users_id'];
 		}
-	//THis is from Simple jQuery Dropdown Table Filter Plugin - ddtf.js    -->	
-
-//<script> $('table').ddTableFilter(); 
 
 
 if (isset($_SESSION['username'])){
@@ -142,19 +139,10 @@ if (isset($_SESSION['username'])){
 }
 	
 
-/* echo('<script>const data = [0, 5, 6, 10, 9, 12,]
-			const config = {type: "bar",height: "50", barWidth: "10",resize: true,barSpacing: "5", barColor: "#7ace4c"}
-		$("#sparklinedash").sparkline(data, config)</script>');
-		
-	echo ('<span id="inlinebar4">1,2,3,4,3</span>');
-	
-	echo ('<script>$("#inlinebar4").sparkline("html",{type: "bar", resize: true, barColor: "#7ace4c"});</script>'); */
 
-		
 
 echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	
-//echo ('<div class="w3-container">');	
 
 	
 	 echo("<thead>");
@@ -199,7 +187,7 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	
 	// add the effectiveness and rating stuff here so I can either display it or compute the average and display that along with the total ratings
 	
-$qstmnt="SELECT Problem.problem_id AS problem_id,Users.username AS username, Users.first AS name,Problem.subject as subject,Problem.course as course,Problem.primary_concept as p_concept,
+$qstmnt="SELECT Problem.problem_id AS problem_id,Users.username AS username, Users.first AS name,Problem.subject as subject,Problem.course as course,Problem.primary_concept as p_concept,Users.users_id as users_id,
 Problem.secondary_concept as s_concept,Problem.title as title,Problem.specif_ref as ref,Problem.status as status, Problem.soln_pblm as soln_pblm,Problem.game_prob_flag as game_prob_flag, 
 Problem.nm_author as nm_author,Problem.docxfilenm as docxfilenm,Problem.infilenm as infilenm,Problem.pdffilenm as pdffilenm,
 Problem.eff_stu_1 as eff_stu_1,Problem.eff_stu_2 as eff_stu_2,Problem.eff_stu_3 as eff_stu_3,Problem.eff_stu_4 as eff_stu_4,Problem.eff_stu_5 as eff_stu_5,
@@ -415,7 +403,8 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
 		echo('<a href="suspendpblm.php?problem_id='.$row['problem_id'].'">Susp-unSus</a> / ');
 	}
-	echo('<a href="downloadpblm.php?problem_id='.$row['problem_id'].'">Download</a>');
+		echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$row['users_id'].'">Act-deAct</a>');
+	//echo('<a href="downloadpblm.php?problem_id='.$row['problem_id'].'">Download</a>');
 	  echo("</td><td>");
 	echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="PreView"></form>');
    	  echo("</td><td>");
