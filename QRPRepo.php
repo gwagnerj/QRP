@@ -199,11 +199,9 @@ Problem.t_b4due_1 as t_b4due_1,Problem.t_b4due_2 as t_b4due_2,Problem.t_b4due_3 
 Problem.t_b4due_np_1 as t_b4due_np_1,Problem.t_b4due_np_2 as t_b4due_np_2,Problem.t_b4due_np_3 as t_b4due_np_3,Problem.t_b4due_np_4 as t_b4due_np_4,Problem.t_b4due_np_5 as t_b4due_np_5, Problem.t_b4due_np_6 as t_b4due_np_6, Problem.t_b4due_np_7 as t_b4due_np_7,
 Problem.confidence_1 as confidence_1,Problem.confidence_2 as confidence_2,Problem.confidence_3 as confidence_3,Problem.confidence_4 as confidence_4,Problem.confidence_5 as confidence_5,
 Problem.confidence_np_1 as confidence_np_1,Problem.confidence_np_2 as confidence_np_2,Problem.confidence_np_3 as confidence_np_3,Problem.confidence_np_4 as confidence_np_4,Problem.confidence_np_5 as confidence_np_5,
-
-
-
- Users.university as s_name
-FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id;";
+ Users.university as s_name, Assign.prob_num as active_prob_num
+FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id LEFT JOIN Assign ON Users.users_id=Assign.iid ;";
+//echo (FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id;";);
 $stmt = $pdo->query($qstmnt);
 while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
     echo "<tr><td>";
@@ -392,7 +390,13 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
    // echo("</td><td>");
     echo(htmlentities($row['title']));
     echo("</td><td>");
-	echo($row['status']);
+	
+	if ($row['problem_id']!=$row['active_prob_num']){
+		echo($row['status']);
+	} else {
+		echo('Active');
+	}
+	
     echo("</td><td>");
 
 	echo(htmlentities($row['nm_author']));
