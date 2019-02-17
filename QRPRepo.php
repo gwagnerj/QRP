@@ -204,7 +204,7 @@ Problem.confidence_1 as confidence_1,Problem.confidence_2 as confidence_2,Proble
 Problem.confidence_np_1 as confidence_np_1,Problem.confidence_np_2 as confidence_np_2,Problem.confidence_np_3 as confidence_np_3,Problem.confidence_np_4 as confidence_np_4,Problem.confidence_np_5 as confidence_np_5,
  Users.university as s_name
 
-FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id");
+FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id ;");
 
 
 
