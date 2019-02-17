@@ -184,10 +184,13 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	 echo("</thead>");
 	 
 	  echo("<tbody>");
+	//
+	
+	
 	
 	// add the effectiveness and rating stuff here so I can either display it or compute the average and display that along with the total ratings
 	
-$qstmnt="SELECT Problem.problem_id AS problem_id,Users.username AS username, Users.first AS name,Problem.subject as subject,Problem.course as course,Problem.primary_concept as p_concept,Users.users_id as users_id,
+$qstmnt=("SELECT Problem.problem_id AS problem_id,Users.username AS username, Users.first AS name,Problem.subject as subject,Problem.course as course,Problem.primary_concept as p_concept,Users.users_id as users_id,
 Problem.secondary_concept as s_concept,Problem.title as title,Problem.specif_ref as ref,Problem.status as status, Problem.soln_pblm as soln_pblm,Problem.game_prob_flag as game_prob_flag, 
 Problem.nm_author as nm_author,Problem.docxfilenm as docxfilenm,Problem.infilenm as infilenm,Problem.pdffilenm as pdffilenm,
 Problem.eff_stu_1 as eff_stu_1,Problem.eff_stu_2 as eff_stu_2,Problem.eff_stu_3 as eff_stu_3,Problem.eff_stu_4 as eff_stu_4,Problem.eff_stu_5 as eff_stu_5,
@@ -199,9 +202,15 @@ Problem.t_b4due_1 as t_b4due_1,Problem.t_b4due_2 as t_b4due_2,Problem.t_b4due_3 
 Problem.t_b4due_np_1 as t_b4due_np_1,Problem.t_b4due_np_2 as t_b4due_np_2,Problem.t_b4due_np_3 as t_b4due_np_3,Problem.t_b4due_np_4 as t_b4due_np_4,Problem.t_b4due_np_5 as t_b4due_np_5, Problem.t_b4due_np_6 as t_b4due_np_6, Problem.t_b4due_np_7 as t_b4due_np_7,
 Problem.confidence_1 as confidence_1,Problem.confidence_2 as confidence_2,Problem.confidence_3 as confidence_3,Problem.confidence_4 as confidence_4,Problem.confidence_5 as confidence_5,
 Problem.confidence_np_1 as confidence_np_1,Problem.confidence_np_2 as confidence_np_2,Problem.confidence_np_3 as confidence_np_3,Problem.confidence_np_4 as confidence_np_4,Problem.confidence_np_5 as confidence_np_5,
- Users.university as s_name, Assign.prob_num as active_prob_num
-FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id LEFT JOIN Assign ON Users.users_id=Assign.iid ;";
-//echo (FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id;";);
+ Users.university as s_name
+
+FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id");
+
+
+
+
+
+//echo (FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id;";);    SELECT  Assign.prob_num as active_prob_num , FROM Assign ");
 $stmt = $pdo->query($qstmnt);
 while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
     echo "<tr><td>";
@@ -391,11 +400,24 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
     echo(htmlentities($row['title']));
     echo("</td><td>");
 	
-	if ($row['problem_id']!=$row['active_prob_num']){
+	// if it is active for this user print active for the status
+	$asstmnt = "SELECT Assign.assign_num AS assign_ass_num 
+	FROM Assign 
+	WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid=".$users_id.");";
+		
+	$stmt2 = $pdo->query($asstmnt);
+	 $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+	if($row2 == false){
+		echo($row['status']);
+	} else {
+		echo('Assign# = '.$row2["assign_ass_num"].'<br> Active');
+	}
+	
+	/*  if ($row['problem_id']!=$row['active_prob_num']){
 		echo($row['status']);
 	} else {
 		echo('Active');
-	}
+	}  */
 	
     echo("</td><td>");
 
@@ -432,6 +454,12 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	
 	$(".inlinebar1").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
 	$(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
+	
+	
+	// $(document).ready( function () {
+    //$('#table_format').DataTable(); 
+	
+	
 	
 	$(document).ready( function () {
     $('#table_format').DataTable({"sDom": 'W<"clear">lfrtip',

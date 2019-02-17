@@ -14,38 +14,66 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
     $stmt->execute(array(':zip' => $_GET['problem_id']));
 	$problem_data = $stmt -> fetch();
 	
+	
+	
+	// check to see if this is a new problem and they want the start over file issued
+	if ($problem_data['status']=='num issued'){
+		$_SESSION['error'] = 'The status of this problem is num issued and cannot be activated';
+	 	header( 'Location: QRRepo.php' ) ;
+		return;
+	}
+
+
 	 $sql = "SELECT * FROM Users WHERE users_id = :zip";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':zip' => $_GET['users_id']));
 	$Users_data = $stmt -> fetch();
 	
-	// check to see if this is a new problem and they want the start over file issued
-	if ($data['status']=='num issued'){
-		$_SESSION['error'] = 'The status of this problem is num issued and cannot be activated';
-	 	header( 'Location: QRRepo.php' ) ;
-		return;
+
+
+	$sql = "SELECT * FROM Assign WHERE iid = :zip AND prob_num = :probnum";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(':zip' => $_GET['users_id'],':probnum' => $_GET['problem_id']));
+	$Assign_data = $stmt -> fetch();
+	
+	// initialize a bunch of variables
+	$instr_last = $assign_t_created = $assign_num = $activate_flag = "";
+	$pp_flag1 = $pp_flag2 = $pp_flag3 =$pp_flag4 = $reflect_flag = $explore_flag=  "";
+	$assign_id = $connect_flag = $society_flag = $postp_flag1 =$postp_flag2 = $postp_flag3 =  "";
+	
+	$prob_num=$_GET['problem_id'];	
+	$iid = $_GET['users_id'];
+	$university = $Users_data['university'];
+	$instr_last = $Users_data['last'];
+
+
+// if the assignment data is not equal to false then we already have an entry make the values of the variables equal to the values in the db
+	if($Assign_data != false) {
+		$assign_id = $Assign_data['assign_id'];
+		// echo($assign_id);
+		$assign_num = $Assign_data['assign_num'];
+		$assign_t_created = $Assign_data['assign_t_created'];
+		$pp_flag1 = $Assign_data['pp_flag1'];
+		$pp_flag2 = $Assign_data['pp_flag2'];
+		$pp_flag3 = $Assign_data['pp_flag3'];
+		$pp_flag4 = $Assign_data['pp_flag4'];
+		$postp_flag1 = $Assign_data['postp_flag1'];
+		$postp_flag1 = $Assign_data['postp_flag2'];
+		$postp_flag1 = $Assign_data['postp_flag3'];
+		
+		$reflect_flag = $Assign_data['reflect_flag'];
+		$explore_flag = $Assign_data['explore_flag'];
+		$connect_flag = $Assign_data['connect_flag'];
+		$society_flag = $Assign_data['society_flag'];
+	} else {
+		$activate_flag = 1;	
 	}
-	
-	if ($data['status']=='Active'){
-	// put code in here to confirm deactivation and then change status to inactive
-		header( 'Location: QRRepo.php' ) ;
-		return;
-	}
-	
-	// here we will check to see if all of the information is filled out if it is then 
-	// write the information to the assignment table and return to the QRrepo
 
-$instr_last = $iid = $assign_t_created = $assing_num = "";
-$prob_num = $pp_flag1 = $pp_flag2 = $pp_flag3 =$pp_flag4 = $reflect_flag = $explore_flag=  "";
-$university = $connect_flag = $society_flag = $postp_flag1 =$postp_flag2 = $postp_flag3 =  "";
+// we dont have an entry and we are trying to activate - create a new entry 
+if(isset($_POST['Activate']) && $Assign_data==false){
+	$activate_flag = 1;
 
-
-if(isset($_POST['Assig_num'])){
-	
-
-
-
-  // Prepare an insert statement
+ // Prepare an insert statement
         $sql = "INSERT INTO Assign (instr_last, iid, university, assign_t_created, assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3)
 		VALUES (:instr_last, :iid,:university, :assign_t_created, :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3)";
          
@@ -114,7 +142,10 @@ if(isset($_POST['Assig_num'])){
             // Attempt to execute the prepared statement
             if($stmt->execute()){
                 // Redirect to login page
-                header("location: QRPRepo.php");
+				 $_SESSION['sucess'] = 'the problem was activated';
+				header( 'Location: QRPRepo.php' ) ;
+				return; 
+               
             } else{
                 echo "Something went wrong. Please try again later.";
             }
@@ -122,9 +153,68 @@ if(isset($_POST['Assig_num'])){
   // Close statement
         unset($stmt);
     }
-    
+	
+	
+	
+	// We are tryiung to activate but already have an entry - just update the entry
+   if(isset($_POST['Activate']) && $Assign_data !== false){ 
+   
+	
+   
+  // changing assignment number so need a new time 
+   if($assign_num != $_POST['Assig_num'] ) {
+	$assign_num = $_POST['Assig_num'];
+	$assign_t_created = time();  
+		
+   }
+   	$sql = "UPDATE Assign SET  assign_t_created = ':assign_t_created', assign_num = ':assign_num', pp_flag1 = ':pp_flag1', pp_flag2= ':pp_flag2',
+			pp_flag3 = ':pp_flag3', pp_flag4 = ':pp_flag4', reflect_flag = ':reflect_flag', explore_flag = ':explore_flag', connect_flag = ':connect_flag',
+			society_flag = ':society_flag', postp_flag1 = ':postp_flag1', postp_flag2 = ':postp_flag2', postp_flag3 = ':postp_flag3'
+					WHERE assign_id =$assign_id";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+			':assign_t_created' => $assign_t_created,
+			':assign_num' => $assign_num,
+			':pp_flag1' => $pp_flag1,
+			':pp_flag2' => $pp_flag2,
+			':pp_flag3' => $pp_flag3,
+			':pp_flag4' => $pp_flag4,
+			':reflect_flag' => $reflect_flag,
+			':explore_flag' => $explore_flag,
+			':connect_flag' => $connect_flag,
+			':society_flag' => $society_flag,			
+			':postp_flag1' => $postp_flag1,
+			':postp_flag2' => $postp_flag2,
+			':postp_flag3' => $postp_flag3
+			));
+			 $_SESSION['sucess'] = 'the problem was edited and remains active';
+			header( 'Location: QRPRepo.php' ) ;
+			return; 
+   }
+   
+  // we are trying to de-activate the problem 
+   if(isset($_POST['Deactivate']) && $Assign_data !== false){
+	 
+			/* $sql = "DELETE FROM Problem WHERE problem_id = :zip";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(':zip' => $_POST['problem_id'])); */
+
+
+	 
+	 $sql = "DELETE FROM Assign WHERE assign_id = :zip";  
+	   $stmt = $pdo -> prepare($sql);
+	   $stmt -> execute(array(
+		':zip' => $assign_id
+	   ));
+	 
+	echo('the problem was deactivated'.$assign_id);
+	 $_SESSION['sucess'] = 'the problem was deactivated';
+	 	header( 'Location: QRPRepo.php' ) ;
+		return; 
+   }
+   
     // Close connection
-    unset($pdo);
+  //  unset($pdo);
 
 
 	
@@ -142,32 +232,55 @@ if(isset($_POST['Assig_num'])){
 
 <body>
 <header>
-<h2>Activate Problem - Please select the options that you want to assign with this problem</h2>
+<h2>Activate / Deactivate the Problem - Please select the options that you want to assign with this problem</h2>
 </header>	
 	 <div class="wrapper">
        
         <form  method="post">
-		
-			<input type= "text" Name="Assig_num" size="1" required> Assignment Number <br>
-           <?php 
-				if(! empty(trim($problem_data['preprob_3']))){
-					echo ('&nbsp;&nbsp;<input type="checkbox" name="Prelim_MC" value="Prelim_MC_q"> Preliminary Multiple Choice Question <br>');
+			<?php
+				if($activate_flag== 1){
+							 echo('<h4><input type="checkbox" name="Activate"  > Activate - make available to students </h4>');
+					
+				} else {
+					
+					echo('<h4><input type="checkbox" name="Deactivate" > Deactivate </h4>');
 				}
 			
-				if(! empty(trim($problem_data['preprob_4']))){
-					echo ('&nbsp;&nbsp; <input type="checkbox" name="Mics" value="Prelim_misc"> Additional Preliminary Activities <br>');
+			?>
+			
+				
+				
+							
+			<input type= "text" Name="Assig_num" size="1" <?php if(strlen($assign_num) !== 0){echo ('value ='.$assign_num);  }?> required> Assignment Number <br>
+			
+           <?php 
+				if(! empty(trim($problem_data['preprob_3']))){
+					
+					if($pp_flag3=='1'){
+							echo ('&nbsp;&nbsp;<input type="checkbox" name="Prelim_MC" value="Prelim_MC_q" checked> Preliminary Multiple Choice Question <br>');
+					} else {
+					echo ('&nbsp;&nbsp;<input type="checkbox" name="Prelim_MC" value="Prelim_MC_q"> Preliminary Multiple Choice Question <br>');
+					}
 				}
+				if(! empty(trim($problem_data['preprob_4']))){
+					if($pp_flag2 == '1') {
+						echo ('&nbsp;&nbsp; <input type="checkbox" name="Mics" value="Prelim_misc" checked> Additional Preliminary Activities <br>');	
+					} else {
+					echo ('&nbsp;&nbsp; <input type="checkbox" name="Mics" value="Prelim_misc"> Additional Preliminary Activities <br>');
+					}
+				}
+				
 			?>
 			
 			
-			<p><input type="checkbox" name="guess" value="Prelim_guess"> Preliminary Estimates </p>
-			<p><input type="checkbox" name="q_on_q" value="Prelim_q_on_q"> Questions about the Question </p>
+			<p><input type="checkbox" name="guess" <?php if($pp_flag1 =='1'){echo ('checked');  }?> > Preliminary Estimates </p>
+			<p><input type="checkbox" name="q_on_q" <?php if($pp_flag2 =='1'){echo ('checked');  }?>> Questions about the Question </p>
 			 Reflections:<br>
 			
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="reflect" value="reflection_reflect"> Reflect  <br>
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="explore" value="reflection_explore"> Explore  <br>
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="connect" value="reflection_connect"> Connect  <br>
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="society" value="reflection_society"> Society  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="reflect" <?php if($reflect_flag ==1){echo ('checked');  }?> > Reflect  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="explore" <?php if($explore_flag ==1){echo ('checked');  }?>> Explore  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="connect" <?php if($connect_flag ==1){echo ('checked');  }?> > Connect  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="society" <?php if($reflect_flag ==1){echo ('checked');  }?> > Society  <br>
 			<p><input type = "submit"></p>
 			
 			
