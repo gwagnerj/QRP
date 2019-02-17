@@ -410,7 +410,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	if($row2 == false){
 		echo($row['status']);
 	} else {
-		echo('Assign# = '.$row2["assign_ass_num"].'<br> Active');
+		echo('Asn '.$row2["assign_ass_num"].'<br> <span style = "color: red;" > Active </span>');
 	}
 	
 	/*  if ($row['problem_id']!=$row['active_prob_num']){

@@ -195,11 +195,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
   // we are trying to de-activate the problem 
    if(isset($_POST['Deactivate']) && $Assign_data !== false){
 	 
-			/* $sql = "DELETE FROM Problem WHERE problem_id = :zip";
-				$stmt = $pdo->prepare($sql);
-				$stmt->execute(array(':zip' => $_POST['problem_id'])); */
-
-
+	
 	 
 	 $sql = "DELETE FROM Assign WHERE assign_id = :zip";  
 	   $stmt = $pdo -> prepare($sql);
