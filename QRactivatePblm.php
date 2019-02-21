@@ -83,7 +83,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 		':zip' => $assign_id
 	   ));
 	 
-	echo('the problem was deactivated'.$assign_id);
+	//echo('the problem was deactivated'.$assign_id);
 	 $_SESSION['sucess'] = 'the problem was deactivated';
 	 	header( 'Location: QRPRepo.php' ) ;
 		return; 

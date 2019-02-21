@@ -109,9 +109,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             </div>
             <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
 			<br/>
-			 <p><h3>Proceed without login? </h3></p>
+	<!--		 <p><h3>Proceed without login? </h3></p>
 			 <p>(you will not be able to contribute or edit)</p>
-	  <p><a href="QRPRepo.php">View Problem Repository</a>.</p>
+	  <p><a href="QRPRepo.php">View Problem Repository</a>.</p>  -->
         </form>
     </div>
 </body>

@@ -46,6 +46,9 @@ table.a {
 	 .widget-7 { width:150px; } 
 	  .widget-8 { width:150px; } 
 	  .widget-9 { width:150px; } 
+	  .widget-5 { width:150px; } 
+	  .widget-11 { width:150px; } 
+	  .widget-12 { width:150px; } 
 	 
 	 
 .column-filter-widget { float:left; padding: 20px; border : none; width:200px;}
