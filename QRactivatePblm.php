@@ -36,11 +36,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
     $stmt->execute(array(':zip' => $_GET['users_id'],':probnum' => $_GET['problem_id']));
 	$Assign_data = $stmt -> fetch();
 	
-	// initialize a bunch of variables
-	$instr_last = $assign_t_created = $assign_num = $activate_flag = "";
-	$pp_flag1 = $pp_flag2 = $pp_flag3 =$pp_flag4 = $reflect_flag = $explore_flag=  "";
-	$assign_id = $connect_flag = $society_flag = $postp_flag1 =$postp_flag2 = $postp_flag3 =  "";
-	
+		
 	$prob_num=$_GET['problem_id'];	
 	$iid = $_GET['users_id'];
 	$university = $Users_data['university'];
@@ -65,39 +61,40 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 		$explore_flag = $Assign_data['explore_flag'];
 		$connect_flag = $Assign_data['connect_flag'];
 		$society_flag = $Assign_data['society_flag'];
+		$activate_flag = 0;
 	} else {
+		
+		// initialize a bunch of variables if we do not have a file in assign
 		$activate_flag = 1;	
+		
+		$instr_last =  $assign_num =  "";
+		$pp_flag1 = $pp_flag2 = $pp_flag3 =$pp_flag4 = $reflect_flag = $explore_flag=  "";
+		$assign_id = $connect_flag = $society_flag = $postp_flag1 =$postp_flag2 = $postp_flag3 =  "";
+		$assign_t_created = time();
+		
 	}
 
-// we dont have an entry and we are trying to activate - create a new entry 
+// we have a file and are trying to deactivate it  
+   if(isset($_POST['Deactivate']) && $Assign_data != false){
+	 
+	 $sql = "DELETE FROM Assign WHERE assign_id = :zip";  
+	   $stmt = $pdo -> prepare($sql);
+	   $stmt -> execute(array(
+		':zip' => $assign_id
+	   ));
+	 
+	echo('the problem was deactivated'.$assign_id);
+	 $_SESSION['sucess'] = 'the problem was deactivated';
+	 	header( 'Location: QRPRepo.php' ) ;
+		return; 
+   }
+
+
+
+// we dont have a file and we are trying to activate - create an new entry 
 if(isset($_POST['Activate']) && $Assign_data==false){
 	$activate_flag = 1;
-
- // Prepare an insert statement
-        $sql = "INSERT INTO Assign (instr_last, iid, university, assign_t_created, assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3)
-		VALUES (:instr_last, :iid,:university, :assign_t_created, :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3)";
-         
-        if($stmt = $pdo->prepare($sql)){
-            // Bind variables to the prepared statement as parameters
-            $stmt->bindParam(':instr_last', $instr_last, PDO::PARAM_STR);
-            $stmt->bindParam(':iid', $iid, PDO::PARAM_STR);
-            $stmt->bindParam(':university', $university, PDO::PARAM_STR);
-            $stmt->bindParam(':assign_t_created', $assign_t_created, PDO::PARAM_STR);
-		    $stmt->bindParam(':assign_num', $assign_num, PDO::PARAM_STR);
-		    $stmt->bindParam(':prob_num', $prob_num, PDO::PARAM_STR);
-			$stmt->bindParam(':pp_flag1', $pp_flag1, PDO::PARAM_STR);
-			$stmt->bindParam(':pp_flag2', $pp_flag2, PDO::PARAM_STR);
-			$stmt->bindParam(':pp_flag3', $pp_flag3, PDO::PARAM_STR);
-			$stmt->bindParam(':pp_flag4', $pp_flag4, PDO::PARAM_STR);
-			$stmt->bindParam(':postp_flag1', $postp_flag1, PDO::PARAM_STR);
-			$stmt->bindParam(':postp_flag2', $postp_flag2, PDO::PARAM_STR);
-			$stmt->bindParam(':postp_flag3', $postp_flag3, PDO::PARAM_STR);
-			$stmt->bindParam(':connect_flag', $connect_flag, PDO::PARAM_STR);
-			$stmt->bindParam(':explore_flag', $explore_flag, PDO::PARAM_STR);
-			$stmt->bindParam(':reflect_flag', $reflect_flag, PDO::PARAM_STR);
-			$stmt->bindParam(':society_flag', $society_flag, PDO::PARAM_STR);
-			
-            // Set parameters
+			// Set parameters
            
 		   $assign_num = htmlentities($_POST['Assig_num']);
 			$instr_last = $Users_data['last'];
@@ -138,76 +135,153 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			if(isset($_POST['postprob3'])){
 				$postp_flag3 = 1;
 			}
-		   
-            // Attempt to execute the prepared statement
-            if($stmt->execute()){
-                // Redirect to login page
-				 $_SESSION['sucess'] = 'the problem was activated';
+ 
+ // Prepare an insert statement
+        $sql = "INSERT INTO Assign (instr_last, iid, university, assign_t_created, assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3)
+		VALUES (:instr_last, :iid,:university, :assign_t_created, :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3)";
+         
+       
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+				':instr_last' => $instr_last,
+				':iid' => $iid,
+				':university' => $university,				
+				':assign_t_created' => $assign_t_created,
+				':assign_num' => $assign_num,
+				':prob_num' => $prob_num,
+				':pp_flag1' => $pp_flag1,
+				':pp_flag2' => $pp_flag2,
+				':pp_flag3' => $pp_flag3,
+				':pp_flag4' => $pp_flag4,
+				':postp_flag1' => $postp_flag1,
+				':postp_flag2' => $postp_flag2,
+				':postp_flag3' => $postp_flag3,
+				':reflect_flag' => $reflect_flag,
+				':explore_flag' => $explore_flag,
+				':connect_flag' => $connect_flag,
+				':society_flag' => $society_flag	
+				));
+
 				header( 'Location: QRPRepo.php' ) ;
 				return; 
-               
-            } else{
-                echo "Something went wrong. Please try again later.";
-            }
-        }
+
+
+
+	  
   // Close statement
-        unset($stmt);
+   //     unset($stmt);
     }
 	
 	
 	
-	// We are tryiung to activate but already have an entry - just update the entry
-   if(isset($_POST['Activate']) && $Assign_data !== false){ 
+	// We have a file and are trying to edit it- just update the entry
+   if(isset($_POST['Submitted']) && $Assign_data !== false){ 
    
+	/* echo ($_POST['Assig_num']);
+	echo ('<br>');
+	echo ($assign_num);
+	echo ('<br>');
+	echo ($pp_flag1);
+	echo ('<br>');
+	echo ($assign_t_created);
+	echo ('<br>');
+	echo ($prob_num);
+	echo ('<br>');
+	echo ($assign_id);
+	echo ('<br>');
+	die(); */
 	
-   
   // changing assignment number so need a new time 
    if($assign_num != $_POST['Assig_num'] ) {
 	$assign_num = $_POST['Assig_num'];
-	$assign_t_created = time();  
-		
+	$assign_t_created = time();  	
    }
-   	$sql = "UPDATE Assign SET  assign_t_created = ':assign_t_created', assign_num = ':assign_num', pp_flag1 = ':pp_flag1', pp_flag2= ':pp_flag2',
-			pp_flag3 = ':pp_flag3', pp_flag4 = ':pp_flag4', reflect_flag = ':reflect_flag', explore_flag = ':explore_flag', connect_flag = ':connect_flag',
-			society_flag = ':society_flag', postp_flag1 = ':postp_flag1', postp_flag2 = ':postp_flag2', postp_flag3 = ':postp_flag3'
-					WHERE assign_id =$assign_id";
+   
+		if(isset($_POST['q_on_q'])){
+			$pp_flag1 = 1;
+		} else {
+			$pp_flag1 = 0;
+		}
+		if(isset($_POST['guess'])){
+			$pp_flag2 = 1;
+		} else {
+			$pp_flag2 = 0;
+		}
+		if(isset($_POST['Prelim_MC'])){
+			$pp_flag3 = 1;
+		} else {
+			$pp_flag3 = 0;
+		}
+		if(isset($_POST['Mics'])){
+			$pp_flag4 = 1;
+		} else {
+			$pp_flag4 = 0;
+		}	
+		if(isset($_POST['reflect'])){
+			$reflect_flag = 1;
+		} else {
+			$reflect_flag = 0;
+		}
+		if(isset($_POST['explore'])){
+			$explore_flag = 1;
+		} else {
+			$explore_flag = 0;
+		}
+		if(isset($_POST['connect'])){
+			$connect_flag = 1;
+		} else {
+			$connect_flag = 0;
+		}
+		if(isset($_POST['society'])){
+			$society_flag = 1;
+		} else {
+			$society_flag = 0;
+		}
+		if(isset($_POST['postprob1'])){
+			$postp_flag1 = 1;
+		} else {
+			$postp_flag1 = 0;
+		}
+		if(isset($_POST['postprob2'])){
+			$postp_flag2 = 1;
+		} else {
+			$postp_flag2 = 0;
+		}
+		if(isset($_POST['postprob3'])){
+			$postp_flag3 = 1;
+		} else {
+			$postp_flag3 = 0;
+		}
+  // echo ('IM here');
+ //  die();
+   
+   	$sql = "UPDATE Assign SET  assign_t_created = :assign_t_created, assign_num = :assign_num, pp_flag1 = :pp_flag1, pp_flag2= :pp_flag2,
+			pp_flag3 = :pp_flag3, pp_flag4 = :pp_flag4, reflect_flag = :reflect_flag, explore_flag = :explore_flag, connect_flag = :connect_flag,
+			society_flag = :society_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3
+					WHERE assign_id = :assign_id";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
-			':assign_t_created' => $assign_t_created,
-			':assign_num' => $assign_num,
-			':pp_flag1' => $pp_flag1,
-			':pp_flag2' => $pp_flag2,
-			':pp_flag3' => $pp_flag3,
-			':pp_flag4' => $pp_flag4,
-			':reflect_flag' => $reflect_flag,
-			':explore_flag' => $explore_flag,
-			':connect_flag' => $connect_flag,
-			':society_flag' => $society_flag,			
-			':postp_flag1' => $postp_flag1,
-			':postp_flag2' => $postp_flag2,
-			':postp_flag3' => $postp_flag3
+			'assign_id' => $assign_id,
+			'assign_t_created' => $assign_t_created,
+			'assign_num' => $assign_num,
+			'pp_flag1' => $pp_flag1,
+			'pp_flag2' => $pp_flag2,
+			'pp_flag3' => $pp_flag3,
+			'pp_flag4' => $pp_flag4,
+			'reflect_flag' => $reflect_flag,
+			'explore_flag' => $explore_flag,
+			'connect_flag' => $connect_flag,
+			'society_flag' => $society_flag,			
+			'postp_flag1' => $postp_flag1,
+			'postp_flag2' => $postp_flag2,
+			'postp_flag3' => $postp_flag3
 			));
 			 $_SESSION['sucess'] = 'the problem was edited and remains active';
 			header( 'Location: QRPRepo.php' ) ;
 			return; 
    }
    
-  // we are trying to de-activate the problem 
-   if(isset($_POST['Deactivate']) && $Assign_data !== false){
-	 
-	
-	 
-	 $sql = "DELETE FROM Assign WHERE assign_id = :zip";  
-	   $stmt = $pdo -> prepare($sql);
-	   $stmt -> execute(array(
-		':zip' => $assign_id
-	   ));
-	 
-	echo('the problem was deactivated'.$assign_id);
-	 $_SESSION['sucess'] = 'the problem was deactivated';
-	 	header( 'Location: QRPRepo.php' ) ;
-		return; 
-   }
+ 
    
     // Close connection
   //  unset($pdo);
@@ -235,7 +309,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
         <form  method="post">
 			<?php
 				if($activate_flag== 1){
-							 echo('<h4><input type="checkbox" name="Activate"  > Activate - make available to students </h4>');
+							 echo('<h4><input type="checkbox" name="Activate" checked > Activate - make available to students </h4>');
 					
 				} else {
 					
@@ -277,14 +351,18 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="explore" <?php if($explore_flag ==1){echo ('checked');  }?>> Explore  <br>
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="connect" <?php if($connect_flag ==1){echo ('checked');  }?> > Connect  <br>
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="society" <?php if($reflect_flag ==1){echo ('checked');  }?> > Society  <br>
+			<input type="hidden" name="Submitted" value="name" />
 			<p><input type = "submit"></p>
-			
-			
 			
         </form>
     </div>    
  
-<br>
-<a href="QRPRepo.php">Finished or Cancel</a>
+	<?php
+		if($activate_flag== 1){
+				echo ('<p> &nbsp; </p><hr>');
+				echo ('<p><a href="QRPRepo.php">Cancel</a></p>');
+		}
+		
+		?>
 </body>
 </html>

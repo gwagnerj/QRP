@@ -122,6 +122,7 @@ $preview="Null";
 				$row = $stmt->fetch(PDO::FETCH_ASSOC);
 				$security = $row['security'];
 				$users_id=$row['users_id'];
+				
 		}
 
 
@@ -429,7 +430,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
 		echo('<a href="suspendpblm.php?problem_id='.$row['problem_id'].'">Susp-unSus</a> / ');
 	}
-		echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$row['users_id'].'">Act-deAct</a>');
+		echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$users_id.'">Act-deAct</a>');
 	//echo('<a href="downloadpblm.php?problem_id='.$row['problem_id'].'">Download</a>');
 	  echo("</td><td>");
 	echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="PreView"></form>');
