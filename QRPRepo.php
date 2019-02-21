@@ -43,8 +43,13 @@ table.a {
     table-layout: fixed;
     width: 100%;    
 	}
-	
-.column-filter-widget { float:left; padding: 5px; }
+	 .widget-7 { width:150px; } 
+	  .widget-8 { width:150px; } 
+	  .widget-9 { width:150px; } 
+	 
+	 
+.column-filter-widget { float:left; padding: 20px; border : none; width:200px;}
+
 .column-filter-widget select { display: block; }
 .column-filter-widgets a.filter-term { display: block; text-decoration: none; padding-left: 10px; font-size: 90%; }
 .column-filter-widgets a.filter-term:hover { text-decoration: line-through !important; }
@@ -474,11 +479,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		"oColumnFilterWidgets": {
 		"aiExclude": [ 0,1,2,3,4,6,10,13,14,15 ] }});
 	
-//	 $(".column-filter-widget").css({"float":"left","padding": "5px"});
-//	$(".column-filter-widget").css({"background-color":"lightyellow","padding": "5px"});
-//	 $(".column-filter-widget").css({"display":"block"});
-	// $(".column-filter-widgets").css({" display": "block", "text-decoration": "none", "padding-left": "10px", "font-size": "90%"});
-	
+
 	// jQuery('#table_format').ddTableFilter();
 	} );
 	
