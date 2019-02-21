@@ -122,7 +122,6 @@ $preview="Null";
 				$row = $stmt->fetch(PDO::FETCH_ASSOC);
 				$security = $row['security'];
 				$users_id=$row['users_id'];
-				
 		}
 
 
@@ -214,7 +213,8 @@ FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id ;");
 //echo (FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id;";);    SELECT  Assign.prob_num as active_prob_num , FROM Assign ");
 $stmt = $pdo->query($qstmnt);
 while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
-    echo "<tr><td>";
+   
+     echo "<tr><td>";
 	
 	// echo ('<div class = "probnum">');
 	
@@ -374,9 +374,6 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 			echo('</font>');
 		}
 	
-	
-	
-	//echo(htmlentities($row['name']));
     echo("</td><td>");
 	
 	
@@ -393,32 +390,42 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	$sec_des="";
 	if(strlen($row['s_concept'])!=0){$sec_des="<br>2)&nbsp;";}
 	
-	
 	echo("1)&nbsp;".htmlentities($row['p_concept']).$sec_des.htmlentities($row['s_concept']));
     echo("</td><td>");
-	//echo(htmlentities($row['s_concept']));
-   // echo("</td><td>");
+	
     echo(htmlentities($row['title']));
     echo("</td><td>");
-	
-	// if it is active for this user print active for the status
-	$asstmnt = "SELECT Assign.assign_num AS assign_ass_num 
-	FROM Assign 
-	WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid=".$users_id.");";
-		
-	$stmt2 = $pdo->query($asstmnt);
-	 $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-	if($row2 == false){
-		echo($row['status']);
+	// if we have over 7 students that have completed it successfully we should change the status to circulated if it is not already
+	if($eff_stu_tot > 6 && $row['status'] != 'Circulated'){
+		$status_update = 'Circulated';
+		$sql = "UPDATE Problem SET status = :status WHERE problem_id =:problem_id";
+		$stmt4 = $pdo->prepare($sql);
+			$stmt4->execute(array(
+			'status' => $status_update,
+			'problem_id' => $row['problem_id']
+			));
 	} else {
-		echo('Asn '.$row2["assign_ass_num"].'<br> <span style = "color: red;" > Active </span>');
+		$status_update = '';
 	}
 	
-	/*  if ($row['problem_id']!=$row['active_prob_num']){
-		echo($row['status']);
-	} else {
-		echo('Active');
-	}  */
+	// if it is active for this user print active for the status
+			$asstmnt = "SELECT Assign.assign_num AS assign_ass_num 
+			FROM Assign 
+			WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid=".$users_id.");";
+				
+			$stmt2 = $pdo->query($asstmnt);
+			 $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+			if($row2 == false){
+				if($status_update =='Circulated'){
+					echo('Circulated');
+				} else {
+				echo($row['status']);
+				}
+			} else {
+				echo('Asn '.$row2["assign_ass_num"].'<br> <span style = "color: red;" > Active </span>');
+			}
+			
+	
 	
     echo("</td><td>");
 
