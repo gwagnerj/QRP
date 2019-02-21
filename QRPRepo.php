@@ -431,12 +431,16 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 			// test to see if it is being used by other people and display inuse
 			$usestmnt = "SELECT Assign.instr_last AS instr_last_nm 
 			FROM Assign 
-			WHERE (Assign.prob_num =". $row['problem_id'].");";
+			WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid <>".$users_id.");";
 				
 				$stmt5 = $pdo->query($usestmnt);
+				$i=1;
 				while ( $row5 = $stmt5->fetch(PDO::FETCH_ASSOC) ) {
-				
-				echo("<br><font size=1>".$row5['instr_last_nm']);
+						if($i==1){
+							echo('<br><font size=1> in use by:');
+							$i=0;
+						}
+					echo("<br><font size=1>".$row5['instr_last_nm']);
 				}
 			
 			
