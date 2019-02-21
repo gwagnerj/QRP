@@ -49,7 +49,6 @@ table.a {
 	 
 	 
 .column-filter-widget { float:left; padding: 20px; border : none; width:200px;}
-
 .column-filter-widget select { display: block; }
 .column-filter-widgets a.filter-term { display: block; text-decoration: none; padding-left: 10px; font-size: 90%; }
 .column-filter-widgets a.filter-term:hover { text-decoration: line-through !important; }
@@ -429,8 +428,18 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 			} else {
 				echo('Asn '.$row2["assign_ass_num"].'<br> <span style = "color: red;" > Active </span>');
 			}
+			// test to see if it is being used by other people and display inuse
+			$usestmnt = "SELECT Assign.instr_last AS instr_last_nm 
+			FROM Assign 
+			WHERE (Assign.prob_num =". $row['problem_id'].");";
+				
+				$stmt5 = $pdo->query($usestmnt);
+				while ( $row5 = $stmt5->fetch(PDO::FETCH_ASSOC) ) {
+				
+				echo("<br><font size=1>".$row5['instr_last_nm']);
+				}
 			
-	
+			
 	
     echo("</td><td>");
 
