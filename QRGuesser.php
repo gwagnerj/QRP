@@ -223,9 +223,6 @@ if ($partsFlag[9]){ ?>
 -->
 
 
-
-
-
 </main>
 </body>
 </html>

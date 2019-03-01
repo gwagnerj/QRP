@@ -267,15 +267,17 @@ CREATE TABLE IF NOT EXISTS `Student` (
   `instr_last` varchar(50) NOT NULL,
    `iid` varchar(16) NOT NULL,
    `university` varchar(255) NOT NULL,
-   time_create time,
+   'problem_id' int,
+   'assign_id' int,
+   time_create timestamp,
    prog_pp1 int,
-   time_pp1 time,
+   time_pp1 timestamp,
    prog_pp2 int,
-   time_pp2 time,
+   time_pp2 timestamp,
    prog_pp3 int,
-   time_pp3 time,
+   time_pp3 timestamp,
    prog_pp4 int,
-   time_pp4 time,
+   time_pp4 timestamp,
    guess_a double,
     guess_b double,
 	guess_c double,
@@ -287,13 +289,37 @@ CREATE TABLE IF NOT EXISTS `Student` (
 	 guess_j double,
    score int,
 	post_pblm1 int,
-  time_post_pblm1 time,
+  time_post_pblm1 timestamp,
   post_pblm2 int,
-  time_post_pblm2 time,
+  time_post_pblm2 timestamp,
   post_pblm3 int,
-  time_post_pblm3 time,
+  time_post_pblm3 timestamp,
+   help_coins_used int,
+   assist_coins_gained int,
   PRIMARY KEY (`student_id`)
   );
+
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS `Coinbank` (
+ 'coinbank_id' int(11) NOT NULL AUTO_INCREMENT,
+ `student_id` int,
+  `instr_last` varchar(50) NOT NULL,
+   `iid` varchar(16) NOT NULL,
+   `university` varchar(255) NOT NULL,
+   help_coins_bal int,
+   assist_coins_bal int,
+  PRIMARY KEY (`student_id`)
+  );
+
+
+
+
+
+
 
 
 
