@@ -223,12 +223,12 @@ if ( isset($_SESSION['success']) ) {
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
 <form method="POST">
 	<p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
-	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
+	
 	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> ></p>
 	<p><font color=#003399>Instructor ID: </font><input type="text" name="iid" id="iid" size=5 value=<?php echo($iid.' ');?> >
 	<font color=#003399 >  &nbsp; &nbsp; &nbsp;  or if you don't know: <a href="getiid.php"><b>Click Here</b></a></font></p>
 <!--	<p><font color=#003399>script_flag: </font><input type="number" name="s_flag" id="script_flag" size=3 value=<?php echo($sc_flag);?> ></p>  -->
-	
+	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
 	<p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	</form>
 
