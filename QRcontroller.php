@@ -94,8 +94,10 @@ if (!isset($_SESSION['progress'])) {
 					
 					// show them the actual numbered problem
 					
-					echo('show them the problem');
-					die();
+						header("Location: QRdisplayPblm.php");
+						return;
+					
+					
 					
 					
 					
