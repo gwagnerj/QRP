@@ -44,22 +44,19 @@
 		
 	}
 
-	if(isset($_POST['index'])){
+	if(isset($_POST['pin'])){
 		
-		$index = htmlentities($_POST['index']);
-		if ($index>200 or $index<1){
-				$_SESSION['error']='Your PIN should be between 2 and 200.';	
+		$pin = htmlentities($_POST['pin']);
+		if ($pin>10000 or $pin<1){
+				$_SESSION['error']='Your PIN should be between 1 and 10000.';	
 			} else {
-			$_SESSION['index']=$index;
+				$_SESSION['pin']=$pin;
+				
+				$index = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
+				$_SESSION['index'] = $index;
+				
+				
 			}
-		
-			/*
-				See comment above
-			if(filter_var($index,FILTER_VALIDATE_INT,$PIN_Check) === FALSE){
-				set($_SESSION['error']);
-				echo'invalid data';
-			} */
-		
 		
 	} else {
 		$_SESSION['error']='Your PIN is Required';
@@ -68,27 +65,26 @@
 
 	if(isset($_POST['iid'])){
 		$iid = htmlentities($_POST['iid']);
-		$_SESSION['problem_id']=$iid;
-		
-		
+		$_SESSION['iid']=$iid;
 		
 				$sql = " SELECT 'user_id' FROM Users WHERE users_id = $iid" ;
 					$stmt = $pdo->query($sql);
 					if($stmt->rowCount()){
-						//echo $stmt->rowcount();	
 						$sql2 = " SELECT 'iid' FROM Assign WHERE iid = $iid" ;
 						$stmt2 = $pdo->query($sql2);
 						if($stmt2->rowCount()){
 								$sql3 = "SELECT * FROM Assign WHERE iid=$iid AND prob_num=$problem_id" ;
 								$stmt3 = $pdo->query($sql3);
 								if($stmt3->rowCount()){
-									// put the code in here to retrieve the problem infromation and go to the controller
+									// go the controller
 									$_SESSION['progress']=1;
+									echo('can I put anythiung here?');
 									
+									header("Location: QRcontroller.php");
+									return; 
 									
 								} else {
 
-									//echo 'The Instructor has not made this problem active. Please check with your instrictor';	
 									$_SESSION['error']	='The Instructor with this ID has not made this problem active.';	
 								}									
 					
@@ -96,55 +92,14 @@
 					
 						} else {
 							
-						//echo 'The Instructor for this ID has no active problems.';	
 						$_SESSION['error']	='The Instructor for this ID has no active problems';	
 						}
 					
 					} else {
-					//echo 'The Instructor ID is incorrect.';	
 					$_SESSION['error']	='The Instructor ID is not in the database.';	
 					}
 					
-					/* if($rowcnt=$conn->query($sql)) {
 					
-					
-							
-							if($rowcnt->fetchColumn()==0) {
-									$_SESSION['error'] = 'Unable to find this instructor Check the Instructors ID';
-								
-							} else {
-						
-								$sql2 = " SELECT iid FROM Assign WHERE iid = :iid" ;
-								$stmt = $pdo->prepare($sql);
-								$stmt->execute(array(
-								':iid' => $iid
-								));
-								
-								$row = $stmt->fetch(PDO::FETCH_ASSOC);
-								if($row->fetchColumn()==0) {
-										$_SESSION['error'] = 'This instructor does not have any active problems - please contact your instructor';
-									
-								} else {
-								
-											$sql = " SELECT * FROM Assign WHERE iid = :iid AND prob_num = :prob_num" ;
-										$stmt = $pdo->prepare($sql);
-										$stmt->execute(array(
-										':iid' => $iid,
-										':prob_num' => $problem_id
-										));
-										
-										$row = $stmt->fetch(PDO::FETCH_ASSOC);
-										if($row->fetchColumn()==0) {
-												$_SESSION['error'] = 'unable to find this problem for this instructor - check problem and instructor number';
-											
-										} else {
-										$instr_last = $row['instr_last'];
-										$_SESSION['instr_last'] = $instr_last;
-					
-										}
-								}
-								
-							}	 */
 					} else {
 						
 					$_SESSION['error']='The Instructor ID is Required';	
@@ -152,41 +107,6 @@
 						
 					}
 			
-		
-
-		
-		
-					
-			
-			
-		
-		
-		
-		
-		
-		
-		
-			
-		
-		
-	if (isset($_POST['problem_id']) and isset($_POST['index']) and isset($_POST['iid']) and !isset($_SESSION['error'])) {
-		
-		// Set the progress to 1 and go to the controller otherwise tell give a message of what is wrong
-		
-		$_SESSION['progress']=1;
-		
-		
-		
-		
-		
-		
-	}
-		
-		
-
-
-
-
 
 
 	?>
@@ -224,7 +144,7 @@ if ( isset($_SESSION['success']) ) {
 <form method="POST">
 	<p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
 	
-	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> ></p>
+	<p><font color=#003399>PIN: </font><input type="number" name="pin" id="pin_id" size=3 value=<?php echo($pin);?> ></p>
 	<p><font color=#003399>Instructor ID: </font><input type="text" name="iid" id="iid" size=5 value=<?php echo($iid.' ');?> >
 	<font color=#003399 >  &nbsp; &nbsp; &nbsp;  or if you don't know: <a href="getiid.php"><b>Click Here</b></a></font></p>
 <!--	<p><font color=#003399>script_flag: </font><input type="number" name="s_flag" id="script_flag" size=3 value=<?php echo($sc_flag);?> ></p>  -->
