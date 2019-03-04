@@ -262,17 +262,16 @@ ALTER TABLE Problem
   ADD qr_comments text
   ;
 
-CREATE TABLE IF NOT EXISTS `Student` (
-  `student_id` int(11) NOT NULL AUTO_INCREMENT,
-  'problem_id' int,
-  'pin' int,
-   `iid` varchar(16) NOT NULL, 
-	'problem_id' int,
-	 'index' int,
-	'assign_id' int,
-  `instr_last` varchar(50) NOT NULL,
-   `university` varchar(255) NOT NULL,
-   time_create timestamp,
+
+CREATE TABLE IF NOT EXISTS Student (
+  student_id int(11) NOT NULL AUTO_INCREMENT,
+	problem_id int,
+	pin int,
+   iid int, 
+	 dex int,
+	assign_id int,
+  instr_last varchar(50),
+   university varchar(255),
    time_pp1 timestamp,
    time_pp2 timestamp,
    time_pp3 timestamp,
@@ -292,10 +291,9 @@ CREATE TABLE IF NOT EXISTS `Student` (
   time_post_pblm3 timestamp,
    help_coins_used int,
    assist_coins_gained int,
-  PRIMARY KEY (`student_id`)
-  );
-
-
+    time_created datetime DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (`student_id`))
+ENGINE=InnoDB CHARACTER SET = utf8;
 
 
 
