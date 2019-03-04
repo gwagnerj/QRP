@@ -263,8 +263,8 @@ ALTER TABLE Problem
   ;
 
 
-CREATE TABLE IF NOT EXISTS Student (
-  student_id int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS Activity (
+  activity_id int(11) NOT NULL AUTO_INCREMENT,
 	problem_id int,
 	pin int,
    iid int, 
@@ -272,6 +272,11 @@ CREATE TABLE IF NOT EXISTS Student (
 	assign_id int,
   instr_last varchar(50),
    university varchar(255),
+   pp1 int,
+   pp2 int,
+   pp3 int,
+   pp4 int,
+   time_created timestamp DEFAULT CURRENT_TIMESTAMP,
    time_pp1 timestamp,
    time_pp2 timestamp,
    time_pp3 timestamp,
@@ -286,13 +291,15 @@ CREATE TABLE IF NOT EXISTS Student (
     guess_i double,
 	 guess_j double,
    score int,
-  time_post_pblm1 timestamp,
+	post_pblm1 int,
+	post_pblm2 int,
+	post_pblm3 int,
+ time_post_pblm1 timestamp,
   time_post_pblm2 timestamp,
   time_post_pblm3 timestamp,
    help_coins_used int,
    assist_coins_gained int,
-    time_created datetime DEFAULT CURRENT_TIMESTAMP,
-PRIMARY KEY (`student_id`))
+PRIMARY KEY (`activity_id`))
 ENGINE=InnoDB CHARACTER SET = utf8;
 
 

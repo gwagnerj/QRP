@@ -5,6 +5,7 @@
 	$stu_name = '';
 	$problem_id= '';
 	$index='';
+	$pin='';
 	$iid='';
 	$instr_last='';
 
@@ -52,8 +53,8 @@
 			} else {
 				$_SESSION['pin']=$pin;
 				
-				$index = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
-				$_SESSION['index'] = $index;
+				$dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
+				$_SESSION['dex'] = $dex;
 				
 				
 			}
