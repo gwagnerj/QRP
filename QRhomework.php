@@ -2,6 +2,7 @@
 	require_once "pdo.php";
 	session_start();
 	$_SESSION['progress']=0;
+	$_SESSION['checker']=0;  // tells where the getiid where to come back to here or the checker
 	$stu_name = '';
 	$problem_id= '';
 	$index='';
@@ -142,7 +143,8 @@ if ( isset($_SESSION['success']) ) {
 
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
-<form method="POST">
+<form autocomplete="off" method="POST">
+	
 	<p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
 	
 	<p><font color=#003399>PIN: </font><input type="number" name="pin" id="pin_id" size=3 value=<?php echo($pin);?> ></p>

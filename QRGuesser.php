@@ -131,7 +131,7 @@ if ( $row === false ) {
 
 <body>
 <header>
-<h1>QRHomework Problem Preliminaries</h1>
+<h1>QRHomework Preliminaries Estimates</h1>
 </header>
 <main>
 
@@ -206,6 +206,17 @@ if ($partsFlag[9]){ ?>
 
 
 </form>
+
+<?php
+// need to check to make sure they are all filled out (score is 100) then write the time stamp for time_pp1 in the Activity table
+// also need to get the PIN IID and problem number from the Session data that checker.php should be sending
+// write 2 into the Activity table for pp1
+
+
+?>
+
+
+
 
  <!--<form method="get" >
 <p><input type = "submit" value="Finished"/> </p>

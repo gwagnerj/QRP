@@ -101,10 +101,13 @@ table.a {
 		echo("</table>");
 		echo ('</div>');	
 
-	
-
-
+		echo ('<p></p>');
+		echo ('<p></p>');
+		if($_SESSION['checker']!=1){
+				echo ('<font color=#003399 >  &nbsp; &nbsp; &nbsp;  <a href="QRhomework.php"><b>Return</b></a></font></p>');
+		} else {
+				echo ('<font color=#003399 >  &nbsp; &nbsp; &nbsp;  <a href="QRPindex.php"><b>Return</b></a></font></p>');	
+			
+		}
 ?>
-<p></p>
-<p></p>
-<font color=#003399 >  &nbsp; &nbsp; &nbsp;  <a href="QRhomework new with controller.php"><b>Return</b></a></font></p>
+

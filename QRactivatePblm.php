@@ -344,7 +344,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			
 			
 			<p><input type="checkbox" name="guess" <?php if($pp_flag1 =='1'){echo ('checked');  }?> > Preliminary Estimates </p>
-			<p><input type="checkbox" name="q_on_q" <?php if($pp_flag2 =='1'){echo ('checked');  }?>> Questions about the Question </p>
+			<p><input type="checkbox" name="q_on_q" <?php if($pp_flag2 =='1'){echo ('checked');  }?>> Planning Questions </p>
 			 Reflections:<br>
 			
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="reflect" <?php if($reflect_flag ==1){echo ('checked');  }?> > Reflect  <br>

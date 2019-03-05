@@ -12,6 +12,20 @@ var reflect_flag = localStorage.getItem('reflect_flag');
 var explore_flag = localStorage.getItem('explore_flag');
 var connect_flag = localStorage.getItem('connect_flag');
 var society_flag = localStorage.getItem('society_flag');
+var pp1 = localStorage.getItem('pp1');
+var pp2 = localStorage.getItem('pp2');
+var pp3 = localStorage.getItem('pp3');
+var pp4 = localStorage.getItem('pp4');
+var time_pp1 = localStorage.getItem('time_pp1');
+var time_pp2 = localStorage.getItem('time_pp2');
+var time_pp3 = localStorage.getItem('time_pp3');
+var time_pp4 = localStorage.getItem('time_pp4');
+
+console.log ('reflect_flag is ',reflect_flag);
+console.log ('explore_flag is ',explore_flag);
+console.log ('connect_flag is ',connect_flag);
+console.log ('society_flag is ',society_flag);
+
 var iid = localStorage.getItem('iid');
 var title = localStorage.getItem('title');
 var static_flag = localStorage.getItem('static_flag');
@@ -157,11 +171,18 @@ var oEndMU = new RegExp(sEndMU,"g");
 
 $(document).ready(function(){
 	
-	  var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Problem: "+problem_id+"\xa0\xa0"+"PIN: " + pin +"\xa0\xa0 ");
+	
+	 var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Problem: "+problem_id+"\xa0\xa0"+"PIN: " + pin +"\xa0\xa0 ");
 	  
 	  var auth_field = (nm_author.length > 1 ? " by "+nm_author : "");
 	  var ref_field = (specif_ref.length > 1 ? " similar to\xa0"+specif_ref : "");
-	  var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0  Contributed by\xa0"+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field);
+	 var pp_txt = (pp1==2 ? ' Preliminary Estimates completed at '+time_pp1 :"")+(pp2==2 ? ' Planning Questions completed at '+time_pp2 :"")
+			+ (pp3==2 ? ' Preliminary Activity 3 completed at '+time_pp3 :"")+(pp4==2 ? ' Preliminary Activity 4 completed at '+time_pp4 :"");
+	 var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0  Contributed by\xa0"+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field+" \xa0\xa0|\xa0\xa0"  + pp_txt);
+
+		
+
+
 	  
 	 // var Head_txt4 = $("<p></p>").text("Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field );
 
@@ -196,7 +217,8 @@ $(document).ready(function(){
 				$('#conn').hide();
 				$('#soci').hide();
 				
-				
+				// if(reflect_flag==1){$('#refl').show();}
+				// if(explore_flag==1){$('#expl').show();}
 				
 				
 				
@@ -431,8 +453,9 @@ $(document).ready(function(){
 			}	
 
 			// replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=index
-
-			var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&dex_num='+index;
+//!!~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;                             
+			var newHref = 'http://localhost/QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;
 			// console.log (newHref);
 			var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
 			//var oldHref = $('a').attr('href');
@@ -634,6 +657,7 @@ $(document).ready(function(){
 
 
 			// this is to change the color of the buttons depending on the state
+			
 			var white1 = false;
 			var bgcolor1;
 			var white2 = false;
@@ -657,11 +681,86 @@ $(document).ready(function(){
 			   $("#basecase").toggle();
 				$('#basecasebutton').css("background-color", "lightgray");
 				
-			   bgcolor4 = $('#reflectionbutton').css('backgroundColor'); 
-			   $("#reflections").toggle();
-			  $('#reflectionbutton').css("background-color", "lightgray");
-			  
-			  
+				 bgcolor4 = $('#reflectionbutton').css('backgroundColor'); 
+					   $("#reflections").toggle();
+					  $('#reflectionbutton').css("background-color", "lightgray");
+				
+				
+				
+				
+		/* 	// if the instructor is not requiring any reflections turn then dont show them
+			if(reflect_flag!=0 || explore_flag!=0 || connect_flag!=0 || society_flag!=0){	
+					   bgcolor4 = $('#reflectionbutton').css('backgroundColor'); 
+					   $("#reflections").toggle();
+					  $('#reflectionbutton').css("background-color", "white");
+					  $("#reflections").css("background-color", "ivory");
+					   $("#reflections").css("border-style", "solid");
+			 
+				 if(reflect_flag==0){
+					
+						if (white5 = !white5) {
+							 $('#refl').css("background-color", "bgcolor5");
+						
+						} else {
+							bgcolor5 = $('#refl').css('backgroundColor');
+							$('#refl').css("background-color", "lightgray");
+						}
+					$("#reflect").toggle();
+					$('.nex-text-div').toggle();
+					
+				} 
+			
+			console.log(reflect_flag, explore_flag, connect_flag, society_flag);
+			
+			
+				if(explore_flag==0){
+						if (white6 = !white6) {
+							 $('#expl').css("background-color", bgcolor6);
+						
+						} else {
+							bgcolor6 = $('#expl').css('backgroundColor');
+							$('#expl').css("background-color", "lightgray");
+						}
+					$("#explor").toggle();
+					$('.nex-text-div2').toggle();
+			
+				} 
+			
+					if (connect_flag==0){
+						if (white7 = !white7) {
+								 $('#conn').css("background-color", bgcolor7);
+							
+							} else {
+								bgcolor7 = $('#conn').css('backgroundColor');
+								$('#conn').css("background-color", "lightgray");
+							}
+							$("#connec").toggle();
+							$('.nex-text-div3').toggle();
+						 }
+			
+					if (society_flag==0){
+							 if (white8 = !white8) {
+								 $('#soci').css("background-color", bgcolor7);
+							
+							} else {
+								bgcolor8 = $('#soci').css('backgroundColor');
+								$('#soci').css("background-color", "lightgray");
+							}
+							$("#societ").toggle();
+							$('.nex-text-div4').toggle();
+					
+					}
+			
+			}	
+			 */
+			
+			
+			
+			
+			
+			
+			
+			
 
 			   // toggle the content between show and hide on click of the button
 				$('#directionsbutton').click(function(e){
@@ -738,7 +837,8 @@ $(document).ready(function(){
 								$('.display4').hide();
 								
 				 
-			   $('#reflectionbutton').click(function(e){
+
+			  $('#reflectionbutton').click(function(e){
 					 e.preventDefault();
 					   if (white4 = ! white4) {
 							bgcolor4 = $(this).css('backgroundColor');
@@ -775,6 +875,33 @@ $(document).ready(function(){
 				 });
 				 
 				 
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			$('#refl').click(function(e){
 					 e.preventDefault();
 					  if (white5 = !white5) {
@@ -904,6 +1031,16 @@ $(document).ready(function(){
 			$('#society_box').on('input propertychange keyup change', function(){ this.rows = this.value.match(/\n/g).length + 1 });
 			
 	
+
+
+
+
+
+
+
+
+
+
 // if we are sent a 0 or 1 for the PIN we should display just the base-case without directions headers or 
 	
 	//console.log(static_flag);

@@ -13,9 +13,18 @@ $pass = array(
 	'connect_flag' => $_SESSION['connect_flag'],
 	'society_flag' => $_SESSION['society_flag'],
 	'iid' => $_SESSION['iid'],
+	'pp1' => $_SESSION['pp1'],
+	'pp2' => $_SESSION['pp2'],
+	'pp3' => $_SESSION['pp3'],
+	'pp4' => $_SESSION['pp4'],
+	'time_pp1' => $_SESSION['time_pp1'],
+	'time_pp2' => $_SESSION['time_pp2'],
+	'time_pp3' => $_SESSION['time_pp3'],
+	'time_pp4' => $_SESSION['time_pp4'],
 	
 );
-
+// echo ($pass['society_flag']);
+//die();
 echo '<script>';
 echo 'var pass = ' . json_encode($pass) . ';';
 echo '</script>';
@@ -45,6 +54,21 @@ $(document).ready(function(){
 		var problem = pass['problem_id'];
 		var s_name = pass['stu_name'];
 		var pin = pass['pin'];
+		var iid = pass['iid'];
+		var reflect_flag = pass['reflect_flag'];
+		
+		var explore_flag = pass['explore_flag'];
+		var connect_flag = pass['connect_flag'];
+		var society_flag = pass['society_flag'];
+		var pp1 = pass['pp1'];
+		var pp2 = pass['pp2'];
+		var pp3 = pass['pp3'];
+		var pp4 = pass['pp4'];
+		var time_pp1 = pass['time_pp1'];
+		var time_pp2 = pass['time_pp2'];
+		var time_pp3 = pass['time_pp3'];
+		var time_pp4 = pass['time_pp4'];
+		
 		var statusFlag=true;
 			//alert ('here I am');
 		if($.trim(problem) != '' && problem > 0 && problem < 100000 && dex>=1 && dex<=200){
@@ -117,12 +141,20 @@ $(document).ready(function(){
 							localStorage.setItem('problem_id',problem);
 							localStorage.setItem('index',dex);
 							localStorage.setItem('pin',pin);
-							localStorage.setItem('relect_flag',reflect_flag);
+							localStorage.setItem('reflect_flag',reflect_flag);
 							localStorage.setItem('explore_flag',explore_flag);
 							localStorage.setItem('connect_flag',connect_flag);
 							localStorage.setItem('society_flag',society_flag);
 							localStorage.setItem('static_flag',static_f);
 							localStorage.setItem('iid',iid);
+							localStorage.setItem('pp1',pp1);
+							localStorage.setItem('pp2',pp2);
+							localStorage.setItem('pp3',pp3);
+							localStorage.setItem('pp4',pp4);
+							localStorage.setItem('time_pp1',time_pp1);
+							localStorage.setItem('time_pp2',time_pp2);
+							localStorage.setItem('time_pp3',time_pp3);
+							localStorage.setItem('time_pp4',time_pp4);
 					
 					//	window.location.href="uploads/"+openup;
 						} else {

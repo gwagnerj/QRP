@@ -100,11 +100,17 @@ if (!isset($_SESSION['progress'])) {
 					
 					// show them the actual numbered problem
 					
+					$_SESSION['pp1'] = $pp1;
+					$_SESSION['pp2'] = $pp2;
+					$_SESSION['pp3'] = $pp3;
+					$_SESSION['pp4'] = $pp4;
+					$_SESSION['time_pp1']=$activity_row['time_pp1'];
+					$_SESSION['time_pp2']=$activity_row['time_pp2'];
+					$_SESSION['time_pp3']=$activity_row['time_pp3'];
+					$_SESSION['time_pp4']=$activity_row['time_pp4'];
+					
 						header("Location: QRdisplayPblm.php");
 						return;
-					
-					
-					
 					
 					
 				}
