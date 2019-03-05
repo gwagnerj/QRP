@@ -6,7 +6,13 @@ if(name_length<1){
 	stu_name = "__________________________";
 
 }
-var index = localStorage.getItem('index');
+var index = localStorage.getItem('dex');
+var pin = localStorage.getItem('pin');
+var reflect_flag = localStorage.getItem('reflect_flag');
+var explore_flag = localStorage.getItem('explore_flag');
+var connect_flag = localStorage.getItem('connect_flag');
+var society_flag = localStorage.getItem('society_flag');
+var iid = localStorage.getItem('iid');
 var title = localStorage.getItem('title');
 var static_flag = localStorage.getItem('static_flag');
 
@@ -151,7 +157,7 @@ var oEndMU = new RegExp(sEndMU,"g");
 
 $(document).ready(function(){
 	
-	  var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Problem: "+problem_id+"\xa0\xa0"+"PIN: " + index +"\xa0\xa0 ");
+	  var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Problem: "+problem_id+"\xa0\xa0"+"PIN: " + pin +"\xa0\xa0 ");
 	  
 	  var auth_field = (nm_author.length > 1 ? " by "+nm_author : "");
 	  var ref_field = (specif_ref.length > 1 ? " similar to\xa0"+specif_ref : "");
@@ -189,6 +195,9 @@ $(document).ready(function(){
 				$('#expl').hide();
 				$('#conn').hide();
 				$('#soci').hide();
+				
+				
+				
 				
 				
 			// Search thru all of the document looking for the markups and put divs for those

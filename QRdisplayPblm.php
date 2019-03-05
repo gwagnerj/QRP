@@ -7,6 +7,13 @@ $pass = array(
     'dex' => $_SESSION['dex'],
     'problem_id' => $_SESSION['problem_id'],
     'stu_name' => $_SESSION['stu_name'],
+	'pin' => $_SESSION['pin'],
+	'reflect_flag' => $_SESSION['reflect_flag'],
+	'explore_flag' => $_SESSION['explore_flag'],
+	'connect_flag' => $_SESSION['connect_flag'],
+	'society_flag' => $_SESSION['society_flag'],
+	'iid' => $_SESSION['iid'],
+	
 );
 
 echo '<script>';
@@ -34,15 +41,16 @@ echo '</script>';
 $(document).ready(function(){
 	
 		
-		var inde = pass['dex'];
+		var dex = pass['dex'];
 		var problem = pass['problem_id'];
 		var s_name = pass['stu_name'];
+		var pin = pass['pin'];
 		var statusFlag=true;
 			//alert ('here I am');
-		if($.trim(problem) != '' && problem > 0 && problem < 100000 && inde>=1 && inde<=200){
+		if($.trim(problem) != '' && problem > 0 && problem < 100000 && dex>=1 && dex<=200){
 	// alert(1);
 	
-				 $.post('fetchpblminput.php', {problem_id : problem, index : inde }, function(data){
+				 $.post('fetchpblminput.php', {problem_id : problem, index : dex }, function(data){
 					
 					try{
 						var arr = JSON.parse(data);
@@ -107,9 +115,14 @@ $(document).ready(function(){
 							localStorage.setItem('title',arr.title);
 							localStorage.setItem('stu_name',s_name);
 							localStorage.setItem('problem_id',problem);
-							localStorage.setItem('index',inde);
+							localStorage.setItem('index',dex);
+							localStorage.setItem('pin',pin);
+							localStorage.setItem('relect_flag',reflect_flag);
+							localStorage.setItem('explore_flag',explore_flag);
+							localStorage.setItem('connect_flag',connect_flag);
+							localStorage.setItem('society_flag',society_flag);
 							localStorage.setItem('static_flag',static_f);
-					
+							localStorage.setItem('iid',iid);
 					
 					//	window.location.href="uploads/"+openup;
 						} else {
@@ -131,7 +144,7 @@ $(document).ready(function(){
 					
 		  });
 		  
-		  
+		  // get the basecase data
 		   $.post('fetchpblminput.php', {problem_id : problem, index : 1 }, function(data){
 					
 					var arr2 = JSON.parse(data);

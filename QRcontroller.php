@@ -29,10 +29,16 @@ if (!isset($_SESSION['progress'])) {
 		$assn_row =$stmt ->fetch();
 		if ( $assn_row === false ) {
 				$_SESSION['error'] = 'controller could not read assignment';
-				header( 'Location: QRhomework new with controller.php' ) ;  // change this when files are renamed!!!!!!!!!!!!!!!!!!
+				header( 'Location: QRhomework.php' ) ; 
 				return;
 		}	else {
 			// we got information from the assignment table Now Check if there is an entry in the activity table 
+			// read assignment data and put what you need into Session variables
+			$_SESSION['reflect_flag']=$assn_row['reflect_flag'];
+			$_SESSION['explore_flag']=$assn_row['explore_flag'];
+			$_SESSION['connect_flag']=$assn_row['connect_flag'];
+			$_SESSION['society_flag']=$assn_row['society_flag'];
+			
 			
 			
 			$sql = "SELECT * FROM Activity WHERE iid=:iid AND problem_id=:problem_id AND pin =:pin" ;
@@ -103,11 +109,13 @@ if (!isset($_SESSION['progress'])) {
 					
 				}
 				
-			
-				
-				
-				
-				
+			// this problem has pre-problem assigned
+				echo ('RiGt here');
+				echo ($pp1);
+				echo ($pp2);
+				echo ($pp3);
+				echo ($pp4);
+				echo ($activity_row['score']);
 				
 			
 			
