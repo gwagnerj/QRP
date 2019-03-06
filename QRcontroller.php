@@ -96,18 +96,26 @@ if (!isset($_SESSION['progress'])) {
 			$post_pblm1=$activity_row['post_pblm2'];
 			$post_pblm1=$activity_row['post_pblm3'];
 			
+			$_SESSION['pp1'] = $pp1;
+			$_SESSION['pp2'] = $pp2;
+			$_SESSION['pp3'] = $pp3;
+			$_SESSION['pp4'] = $pp4;
+			$_SESSION['time_pp1']=$activity_row['time_pp1'];
+			$_SESSION['time_pp2']=$activity_row['time_pp2'];
+			$_SESSION['time_pp3']=$activity_row['time_pp3'];
+			$_SESSION['time_pp4']=$activity_row['time_pp4'];	
+				
+				
+				
+				
+				
+				
+				
 				if ($pp1 != 1 && $pp2 !=1 && $pp3 !=1 && $pp4 != 1 && $activity_row['score']==0 ){
 					
 					// show them the actual numbered problem
 					
-					$_SESSION['pp1'] = $pp1;
-					$_SESSION['pp2'] = $pp2;
-					$_SESSION['pp3'] = $pp3;
-					$_SESSION['pp4'] = $pp4;
-					$_SESSION['time_pp1']=$activity_row['time_pp1'];
-					$_SESSION['time_pp2']=$activity_row['time_pp2'];
-					$_SESSION['time_pp3']=$activity_row['time_pp3'];
-					$_SESSION['time_pp4']=$activity_row['time_pp4'];
+				
 					
 						header("Location: QRdisplayPblm.php");
 						return;
@@ -116,24 +124,11 @@ if (!isset($_SESSION['progress'])) {
 				}
 				
 			// this problem has pre-problem assigned
-				echo ('RiGt here');
-				echo ($pp1);
-				echo ($pp2);
-				echo ($pp3);
-				echo ($pp4);
-				echo ($activity_row['score']);
 				
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+				header("Location: QRdisplayPre.php");
+				return;
+				//echo ('RiGt here');
+				
 			
 			
 		}

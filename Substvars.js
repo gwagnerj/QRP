@@ -4,7 +4,9 @@ var stu_name = localStorage.getItem('stu_name');
 var name_length = stu_name.length;
 if(name_length<1){
 	stu_name = "__________________________";
-
+	var stu_name_back = '';
+} else {
+	var stu_name_back = stu_name;
 }
 var index = localStorage.getItem('dex');
 var pin = localStorage.getItem('pin');
@@ -177,8 +179,8 @@ $(document).ready(function(){
 	  var auth_field = (nm_author.length > 1 ? " by "+nm_author : "");
 	  var ref_field = (specif_ref.length > 1 ? " similar to\xa0"+specif_ref : "");
 	 var pp_txt = (pp1==2 ? ' Preliminary Estimates completed at '+time_pp1 :"")+(pp2==2 ? ' Planning Questions completed at '+time_pp2 :"")
-			+ (pp3==2 ? ' Preliminary Activity 3 completed at '+time_pp3 :"")+(pp4==2 ? ' Preliminary Activity 4 completed at '+time_pp4 :"");
-	 var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0  Contributed by\xa0"+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field+" \xa0\xa0|\xa0\xa0"  + pp_txt);
+			+ (pp3==2 ? ' Preliminary MC completed at '+time_pp3 :"")+(pp4==2 ? ' Preliminary Supplemental completed at '+time_pp4 :"");
+	 var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0 Originally Contributed by\xa0"+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field+" \xa0\xa0|\xa0\xa0"  + pp_txt);
 
 		
 
@@ -209,7 +211,7 @@ $(document).ready(function(){
 				$("#box0_start").nextUntil("#box0_end").wrapAll("<div id='Header_stuff'></div>");
 			
 			// put the button in the document	
-				$('p:first').before('show/hide: <button id="directionsbutton">directions</button> <button id="pblmbutton">pblm statement</button>  <button id="basecasebutton">base-case</button> <button id="reflectionbutton">Reflections</button>') ;
+				$('p:first').before('<button id="backbut"> back </button>  show/hide: <button id="directionsbutton">directions</button> <button id="pblmbutton">pblm statement</button>  <button id="basecasebutton">base-case</button> <button id="reflectionbutton">Reflections</button>') ;
 				$('p:first').before('  <button id="refl" style = "height:17px">Reflect</button> <button id="expl" style = "height:17px">Explore</button>  <button id="conn" style = "height:17px">Connect</button> <button id="soci" style = "height:17px">Society</button>') ;
 				
 				$('#refl').hide();
@@ -753,13 +755,17 @@ $(document).ready(function(){
 			
 			}	
 			 */
+			// color the back botton a little different
+			$("#backbut").css('background-color','lightyellow')
 			
-			
-			
-			
-			
-			
-			
+			// go back to the input page for a different problem
+			$("#backbut").click(function(){
+					// e.preventDefault();
+					 console.log("hello1");
+					//alert('do something');
+					window.location.replace('../QRhomework.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid+'&stu_name='+stu_name_back);
+					
+				 });
 			
 
 			   // toggle the content between show and hide on click of the button

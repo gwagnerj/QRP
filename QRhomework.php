@@ -21,6 +21,26 @@
 			$PIN_Check = array('options'=>array('min_range'=>$PIN_LLimit,'max_range'=>$PIN_ULimit,));
 			$prob_Check = array('options'=>array('min_range'=>$prob_LLimit,'max_range'=>$prob_ULimit,)); */
 
+	// if Get is set then it is coming from a back button of a problem
+	
+	if(isset($_GET['stu_name'])){
+		
+		$stu_name = htmlentities($_GET['stu_name']);
+	} 
+	
+	
+	if(isset($_GET['problem_id'])){
+		
+		$problem_id = htmlentities($_GET['problem_id']);
+	} 
+	if(isset($_GET['pin'])){
+		$pin = htmlentities($_GET['pin']);
+	}
+	if(isset($_GET['iid'])){
+		$iid = htmlentities($_GET['iid']);
+	}
+	
+	
 	if(isset($_POST['stu_name'])){
 		
 		
@@ -29,12 +49,7 @@
 		
 	} 
 
-	if(isset($_POST['problem_id'])){
-		
-		$problem_id = htmlentities($_POST['problem_id']);
-		
-		$_SESSION['problem_id']=$problem_id;
-	} 
+	
 
 	if(isset($_POST['problem_id'])){
 		// echo ('im here');
@@ -129,15 +144,16 @@
 </header>
 
 <?php
-if ( isset($_SESSION['error']) ) {
-    echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
-    unset($_SESSION['error']);
-}
-if ( isset($_SESSION['success']) ) {
-    echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
-    unset($_SESSION['success']);
-}
-
+	if(isset($_POST['pin']) || isset($_POST['problem_id']) || isset($_POST['iid'])){
+		if ( isset($_SESSION['error']) ) {
+			echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
+			unset($_SESSION['error']);
+		}
+		if ( isset($_SESSION['success']) ) {
+			echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
+			unset($_SESSION['success']);
+		}
+	}
  
 ?>
 
