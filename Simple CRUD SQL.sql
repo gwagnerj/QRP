@@ -287,6 +287,7 @@ CREATE TABLE IF NOT EXISTS Activity (
     guess_d double,
 	 guess_e double,
     guess_f double,
+	 guess_g double,
 	guess_h double,
     guess_i double,
 	 guess_j double,
@@ -302,6 +303,9 @@ CREATE TABLE IF NOT EXISTS Activity (
 PRIMARY KEY (`activity_id`))
 ENGINE=InnoDB CHARACTER SET = utf8;
 
+
+ALTER TABLE Activity
+  ADD guess_g double;
 
 
 

@@ -104,6 +104,7 @@ if (!isset($_SESSION['progress'])) {
 			$_SESSION['time_pp2']=$activity_row['time_pp2'];
 			$_SESSION['time_pp3']=$activity_row['time_pp3'];
 			$_SESSION['time_pp4']=$activity_row['time_pp4'];	
+			$_SESSION['activity_id'] = $activity_row['activity_id'];
 				
 				
 				
