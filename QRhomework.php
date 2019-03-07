@@ -95,7 +95,7 @@
 								if($stmt3->rowCount()){
 									// go the controller
 									$_SESSION['progress']=1;
-									echo('can I put anythiung here?');
+								//	echo('can I put anythiung here?');
 									
 									header("Location: QRcontroller.php");
 									return; 

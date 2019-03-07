@@ -32,16 +32,16 @@ if(isset($_POST['problem_id'])){
 if(isset($_POST['index'])){
 	
 	$index = htmlentities($_POST['index']);
-	/*
-		See comment above
-	if(filter_var($index,FILTER_VALIDATE_INT,$PIN_Check) === FALSE){
-		set($_SESSION['error']);
-		echo'invalid data';
-	} */
 	$_SESSION['index']=$index;
+}
+if(isset($_POST['pin'])){
 	
+	$pin = htmlentities($_POST['pin']);
 	
 }
+
+
+
 
 ?>
 <!DOCTYPE html>
@@ -79,7 +79,7 @@ if ( isset($_SESSION['success']) ) {
 	<!-- <p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p> -->
 	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
 	<p><font color=#003399>DEX: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> ></p>
-	<p><font color=#003399>PIN: </font><input type="number" name="pin" id="pin_id" size=3 value=<?php echo($index);?> ></p>
+	<p><font color=#003399>PIN: </font><input type="number" name="pin" id="pin_id" size=3 value=<?php echo($pin);?> ></p>
 	
 	</form>
 

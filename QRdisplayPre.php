@@ -319,24 +319,25 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			<?php 
 			
 			
-				$pp1checked = ($pp1==2?'checked':'');
+				$pp1checked = ($pp1==2 ? 'checked' : '');
+				//echo ($pp1checked);
 				$pp2checked = ($pp2==2?'checked':'');
 				$pp3checked = ($pp3==2?'checked':'');
 				$pp4checked = ($pp4==2?'checked':'');
 				
 				if($pp1!=0){
-					echo('<p><input type="checkbox"  name="guess" id = "pp1box"'.$pp1checked.'</p>'.'<a href="QRGuesser.php">Preliminary Estimates</a>');	
+					echo('<p><input type="checkbox"  name="guess" id = "pp1box" '.$pp1checked.' </p>'.'<a href="QRGuesser.php">Preliminary Estimates</a>');	
 				}
 				if($pp2!=0){
-					echo('<p><input type="checkbox" name="qonq" id = "pp2box"'.$pp2checked.'</p>'.'Planning Questions');	
+					echo('<p><input type="checkbox" name="qonq" id = "pp2box" '.$pp2checked.' </p>'.'<a href="QRPlanning.php">Planning Questions</a>');	
 				}
 				
 				if($pp3!=0){
-					echo('<p><input type="checkbox" name="MC" id = "pp3box"'.$pp3checked.'</p>'.'Preliminary Multiple Choice');	
+					echo('<p><input type="checkbox" name="MC" id = "pp3box" '.$pp3checked.' </p>'.'Preliminary Multiple Choice');	
 				}
 				
 				if($pp4!=0){
-					echo('<p><input type="checkbox" name="Supp" id = "pp4box"'.$pp4checked.'</p>'.'Preliminary Supplemental');	
+					echo('<p><input type="checkbox" name="Supp" id = "pp4box" '.$pp4checked.' </p>'.'Preliminary Supplemental');	
 				}
 				
 				

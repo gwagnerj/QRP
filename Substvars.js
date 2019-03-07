@@ -173,17 +173,24 @@ var oEndMU = new RegExp(sEndMU,"g");
 
 $(document).ready(function(){
 	
+	if(reflect_flag==1 || explore_flag == 1 || connect_flag == 1 || society_flag == 1) {
+	var reflections = "Required Reflections: "+(reflect_flag==1 ? ' reflect ' : "")+(explore_flag==21 ? ' explore ' : "")
+			+ (connect_flag==1 ? ' connect ' :"")+(society_flag==1 ? ' society ' :"");
+		
+	} else {
+		var reflections ="";
+	}
 	
-	 var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Problem: "+problem_id+"\xa0\xa0"+"PIN: " + pin +"\xa0\xa0 ");
+	 var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Problem: "+problem_id+"\xa0\xa0"+"PIN: " + pin +"\xa0\xa0 - \xa0\xa0 "+ reflections);
 	  
 	  var auth_field = (nm_author.length > 1 ? " by "+nm_author : "");
 	  var ref_field = (specif_ref.length > 1 ? " similar to\xa0"+specif_ref : "");
 	 var pp_txt = (pp1==2 ? ' Preliminary Estimates completed at '+time_pp1 :"")+(pp2==2 ? ' Planning Questions completed at '+time_pp2 :"")
 			+ (pp3==2 ? ' Preliminary MC completed at '+time_pp3 :"")+(pp4==2 ? ' Preliminary Supplemental completed at '+time_pp4 :"");
 	 var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0 Originally Contributed by\xa0"+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field+" \xa0\xa0|\xa0\xa0"  + pp_txt);
-
-		
-
+	
+	
+	
 
 	  
 	 // var Head_txt4 = $("<p></p>").text("Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field );
@@ -457,7 +464,7 @@ $(document).ready(function(){
 			// replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=index
 //!!~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			//var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;                             
-			var newHref = 'http://localhost/QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;
+			var newHref = '../QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;
 			// console.log (newHref);
 			var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
 			//var oldHref = $('a').attr('href');

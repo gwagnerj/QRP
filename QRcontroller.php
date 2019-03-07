@@ -2,7 +2,11 @@
 require_once "pdo.php";
 session_start();
 
-
+if(isset($_POST['stu_name'])) {
+	$stu_name = $_POST['stu_name'];
+} else {
+	$stu_name = '';
+}
 
 if (!isset($_SESSION['progress'])) {
 	
@@ -52,8 +56,8 @@ if (!isset($_SESSION['progress'])) {
 			if ( $activity_row === false ) {
 			
 			// put code in to create and entry activity table
-				$sql = 'INSERT INTO Activity (problem_id, pin,iid, dex, assign_id, instr_last, university,pp1,pp2,pp3,pp4,post_pblm1,post_pblm2,post_pblm3,score,help_coins_used,assist_coins_gained)	
-						VALUES (:problem_id, :pin, :iid, :dex, :assign_id, :instr_last,:university,:pp1,:pp2,:pp3,:pp4,:post_pblm1,:post_pblm2,:post_pblm3, :score,:help_coins_used, :assist_coins_gained)';
+				$sql = 'INSERT INTO Activity (problem_id, pin,iid, dex, assign_id, instr_last, university,pp1,pp2,pp3,pp4,post_pblm1,post_pblm2,post_pblm3,score,help_coins_used,assist_coins_gained,stu_name)	
+						VALUES (:problem_id, :pin, :iid, :dex, :assign_id, :instr_last,:university,:pp1,:pp2,:pp3,:pp4,:post_pblm1,:post_pblm2,:post_pblm3, :score,:help_coins_used, :assist_coins_gained,:stu_name)';
 				$stmt = $pdo->prepare($sql);
 				$stmt -> execute(array(
 				':problem_id' => $assn_row['prob_num'],
@@ -73,6 +77,7 @@ if (!isset($_SESSION['progress'])) {
 				':score' => 0,
 				':help_coins_used' => 0,
 				':assist_coins_gained' => 0,
+				':stu_name' => $stu_name,
 				));
 			
 			$sql = "SELECT * FROM Activity WHERE iid=:iid AND problem_id=:problem_id AND pin =:pin" ;

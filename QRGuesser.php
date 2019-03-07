@@ -180,7 +180,7 @@ echo('<form action = "staticAUTO.php" method = "POST" target = "output_frame" id
 
 
 ?>
-<iframe name = "output_frame" src = "" id = "output_frame" width = "100%" Height = "40%" scrolling = "yes"> </iframe>
+<iframe name = "output_frame" src = "" id = "output_frame" width = "100%" style=" height: 100%;" scrolling = "yes"> </iframe>
 <form autocomplete="off" method="POST" >
 <!-- <p>Problem Number: <input type="text" name="problem_number" ></p> -->
 <!-- <p> Please put in your index number </p> 
