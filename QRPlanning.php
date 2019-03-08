@@ -61,9 +61,12 @@ echo('<form action = "staticAUTO.php" method = "POST" target = "output_frame" id
 <input type = "hidden" name = "index" value = "'.$_SESSION['dex'].'" >
 <input type = "hidden" name = "pin" value = "'.$_SESSION['pin'].'" >
 </form>');
+
+echo('<p><form action = "staticAUTO.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$_SESSION['problem_id'].'"><input type = "hidden" name = "index" value = "'.$_SESSION['dex'].'" ><input type = "submit" value ="PreView Problem in a Separate Browser Window"></form></p>');
+
 ?>
 
-<iframe name = "output_frame" src = "" id = "output_frame" width = "100%" Height = "40%" scrolling = "yes"> </iframe>
+<iframe name = "output_frame" src = "" id = "output_frame" width = "100%" Height = "300" scrolling = "yes"> </iframe>
 <form autocomplete="off" method="POST" >
 <!-- <p>Problem Number: <input type="text" name="problem_number" ></p> -->
 <!-- <p> Please put in your index number </p> 
