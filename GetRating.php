@@ -86,6 +86,7 @@
 				if ($score <= 10) {
 					
 					$_SESSION['score'] = 10;
+					
 								
 				}
 				
@@ -182,12 +183,25 @@
 									':pblm_num' => $_SESSION['problem_id']));	
 			}
 
+	// Put the score in the activity table 
 	
+	if(isset($_SESSION['problem_id']) && isset($_SESSION['iid']) && isset($_SESSION['pin'])){
+		
+		$sql = "UPDATE Activity SET score = :score WHERE problem_id = :problem_id AND iid = :iid AND pin = :pin";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(
+			':score' => $_SESSION['score'],
+			':problem_id' => $_SESSION['problem_id'],
+			':iid' => $_SESSION['iid'],
+			':pin' => $_SESSION['pin']
+			));
+		
+	}
 	
 	// change the headers to the rtnCode.php
 
-							header( 'Location: rtnCode.php' ) ;
-							return;		
+			header( 'Location: rtnCode.php' ) ;
+			return;		
 				
 
 

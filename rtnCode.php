@@ -52,9 +52,16 @@ session_destroy();
 <p><b><font size=5><p>Your Computer Score:<font color = "blue"> <?php echo( $_SESSION['score'])?>%</font></font></b></p> 
 <p><b><font size=5>Your rtn Code: <font color = "blue"><?php echo ($_SESSION['rtn_Code'])?></font></font></b></p>
 <p><br></p>
+<?php
+$problem_id = (isset($_SESSION['problem_id']) ? $_SESSION['problem_id'] : '');
+$iid = (isset($_SESSION['iid']) ? $_SESSION['iid'] : '');
+$pin = (isset($_SESSION['pin']) ? $_SESSION['pin'] : '');
+$stu_name = (isset($_SESSION['stu_name']) ? $_SESSION['stu_name'] : '');
 
-<a href="QRPindex.php"><b> Return to Main Screen</b></a>
 
+	echo('<a href="QRhomework.php?problem_id='.$problem_id.'&pin='.$pin.'&iid='.$iid.'&stu_name='.$stu_name.'"><b> Return to Main Screen</b></a>');
+	//QRhomework.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid+'&stu_name='+stu_name_back
+?>
 </main>
 
 

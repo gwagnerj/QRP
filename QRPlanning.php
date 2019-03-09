@@ -9,7 +9,7 @@ Require_once "pdo.php";
 	// if the student fills out all of the entries then change the pp1 to 2 in the activity table and make a datestamp for time_pp1 (just let the html check the input) and go back to the controller
 	if(isset($_POST['submit']))	{
 		
-		echo ('oh yeea');
+	
 		$sql = "UPDATE Activity 
 				SET  time_est = :time_est, t_b4due = :t_b4due, confidence = :confidence, pp2 = 2, time_pp2 = now()
 				WHERE activity_id = :activity_id";

@@ -52,7 +52,7 @@
 	
 
 	if(isset($_POST['problem_id'])){
-		// echo ('im here');
+		
 		$problem_id = htmlentities($_POST['problem_id']);
 			$_SESSION['problem_id']=$problem_id;
 			

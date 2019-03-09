@@ -11,7 +11,7 @@ if ( ! isset($_GET['problem_id']) ) {
   $_SESSION['error'] = "Missing problem number";
   header('Location: QRPindex.php');
   return;
-}
+} 
 if ( ! isset($_GET['pin']) ) {
   $_SESSION['error'] = "Missing PIN";
   header('Location: QRPindex.php');
@@ -22,7 +22,10 @@ if ( ! isset($_GET['iid']) ) {
   $_SESSION['error'] = "Missing instructor ID";
   header('Location: QRPindex.php');
   return;
-} 
+} else {
+	$_SESSION['iid']=$_GET['iid'];
+	
+}
  
 if ($_GET['problem_id']<1 or $_GET['problem_id']>1000000)  {
   $_SESSION['error'] = "problem number out of range";
@@ -45,7 +48,7 @@ if ( isset($_GET['problem_id']) and  isset($_GET['pin'])) {
 	$_SESSION['problem_id'] = $_GET['problem_id'];
 
 	$_SESSION['index'] = $dex;
-	$_SESSION[]=$_GET['pin'];
+	$_SESSION['pin']=$_GET['pin'];
 	
 		if (!isset($_POST['pin'])){
 			for ($j=0;$j<=9;$j++){
@@ -247,16 +250,18 @@ if (strlen($probData['hint_d'])>1){
 
 	
 // read the student responses into an array
-	$resp['a']=$_POST['a']+0;
-	$resp['b']=$_POST['b']+0;
-	$resp['c']=$_POST['c']+0;
-	$resp['d']=$_POST['d']+0;
-	$resp['e']=$_POST['e']+0;
-	$resp['f']=$_POST['f']+0;
-	$resp['g']=$_POST['g']+0;
-	$resp['h']=$_POST['h']+0;
-	$resp['i']=$_POST['i']+0;
-	$resp['j']=$_POST['j']+0;
+
+	$resp['a']=(isset($_POST['a']) ? $_POST['a']+0 : "");
+	$resp['b']=(isset($_POST['b']) ? $_POST['b']+0 : "");
+	$resp['c']=(isset($_POST['c']) ? $_POST['c']+0 : "");
+	$resp['d']=(isset($_POST['d']) ? $_POST['d']+0 : "");
+	$resp['e']=(isset($_POST['e']) ? $_POST['e']+0 : "");
+	$resp['f']=(isset($_POST['f']) ? $_POST['f']+0 : "");
+	$resp['g']=(isset($_POST['g']) ? $_POST['g']+0 : "");
+	$resp['h']=(isset($_POST['h']) ? $_POST['h']+0 : "");
+	$resp['i']=(isset($_POST['i']) ? $_POST['i']+0 : "");
+	$resp['j']=(isset($_POST['j']) ? $_POST['j']+0 : "");
+	
 	
 	
 //print_r( $tol);
