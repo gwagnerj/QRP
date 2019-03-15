@@ -117,7 +117,7 @@ if (!isset($_SESSION['progress'])) {
 				
 				
 				
-				if ($pp1 != 1 && $pp2 !=1 && $pp3 !=1 && $pp4 != 1 && $activity_row['score']==0 ){
+				if ($pp1 != 1 && $pp2 !=1 && $pp3 !=1 && $pp4 != 1 ){
 					
 					// show them the actual numbered problem
 					
