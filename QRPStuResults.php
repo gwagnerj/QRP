@@ -38,55 +38,11 @@ $preview="Null";
 <head>
 <link rel="icon" type="image/png" href="McKetta.png" />  
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
 <meta Charset = "utf-8">
 <title>QRP Repo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
-<style>
-div {
-    /*background-color: #eee;*/
-    width: 100%;
-    height: 100%;
-    border: 1px dotted black;
-    overflow: auto;
-}
-</style>
-<style type="text/css">
 
-
-
-body {
-   margin: 0;
-   overflow: hidden;
-}
-
-
-
-
-#iframediv{
-	position:relative;
-	overflow:hidden;
-	padding-top: 60%
-}
-#iframe1 {
-    position:absolute;
-	align:bottom;
-    left: 0px;
-    width: 100%;
-    top: 0px;
-    height: 100%;
-}
-table.a {
-    table-layout: fixed;
-    width: 100%;    
-	}
-	
-	 
-	 
-
-	
-	
-	
-</style>
 						
 	
 	
@@ -248,7 +204,7 @@ $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 	echo("</table>");
 	echo ('</div>');	
 
-
+echo ('<br>');
 
 
 echo ('<table id="table_format3" class = "a" border="1" >'."\n");
@@ -347,10 +303,15 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		// "aiExclude": [ 0,1,2,3,4,6,10,13,14,15 ] 
 		// });
 	
+	$('#table_format3').DataTable({
+	 "lengthMenu": [ 30, 50, 100 ]
+	});  
+	});
+	
 
 	// jQuery('#table_format').ddTableFilter();
 	
-	} );
+	
 	
 	
 	
