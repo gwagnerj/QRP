@@ -223,6 +223,8 @@ echo ('<table id="table_format3" class = "a" border="1" >'."\n");
 	 echo("</th><th>");
 	 echo('Score');
 	 echo("</th><th>");
+	  echo('rtn_code');
+	 echo("</th><th>");
 	echo('1st open');
     echo("</th><th>");
 	echo('t_PProb1');
@@ -232,6 +234,8 @@ echo ('<table id="table_format3" class = "a" border="1" >'."\n");
 	echo('t_PProb3');
     echo("</th><th>");
 	echo('t_PProb4');
+	 echo("</th><th>");
+	echo('concepts');
 	echo("</th></tr>\n");
 	 echo("</thead>");
 	 
@@ -259,6 +263,8 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			echo("</td><td>");
 			echo(htmlentities($row['score']));
 			echo("</td><td>");  
+			echo(htmlentities($row['rtn_code']));
+			echo("</td><td>");  
 			echo(htmlentities($row['time_created']));
 			echo("</td><td>");
 			if ($row['time_pp1']!=0){echo(htmlentities($row['time_pp1']));} else {echo('');	}
@@ -268,6 +274,8 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			if ($row['time_pp3']!=0){echo(htmlentities($row['time_pp3']));} else {echo('');	}
 			echo("</td><td>");
 			if ($row['time_pp4']!=0){echo(htmlentities($row['time_pp4']));} else {echo('');	}
+			echo("</td><td>");
+			if ($row['time_pp4']!=0){echo(htmlentities($row['est_what_concepts']));} else {echo('');	}
 		   echo("</td></tr>\n");
    
 }

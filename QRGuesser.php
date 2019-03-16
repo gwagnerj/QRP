@@ -89,15 +89,7 @@ if ( $row === false ) {
 
 	
 // read the student responses into an array
-	/* $resp['a']=$_POST['a']+0;
-	$resp['b']=$_POST['b']+0;
-	$resp['c']=$_POST['c']+0;
-	$resp['d']=$_POST['d']+0;
-	$resp['e']=$_POST['e']+0;
-	$resp['f']=$_POST['f']+0;
-	$resp['g']=$_POST['g']+0;
-	$resp['h']=$_POST['h']+0;
-	$resp['i']=$_POST['i']+0; */
+	
 	$resp['a']=(isset($_POST['a']) ? $_POST['a']+0 : "");
 	$resp['b']=(isset($_POST['b']) ? $_POST['b']+0 : "");
 	$resp['c']=(isset($_POST['c']) ? $_POST['c']+0 : "");

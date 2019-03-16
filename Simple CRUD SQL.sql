@@ -311,6 +311,15 @@ ENGINE=InnoDB CHARACTER SET = utf8;
 ALTER TABLE Activity
   ADD guess_g double;
 
+ALTER TABLE Activity	
+	ADD rtn_code varchar(16),
+	ADD est_what_concepts varchar(500),
+	ADD est_most_diff varchar(500),
+	ADD est_do_first varchar(500),
+	ADD est_how_long int,
+	ADD est_start int,
+	ADD est_conf int
+	;
 
 
 CREATE TABLE IF NOT EXISTS `Coinbank` (

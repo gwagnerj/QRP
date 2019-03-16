@@ -31,6 +31,18 @@ $rtn_Code = $rand.'-'.$rslt2.$rand2;
 
 $_SESSION['rtn_Code']=$rtn_Code;
 
+if(isset($_SESSION['problem_id']) && isset($_SESSION['iid']) && isset($_SESSION['pin'])){
+		
+		$sql = "UPDATE Activity SET rtn_code = :rtn_code WHERE problem_id = :problem_id AND iid = :iid AND pin = :pin";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(
+			':rtn_code' => $rtn_Code,
+			':problem_id' => $_SESSION['problem_id'],
+			':iid' => $_SESSION['iid'],
+			':pin' => $_SESSION['pin']
+			));
+	}
+
 session_destroy();
 
 ?>

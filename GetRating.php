@@ -195,7 +195,6 @@
 			':iid' => $_SESSION['iid'],
 			':pin' => $_SESSION['pin']
 			));
-		
 	}
 	
 	// change the headers to the rtnCode.php
