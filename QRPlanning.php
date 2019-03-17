@@ -13,7 +13,7 @@ Require_once "pdo.php";
 		$sql = "UPDATE Activity 
 				SET   pp2 = 2, time_pp2 = now(), 
 					est_what_concepts = :est_what_concepts, est_most_diff = :est_most_diff, est_do_first = :est_do_first, 
-					est_how_long = :est_how_long, est_start = :est_start, est_conf = :est_conf,
+					est_how_long = :est_how_long, est_start = :est_start, est_conf = :est_conf
 				WHERE activity_id = :activity_id";
 		$stmt = $pdo->prepare($sql);
 		$stmt -> execute(array(
@@ -23,7 +23,7 @@ Require_once "pdo.php";
 					':est_do_first' => $_POST['est_do_first'],
 					':est_how_long' => $_POST['est_how_long'],
 					':est_start' => $_POST['est_start'],
-					':est_conf' => $_POST['est_conf'],
+					':est_conf' => $_POST['est_conf']
 				));
 			
 			header("Location: QRcontroller.php");
