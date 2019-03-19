@@ -12,14 +12,7 @@
 
 	// first time thru set scriptflag to zero - this will turn to 1 if the script ran
 	if (!isset($sc_flag)){$sc_flag=0;}
-			/* 
-			Was setting this up to do more php input validation - but have put it off
-			$PIN_LLimit = 1;
-			$PIN_ULimit = 200;
-			$prob_LLimit = 1;
-			$prob_ULimit = 100000;
-			$PIN_Check = array('options'=>array('min_range'=>$PIN_LLimit,'max_range'=>$PIN_ULimit,));
-			$prob_Check = array('options'=>array('min_range'=>$prob_LLimit,'max_range'=>$prob_ULimit,)); */
+			
 
 	// if Get is set then it is coming from a back button of a problem
 	
@@ -90,12 +83,14 @@
 						$sql2 = " SELECT 'iid' FROM Assign WHERE iid = $iid" ;
 						$stmt2 = $pdo->query($sql2);
 						if($stmt2->rowCount()){
-								$sql3 = "SELECT * FROM Assign WHERE iid=$iid AND prob_num=$problem_id" ;
+							// put this in so that if a negative problem_id is put in we go right  to the problem
+								$pos_problem_id = abs($problem_id);
+								$sql3 = "SELECT * FROM Assign WHERE iid=$iid AND prob_num=$pos_problem_id" ;
 								$stmt3 = $pdo->query($sql3);
 								if($stmt3->rowCount()){
 									// go the controller
 									$_SESSION['progress']=1;
-								//	echo('can I put anythiung here?');
+								
 									
 									header("Location: QRcontroller.php");
 									return; 

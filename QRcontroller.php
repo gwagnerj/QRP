@@ -24,11 +24,12 @@ if (!isset($_SESSION['progress'])) {
 		 */
 		// get the information from the Assign table
 		
+		
 		$sql = "SELECT * FROM Assign WHERE iid=:iid AND prob_num=:prob_num" ;
 		$stmt = $pdo->prepare($sql);
 		$stmt -> execute(array(
 		':iid'=>$_SESSION['iid'],
-		':prob_num' =>$_SESSION['problem_id']
+		':prob_num' => abs($_SESSION['problem_id'])
 		));
 		$assn_row =$stmt ->fetch();
 		if ( $assn_row === false ) {
@@ -49,7 +50,7 @@ if (!isset($_SESSION['progress'])) {
 			$stmt = $pdo->prepare($sql);
 			$stmt -> execute(array(
 			':iid'=>$_SESSION['iid'],
-			':problem_id' =>$_SESSION['problem_id'],
+			':problem_id' =>abs($_SESSION['problem_id']),
 			':pin' =>$_SESSION['pin']
 			));
 			$activity_row =$stmt ->fetch();
@@ -84,7 +85,7 @@ if (!isset($_SESSION['progress'])) {
 			$stmt = $pdo->prepare($sql);
 			$stmt -> execute(array(
 			':iid'=>$_SESSION['iid'],
-			':problem_id' =>$_SESSION['problem_id'],
+			':problem_id' =>abs($_SESSION['problem_id']),
 			':pin' =>$_SESSION['pin']
 			));
 			$activity_row =$stmt ->fetch();		
@@ -117,10 +118,10 @@ if (!isset($_SESSION['progress'])) {
 				
 				
 				
-				if ($pp1 != 1 && $pp2 !=1 && $pp3 !=1 && $pp4 != 1 ){
+				if (($pp1 != 1 && $pp2 !=1 && $pp3 !=1 && $pp4 != 1) || $_SESSION['problem_id']<0 ){
 					
 					// show them the actual numbered problem
-					
+						$_SESSION['problem_id'] = abs($_SESSION['problem_id']);
 				
 					
 						header("Location: QRdisplayPblm.php");
@@ -133,7 +134,7 @@ if (!isset($_SESSION['progress'])) {
 				
 				header("Location: QRdisplayPre.php");
 				return;
-				//echo ('RiGt here');
+				
 				
 			
 			
