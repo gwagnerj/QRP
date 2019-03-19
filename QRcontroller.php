@@ -118,7 +118,7 @@ if (!isset($_SESSION['progress'])) {
 				
 				
 				
-				if (($pp1 != 1 && $pp2 !=1 && $pp3 !=1 && $pp4 != 1) || $_SESSION['problem_id']<0 ){
+				if (($pp1 != 1 && $pp2 !=1 && $pp3 !=1 && $pp4 != 1) || $_SESSION['problem_id']<0 || $_SESSION['pin'] == 0 ){
 					
 					// show them the actual numbered problem
 						$_SESSION['problem_id'] = abs($_SESSION['problem_id']);

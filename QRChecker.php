@@ -32,7 +32,7 @@ if ($_GET['problem_id']<1 or $_GET['problem_id']>1000000)  {
   header('Location: QRPindex.php');
   return;
 }
-if ($_GET['pin']<1 or $_GET['pin']>10000)  {
+if ($_GET['pin']<0 or $_GET['pin']>10000)  {
   $_SESSION['error'] = "Index number out of range";
   header('Location: QRPindex.php');
   return;

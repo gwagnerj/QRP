@@ -1059,17 +1059,19 @@ $(document).ready(function(){
 	//console.log(static_flag);
 	
 	if (index =='1' || static_flag == 'true'){
-	
+		// console.log('index is ', index);
 		$('#directions').hide();
-		$('#Header_stuff').hide();	
-		if (index == '1'){
+		 $('#Header_stuff').hide();	
+	 	if (index == '1'){
+			
+			// $('#Header_stuff').show();	
 			$('#reflections').show();	
 			$('.nex-text-div').hide();
 			$('.nex-text-div2').hide();
 			$('.nex-text-div3').hide();
 			$('.nex-text-div4').hide();
 			
-			$('#reflections').before('<hr>');
+			$('#reflections').before('<hr>'); 
 			
 			
 		}

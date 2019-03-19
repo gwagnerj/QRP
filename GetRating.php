@@ -6,7 +6,19 @@
 //$score = 0;
 // echo($score);
  
-  if (isset($_SESSION['problem_id']))
+ if($_SESSION['pin']==0) {
+	 
+	 	header( 'Location: QRhomework.php' ) ;
+		return;		
+	 
+ }
+
+
+
+
+
+
+ if (isset($_SESSION['problem_id']))
   { // get the correct value for the problem number parameter
  
 		 if ((isset($_POST['effectiveness']) and isset($_POST['difficulty']) and isset($_POST['confidence'])and isset($_POST['t_take1'])and isset($_POST['t_take2'])and isset($_POST['t_b4due']))

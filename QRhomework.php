@@ -57,7 +57,7 @@
 	if(isset($_POST['pin'])){
 		
 		$pin = htmlentities($_POST['pin']);
-		if ($pin>10000 or $pin<1){
+		if ($pin>10000 or $pin<0){
 				$_SESSION['error']='Your PIN should be between 1 and 10000.';	
 			} else {
 				$_SESSION['pin']=$pin;

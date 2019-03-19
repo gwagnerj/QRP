@@ -31,7 +31,7 @@ if(isset($_POST['problem_id'])){
 
 if(isset($_POST['index'])){
 	
-	$index = htmlentities($_POST['index']);
+	$index = 1;
 	/*
 		See comment above
 	if(filter_var($index,FILTER_VALIDATE_INT,$PIN_Check) === FALSE){
@@ -166,7 +166,8 @@ if ( isset($_SESSION['success']) ) {
 					localStorage.setItem('title',arr.title);
 					//localStorage.setItem('stu_name',s_name);
 					localStorage.setItem('problem_id',problem);
-					localStorage.setItem('index',inde);
+					localStorage.setItem('dex',inde);
+					
 					localStorage.setItem('static_flag',static_f);
 			
 			

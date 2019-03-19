@@ -27,8 +27,11 @@ $rslt=$map1.$map2;
 
 
 $rslt2=$rslt+$_SESSION['score'];
-
-$rtn_Code = $rand.'-'.$rslt2.$rand2;
+if ($_SESSION[pin] != 0 ) {
+	$rtn_Code = $rand.'-'.$rslt2.$rand2;
+} else {
+	$rtn_Code = 0;
+}
 
 $_SESSION['rtn_Code']=$rtn_Code;
 
