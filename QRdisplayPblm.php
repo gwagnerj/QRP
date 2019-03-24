@@ -12,6 +12,7 @@ $pass = array(
 	'explore_flag' => $_SESSION['explore_flag'],
 	'connect_flag' => $_SESSION['connect_flag'],
 	'society_flag' => $_SESSION['society_flag'],
+	'choice' => $_SESSION['choice'],
 	'iid' => $_SESSION['iid'],
 	'pp1' => $_SESSION['pp1'],
 	'pp2' => $_SESSION['pp2'],
@@ -60,6 +61,7 @@ $(document).ready(function(){
 		var explore_flag = pass['explore_flag'];
 		var connect_flag = pass['connect_flag'];
 		var society_flag = pass['society_flag'];
+		var choice = pass['choice'];
 		var pp1 = pass['pp1'];
 		var pp2 = pass['pp2'];
 		var pp3 = pass['pp3'];
@@ -145,6 +147,7 @@ $(document).ready(function(){
 							localStorage.setItem('explore_flag',explore_flag);
 							localStorage.setItem('connect_flag',connect_flag);
 							localStorage.setItem('society_flag',society_flag);
+							localStorage.setItem('choice',choice);
 							localStorage.setItem('static_flag',static_f);
 							localStorage.setItem('iid',iid);
 							localStorage.setItem('pp1',pp1);

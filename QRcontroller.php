@@ -43,7 +43,7 @@ if (!isset($_SESSION['progress'])) {
 			$_SESSION['explore_flag']=$assn_row['explore_flag'];
 			$_SESSION['connect_flag']=$assn_row['connect_flag'];
 			$_SESSION['society_flag']=$assn_row['society_flag'];
-			
+			$_SESSION['choice']=$assn_row['ref_choice'];
 			
 			
 			$sql = "SELECT * FROM Activity WHERE iid=:iid AND problem_id=:problem_id AND pin =:pin" ;

@@ -371,7 +371,8 @@ CREATE TABLE IF NOT EXISTS `Assign` (
   );
 
 
-
+ALTER TABLE Assign
+  ADD ref_choice int;
 
 
 

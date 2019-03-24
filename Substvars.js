@@ -14,6 +14,7 @@ var reflect_flag = localStorage.getItem('reflect_flag');
 var explore_flag = localStorage.getItem('explore_flag');
 var connect_flag = localStorage.getItem('connect_flag');
 var society_flag = localStorage.getItem('society_flag');
+var choice = localStorage.getItem('choice');
 var pp1 = localStorage.getItem('pp1');
 var pp2 = localStorage.getItem('pp2');
 var pp3 = localStorage.getItem('pp3');
@@ -23,10 +24,10 @@ var time_pp2 = localStorage.getItem('time_pp2');
 var time_pp3 = localStorage.getItem('time_pp3');
 var time_pp4 = localStorage.getItem('time_pp4');
 
-console.log ('reflect_flag is ',reflect_flag);
-console.log ('explore_flag is ',explore_flag);
-console.log ('connect_flag is ',connect_flag);
-console.log ('society_flag is ',society_flag);
+// console.log ('reflect_flag is ',reflect_flag);
+// console.log ('explore_flag is ',explore_flag);
+// console.log ('connect_flag is ',connect_flag);
+// console.log ('society_flag is ',society_flag);
 
 var iid = localStorage.getItem('iid');
 var title = localStorage.getItem('title');
@@ -174,10 +175,14 @@ var oEndMU = new RegExp(sEndMU,"g");
 $(document).ready(function(){
 	
 	if(reflect_flag==1 || explore_flag == 1 || connect_flag == 1 || society_flag == 1) {
-	var reflections = "Required Reflections: "+(reflect_flag==1 ? ' reflect ' : "")+(explore_flag==21 ? ' explore ' : "")
+	var reflections = "Required Reflections: "+(reflect_flag==1 ? ' reflect ' : "")+(explore_flag==1 ? ' explore ' : "")
 			+ (connect_flag==1 ? ' connect ' :"")+(society_flag==1 ? ' society ' :"");
 		
+	} else if (choice != 0) {
+		var reflections = "Reflections: Pick Any "+ choice ;
+		
 	} else {
+		
 		var reflections ="";
 	}
 	
@@ -886,33 +891,6 @@ $(document).ready(function(){
 					  $("#reflections").css("background-color", "ivory");
 					   $("#reflections").css("border-style", "solid");
 				 });
-				 
-				 
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			
 			
 			$('#refl').click(function(e){
@@ -1057,9 +1035,9 @@ $(document).ready(function(){
 // if we are sent a 0 or 1 for the PIN we should display just the base-case without directions headers or 
 	
 	//console.log(static_flag);
-	
+	 console.log('index is ', index);
 	if (index =='1' || static_flag == 'true'){
-		// console.log('index is ', index);
+	//	 console.log('index is ', index);
 		$('#directions').hide();
 		 $('#Header_stuff').hide();	
 	 	if (index == '1'){

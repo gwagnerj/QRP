@@ -8,7 +8,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
   header('Location: QRPRepo.php');
   return;
 }
-	
+	// $choice = '';
     $sql = "SELECT * FROM Problem WHERE problem_id = :zip";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':zip' => $_GET['problem_id']));
@@ -19,7 +19,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 	// check to see if this is a new problem and they want the start over file issued
 	if ($problem_data['status']=='num issued'){
 		$_SESSION['error'] = 'The status of this problem is num issued and cannot be activated';
-	 	header( 'Location: QRRepo.php' ) ;
+	 	header( 'Location: QRPRepo.php' ) ;
 		return;
 	}
 
@@ -61,6 +61,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 		$explore_flag = $Assign_data['explore_flag'];
 		$connect_flag = $Assign_data['connect_flag'];
 		$society_flag = $Assign_data['society_flag'];
+		$choice = $Assign_data['ref_choice'];
 		$activate_flag = 0;
 	} else {
 		
@@ -68,7 +69,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 		$activate_flag = 1;	
 		
 		$instr_last =  $assign_num =  "";
-		$pp_flag1 = $pp_flag2 = $pp_flag3 =$pp_flag4 = $reflect_flag = $explore_flag=  "";
+		$pp_flag1 = $pp_flag2 = $pp_flag3 =$pp_flag4 = $reflect_flag = $explore_flag= $choice =  "";
 		$assign_id = $connect_flag = $society_flag = $postp_flag1 =$postp_flag2 = $postp_flag3 =  "";
 		$assign_t_created = time();
 		
@@ -237,6 +238,11 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 		} else {
 			$society_flag = 0;
 		}
+		if(isset($_POST['choice'])){
+			$choice = $_POST['choice'];
+		} else {
+			$choice = 0;
+		}
 		if(isset($_POST['postprob1'])){
 			$postp_flag1 = 1;
 		} else {
@@ -257,7 +263,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
    
    	$sql = "UPDATE Assign SET  assign_t_created = :assign_t_created, assign_num = :assign_num, pp_flag1 = :pp_flag1, pp_flag2= :pp_flag2,
 			pp_flag3 = :pp_flag3, pp_flag4 = :pp_flag4, reflect_flag = :reflect_flag, explore_flag = :explore_flag, connect_flag = :connect_flag,
-			society_flag = :society_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3
+			society_flag = :society_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3, ref_choice = :choice
 					WHERE assign_id = :assign_id";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
@@ -271,7 +277,8 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			'reflect_flag' => $reflect_flag,
 			'explore_flag' => $explore_flag,
 			'connect_flag' => $connect_flag,
-			'society_flag' => $society_flag,			
+			'society_flag' => $society_flag,
+			'choice' => $choice,
 			'postp_flag1' => $postp_flag1,
 			'postp_flag2' => $postp_flag2,
 			'postp_flag3' => $postp_flag3
@@ -298,11 +305,12 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 <meta Charset = "utf-8">
 <title>QRProblems</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
+		<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 </head>
 
 <body>
 <header>
-<h2>Activate / Deactivate the Problem - Please select the options that you want to assign with this problem</h2>
+<h2>Activate / Deactivate - Please select the options that you want to assign with problem <?php echo ( $_GET['problem_id']); ?></h2>
 </header>	
 	 <div class="wrapper">
        
@@ -346,11 +354,16 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			<p><input type="checkbox" name="guess" <?php if($pp_flag1 =='1'){echo ('checked');  }?> > Preliminary Estimates </p>
 			<p><input type="checkbox" name="q_on_q" <?php if($pp_flag2 =='1'){echo ('checked');  }?>> Planning Questions </p>
 			 Reflections:<br>
+			<!-- &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" value = 0 <?php if($choice ==0){echo ('checked');  }?> > Specify  <br>  -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" name="reflect" <?php if($reflect_flag ==1){echo ('checked');  }?> > Reflect  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" name="explore" <?php if($explore_flag ==1){echo ('checked');  }?>> Explore  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" name="connect" <?php if($connect_flag ==1){echo ('checked');  }?> > Connect  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" name="society" <?php if($society_flag ==1){echo ('checked');  }?> > Society  <br>
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" value = 1 <?php if($choice ==1){echo ('checked');  }?> > Any One  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" value = 2 <?php if($choice ==2){echo ('checked');  }?> > Any Two  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" value = 3 <?php if($choice ==3){echo ('checked');  }?> > Any Three  <br>
 			
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="reflect" <?php if($reflect_flag ==1){echo ('checked');  }?> > Reflect  <br>
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="explore" <?php if($explore_flag ==1){echo ('checked');  }?>> Explore  <br>
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="connect" <?php if($connect_flag ==1){echo ('checked');  }?> > Connect  <br>
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="society" <?php if($reflect_flag ==1){echo ('checked');  }?> > Society  <br>
 			<input type="hidden" name="Submitted" value="name" />
 			<p><input type = "submit"></p>
 			
@@ -364,5 +377,32 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 		}
 		
 		?>
+		
+	<script>
+	
+	
+	
+	
+	$(document).ready( function () {
+			$('input[type="radio"]').change(function() {
+				if ($(this).is(':checked')){ //radio is now checked
+					$(".reflection").prop('checked', false);
+					
+					// $('input[type="checkbox"]').prop('checked', false); //unchecks all checkboxes
+				}
+			});
+
+			$('.reflection').change(function() {
+			// $('input[type="checkbox"]').change(function() {
+				if ($(this).is(':checked')){
+					$('input[type="radio"]').prop('checked', false);
+				}
+	});
+
+	
+	} );
+	
+	
+</script>	
 </body>
 </html>

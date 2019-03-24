@@ -200,7 +200,7 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
     echo("</th><th>");
 	echo('Contrib');
 	 echo("</th><th>");
-	echo('Assets');
+	echo('Enhanc');
     echo("</th><th>");
 	echo('Ref');
     echo("</th><th>");
@@ -452,7 +452,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 				echo('Simulation ');
 			}
 			
-			// echo(' Assests');
+			
 			echo("</td><td>");
 			echo(htmlentities($row['ref']));
 			echo("</td><td>");

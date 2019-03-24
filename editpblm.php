@@ -991,7 +991,7 @@ $problem_id = $row['problem_id'];
 
 <p>Problem Statement File - docx: <input type='file' accept='.docx' name='docxfile'/></p>
 <p>Solution Spreadsheet - xlsm: <input type='file' accept='.xlsm' name='solnbook'/></p>
-<p>Supplemental Problem Assets:</p>
+<p>Supplemental Problem Enhancements:</p>
 
 
 <div id = "video_assets"> 
