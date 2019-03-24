@@ -199,6 +199,8 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	echo('Stu Res');
     echo("</th><th>");
 	echo('Contrib');
+	 echo("</th><th>");
+	echo('Assets');
     echo("</th><th>");
 	echo('Ref');
     echo("</th><th>");
@@ -242,7 +244,9 @@ Problem.t_b4due_1 as t_b4due_1,Problem.t_b4due_2 as t_b4due_2,Problem.t_b4due_3 
 Problem.t_b4due_np_1 as t_b4due_np_1,Problem.t_b4due_np_2 as t_b4due_np_2,Problem.t_b4due_np_3 as t_b4due_np_3,Problem.t_b4due_np_4 as t_b4due_np_4,Problem.t_b4due_np_5 as t_b4due_np_5, Problem.t_b4due_np_6 as t_b4due_np_6, Problem.t_b4due_np_7 as t_b4due_np_7,
 Problem.confidence_1 as confidence_1,Problem.confidence_2 as confidence_2,Problem.confidence_3 as confidence_3,Problem.confidence_4 as confidence_4,Problem.confidence_5 as confidence_5,
 Problem.confidence_np_1 as confidence_np_1,Problem.confidence_np_2 as confidence_np_2,Problem.confidence_np_3 as confidence_np_3,Problem.confidence_np_4 as confidence_np_4,Problem.confidence_np_5 as confidence_np_5,
- Users.university as s_name
+ Users.university as s_name, Problem.preprob_3 as mc_prelim, Problem.preprob_4 as misc_prelim, Problem.hint_a as hint_a, Problem.hint_b as hint_b, Problem.hint_c as hint_c, Problem.hint_d as hint_d, Problem.hint_e as hint_e,
+ Problem.hint_f as hint_f,Problem.hint_g as hint_g,Problem.hint_h as hint_h, Problem.hint_i as hint_i, Problem.hint_j as hint_j, Problem.video_clip as video_clip, Problem.simulation as simulation, Problem.demonstration_directions as demo_directions,
+ Problem.activity_directions as activity_directions
 
 FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id ;");
 
@@ -434,6 +438,22 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			echo("</td><td>");
 			echo(htmlentities($row['name']));
 			echo("</td><td>");
+			// these are the problem assets
+			if ($row['hint_a']!=NULL || $row['hint_b']!=NULL ||$row['hint_c']!=NULL ||$row['hint_d']!=NULL ||$row['hint_e']!=NULL ||$row['hint_f']!=NULL ||$row['hint_g']!=NULL ||$row['hint_h']!=NULL ||$row['hint_i']!=NULL ||$row['hint_j']!=NULL) {
+				echo('hints ');
+			}
+			if ($row['mc_prelim']!= Null){
+				echo('MC prelim ');
+			}
+			if ($row['video_clip']== 1){
+				echo('Video Clip ');
+			}
+			if ($row['simulation']== 1){
+				echo('Simulation ');
+			}
+			
+			// echo(' Assests');
+			echo("</td><td>");
 			echo(htmlentities($row['ref']));
 			echo("</td><td>");
 			echo(htmlentities($row['subject']));
@@ -541,7 +561,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		"order": [[ 0, 'dsc' ] ],
 		 "lengthMenu": [ 50, 100, 200 ],
 		"oColumnFilterWidgets": {
-		"aiExclude": [ 0,1,2,3,5,8,9,12,13 ] }});
+		"aiExclude": [ 0,1,2,3,6,9,10,13,14 ] }});
 	
 
 	// jQuery('#table_format').ddTableFilter();

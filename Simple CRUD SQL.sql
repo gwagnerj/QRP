@@ -173,6 +173,13 @@ ALTER TABLE Problem
 	ADD postprob_2 VARCHAR(127),
 	ADD postprob_3 VARCHAR(127)
   ;
+  
+  ALTER TABLE Problem 
+	ADD video_clip int,
+	ADD simulation int,
+	ADD demonstration_directions VARCHAR(127),
+	ADD activity_directions VARCHAR(127)
+  ;
 
 
 

@@ -319,6 +319,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			<?php 
 			
 			
+				// if the preproblem value is 0 it is not assigned, 1 is assigned and uncompleted and 2 is assigned and completed
 				$pp1checked = ($pp1==2 ? 'checked' : '');
 				//echo ($pp1checked);
 				$pp2checked = ($pp2==2?'checked':'');

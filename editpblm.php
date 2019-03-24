@@ -397,6 +397,35 @@ if (isset($_POST['web_ref'])){
 					}
 				
 			}		
+		// video clip asset	
+		if($_POST['video_clip']==1)	{
+			$sql = "UPDATE Problem SET video_clip = :video_clip WHERE problem_id = :pblm_num";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+				':video_clip' => 1,
+				':pblm_num' => $_POST['problem_id']));	
+		} else 	{
+			$sql = "UPDATE Problem SET video_clip = :video_clip WHERE problem_id = :pblm_num";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+				':video_clip' => 0,
+				':pblm_num' => $_POST['problem_id']));	
+		}
+			
+			// simulation asset	
+		if($_POST['simulation']==1)	{
+			$sql = "UPDATE Problem SET simulation = :simulation WHERE problem_id = :pblm_num";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+				':simulation' => 1,
+				':pblm_num' => $_POST['problem_id']));	
+		} else 	{
+			$sql = "UPDATE Problem SET simulation = :simulation WHERE problem_id = :pblm_num";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+				':simulation' => 0,
+				':pblm_num' => $_POST['problem_id']));	
+		}	
 			
 			
 			
@@ -927,9 +956,9 @@ $problem_id = $row['problem_id'];
 	?>
 
 
-<p>Edit Problem Data</p>
+<p><b>Edit Problem Data for Problem <?php echo($problem_id); ?></b></p>
 <form action="" method="post" enctype="multipart/form-data">
-<br/>
+
 <p>Title:
 <input type="text" name="title" value="<?= $p ?>"></p>
 <p>
@@ -954,16 +983,48 @@ $problem_id = $row['problem_id'];
 
 <!--<p>Base-case  file: <input type='file' accept='.pdf' name='pdffile'/></p> -->
 <p>Worked out pdf Solution file: <input type='file' accept='.pdf' name='solnfile'/></p>
-<p> Median time estimate for your students to solve in whole minutes:
+<!-- <p> Median time estimate for your students to solve in whole minutes:
 <input type="integer" name="time_est" ></p>
 <p> Predict how your students will rate the difficulty 1=easy 5=difficult:
-<input type="integer" name="diff_est" ></p>
-<p> link to web solution (if available):
-<input type="text" name="web_ref" ></p>
-<br/>
-<p>Optional (archive):</p>
+<input type="integer" name="diff_est" ></p> -->
+
+
 <p>Problem Statement File - docx: <input type='file' accept='.docx' name='docxfile'/></p>
-<p>Solution Spreadsheet - xlsm (only visible to contributor): <input type='file' accept='.xlsm' name='solnbook'/></p>
+<p>Solution Spreadsheet - xlsm: <input type='file' accept='.xlsm' name='solnbook'/></p>
+<p>Supplemental Problem Assets:</p>
+
+
+<div id = "video_assets"> 
+	
+	<?php
+		$video_clip_checked = ($row['video_clip']==1 ? 'checked' : '');
+		echo('&nbsp &nbsp <input type="checkbox" name="video_clip" value = 1 id = "clip" '.$video_clip_checked.' size= 20  >&nbsp &nbsp Problem has link to video clip for the students <br>');
+	?>
+</div>
+<div id = "simulation_assets"> 
+
+	<?php
+		$simulation_assets_checked = ($row['simulation']==1 ? 'checked' : '');
+		echo('&nbsp &nbsp <input type="checkbox" name="simulation" value = 1 id = "sim" '.$simulation_assets_checked.' size= 20  >&nbsp &nbsp Problem has link to simulation for the students <br>');
+	?>
+
+
+
+</div>
+<div id = "demonstration"> 
+	&nbsp &nbsp <input type="checkbox" name="demonstration" value = 1 id = "demo" size= 20  >&nbsp &nbsp Problem has instructions for an associated demonstration for instructors - these do nothing yet <br>
+
+</div>
+<div id = "activity"> 
+	&nbsp &nbsp <input type="checkbox" name="activity" value = 1 id = "activ" size= 20  >&nbsp &nbsp Problem has instructions for an associated activity for instructors - these do nothing yet<br>
+
+</div>
+<p> link to Base Case web solution (if available):
+<input type="text" name="web_ref" ></p>
+
+
+
+
 <p><hr></p>
 <input type="hidden" name="problem_id" value="<?= $problem_id ?>">
 <p><input type="submit" value="Update" id="Update_btn"/>
