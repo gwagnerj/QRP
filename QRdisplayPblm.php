@@ -141,7 +141,7 @@ $(document).ready(function(){
 							localStorage.setItem('title',arr.title);
 							localStorage.setItem('stu_name',s_name);
 							localStorage.setItem('problem_id',problem);
-							localStorage.setItem('index',dex);
+							localStorage.setItem('dex',dex);
 							localStorage.setItem('pin',pin);
 							localStorage.setItem('reflect_flag',reflect_flag);
 							localStorage.setItem('explore_flag',explore_flag);

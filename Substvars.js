@@ -8,7 +8,7 @@ if(name_length<1){
 } else {
 	var stu_name_back = stu_name;
 }
-var index = localStorage.getItem('dex');
+var dex = localStorage.getItem('dex');
 var pin = localStorage.getItem('pin');
 var reflect_flag = localStorage.getItem('reflect_flag');
 var explore_flag = localStorage.getItem('explore_flag');
@@ -466,7 +466,7 @@ $(document).ready(function(){
 				
 			}	
 
-			// replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=index
+			// replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=dex
 //!!~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			//var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;                             
 			var newHref = '../QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;
@@ -615,7 +615,7 @@ $(document).ready(function(){
 				$('#reflections').html(function(){
 			   return $(this).html().replace(oNvar14,var14 ); });
 
-			  // fill in the student name and index number 
+			  // fill in the student name and dex number 
 			   
 			 // substitute in the basecase
 			 
@@ -1035,12 +1035,13 @@ $(document).ready(function(){
 // if we are sent a 0 or 1 for the PIN we should display just the base-case without directions headers or 
 	
 	//console.log(static_flag);
-	 console.log('index is ', index);
-	if (index =='1' || static_flag == 'true'){
+	 console.log('dex is ', dex);
+	  console.log('static_flag is ', static_flag);
+	if (dex =='1' || static_flag == 'true'){
 	//	 console.log('index is ', index);
 		$('#directions').hide();
 		 $('#Header_stuff').hide();	
-	 	if (index == '1'){
+	 	if (dex == '1'){
 			
 			// $('#Header_stuff').show();	
 			$('#reflections').show();	
