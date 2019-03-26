@@ -187,51 +187,51 @@ echo('<form action = "staticAUTO.php" method = "POST" target = "output_frame" id
 <?php
 
 if ($partsFlag[0]){ ?> 
-<p> a): <input  type=number {width: 5%} name="a" size = 10% value="<?php if ($resp['a']!=0){echo (htmlentities($resp['a']));}?>" required > <?php echo($unit[0]) ?>
+<p> a): <input  type=number step = 'any' {width: 5%} name="a" size = 10% value="<?php if ($resp['a']!=0){echo (htmlentities($resp['a']));}?>" required > <?php echo($unit[0]) ?>
   </p>
 <?php } 
 
 if ($partsFlag[1]){ ?> 
-<p> b): <input  type=number {width: 5%;} name="b" size = 10% value="<?php if ($resp['b']!=0){echo (htmlentities($resp['b']));}?>" required > <?php echo($unit[1]) ?>
+<p> b): <input  type=number step = 'any' {width: 5%;} name="b" size = 10% value="<?php if ($resp['b']!=0){echo (htmlentities($resp['b']));}?>" required > <?php echo($unit[1]) ?>
 </p>
 <?php } 
 
 if ($partsFlag[2]){ ?> 
-<p> c): <input  type=number {width: 5%;} name="c" size = 10% value="<?php if ($resp['c']!=0){echo (htmlentities($resp['c']));}?>" required> <?php echo($unit[2]) ?> 
+<p> c): <input  type=number step = 'any' {width: 5%;} name="c" size = 10% value="<?php if ($resp['c']!=0){echo (htmlentities($resp['c']));}?>" required> <?php echo($unit[2]) ?> 
 </p>
 <?php } 
 
 if ($partsFlag[3]){ ?> 
-<p> d): <input  type=number {width: 5%;} name="d" size = 10% value="<?php if ($resp['d']!=0){echo (htmlentities($resp['d']));}?>" required> <?php echo($unit[3]) ?> 
+<p> d): <input  type=number step = 'any' {width: 5%;} name="d" size = 10% value="<?php if ($resp['d']!=0){echo (htmlentities($resp['d']));}?>" required> <?php echo($unit[3]) ?> 
 </p>
 <?php } 
 
 if ($partsFlag[4]){ ?> 
-<p> e): <input  type=number {width: 5%;} name="e" size = 10% value="<?php if ($resp['e']!=0){echo (htmlentities($resp['e']));}?>" required > <?php echo($unit[4]) ?>
+<p> e): <input  type=number  step = 'any' {width: 5%;} name="e" size = 10% value="<?php if ($resp['e']!=0){echo (htmlentities($resp['e']));}?>" required > <?php echo($unit[4]) ?>
 <?php } 
 
 if ($partsFlag[5]){ ?> 
-<p> f): <input  type=number {width: 5%;} name="f" size = 10% value="<?php if ($resp['f']!=0){echo (htmlentities($resp['f']));}?>" required> <?php echo($unit[5]) ?> 
+<p> f): <input  type=number step = 'any' {width: 5%;} name="f" size = 10% value="<?php if ($resp['f']!=0){echo (htmlentities($resp['f']));}?>" required> <?php echo($unit[5]) ?> 
 </p>
 <?php } 
 
 if ($partsFlag[6]){ ?> 
-<p> g): <input  type=number {width: 5%;} name="g" size = 10% value="<?php if ($resp['g']!=0){echo (htmlentities($resp['g']));}?>" required> <?php echo($unit[6]) ?> 
+<p> g): <input  type=number step = 'any' {width: 5%;} name="g" size = 10% value="<?php if ($resp['g']!=0){echo (htmlentities($resp['g']));}?>" required> <?php echo($unit[6]) ?> 
 </p>
 <?php } 
 
 if ($partsFlag[7]){ ?> 
-<p> h): <input type=number {width: 5%;} name="h" size = 10% value="<?php if ($resp['h']!=0){echo (htmlentities($resp['h']));}?>" required> <?php echo($unit[7]) ?> 
+<p> h): <input type=number step = 'any' {width: 5%;} name="h" size = 10% value="<?php if ($resp['h']!=0){echo (htmlentities($resp['h']));}?>" required> <?php echo($unit[7]) ?> 
 </p>
 <?php } 
 
 if ($partsFlag[8]){ ?> 
-<p> i): <input  type=number {width: 5%;} name="i" size = 10% value="<?php if ($resp['i']!=0){echo (htmlentities($resp['i']));}?>" required> <?php echo($unit[8]) ?>
+<p> i): <input  type=number step = 'any' {width: 5%;} name="i" size = 10% value="<?php if ($resp['i']!=0){echo (htmlentities($resp['i']));}?>" required> <?php echo($unit[8]) ?>
 </p>
 <?php } 
 
 if ($partsFlag[9]){ ?> 
-<p> j): <input  type=number {width: 5%;} name="j" size = 10% value="<?php if ($resp['j']!=0){echo (htmlentities($resp['j']));}?>" required> <?php echo($unit[9]) ?>
+<p> j): <input  type=number step = 'any' {width: 5%;} name="j" size = 10% value="<?php if ($resp['j']!=0){echo (htmlentities($resp['j']));}?>" required> <?php echo($unit[9]) ?>
 </p>
 
 <?php } 
