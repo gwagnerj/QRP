@@ -454,8 +454,7 @@ CREATE TABLE IF NOT EXISTS `Concept` (
   `synonym5` varchar(50),
   `synonym6` varchar(50),
   `synonym7` varchar(50),
-  PRIMARY KEY (`concept_id`)
-  
+  PRIMARY KEY (`concept_id`),
   UNIQUE KEY unique_concept (`concept_name`)
   );
 
