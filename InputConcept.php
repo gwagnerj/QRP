@@ -72,7 +72,9 @@
 <form  method="POST"  autocomplete = 'off' >
 	
 	<p><font color=#003399>Title of Concept: </font><input type="text" name="concept" id = "concept" size= 40   ></p>
-	
+	<p><font color=#003399>Synonym 1: </font><input type="text" name="syn1" id = "syn1" size= 40   ></p>
+	<p><font color=#003399>Synonym 2: </font><input type="text" name="syn2" id = "syn2" size= 40   ></p>
+	<p><font color=#003399>Synonym 3: </font><input type="text" name="syn3" id = "syn3" size= 40   ></p>
 <!--	<input type="hidden" name="submitted" value="name" /> -->
 			<input type = "submit" name "submit"> <br> <br> <br> <br>
 	
