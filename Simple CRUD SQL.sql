@@ -443,3 +443,25 @@ SELECT LAST_INSERT_ID();
 
 Insert INTO School (s_name)
 
+
+CREATE TABLE IF NOT EXISTS `Concept` (
+  `concept_id` int(11) NOT NULL AUTO_INCREMENT,
+  `concept_name` varchar(50) NOT NULL,
+  `synonym1` varchar(50),
+  `synonym2` varchar(50),
+  `synonym3` varchar(50),
+  `synonym4` varchar(50),
+  `synonym5` varchar(50),
+  `synonym6` varchar(50),
+  `synonym7` varchar(50),
+  PRIMARY KEY (`concept_id`)
+  
+  UNIQUE KEY unique_concept (`concept_name`)
+  );
+
+
+
+
+
+
+
