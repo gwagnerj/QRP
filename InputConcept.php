@@ -98,18 +98,18 @@
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
 <form  method="POST"  autocomplete = 'off' >
 	
-	<p><font color=#003399>Title of Concept: </font><input type="text" name="concept" id = "concept" size= 40   > <input type = "button" name = "add synonym" value = "Add Synonym" id = "add_syn1"> </p>
+	<p><font color=#003399>Title of Concept: </font><input type="text" class = "text" name="concept" id = "concept" size= 40   > <input type = "button" name = "add synonym" value = "Add Synonym" id = "add_syn1"> </p>
 <!-- 	<div class="input_fields_wrap">
     <button class="add_field_button">Add Synonyms</button>
     <div id = "blank"><input type="text" name="syn[]"></div>
 	</div>
 	 -->
-	<p><font color=#003399><div id = "syn1">Synonym 1: </font><input type="text" name="syn1"  size= 40   > <input type = "button" name = "add synonym" value = " Add Synonym" id = "add_syn2"> <input type = "button"  value = " Remove Synonym" id = "rem_syn2"> </div>
-	<p><font color=#003399><div id = "syn2">Synonym 2: </font><input type="text" name="syn2"  size= 40   > <input type = "button" name = "add synonym" value = " Add Synonym" id = "add_syn3"> <input type = "button"  value = " Remove Synonym" id = "rem_syn3"> </div> 
-	<p><font color=#003399><div id = "syn3">Synonym 3: </font><input type="text" name="syn3"  size= 40   > <input type = "button" name = "add synonym" value = " Add Synonym" id = "add_syn4"> <input type = "button"  value = " Remove Synonym" id = "rem_syn4"> </div> 
-	<p><font color=#003399><div id = "syn4">Synonym 4: </font><input type="text" name="syn4"  size= 40   > <input type = "button" name = "add synonym" value = " Add Synonym" id = "add_syn5"> <input type = "button"  value = " Remove Synonym" id = "rem_syn5"> </div> 
-	<p><font color=#003399><div id = "syn5">Synonym 5: </font><input type="text" name="syn5" size= 40   > <input type = "button" name = "add synonym" value = " Add Synonym" id = "add_syn6"> <input type = "button"  value = " Remove Synonym" id = "rem_syn6"> </div> 
-	<p><font color=#003399><div id = "syn6">Synonym 6: </font><input type="text" name="syn6"  size= 40   > <input type = "button" name = "add synonym" value = " Add Synonym" id = "add_syn7"> <input type = "button"  value = " Remove Synonym" id = "rem_syn7"> </div> 
+	<p><font color=#003399><div id = "syn1">Synonym 1: </font><input type="text" name="syn1"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Synonym" id = "add_syn2"> <input type = "button"  value = " Remove Synonym" id = "rem_syn2"> </div>
+	<p><font color=#003399><div id = "syn2">Synonym 2: </font><input type="text" name="syn2"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Synonym" id = "add_syn3"> <input type = "button"  value = " Remove Synonym" id = "rem_syn3"> </div> 
+	<p><font color=#003399><div id = "syn3">Synonym 3: </font><input type="text" name="syn3"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Synonym" id = "add_syn4"> <input type = "button"  value = " Remove Synonym" id = "rem_syn4"> </div> 
+	<p><font color=#003399><div id = "syn4">Synonym 4: </font><input type="text" name="syn4"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Synonym" id = "add_syn5"> <input type = "button"  value = " Remove Synonym" id = "rem_syn5"> </div> 
+	<p><font color=#003399><div id = "syn5">Synonym 5: </font><input type="text" name="syn5" size= 40   > <input type = "button" name = "add synonym" value = " Add Another Synonym" id = "add_syn6"> <input type = "button"  value = " Remove Synonym" id = "rem_syn6"> </div> 
+	<p><font color=#003399><div id = "syn6">Synonym 6: </font><input type="text" name="syn6"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Synonym" id = "add_syn7"> <input type = "button"  value = " Remove Synonym" id = "rem_syn7"> </div> 
 	<p><font color=#003399><div id = "syn7">Synonym 7: </font><input type="text" name="syn7"  size= 40   > <input type = "button"  value = " Remove Synonym" id = "rem_syn8"> </div> 
 <!--	<input type="hidden" name="submitted" value="name" /> -->
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type = "submit" name "submit"> 
@@ -129,6 +129,87 @@
 	
 	<Script>
 	$(document).ready( function () {
+			
+			// this will display the add synonym button when you start typing text in the title
+			$('#add_syn1').hide();
+			$("input[name='concept']").keyup(function () {
+				if ($(this).val()) {
+					$("#add_syn1").show();
+				}
+				else {
+					$("#add_syn1").hide();
+				}
+			});
+			
+			$('#add_syn2').hide();
+			$("input[name='syn1']").keyup(function () {
+				if ($(this).val()) {
+					$("#add_syn2").show();
+				}
+				else {
+					$("#add_syn2").hide();
+				}
+			});
+			
+			$('#add_syn3').hide();
+			$("input[name='syn2']").keyup(function () {
+				if ($(this).val()) {
+					$("#add_syn3").show();
+				}
+				else {
+					$("#add_syn2").hide();
+				}
+			});
+			
+			$('#add_syn4').hide();
+			$("input[name='syn3']").keyup(function () {
+				if ($(this).val()) {
+					$("#add_syn4").show();
+				}
+				else {
+					$("#add_syn3").hide();
+				}
+			});
+			
+			$('#add_syn5').hide();
+			$("input[name='syn4']").keyup(function () {
+				if ($(this).val()) {
+					$("#add_syn5").show();
+				}
+				else {
+					$("#add_syn4").hide();
+				}
+			});		
+			
+			$('#add_syn6').hide();
+			$("input[name='syn5']").keyup(function () {
+				if ($(this).val()) {
+					$("#add_syn6").show();
+				}
+				else {
+					$("#add_syn5").hide();
+				}
+			});		
+			
+			$('#add_syn7').hide();
+			$("input[name='syn6']").keyup(function () {
+				if ($(this).val()) {
+					$("#add_syn7").show();
+				}
+				else {
+					$("#add_syn6").hide();
+				}
+			});		
+			
+			
+			
+			/* $("button").click(function () {
+				$("input").val('');
+				$(this).hide();
+			}); */
+			
+			
+			
 			$('#syn1').hide();
 			$('#syn2').hide();
 			$('#syn3').hide();
@@ -141,52 +222,78 @@
 				
 					$('#add_syn1').click(function() {
 						$('#syn1').show();
+						$('#add_syn1').hide();
 					});
 					$('#add_syn2').click(function() {
 						$('#syn2').show();
+						$('#add_syn2').hide();
+						$('#rem_syn2').hide();
 					});
 					$('#rem_syn2').click(function() {
 						$('input[name="syn1"').val("");
 						$('#syn1').hide();
+						$('#add_syn1').show();
 					});
 					$('#add_syn3').click(function() {
 						$('#syn3').show();
+						$('#add_syn3').hide();
+						$('#rem_syn3').hide();
 					});
 					$('#rem_syn3').click(function() {
 						$('input[name="syn2"').val("");
 						$('#syn2').hide();
+						$('#add_syn2').show();
+						$('#rem_syn2').show();
 					});
 					$('#add_syn4').click(function() {
 						$('#syn4').show();
+						$('#add_syn4').hide();
+						$('#rem_syn4').hide();
 					});
 					$('#rem_syn4').click(function() {
 						$('input[name="syn3"').val("");
 						$('#syn3').hide();
+						$('#add_syn3').show();
+						$('#rem_syn3').show();
 					});
 					$('#add_syn5').click(function() {
 						$('#syn5').show();
+						$('#add_syn5').hide();
+						$('#rem_syn5').hide();
 					});
 					$('#rem_syn5').click(function() {
 						$('input[name="syn4"').val("");
 						$('#syn4').hide();
+						$('#add_syn4').show();
+						$('#rem_syn4').show();
 					});
 					$('#add_syn6').click(function() {
 						$('#syn6').show();
+						$('#add_syn6').hide();
+						$('#rem_syn6').hide();
 					});
 					$('#rem_syn6').click(function() {
 						$('input[name="syn5"').val("");
 						$('#syn5').hide();
+						$('#add_syn5').show();
+						$('#rem_syn5').show();
 					});
 					$('#add_syn7').click(function() {
 						$('#syn7').show();
+						$('#add_syn7').hide();
+						$('#rem_syn7').hide();
 					});
 					$('#rem_syn7').click(function() {
 						$('input[name="syn6"').val("");
 						$('#syn6').hide();
+						$('#add_syn6').show();
+						$('#rem_syn6').show();						
 					});
 					$('#rem_syn8').click(function() {
 						$('input[name="syn7"').val("");
 						$('#syn7').hide();
+						$('#add_syn7').show();
+						$('#rem_syn7').show();						
 					});
 					
 					
