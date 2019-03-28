@@ -201,14 +201,7 @@
 				}
 			});		
 			
-			
-			
-			/* $("button").click(function () {
-				$("input").val('');
-				$(this).hide();
-			}); */
-			
-			
+		
 			
 			$('#syn1').hide();
 			$('#syn2').hide();
@@ -303,60 +296,7 @@
 						"oColumnFilterWidgets": {
 						"aiExclude": [ 0 ] }});
 					
-			//	if($('#concept').val().length >1){}
-			
-		/* 	var max_fields      = 7; //maximum input boxes allowed
-			var wrapper   		= $(".input_fields_wrap"); //Fields wrapper
-			var add_button      = $(".add_field_button"); //Add button ID
-	
-			var x = 0; //initlal text box count
-			$(add_button).click(function(e){ //on add input button click
-				e.preventDefault();
-				if(x < max_fields){ //max input box allowed
-					x++; //text box increment
-				$(wrapper).append('<div><input type="text" name="syn[]"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
-		}
 	});
-	
-	$(wrapper).on("click",".remove_field", function(e){ //user click on remove text
-		e.preventDefault(); $(this).parent('div').remove(); x--; */
-	})
-			
-			
-			
-			
-			
-			
-			
-			/* $('#add_syn').click(function(e) {
-					 e.preventDefault();
-					 
-					
-				 });
-				 */
-				
-				
-				
-				
-				// if ($(this).is(':checked')){ //radio is now checked
-				// 	$(".reflection").prop('checked', false);
-					
-					// $('input[type="checkbox"]').prop('checked', false); //unchecks all checkboxes
-				//}
-			// });
-
-			// $('.reflection').change(function() {
-			// $('input[type="checkbox"]').change(function() {
-			//	if ($(this).is(':checked')){
-			//		$('input[type="radio"]').prop('checked', false);
-			//	}
-	
-
-	
-	
-	
-	
-	
 	
 	</script>
 	<?php
