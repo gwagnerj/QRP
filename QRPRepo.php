@@ -162,9 +162,7 @@ if (isset($_SESSION['username'])){
 	echo '<div id = "request_prob">';
 	echo '<b>Contributing a New Problem? </br>';
 	echo '<a href="requestPblmNum.php">Request Problem Number</b></a>';
-	echo '</br>';
-	echo '<b>Add a Concept? </br>';
-	echo '<a href="inputConcept.php">Input Concept</b></a>';
+	
 	
 	echo '</div>';
 	//echo '<br>';

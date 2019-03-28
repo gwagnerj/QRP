@@ -32,7 +32,7 @@
 	if (isset($_POST['cancel'])) {
 		
 		//echo ('you cancelled');
-		 header( 'Location: QRPRepo.php' ) ;
+		 header( 'Location: requestPblmNum.php' ) ;
 		 return; 
 		
 	}
@@ -291,14 +291,21 @@
 					
 					
 					 $('#table_format').DataTable({"sDom": 'W<"clear">lfrtip',
-						"order": [[ 1, 'asc' ] ],
-						 "lengthMenu": [ 50, 100, 200 ],
-						"oColumnFilterWidgets": {
-						"aiExclude": [ 0 ] }});
+							"order": [[ 1, 'asc' ] ],
+							 "lengthMenu": [ 50, 100, 200 ],
+							"columnDefs" : [{"visible": false, "targets": [0]}],  // we could conditionally hide columns if all fo the entries were blank Just add , then number of column to hide
+							
+							// "oColumnFilterWidgets": {
+							// "aiExclude" : [ 0 ] 
+							
+							
+							// }
+						});
 					
 	});
 	
 	</script>
+	
 	<?php
 	
 	 echo ('<table id="table_format" class = "a" border="1" >'."\n");

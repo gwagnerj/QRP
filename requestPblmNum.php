@@ -154,13 +154,35 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <p>Course Name (e.g. Thermodynamics):
 <input type="text" name="course" ></p>
 
-<p>Primary Concept (e.g. Ideal gas law):
-<input type="text" name="p_concept" ></p>
 
-<p>Secondary Concept (e.g. Unit Conversion):
-<input type="text" name="s_concept" ></p>
+<?php
+
+	echo ('<p>Primary Concept: ');
+	 $stmt = "SELECT * FROM `concept`";
+	 $stmt2 = $pdo->query($stmt);
+		 echo "<select name='p_concept'>";
+		 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+			echo "<option value='" . $row['concept_name'] . "'>" . $row['concept_name'] . "</option>";
+		}
+	echo "</select>";
+	
+	echo ('<p>Secondary Concept');
+	 $stmt = "SELECT * FROM `concept`";
+	 $stmt2 = $pdo->query($stmt);
+		 echo "<select name='s_concept'>";
+		 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+			echo "<option value='" . $row['concept_name'] . "'>" . $row['concept_name'] . "</option>";
+		}
+	echo "</select>";
+	
+?>
 
 
+</br>
+
+</br>
+	<b>Don't see an Appropriate Concept in the Dropdown? 
+	<a href="inputConcept.php">Input Concept</b></a>
 
 <!-- <input type="checkbox" name="game" Value = "checked"> This is a Game Problem</p> -->
 <!--<label> School:
