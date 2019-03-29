@@ -77,7 +77,7 @@
 					':syn7' => $syn7,
 					));
 					 $_SESSION['sucess'] = 'the concept was added to database';
-					 header( 'Location: QRPRepo.php' ) ;
+					 header( 'Location: requestPblmNum.php' ) ;
 					 return; 
 		
 		} catch (PDOException $e) {

@@ -26,8 +26,18 @@ if(isset($_POST['title'])){
 		if ( strlen($_POST['title']) < 5 ) {
 			$_SESSION['error'] = 'Please include a longer title';
 			header("Location: QRPRepo.php");
-			return;
+			 return;
 		}
+		if ($_POST['p_concept']=='Select') {
+			$_SESSION['error'] = 'Primary Concept Not Set';
+			header("Location: QRPRepo.php");
+			 return;
+		}
+		if ($_POST['s_concept']=='Select') {
+			
+			$_POST['s_concept']='';
+		}
+		
 		if(isset($_POST['game'])){
 			$game_prob_flag=1;	
 		}
@@ -44,8 +54,8 @@ if(isset($_POST['title'])){
 		
 
 	  
-	  $sql = "INSERT INTO Problem (users_id, title, nm_author, game_prob_flag, subject, course, primary_concept, secondary_concept, status, specif_ref)	
-	  VALUES (:users_id, :title,:nm_author, :game_prob_flag, :subject, :course, :primary_concept, :secondary_concept,:status, :specref)";
+	  $sql = "INSERT INTO Problem (users_id, title, nm_author, game_prob_flag, subject, course, primary_concept, secondary_concept,tertiary_concept, status, specif_ref)	
+	  VALUES (:users_id, :title,:nm_author, :game_prob_flag, :subject, :course, :primary_concept, :secondary_concept, :tertiary_concept, :status, :specref)";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
 				':users_id' => $users_id,
@@ -56,6 +66,7 @@ if(isset($_POST['title'])){
 				':course' => $_POST['course'],
 				':primary_concept' => $_POST['p_concept'],
 				':secondary_concept' => $_POST['s_concept'],
+				':tertiary_concept' => $_POST['t_concept'],
 				':status' => 'num issued',
 				':specref' => $_POST['spec_ref']));
 				
@@ -157,16 +168,17 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 
 <?php
 
-	echo ('<p>Primary Concept: ');
+	echo ('<p>Primary Concept (Required): ');
 	 $stmt = "SELECT * FROM `concept`";
 	 $stmt2 = $pdo->query($stmt);
 		 echo "<select name='p_concept'>";
 		 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-			echo "<option value='" . $row['concept_name'] . "'>" . $row['concept_name'] . "</option>";
+		
+			 echo "<option value='" . $row['concept_name'] . "'>" . $row['concept_name'] . "</option>";
 		}
 	echo "</select>";
 	
-	echo ('<p>Secondary Concept');
+	echo ('<p>Secondary Concept (Optional)');
 	 $stmt = "SELECT * FROM `concept`";
 	 $stmt2 = $pdo->query($stmt);
 		 echo "<select name='s_concept'>";
@@ -183,6 +195,10 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 </br>
 	<b>Don't see an Appropriate Concept in the Dropdown? 
 	<a href="inputConcept.php">Input Concept</b></a>
+
+<p>Other Descriptor(s) Instructors may Search for (e.g. water treatment cooling tower )(optional):
+<input type="text" name="t_concept" ></p>
+
 
 <!-- <input type="checkbox" name="game" Value = "checked"> This is a Game Problem</p> -->
 <!--<label> School:
