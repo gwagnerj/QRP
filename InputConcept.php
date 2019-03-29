@@ -2,28 +2,6 @@
 	require_once "pdo.php";
 	session_start();
 	
-
-
-	?>
-<!DOCTYPE html>
-<html lang = "en">
-<head>
-<link rel="icon" type="image/png" href="McKetta.png" />  
-<meta Charset = "utf-8">
-<title>Add Concept</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" /> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
-
-</head>
-
-<body>
-<header>
-<h1>Adding a Concept Title to the Database </h1>
-<h3><font color = blue> Please Search the Data Base for Synonyms before Adding this Concept  </font>  </h3>
-</header>
-
-<?php
 	 $_SESSION['error'] = '';
 	 $_SESSION['sucess'] = '';
 	 
@@ -92,8 +70,28 @@
 		 $_SESSION['error'] = 'something went wrong when adding the concept to the database';
 	}
  
-?>
 
+	?>
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+<link rel="icon" type="image/png" href="McKetta.png" />  
+<meta Charset = "utf-8">
+<title>Add Concept</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
+
+</head>
+
+<body>
+
+
+
+<header>
+<h1>Adding a Concept Title to the Database </h1>
+<h3><font color = blue> Please Search the Data Base for Synonyms before Adding this Concept  </font>  </h3>
+</header>
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
 <form  method="POST"  autocomplete = 'off' >
@@ -337,7 +335,7 @@
 	 
 	  echo("<tbody>");
 	 
-	 $stmt = "SELECT * FROM `concept`";
+	 $stmt = "SELECT * FROM `Concept`";
 	 $stmt2 = $pdo->query($stmt);
 	 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
 			echo "<tr><td>";

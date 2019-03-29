@@ -169,7 +169,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <?php
 
 	echo ('<p>Primary Concept (Required): ');
-	 $stmt = "SELECT * FROM `concept`";
+	 $stmt = "SELECT * FROM `Concept`";
 	 $stmt2 = $pdo->query($stmt);
 		 echo "<select name='p_concept'>";
 		 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
@@ -179,7 +179,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	echo "</select>";
 	
 	echo ('<p>Secondary Concept (Optional)');
-	 $stmt = "SELECT * FROM `concept`";
+	 $stmt = "SELECT * FROM `Concept`";
 	 $stmt2 = $pdo->query($stmt);
 		 echo "<select name='s_concept'>";
 		 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
