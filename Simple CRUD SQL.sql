@@ -458,9 +458,50 @@ CREATE TABLE IF NOT EXISTS `Concept` (
   UNIQUE KEY unique_concept (`concept_name`)
   );
 
+CREATE TABLE IF NOT EXISTS `Course` (
+  `course_id` int(11) NOT NULL AUTO_INCREMENT,
+  `course_name` varchar(50) NOT NULL,
+  `synonym1` varchar(50),
+  `synonym2` varchar(50),
+  `synonym3` varchar(50),
+  `synonym4` varchar(50),
+  `synonym5` varchar(50),
+  `synonym6` varchar(50),
+  `synonym7` varchar(50),
+  PRIMARY KEY (`course_id`),
+  INDEX (`course_name`),
+  UNIQUE KEY unique_course (`course_name`)
+  );
 
 
+CREATE TABLE CourseConceptConnect (
+	course_id INTEGER,
+	concept_id INTEGER,
+	CONSTRAINT FOREIGN KEY (course_id) REFERENCES Course (course_id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT FOREIGN KEY (concept_id) REFERENCES Concept (concept_id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (`course_id`,`concept_id`)
+) ENGINE=InnoDB CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `Discipline` (
+  `discipline_id` int(11) NOT NULL AUTO_INCREMENT,
+  `discipline_name` varchar(50) NOT NULL,
+  `synonym1` varchar(50),
+  `synonym2` varchar(50),
+  `synonym3` varchar(50),
+  `synonym4` varchar(50),
+  `synonym5` varchar(50),
+  `synonym6` varchar(50),
+  `synonym7` varchar(50),
+  PRIMARY KEY (`discipline_id`),
+  INDEX (`discipline_name`),
+  UNIQUE KEY unique_discipline (`discipline_name`)
+  );
 
 
-
-
+CREATE TABLE DisciplineCourseConnect (
+	`discipline_id` INTEGER,
+	`course_id` INTEGER,
+	CONSTRAINT FOREIGN KEY (`discipline_id`) REFERENCES Discipline (`discipline_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT FOREIGN KEY (`course_id`) REFERENCES Course (`course_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (`discipline_id`,`course_id`)
+) ENGINE=InnoDB CHARACTER SET = utf8;
