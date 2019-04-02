@@ -58,8 +58,8 @@ if(isset($_POST['title'])){
 		
 // Process the data and put it in the problem sheet
 	  
-	  $sql = "INSERT INTO Problem (users_id, title, nm_author, game_prob_flag, subject, course, primary_concept, secondary_concept,tertiary_concept, status, specif_ref)	
-	  VALUES (:users_id, :title,:nm_author, :game_prob_flag, :subject, :course, :primary_concept, :secondary_concept, :tertiary_concept, :status, :specref)";
+	  $sql = "INSERT INTO Problem (users_id, title, nm_author, game_prob_flag, subject, course, primary_concept, secondary_concept,tertiary_concept, status, specif_ref, computation_name)	
+	  VALUES (:users_id, :title,:nm_author, :game_prob_flag, :subject, :course, :primary_concept, :secondary_concept, :tertiary_concept, :status, :specref, :computation)";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
 				':users_id' => $users_id,
@@ -72,7 +72,10 @@ if(isset($_POST['title'])){
 				':secondary_concept' => $_POST['s_concept'],
 				':tertiary_concept' => $_POST['t_concept'],
 				':status' => 'num issued',
-				':specref' => $_POST['spec_ref']));
+				':specref' => $_POST['spec_ref'],
+				':computation' => $_POST['computation']
+				));			
+				
 				
 			$pblm_num=$pdo->lastInsertId();
 			
@@ -201,7 +204,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <div class = "row">	
 	<div class = "form-group">
 		<label for = "course">Primary Concept (e.g. Conservation of Mass ):</label>
-		<select required class = "form-control" id = "p_concept" name = "p_concept">	
+		<select  class = "form-control" id = "p_concept" name = "p_concept">	
 		<option selected = "" disabled = "" value = ""> Select Primary Concept </option>	
 		</select>
 	</div>
@@ -218,8 +221,8 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 
 </br>
 
-	<b>Don't see an Appropriate Concept in the Dropdown? 
-	<a href="inputConcept.php">Input Concept</b></a>
+<b>Don't see an Appropriate Concept in the Dropdown? 
+	<a href="inputConcept.php">Input Concept</b></a> 
 </br>
 
 <p>Other Descriptor(s) Instructors may Search for (e.g. water treatment cooling tower )(optional):
@@ -234,15 +237,15 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		
 		<option required selected = "" disabled = "" value = ""> Select Computation </option>
 			<?php
-				 $stmt = "SELECT * FROM `Computation`";
-				$stmt = $pdo->query($stmt);
+				// $stmt = "SELECT * FROM `Computation`";
+				// $stmt = $pdo->query($stmt);
 				$stmt = $pdo->query("SELECT * FROM Computation ORDER BY Computation.computation_order");
 				$computations = $stmt->fetchALL(PDO::FETCH_ASSOC);
 				// require 'dccData.php';
 				// $disciplines = loadDiscipline();
 				// echo $disciplines;
 					 foreach ($computations as $computation) {
-							echo "<option id='".$computation['computation_id']."' value='".$computation['computation_id']."'>".$computation['computation_name']."</option>";
+							echo "<option id='".$computation['computation_id']."' value='".$computation['computation_name']."'>".$computation['computation_name']."</option>";
 					 }
 			?>
 
@@ -279,8 +282,16 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 			
 			$("#course").change(function(){
 				var course = $("#course").val();
-				// console.log (course);
+				// writes the value of the course to a session varaible - I hope
+				/*  $.ajax({
+					url: 'session_write.php',
+					method: 'post',
+					data: 'course=' + course
+				})  */
+				
+				 console.log (course);
 				$.ajax({
+					
 					url: 'ccData.php',
 					method: 'post',
 					data: 'course=' + course

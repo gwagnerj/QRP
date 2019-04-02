@@ -2,7 +2,8 @@
 require_once "pdo.php";
 session_start();
 	if (isset($_POST['course'])){
-		
+	
+	$_SESSION['course'] = $_POST['course'];
 	 $stmt = "SELECT Concept.concept_name 
 	FROM Course JOIN CourseConceptConnect JOIN Concept
 
@@ -12,6 +13,7 @@ session_start();
 		$stmt = $pdo->prepare($stmt);	
 		$stmt->execute();
 		$course = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		
 		 echo json_encode($course);
 	}
  ?>

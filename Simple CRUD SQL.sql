@@ -269,6 +269,15 @@ ALTER TABLE Problem
   ADD qr_comments text
   ;
 
+ALTER TABLE Problem 
+	ADD computation_name VARCHAR(64)
+  ;
+
+
+
+
+
+
 
 CREATE TABLE IF NOT EXISTS Activity (
   activity_id int(11) NOT NULL AUTO_INCREMENT,
@@ -327,6 +336,9 @@ ALTER TABLE Activity
 	ADD est_start int,
 	ADD est_conf int
 	;
+	
+ALTER TABLE Activity
+  ADD time_complete timestamp;
 
 
 CREATE TABLE IF NOT EXISTS `Coinbank` (

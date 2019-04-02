@@ -5,7 +5,8 @@
 	 $_SESSION['error'] = '';
 	 $_SESSION['sucess'] = '';
 	 
-	
+	//echo ($_SESSION['course']);
+	//die();
 	
 	if (isset($_POST['cancel'])) {
 		
@@ -55,6 +56,32 @@
 					':syn7' => $syn7,
 					));
 					 $_SESSION['sucess'] = 'the concept was added to database';
+					 
+					 // now get the course id from the data table
+					 
+					$concept_id=$pdo->lastInsertId();
+					
+					$stmt = "SELECT Course.course_id FROM Course WHERE Course.course_name ="."'".$_SESSION['course']."'";
+					$stmt = $pdo->query($stmt);
+					$coursess = $stmt->fetchALL(PDO::FETCH_ASSOC);  // this is an array of arrays ugh
+					
+					
+					$courses = $coursess[0];
+					$course_id = $courses['course_id'];
+					
+					// connect the concept to the course so it ends up added to the list when you pull down the concept
+					
+					$sql = "INSERT INTO CourseConceptConnect (course_id, concept_id)
+							VALUES (:course_id, :concept_id)";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(
+					':course_id' => $course_id,
+					':concept_id' => $concept_id
+					));
+					
+					 $_SESSION['sucess'] = 'the concept was added to database';
+					 
+					 
 					 header( 'Location: requestPblmNum.php' ) ;
 					 return; 
 		
@@ -63,6 +90,14 @@
 			 $_SESSION['error'] = $e -> getMessage();
 			
 		}
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		
