@@ -2,7 +2,7 @@
 require_once "pdo.php";
 session_start();
 $username=$_SESSION['username'];
-
+$discipline = '';	
 // get the name email and school name using the username from the users table
 
 	$sql = " SELECT * FROM Users where username = :username";
@@ -19,40 +19,44 @@ $username=$_SESSION['username'];
 						$university=$row['university'];
 						$users_id=$row['users_id'];
 						
+
 if(isset($_POST['title'])){	
-	if ( isset($_POST['title']) ) {
+	
 
-		// Data validation
-		if ( strlen($_POST['title']) < 5 ) {
+		// Data validation Stuff
+		
+		/* if ( strlen($_POST['title']) < 5 ) {
 			$_SESSION['error'] = 'Please include a longer title';
-			header("Location: QRPRepo.php");
-			 return;
+			 header("Location: requestPblmNum.php");
+			  return;
 		}
-		if ($_POST['p_concept']=='Select') {
-			$_SESSION['error'] = 'Primary Concept Not Set';
-			header("Location: QRPRepo.php");
-			 return;
-		}
-		if ($_POST['s_concept']=='Select') {
-			
-			$_POST['s_concept']='';
-		}
-		
-		if(isset($_POST['game'])){
-			$game_prob_flag=1;	
-		}
-		else {
-			$game_prob_flag=0;
-		}
-		if(isset($_POST['nm_author'])){
-			$nm_author=$_POST['nm_author'];	
-		}
-		else {
-			$nm_author="Null";
-		}
-		
 		
 
+				if ($_POST['p_concept']=='Select') {
+						$_SESSION['error'] = 'Primary Concept Not Set';
+						header("Location: QRPRepo.php");
+						 return;
+					}
+					if ($_POST['s_concept']=='Select') {
+						
+						$_POST['s_concept']='';
+					}
+					
+					if(isset($_POST['game'])){
+						$game_prob_flag=1;	
+					}
+					else {
+						$game_prob_flag=0;
+					}
+					if(isset($_POST['nm_author'])){
+						$nm_author=$_POST['nm_author'];	
+					}
+					else {
+						$nm_author="Null";
+					}
+		 */
+		
+// Process the data and put it in the problem sheet
 	  
 	  $sql = "INSERT INTO Problem (users_id, title, nm_author, game_prob_flag, subject, course, primary_concept, secondary_concept,tertiary_concept, status, specif_ref)	
 	  VALUES (:users_id, :title,:nm_author, :game_prob_flag, :subject, :course, :primary_concept, :secondary_concept, :tertiary_concept, :status, :specref)";
@@ -91,24 +95,20 @@ if(isset($_POST['title'])){
 					$stmt->execute(array(
 						':problem_id'=> $pblm_num,
 						':dex' => $i));
-			
 			}
+			
+		// delivers the problem	
 			
 				$_SESSION['success'] = 'your problem number is '.$pblm_num;
 				$_SESSION['game_prob_flag']=$game_prob_flag;
 				$file_name = 'p'.$pblm_num.'_'.$game_prob_flag.'_'.$_POST['title'];
 				$_SESSION['file_name']=$file_name;
-				header( 'Location: downloadDocx.php' ) ;
-				return;
+				 header( 'Location: downloadDocx.php' ) ;
+				 return;
 				
 				
 	 
-	}
-	else {
-			$_SESSION['error'] = 'All inputs are required';
-			header("Location: QRPRepo.php");
-			return;
-	}
+	
 
 
 	// Flash pattern
@@ -138,6 +138,8 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <meta Charset = "utf-8">
 <title>QRProblems</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
 </head>
 
 <body>
@@ -147,72 +149,160 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 
 
 <p>Please provide:</p>
-<form  method="POST" >
+<form role = "form" method="POST" action ="" >
 <p></p>
-
-<p>a Problem Title:
-<input type="text" name="title" ></p>
-<p> The Author of the Base-Case (if different than Contributor):
-<input type="text" name="nm_author" ></p>
+<div class = "row">
+	<p>a Problem Title:
+		<input required  minlength="7" type="text" name="title" ></p>
+</div>	
+<div class = "row">
+	<p> The Author of the Base-Case (if different than Contributor):
+	<input type="text" name="nm_author" ></p>
+</div>
 <p>
 
-<p>Specific Reference (e.g. Felder 4th ex 3.2):
-<input type="text" name="spec_ref" ></p>
+<div class = "row">
+	<p>Specific Reference (e.g. Felder 4th ex 3.2):
+	<input type="text" name="spec_ref" ></p>
+</div>
+<p>
 
-<p>Discipline (e.g. Chemical Engineering):
-<input type="text" name="subject" ></p>
-
-<p>Course Name (e.g. Thermodynamics):
-<input type="text" name="course" ></p>
-
-
-<?php
-
-	echo ('<p>Primary Concept (Required): ');
-	 $stmt = "SELECT * FROM `Concept`";
-	 $stmt2 = $pdo->query($stmt);
-		 echo "<select name='p_concept'>";
-		 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-		
-			 echo "<option value='" . $row['concept_name'] . "'>" . $row['concept_name'] . "</option>";
-		}
-	echo "</select>";
-	
-	echo ('<p>Secondary Concept (Optional)');
-	 $stmt = "SELECT * FROM `Concept`";
-	 $stmt2 = $pdo->query($stmt);
-		 echo "<select name='s_concept'>";
-		 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-			echo "<option value='" . $row['concept_name'] . "'>" . $row['concept_name'] . "</option>";
-		}
-	echo "</select>";
-	
-?>
-
+<div class = "row">
+	<div class = "form-group">
+		<label for = "Discipline">Discipline (e.g. Chemical Engineering):</label>
+		<select class = "form-control" id = "discipline" name = "subject">
+			<option required selected = "" disabled = "" value = ""> Select Discipline </option>
+			<?php
+				 $stmt = "SELECT * FROM `Discipline`";
+				$stmt = $pdo->query($stmt);
+				$stmt = $pdo->query("SELECT * FROM Discipline ORDER BY Discipline.discipline_name");
+				$disciplines = $stmt->fetchALL(PDO::FETCH_ASSOC);
+				// require 'dccData.php';
+				// $disciplines = loadDiscipline();
+				// echo $disciplines;
+					 foreach ($disciplines as $discipline) {
+							echo "<option id='".$discipline['discipline_id']."' value='".$discipline['discipline_name']."'>".$discipline['discipline_name']."</option>";
+					 }
+			?>
+		</select>
+	</div>
+</div>
+</br>
+<div class = "row">	
+	<div class = "form-group">
+		<label for = "course">Course Name (e.g. Thermodynamics):</label>
+		<select required class = "form-control" id = "course" name = "course">	
+		<option selected = "" disabled = "" value = "" > Select Course </option>
+			
+		</select>
+	</div>
+</div>		
+</br>		
+<div class = "row">	
+	<div class = "form-group">
+		<label for = "course">Primary Concept (e.g. Conservation of Mass ):</label>
+		<select required class = "form-control" id = "p_concept" name = "p_concept">	
+		<option selected = "" disabled = "" value = ""> Select Primary Concept </option>	
+		</select>
+	</div>
+</div>			
+</br>			
+<div class = "row">	
+	<div class = "form-group">
+		<label for = "course">Secondary Concept (e.g. Ideal Gas Law ):</label>
+		<select class = "form-control" id = "s_concept" name = "s_concept">	
+		<option selected = "" disabled = ""> Select Secondary Concept </option>		
+		</select>
+	</div>
+</div>					
 
 </br>
 
-</br>
 	<b>Don't see an Appropriate Concept in the Dropdown? 
 	<a href="inputConcept.php">Input Concept</b></a>
+</br>
 
 <p>Other Descriptor(s) Instructors may Search for (e.g. water treatment cooling tower )(optional):
 <input type="text" name="t_concept" ></p>
 
 
-<!-- <input type="checkbox" name="game" Value = "checked"> This is a Game Problem</p> -->
-<!--<label> School:
-		<select required name = "s_name">
-			<option> --Select the School or Organization (Required)--</option>
-			<?php foreach ($s_name as $values){?>
-			<option><?php echo $values;?></option>
-			<?php }?>
+</br>
+<div class = "row">	
+	<div class = "form-group">
+		<label for = "course">Computation (e.g. single algebraic equations ):</label>
+		<select required class = "form-control" id = "computation" name = "computation">	
+		
+		<option required selected = "" disabled = "" value = ""> Select Computation </option>
+			<?php
+				 $stmt = "SELECT * FROM `Computation`";
+				$stmt = $pdo->query($stmt);
+				$stmt = $pdo->query("SELECT * FROM Computation ORDER BY Computation.computation_order");
+				$computations = $stmt->fetchALL(PDO::FETCH_ASSOC);
+				// require 'dccData.php';
+				// $disciplines = loadDiscipline();
+				// echo $disciplines;
+					 foreach ($computations as $computation) {
+							echo "<option id='".$computation['computation_id']."' value='".$computation['computation_id']."'>".$computation['computation_name']."</option>";
+					 }
+			?>
+
+		
 		</select>
-	</label> -->
+	</div>
+</div>				
+
 <p></p>
 <p><input  type="submit" value="Get Problem Number"/>
 
 <a href="QRPRepo.php">Cancel</a></p>
 </form>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#discipline").change(function(){
+				var discipline = $("#discipline").val();
+				 // console.log (discipline);
+				$.ajax({
+					url: 'dcData.php',
+					method: 'post',
+					data: 'discipline=' + discipline
+				}).done(function(course){
+					// console.log(course);
+					 course = JSON.parse(course);
+					// $('#course').empty();
+					course.forEach(function(course){
+						$('#course').append('<option>' + course.course_name + '</option>') 
+						
+					 })
+				})
+			})
+			
+			$("#course").change(function(){
+				var course = $("#course").val();
+				// console.log (course);
+				$.ajax({
+					url: 'ccData.php',
+					method: 'post',
+					data: 'course=' + course
+				}).done(function(p_concept){
+					// console.log(p_concept);
+					 concept = JSON.parse(p_concept);
+					// $('#p_concept').empty();
+					concept.forEach(function(concept){
+						$('#p_concept').append('<option>' + concept.concept_name + '</option>') 
+										
+						
+					 })
+					 concept.forEach(function(concept){
+						$('#s_concept').append('<option>' + concept.concept_name + '</option>') 
+					 })
+				})
+			})
+			
+			
+		})
+	</script>
+
+
 </body>
 </html>

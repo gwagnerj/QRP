@@ -477,10 +477,12 @@ CREATE TABLE IF NOT EXISTS `Course` (
 CREATE TABLE CourseConceptConnect (
 	course_id INTEGER,
 	concept_id INTEGER,
-	CONSTRAINT FOREIGN KEY (course_id) REFERENCES Course (course_id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT FOREIGN KEY (concept_id) REFERENCES Concept (concept_id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT FOREIGN KEY (course_id) REFERENCES Course (course_id),
+	CONSTRAINT FOREIGN KEY (concept_id) REFERENCES Concept (concept_id),
 	PRIMARY KEY (`course_id`,`concept_id`)
 ) ENGINE=InnoDB CHARACTER SET = utf8;
+
+
 
 CREATE TABLE IF NOT EXISTS `Discipline` (
   `discipline_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -505,3 +507,184 @@ CREATE TABLE DisciplineCourseConnect (
 	CONSTRAINT FOREIGN KEY (`course_id`) REFERENCES Course (`course_id`) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (`discipline_id`,`course_id`)
 ) ENGINE=InnoDB CHARACTER SET = utf8;
+
+
+INSERT INTO `Course` (`course_name`, `synonym1`,`synonym2`) VALUES ('Fluid Mechanics','Fluid Dynamics','Fluids');
+INSERT INTO `Course` (`course_name`, `synonym1`) VALUES ('Mass Balances','Material Balances');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Energy Balances');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Thermodynamics');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Statistics');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Heat Transfer');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Mass Transfer');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Materials');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Stagewise Separations');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Engineering Economics');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Reactor Design');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Statics');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Dynamics');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Circuits');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Solid Mechanics');
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Dynamics & Control');
+
+
+
+
+INSERT INTO `Discipline` (`discipline_name`) VALUES ('Chemical Engineering');
+INSERT INTO `Discipline` (`discipline_name`) VALUES ('Mechanical Engineering');
+INSERT INTO `Discipline` (`discipline_name`) VALUES ('Chemistry');
+INSERT INTO `Discipline` (`discipline_name`) VALUES ('Civil Engineering');
+INSERT INTO `Discipline` (`discipline_name`) VALUES ('Electrical Engineering');
+INSERT INTO `Discipline` (`discipline_name`) VALUES ('Biomedical Engineering');
+INSERT INTO `Discipline` (`discipline_name`) VALUES ('Physics');
+
+CREATE TABLE IF NOT EXISTS `Computation` (
+  `computation_id` int(11) NOT NULL AUTO_INCREMENT,
+  `computation_name` varchar(50) NOT NULL,
+  `computation_order` int(11) NOT NULL,
+  `synonym1` varchar(50),
+  `synonym2` varchar(50),
+  `synonym3` varchar(50),
+  `synonym4` varchar(50),
+  `synonym5` varchar(50),
+  `synonym6` varchar(50),
+  `synonym7` varchar(50),
+  PRIMARY KEY (`computation_id`),
+  INDEX (`computation_name`),
+  UNIQUE KEY unique_computation (`computation_name`)
+  );
+  
+  
+  INSERT INTO `Computation` (`computation_order`,`computation_name`) VALUES (10,'Single Algebraic Analytic');
+  INSERT INTO `Computation` (`computation_order`,`computation_name`) VALUES (20,'Multiple Algebraic Analytic');
+  INSERT INTO `Computation` (`computation_order`,`computation_name`,`synonym1`,`synonym2`) VALUES (30,'Algebraic Iterative','Trial and Error','Root Solving');
+  INSERT INTO `Computation` (`computation_order`,`computation_name`,`synonym1`,`synonym2`) VALUES (40,'Regression','Curve Fitting','Least Squares');
+  INSERT INTO `Computation` (`computation_order`,`computation_name`,`synonym1`,`synonym2`,`synonym3`) VALUES (50,'Statistical Tests','Likelyhood','Probability','Stochastic');
+ INSERT INTO `Computation` (`computation_order`,`computation_name`,`synonym1`,`synonym2`) VALUES (60,'Integration','Quadrature','Area Under the Curve');
+  INSERT INTO `Computation` (`computation_order`,`computation_name`,`synonym1`,`synonym2`) VALUES (70,'Optimization','Minimum Maximum','Objective Function');
+   INSERT INTO `Computation` (`computation_order`,`computation_name`) VALUES (80,'Single ODE IVP');
+    INSERT INTO `Computation` (`computation_order`,`computation_name`) VALUES (90,'Multiple ODE IVP');
+   INSERT INTO `Computation` (`computation_order`,`computation_name`) VALUES (100,'Ordinary Boundary Value Problems');
+   INSERT INTO `Computation` (`computation_order`,`computation_name`) VALUES (110,'Partial Differential or Partial Integral');
+   
+    Mass Balance Concepts
+	
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Unit Conversion');
+    INSERT INTO `Concept` (`concept_name`,`synonym1`) VALUES ('Quantity Conversion','Mass Mole Volume Conversion');
+    INSERT INTO `Concept` (`concept_name`) VALUES ('Concentration Conversion');
+    INSERT INTO `Concept` (`concept_name`) VALUES ('Flow Rate');
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Fluid Velocity');
+    INSERT INTO `Concept` (`concept_name`) VALUES ('Relative Absolute T or P');
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Data Visualiation');
+    INSERT INTO `Concept` (`concept_name`) VALUES ('Ideal Gas Law');
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Manometry');
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Single Unit Nonreacting MB'); 
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Multiple Unit Nonreacting MB');  
+	INSERT INTO `Concept` (`concept_name`,`synonym1`) VALUES ('Single Unit Reacting MB','Stoichiometry');   
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Multiple Unit Reacting MB');   
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Recycle or Bypass');    
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Equations of State');    
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Phase Equilibrium');     
+	INSERT IGNORE INTO `Concept` (`concept_name`) VALUES ('Conservation of Mass');    
+INSERT IGNORE INTO `Concept` (`concept_name`) VALUES ('Conservation of Linear Momentum');   	
+	
+	INSERT IGNORE INTO `CourseConceptConnect` (`course_id`,`concept_id`) VALUES
+	(1,2),
+	(1,4),
+	(1,5),
+	(1,6),
+	(1,7),
+	(1,8),
+	(1,9),
+	(1,10),
+	(1,11),
+	(1,12),
+	(1,13),
+	(1,14),
+	(1,15),
+	(1,16),
+	(1,17),
+	(1,18),
+	(1,19),
+	(1,20),
+	(1,21),
+	(1,22),
+	(1,23),
+	(1,24),
+	(2,25),
+	(2,26),
+	(2,27),
+	(2,28),
+	(2,29),
+	(2,30),
+	(2,31),
+	(2,32),
+	(2,33),
+	(2,34),
+	(2,35),
+	(2,36),
+	(2,37),
+	(2,38),
+	(2,39),
+	(1,40),
+	(1,41),
+	;   
+	
+	INSERT IGNORE INTO `DisciplineCourseConnect` (`discipline_id`,`course_id`) VALUES
+	(1,3),
+	(1,4),
+	(1,5),
+	(1,6),
+	(1,7),
+	(1,8),
+	(1,9),
+	(1,10),
+	(1,16),
+	(2,4),
+	(2,5),
+	(2,6),
+	(2,8),
+	(2,10),
+	(2,12),
+	(2,13),
+	(2,15),
+	(2,16)	
+	
+	;   
+	
+	
+	
+	
+	
+	
+	
+	Selecting across a many to many relationship with a 
+	
+	SELECT Concept.concept_name 
+	FROM Course JOIN CourseConceptConnect JOIN Concept
+	ON CourseConceptConnect.course_id = Course.course_id AND CourseConceptConnect.concept_id = Concept.concept_id
+	WHERE Course.course_id = '2'	
+	ORDER BY Concept.concept_name ;
+	
+	
+	
+	
+	INSERT IGNORE INTO `DisciplineCourseConnect` (`discipline_id`,`course_id`) VALUES
+	(1,1),
+	(1,2),
+	(2,1),
+	(4,1),
+	(6,1)
+	; 
+
+	SELECT Course.course_name 
+	FROM Discipline JOIN DisciplineCourseConnect JOIN Course
+	ON DisciplineCourseConnect.discipline_id = Discipline.discipline_id AND DisciplineCourseConnect.course_id = Course.course_id
+	WHERE Discipline.discipline_id = '2';	
+	
+	
+
+
+
+
+
+	

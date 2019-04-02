@@ -1,0 +1,141 @@
+	echo ('<p> ');
+	 $stmt = "SELECT Course.course_name 
+	FROM Discipline JOIN DisciplineCourseConnect JOIN Course
+	ON DisciplineCourseConnect.discipline_id = Discipline.discipline_id AND DisciplineCourseConnect.course_id = Course.course_id
+	WHERE Discipline.discipline_name = "."'".$discipline."'";
+	
+	/* echo"<script>
+			$(document).ready( function () {
+			 disc ;}); </script>";
+		 */
+	
+	
+	
+	'<script> $.(document).ready(function(){
+	//	$(#discipline).val();
+	//}) <script>';
+	 $stmt2 = $pdo->query($stmt);
+		 
+		 echo "<select name='course'>";
+		
+		 echo "<option selected = 'selected'>Select</option>";
+		 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+		
+			 echo "<option value='" . $row['course_name'] . "'>" . $row['course_name'] . " </option>";
+		}
+		
+		echo "</select>";
+
+
+	echo ('<p>Primary Concept (Required): ');
+	 $stmt = "SELECT Concept.concept_name 
+	FROM Course JOIN CourseConceptConnect JOIN Concept
+	ON CourseConceptConnect.course_id = Course.course_id AND CourseConceptConnect.concept_id = Concept.concept_id
+	WHERE Course.course_id = 1";
+	 $stmt2 = $pdo->query($stmt);
+		 
+		 echo "<select name='p_concept'>";
+		
+		 echo "<option selected = 'selected'>Select</option>";
+		 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+		
+			 echo "<option value='" . $row['concept_name'] . "'>" . $row['concept_name'] . " </option>";
+		}
+		
+		echo "</select>";
+		
+		
+		
+			echo ('<p>Secondary Concept (Optional)');
+	 $stmt = "SELECT * FROM `Concept`";
+	 $stmt2 = $pdo->query($stmt);
+		 echo "<select name='s_concept'>";
+		 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+			echo "<option value='" . $row['concept_name'] . "'>" . $row['concept_name'] . "</option>";
+		}
+	echo "</select>";
+	
+?>
+
+/* // Guardian: Make sure that problem_id is present
+/* if ( ! isset($_POST['problem_id'])) {
+  $_SESSION['error'] = "Missing problem_id";
+
+ } */
+ 
+ /* If (strlen($_SESSION['stu_name'])<1){
+	 $_SESSION['error'] = 'Name is required';
+	 return;
+ }
+
+ If ($_SESSION['problem_id']<1 || $_SESSION['problem_id']>200000){
+	 $_SESSION['error'] = 'invalid problem number';
+	  return;
+ }
+
+ If ($_SESSION['index']>200 ){
+	 $_SESSION['error'] = 'Index should be between 2 and 200';
+	  return;
+ } */
+
+// getting stuff from the problem table
+ 
+    $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(':problem_id' => $_POST['problem_id']));
+	$data = $stmt -> fetch();
+	// need to put some error checking here
+		$rows=$data;
+// query the input table for the actual input values
+	
+
+	 $users_id = $rows['users_id'];
+	
+	$sql = "SELECT * FROM Users WHERE users_id = :users_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(':users_id' => $users_id));
+	$data2 = $stmt -> fetch();
+		$row_user=$data2;
+		$rows=array_merge($rows,$row_user);
+	
+
+	
+ 
+	$stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
+	$stmt->execute(array(":problem_id" => $_POST['problem_id'], ":dex" => $_POST['index']));
+	$row = $stmt->fetch(PDO::FETCH_ASSOC);
+	//$row = $stmt -> fetch();
+		if ( $row === false ) {
+			$_SESSION['error'] = 'could not read row of table Input values';
+	// put em both together		
+		}	
+	$rows=array_merge($rows,$row);
+	
+	//$rows = array ('first'=>'first thing','second'=>'second thing');
+	
+	
+	echo json_encode($rows);
+	
+	
+	
+	// function loadCourse() {
+		// $db = new DbConnect;
+		// $conn = $db->connect();
+		$stmt = $pdo->prepare("SELECT * FROM Course");
+		$stmt->execute();
+		$course = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		return $course;
+	 // } */
+
+ 
+  /* $stmt = "SELECT Concept.concept_name 
+	FROM Course JOIN CourseConceptConnect JOIN Concept
+	ON CourseConceptConnect.course_id = Course.course_id AND CourseConceptConnect.concept_id = Concept.concept_id
+	WHERE Course.course_id = 1";
+	 $stmt2 = $pdo->query($stmt);
+		 
+		 echo "<select name='p_concept'>";
+		
+		 echo "<option selected = 'selected'>Select</option>";
+		 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) */ */
+	 ?>
