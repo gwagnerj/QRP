@@ -64,7 +64,7 @@ if(isset($_POST['title'])){
 			$stmt->execute(array(
 				':users_id' => $users_id,
 				':title' => $_POST['title'],
-				':nm_author' => $nm_author,				
+				':nm_author' => $_POST['nm_author'],				
 				':game_prob_flag' => $game_prob_flag,
 				':subject' => $_POST['subject'],
 				':course' => $_POST['course'],
@@ -210,11 +210,11 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 </div>					
 
 </br>
-
-<b>Don't see an Appropriate Concept in the Dropdown? 
-	<a href="inputConcept.php">Input Concept</b></a> 
-</br>
-
+<div id = "add_concept">
+			<b>Don't see an Appropriate Concept in the Dropdown? 
+				<a href="inputConcept.php">Input Concept</b></a> 
+			</br>
+</div>
 <p>Other Descriptor(s) Instructors may Search for (e.g. water treatment cooling tower )(optional):
 <input type="text" name="t_concept" ></p>
 
@@ -251,14 +251,16 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <div class = "row">	
 	<div class = "form-group">
 		<label for = "course">Author of the Base-Case (if different than Contributor):</label>
-		<select class = "form-control" id = "nm_author" name = "nm_author">	
+		<select required class = "form-control" id = "nm_author" name = "nm_author">	
 		<option selected = "" disabled = ""> Select Author </option>		
 		</select>
 	</div>
 </div>					
 <p>
-<b>Don't see an Appropriate Author in the Dropdown? 
-	<a href="inputAuthor.php">Input Author</b></a> 
+<div id = "add_auth">	
+	<b>Don't see an Appropriate Author in the Dropdown? 
+			<a href="inputAuthor.php">Add an Author</b></a> 
+</div>			
 </br>
 <div class = "row">
 	<p>Specific Reference (e.g. Felder 4th ex 3.2):
@@ -274,7 +276,11 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	<script type="text/javascript">
 	
 $(document).ready(function(){
+			$('#add_auth').hide();
+			$('#add_concept').hide();
+			
 			$("#discipline").change(function(){
+				
 				var discipline = $("#discipline").val();
 				 // console.log (discipline);
 				$.ajax({
@@ -293,15 +299,12 @@ $(document).ready(function(){
 			})
 			
 			$("#course").change(function(){
-				var course = $("#course").val();
-				// writes the value of the course to a session varaible - I hope
-				/*  $.ajax({
-					url: 'session_write.php',
-					method: 'post',
-					data: 'course=' + course
-				})  */
+				$('#add_auth').show();
+				$('#add_concept').show();
 				
-				 console.log (course);
+				var course = $("#course").val();
+				
+				//  console.log (course);
 				$.ajax({
 					
 					url: 'ccData.php',

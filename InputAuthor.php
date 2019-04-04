@@ -15,11 +15,11 @@
 		 return; 
 		
 	}
-		$concept_name = $syn1 = $syn2 = $syn3 = "";
+		$author_name = $syn1 = $syn2 = $syn3 = "";
 		$syn4 = $syn5 = $syn6 = $syn7 = "";
 	
-	if(isset($_POST['concept']) && strlen($_POST['concept'])>0){
-		$concept_name = htmlentities ($_POST['concept']);
+	if(isset($_POST['author']) && strlen($_POST['author'])>0){
+		$author_name = htmlentities ($_POST['author']);
 		if(isset($_POST['syn1']) && strlen($_POST['syn1'])>0){
 				$syn1 = $_POST['syn1'];
 		}
@@ -42,11 +42,11 @@
 				$syn7 = $_POST['syn7'];
 		}
 		try {
-				$sql = "INSERT INTO Concept (concept_name, synonym1, synonym2, synonym3,synonym4, synonym5, synonym6,synonym7)
-							VALUES (:concept_name, :syn1, :syn2, :syn3, :syn4, :syn5, :syn6, :syn7)";
+				$sql = "INSERT INTO Author (author_name, synonym1, synonym2, synonym3,synonym4, synonym5, synonym6,synonym7)
+							VALUES (:author_name, :syn1, :syn2, :syn3, :syn4, :syn5, :syn6, :syn7)";
 					$stmt = $pdo->prepare($sql);
 					$stmt->execute(array(
-					':concept_name' => $concept_name,
+					':author_name' => $author_name,
 					':syn1' => $syn1,
 					':syn2' => $syn2,
 					':syn3' => $syn3,
@@ -55,11 +55,11 @@
 					':syn6' => $syn6,
 					':syn7' => $syn7,
 					));
-					 $_SESSION['sucess'] = 'the concept was added to database';
+					 $_SESSION['sucess'] = 'the author was added to database';
 					 
 					 // now get the course id from the data table
 					 
-					$concept_id=$pdo->lastInsertId();
+					$author_id=$pdo->lastInsertId();
 					
 					$stmt = "SELECT Course.course_id FROM Course WHERE Course.course_name ="."'".$_SESSION['course']."'";
 					$stmt = $pdo->query($stmt);
@@ -71,15 +71,15 @@
 					
 					// connect the concept to the course so it ends up added to the list when you pull down the concept
 					
-					$sql = "INSERT INTO CourseConceptConnect (course_id, concept_id)
-							VALUES (:course_id, :concept_id)";
+					$sql = "INSERT INTO CourseAuthorConnect (course_id, author_id)
+							VALUES (:course_id, :author_id)";
 					$stmt = $pdo->prepare($sql);
 					$stmt->execute(array(
 					':course_id' => $course_id,
-					':concept_id' => $concept_id
+					':author_id' => $author_id
 					));
 					
-					 $_SESSION['sucess'] = 'the concept was added to database';
+					 $_SESSION['success'] = 'the author was added to database';
 					 
 					 
 					 header( 'Location: requestPblmNum.php' ) ;
@@ -88,6 +88,7 @@
 		} catch (PDOException $e) {
 			echo ('duplicate error');
 			 $_SESSION['error'] = $e -> getMessage();
+			
 			
 		}
 		
@@ -102,7 +103,7 @@
 		
 		
 	} else {
-		 $_SESSION['error'] = 'something went wrong when adding the concept to the database';
+		 $_SESSION['error'] = 'something went wrong when adding the author to the database';
 	}
  
 
@@ -112,7 +113,7 @@
 <head>
 <link rel="icon" type="image/png" href="McKetta.png" />  
 <meta Charset = "utf-8">
-<title>Add Concept</title>
+<title>Add Author</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
@@ -124,26 +125,26 @@
 
 
 <header>
-<h1>Adding a Concept Title to the Database </h1>
-<h3><font color = blue> Please Search the Data Base for Synonyms before Adding this Concept  </font>  </h3>
+<h1>Adding a New Author to the Database </h1>
+<h3><font color = blue> Please Search the Data Base for Synonyms before Adding this Author  </font>  </h3>
 </header>
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
 <form  method="POST"  autocomplete = 'off' >
 	
-	<p><font color=#003399>Title of Concept: </font><input type="text" class = "text" name="concept" id = "concept" size= 40   > <input type = "button" name = "add synonym" value = "Add Synonym" id = "add_syn1"> </p>
+	<p><font color=#003399>1st Author: (in format - last name 1st initial. 2nd initial.)</font><input type="text" class = "text" name="author" id = "author" size= 40   > <input type = "button" name = "add synonym" value = "Add Author" id = "add_syn1"> </p>
 <!-- 	<div class="input_fields_wrap">
     <button class="add_field_button">Add Synonyms</button>
     <div id = "blank"><input type="text" name="syn[]"></div>
 	</div>
 	 -->
-	<p><font color=#003399><div id = "syn1">Synonym 1: </font><input type="text" name="syn1"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Synonym" id = "add_syn2"> <input type = "button"  value = " Remove Synonym" id = "rem_syn2"> </div>
-	<p><font color=#003399><div id = "syn2">Synonym 2: </font><input type="text" name="syn2"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Synonym" id = "add_syn3"> <input type = "button"  value = " Remove Synonym" id = "rem_syn3"> </div> 
-	<p><font color=#003399><div id = "syn3">Synonym 3: </font><input type="text" name="syn3"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Synonym" id = "add_syn4"> <input type = "button"  value = " Remove Synonym" id = "rem_syn4"> </div> 
-	<p><font color=#003399><div id = "syn4">Synonym 4: </font><input type="text" name="syn4"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Synonym" id = "add_syn5"> <input type = "button"  value = " Remove Synonym" id = "rem_syn5"> </div> 
-	<p><font color=#003399><div id = "syn5">Synonym 5: </font><input type="text" name="syn5" size= 40   > <input type = "button" name = "add synonym" value = " Add Another Synonym" id = "add_syn6"> <input type = "button"  value = " Remove Synonym" id = "rem_syn6"> </div> 
-	<p><font color=#003399><div id = "syn6">Synonym 6: </font><input type="text" name="syn6"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Synonym" id = "add_syn7"> <input type = "button"  value = " Remove Synonym" id = "rem_syn7"> </div> 
-	<p><font color=#003399><div id = "syn7">Synonym 7: </font><input type="text" name="syn7"  size= 40   > <input type = "button"  value = " Remove Synonym" id = "rem_syn8"> </div> 
+	<p><font color=#003399><div id = "syn1">2nd Author: </font><input type="text" name="syn1"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Author" id = "add_syn2"> <input type = "button"  value = " Remove Author" id = "rem_syn2"> </div>
+	<p><font color=#003399><div id = "syn2">3rd Author: </font><input type="text" name="syn2"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Author" id = "add_syn3"> <input type = "button"  value = " Remove Author" id = "rem_syn3"> </div> 
+	<p><font color=#003399><div id = "syn3">4th Author: </font><input type="text" name="syn3"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Author" id = "add_syn4"> <input type = "button"  value = " Remove Author" id = "rem_syn4"> </div> 
+	<p><font color=#003399><div id = "syn4">5th Author: </font><input type="text" name="syn4"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Author" id = "add_syn5"> <input type = "button"  value = " Remove Author" id = "rem_syn5"> </div> 
+	<p><font color=#003399><div id = "syn5">6th Author: </font><input type="text" name="syn5" size= 40   > <input type = "button" name = "add synonym" value = " Add Another Author" id = "add_syn6"> <input type = "button"  value = " Remove Author" id = "rem_syn6"> </div> 
+	<p><font color=#003399><div id = "syn6">7th Author: </font><input type="text" name="syn6"  size= 40   > <input type = "button" name = "add synonym" value = " Add Another Author" id = "add_syn7"> <input type = "button"  value = " Remove Author" id = "rem_syn7"> </div> 
+	<p><font color=#003399><div id = "syn7">8th Author: </font><input type="text" name="syn7"  size= 40   > <input type = "button"  value = " Remove Author" id = "rem_syn8"> </div> 
 <!--	<input type="hidden" name="submitted" value="name" /> -->
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type = "submit" name "submit"> 
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -154,7 +155,7 @@
 	
 	<input type="submit" name="cancel" value="Cancel" />
 	<p> <br> </p>
-	<b>Recorded Concepts: </b>
+	<b>Recorded Authors: </b>
 		<hr>	
 		
 	</form>
@@ -165,7 +166,7 @@
 			
 			// this will display the add synonym button when you start typing text in the title
 			$('#add_syn1').hide();
-			$("input[name='concept']").keyup(function () {
+			$("input[name='author']").keyup(function () {
 				if ($(this).val()) {
 					$("#add_syn1").show();
 				}
@@ -357,33 +358,33 @@
 	echo("</td><th>");
 	echo('Num');
 	echo("</th><th>");
-	echo('Concept');
+	echo(' 1st Author');
    echo("</th><th>");
-	echo('synonym1');
+	echo('2nd Author');
 	 echo("</th><th>");
-	echo('synonym2');
+	echo('3rd Author');
 	 echo("</th><th>");
-	echo('synonym3');
+	echo('4th Author');
 	 echo("</th><th>");
-	echo('synonym4');
+	echo('5th Author');
 	 echo("</th><th>");
-	echo('synonym5');
+	echo('6th Author');
 	 echo("</th><th>");
-	echo('synonym6');
+	echo('7th Author');
 	 echo("</th><th>");
-	echo('synonym7');
+	echo('8th Author');
 	echo("</th></tr>\n");
 	 echo("</thead>");
 	 
 	  echo("<tbody>");
 	 
-	 $stmt = "SELECT * FROM `Concept`";
+	 $stmt = "SELECT * FROM `Author`";
 	 $stmt2 = $pdo->query($stmt);
 	 while ( $row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
 			echo "<tr><td>";
-			echo($row['concept_id']);
+			echo($row['author_id']);
 			echo("</td><td>");	
-			echo(htmlentities($row['concept_name']));
+			echo(htmlentities($row['author_name']));
 			echo("</td><td>");	
 			echo(htmlentities($row['synonym1']));
 				echo("</td><td>");	
