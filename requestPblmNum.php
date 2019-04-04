@@ -158,17 +158,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	<p>a Problem Title:
 		<input required  minlength="7" type="text" name="title" ></p>
 </div>	
-<div class = "row">
-	<p> The Author of the Base-Case (if different than Contributor):
-	<input type="text" name="nm_author" ></p>
-</div>
-<p>
 
-<div class = "row">
-	<p>Specific Reference (e.g. Felder 4th ex 3.2):
-	<input type="text" name="spec_ref" ></p>
-</div>
-<p>
 
 <div class = "row">
 	<div class = "form-group">
@@ -229,7 +219,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <input type="text" name="t_concept" ></p>
 
 
-</br>
+
 <div class = "row">	
 	<div class = "form-group">
 		<label for = "course">Computation (e.g. single algebraic equations ):</label>
@@ -253,7 +243,28 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		</select>
 	</div>
 </div>				
-
+<!-- <div class = "row">
+	<p> The Author of the Base-Case (if different than Contributor):
+	<input type="text" name="nm_author" ></p>
+</div>  -->
+</br>			
+<div class = "row">	
+	<div class = "form-group">
+		<label for = "course">Author of the Base-Case (if different than Contributor):</label>
+		<select class = "form-control" id = "nm_author" name = "nm_author">	
+		<option selected = "" disabled = ""> Select Author </option>		
+		</select>
+	</div>
+</div>					
+<p>
+<b>Don't see an Appropriate Author in the Dropdown? 
+	<a href="inputAuthor.php">Input Author</b></a> 
+</br>
+<div class = "row">
+	<p>Specific Reference (e.g. Felder 4th ex 3.2):
+	<input type="text" name="spec_ref" ></p>
+</div>
+<p>
 <p></p>
 <p><input  type="submit" value="Get Problem Number"/>
 
@@ -261,7 +272,8 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 </form>
 
 	<script type="text/javascript">
-		$(document).ready(function(){
+	
+$(document).ready(function(){
 			$("#discipline").change(function(){
 				var discipline = $("#discipline").val();
 				 // console.log (discipline);
@@ -307,11 +319,29 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 					 concept.forEach(function(concept){
 						$('#s_concept').append('<option>' + concept.concept_name + '</option>') 
 					 })
+					 
+					  $.ajax({
+						url: 'caData.php',
+						method: 'post',
+						data: 'course=' + course
+					}).done(function(author) {
+						var authors = JSON.parse(author);
+						console.log(authors);
+						authors.forEach(function(authors){
+								$('#nm_author').append('<option>' + authors.author_name + '</option>') 
+						})
+					});  
+					 
 				})
+			
 			})
 			
-			
+	
 		})
+		
+		
+
+
 	</script>
 
 

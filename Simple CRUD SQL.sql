@@ -664,11 +664,6 @@ INSERT IGNORE INTO `Concept` (`concept_name`) VALUES ('Conservation of Linear Mo
 	;   
 	
 	
-	
-	
-	
-	
-	
 	Selecting across a many to many relationship with a 
 	
 	SELECT Concept.concept_name 
@@ -694,6 +689,80 @@ INSERT IGNORE INTO `Concept` (`concept_name`) VALUES ('Conservation of Linear Mo
 	WHERE Discipline.discipline_id = '2';	
 	
 	
+CREATE TABLE IF NOT EXISTS `Author` (
+  `author_id` int(11) NOT NULL AUTO_INCREMENT,
+  `author_name` varchar(50) NOT NULL,
+  `synonym1` varchar(50),
+  `synonym2` varchar(50),
+  `synonym3` varchar(50),
+  `synonym4` varchar(50),
+  `synonym5` varchar(50),
+  `synonym6` varchar(50),
+  `synonym7` varchar(50),
+  PRIMARY KEY (`author_id`),
+  UNIQUE KEY unique_author (`author_name`)
+  );
+
+
+CREATE TABLE CourseAuthorConnect (
+	`course_id` INTEGER,
+	`author_id` INTEGER,
+	CONSTRAINT FOREIGN KEY (`course_id`) REFERENCES Course (`course_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT FOREIGN KEY (`author_id`) REFERENCES Author (`author_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (`course_id`,`author_id`)
+) ENGINE=InnoDB CHARACTER SET = utf8;
+
+
+
+
+	INSERT INTO `Author` (`author_name`,`synonym1`) VALUES ('Felder R.M. et al.','Felder and Rousseau' );
+    INSERT INTO `Author` (`author_name`) VALUES ('Munson B.R. et al.');
+	INSERT INTO `Author` (`author_name`) VALUES ('Crowl D.A. et al.');
+	INSERT INTO `Author` (`author_name`) VALUES ('Himmelblau D.M. et al.');
+	INSERT INTO `Author` (`author_name`) VALUES ('Gerhart P.M. et al.');
+    INSERT INTO `Author` (`author_name`, `synonym1`) VALUES ('Smith J.M. et al.','Smith and Van Ness');
+	INSERT INTO `Author` (`author_name`) VALUES ('Baratuci W.B.');
+	INSERT INTO `Author` (`author_name`,`synonym1`) VALUES ('McCabe W. et al.','McCabe and Smith');
+	INSERT INTO `Author` (`author_name`) VALUES ('Geankoplis C.J. et al.');
+	INSERT INTO `Author` (`author_name`,`synonym1`) VALUES ('Incropera F.P. et al.','Incropera and DeWitt');
+	INSERT INTO `Author` (`author_name`,`synonym1`) VALUES ('Elliott R.J. et al.','Elliott and Lira');
+	INSERT INTO `Author` (`author_name`) VALUES ('Wankat P.C.');
+    INSERT INTO `Author` (`author_name`, `synonym1`) VALUES ('Seader J.D. et al.','Seader and Henley');
+
+
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('1', '2');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('4', '7');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('9', '12');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('2', '4');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('3', '4');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('2', '1');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('3', '1');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('4', '11');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('1', '9');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('6', '9');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('7', '9');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('6', '10');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('7', '10');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('1', '8');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('6', '8');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('7', '8');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('7', '13');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('4', '6');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('7', '12');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('1', '5');
+
+
+INSERT INTO `Course` (`course_name`) VALUES ('Process Safety');
+INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('17', '3');
+
+
+
+
+
+
+
+
+
 
 
 
