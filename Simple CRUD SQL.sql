@@ -597,7 +597,38 @@ CREATE TABLE IF NOT EXISTS `Computation` (
 	INSERT INTO `Concept` (`concept_name`) VALUES ('Equations of State');    
 	INSERT INTO `Concept` (`concept_name`) VALUES ('Phase Equilibrium');     
 	INSERT IGNORE INTO `Concept` (`concept_name`) VALUES ('Conservation of Mass');    
-INSERT IGNORE INTO `Concept` (`concept_name`) VALUES ('Conservation of Linear Momentum');   	
+	INSERT IGNORE INTO `Concept` (`concept_name`) VALUES ('Conservation of Linear Momentum');   	
+
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Conduction in 1 Dimension');
+    INSERT INTO `Concept` (`concept_name`) VALUES ('Conduction in 2 Dimensions');
+    INSERT INTO `Concept` (`concept_name`) VALUES ('Transient Conduction');
+    INSERT INTO `Concept` (`concept_name`) VALUES ('Convection - Internal Flows');
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Convection - External Flows');
+    INSERT INTO `Concept` (`concept_name`) VALUES ('Free Convection');
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Boiling and Convection');
+    INSERT INTO `Concept` (`concept_name`) VALUES ('Heat Exchangers');
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Radiation');
+	
+	INSERT INTO `Concept` (`concept_name`) VALUES ('Psychrometrics');
+    INSERT INTO `Concept` (`concept_name`) VALUES ('E Balances on Reacting Systems');
+    INSERT INTO `Concept` (`concept_name`) VALUES ('Transient Energy Balances');
+  
+  INSERT INTO `Concept` (`concept_name`) VALUES ('Properties of Pure Substances');
+	 INSERT INTO `Concept` (`concept_name`) VALUES ('Closed System 1st law Analysis');
+	 INSERT INTO `Concept` (`concept_name`) VALUES ('Open System 1st law Analysis');
+	 INSERT INTO `Concept` (`concept_name`) VALUES ('Control Volumes');
+	 INSERT INTO `Concept` (`concept_name`) VALUES ('Second Law');
+	 INSERT INTO `Concept` (`concept_name`) VALUES ('Entropy');
+	 INSERT INTO `Concept` (`concept_name`) VALUES ('Exergy');
+	 INSERT INTO `Concept` (`concept_name`) VALUES ('Refrigeration and Heat Pumps');
+	 INSERT INTO `Concept` (`concept_name`) VALUES ('Power Cycles');
+	 INSERT INTO `Concept` (`concept_name`) VALUES ('Properties of Mixtures');
+	 INSERT INTO `Concept` (`concept_name`) VALUES ('Thermodynamic Relationships');
+	 
+
+
+	
+	
 	
 	INSERT IGNORE INTO `CourseConceptConnect` (`course_id`,`concept_id`) VALUES
 	(1,2),
@@ -640,6 +671,48 @@ INSERT IGNORE INTO `Concept` (`concept_name`) VALUES ('Conservation of Linear Mo
 	(1,40),
 	(1,41),
 	;   
+	
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('6', '42');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('6', '43');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('6', '44');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('6', '45');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('6', '46');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('6', '47');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('6', '48');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('6', '49');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('6', '50');
+	
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('3', '51');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('3', '52');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('3', '53');
+	
+	
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('3', '55');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('3', '54');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('3', '55');
+	
+	
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '54');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '55');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '56');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '57');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '58');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '59');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '60');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '61');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '62');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '63');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '64');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '9');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '38');
+	INSERT INTO `CourseConceptConnect` (`course_id`, `concept_id`) VALUES ('4', '39');
+	
+	
+	
+	
+	INSERT INTO `courseconceptconnect` (`course_id`, `concept_id`) VALUES ('4', '9');
+	
+	
 	
 	INSERT IGNORE INTO `DisciplineCourseConnect` (`discipline_id`,`course_id`) VALUES
 	(1,3),

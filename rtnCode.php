@@ -36,12 +36,13 @@ if ($_SESSION[pin] != 0 ) {
 $_SESSION['rtn_Code']=$rtn_Code;
 
 if(isset($_SESSION['problem_id']) && isset($_SESSION['iid']) && isset($_SESSION['pin']) && isset($_SESSION['rtn_Code'])){
-		
-		$sql = "UPDATE Activity SET rtn_code = :rtn_code WHERE problem_id = :problem_id AND iid = :iid AND pin = :pin";
+		$time_complete = date();   // this give the current time
+		$sql = "UPDATE Activity SET rtn_code = :rtn_code, time_complete = :time_complete WHERE problem_id = :problem_id AND iid = :iid AND pin = :pin";
 		$stmt = $pdo->prepare($sql);
 		$stmt->execute(array(
 			':rtn_code' => $_SESSION['rtn_Code'],
 			':problem_id' => $_SESSION['problem_id'],
+			':time_complete' => $time_complete,
 			':iid' => $_SESSION['iid'],
 			':pin' => $_SESSION['pin']
 			));
