@@ -211,7 +211,8 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	 echo('Course');
     echo("</th><th>");
 	echo('Concepts ');
-    
+    echo("</th><th>");
+    echo('Compute');
     echo("</th><th>");
     echo('Title');
     echo("</th><th>");
@@ -248,7 +249,7 @@ Problem.confidence_1 as confidence_1,Problem.confidence_2 as confidence_2,Proble
 Problem.confidence_np_1 as confidence_np_1,Problem.confidence_np_2 as confidence_np_2,Problem.confidence_np_3 as confidence_np_3,Problem.confidence_np_4 as confidence_np_4,Problem.confidence_np_5 as confidence_np_5,
  Users.university as s_name, Problem.preprob_3 as mc_prelim, Problem.preprob_4 as misc_prelim, Problem.hint_a as hint_a, Problem.hint_b as hint_b, Problem.hint_c as hint_c, Problem.hint_d as hint_d, Problem.hint_e as hint_e,
  Problem.hint_f as hint_f,Problem.hint_g as hint_g,Problem.hint_h as hint_h, Problem.hint_i as hint_i, Problem.hint_j as hint_j, Problem.video_clip as video_clip, Problem.simulation as simulation, Problem.demonstration_directions as demo_directions,
- Problem.activity_directions as activity_directions
+ Problem.activity_directions as activity_directions, Problem.computation_name as computation_name
 
 FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id ;");
 
@@ -468,7 +469,8 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			
 			echo("1)&nbsp;".htmlentities($row['p_concept']).$sec_des.htmlentities($row['s_concept']));
 			echo("</td><td>");
-			
+			echo(htmlentities($row['computation_name']));
+			echo("</td><td>");  
 			echo(htmlentities($row['title']));
 			echo("</td><td>");
 			// if we have over 7 students that have completed it successfully we should change the status to circulated if it is not already
@@ -563,7 +565,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		"order": [[ 0, 'dsc' ] ],
 		 "lengthMenu": [ 50, 100, 200 ],
 		"oColumnFilterWidgets": {
-		"aiExclude": [ 0,1,2,3,6,9,10,13,14 ] }});
+		"aiExclude": [ 0,1,2,3,6,9,11,14,15 ] }});
 	
 
 	// jQuery('#table_format').ddTableFilter();
