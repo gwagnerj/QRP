@@ -57,7 +57,7 @@ if(isset($_POST['title'])){
 		 */
 		
 // Process the data and put it in the problem sheet
-	  
+	  $game_prob_flag=0;
 	  $sql = "INSERT INTO Problem (users_id, title, nm_author, game_prob_flag, subject, course, primary_concept, secondary_concept,tertiary_concept, status, specif_ref, computation_name)	
 	  VALUES (:users_id, :title,:nm_author, :game_prob_flag, :subject, :course, :primary_concept, :secondary_concept, :tertiary_concept, :status, :specref, :computation)";
 			$stmt = $pdo->prepare($sql);
@@ -103,8 +103,8 @@ if(isset($_POST['title'])){
 		// delivers the problem	
 			
 				$_SESSION['success'] = 'your problem number is '.$pblm_num;
-				$_SESSION['game_prob_flag']=$game_prob_flag;
-				$file_name = 'p'.$pblm_num.'_'.$game_prob_flag.'_'.$_POST['title'];
+				$_SESSION['game_prob_flag']=0;
+				$file_name = 'p'.$pblm_num.'_0_'.$_POST['title'];
 				$_SESSION['file_name']=$file_name;
 				 header( 'Location: downloadDocx.php' ) ;
 				 return;
