@@ -225,7 +225,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		<label for = "course">Computation (e.g. single algebraic equations ):</label>
 		<select required class = "form-control" id = "computation" name = "computation">	
 		
-		<option required selected = "" disabled = "" value = ""> Select Computation </option>
+		<option required  disabled = "" value = ""> Select Computation </option>
 			<?php
 				// $stmt = "SELECT * FROM `Computation`";
 				// $stmt = $pdo->query($stmt);
