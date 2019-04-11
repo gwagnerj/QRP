@@ -532,7 +532,13 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 				echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$users_id.'">Act-deAct</a>');
 			//echo('<a href="downloadpblm.php?problem_id='.$row['problem_id'].'">Download</a>');
 			  echo("</td><td>");
-			echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="PreView"></form>');
+			
+			
+			if($row['status']!='num issued') {
+				echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="PreView"></form>');
+			}
+		
+		
 		/*   
 			echo("</td><td>");
 			if(isset($_SESSION['username'])){
