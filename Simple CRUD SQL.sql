@@ -832,11 +832,24 @@ INSERT INTO `CourseAuthorConnect` (`course_id`, `author_id`) VALUES ('17', '3');
 
 
 
+CREATE TABLE IF NOT EXISTS `University` (
+  `university_id` int(11) NOT NULL AUTO_INCREMENT,
+  `university_name` varchar(50) NOT NULL,
+  `synonym1` varchar(50),
+  `synonym2` varchar(50),
+  `synonym3` varchar(50),
+  `synonym4` varchar(50),
+  `synonym5` varchar(50),
+  `synonym6` varchar(50),
+  `synonym7` varchar(50),
+  PRIMARY KEY (`university_id`),
+  UNIQUE KEY unique_university (`university_name`)
+  );
 
-
-
-
-
+ INSERT INTO `University` (`university_name`) VALUES ('Trine University');
+ INSERT INTO `University` (`university_name`) VALUES ('Oklahoma State University');
+  INSERT INTO `University` (`university_name`) VALUES ('Northeastern University');
+ INSERT INTO `University` (`university_name`) VALUES ('West Virginia Univeristy Institute of Technology');
 
 
 
