@@ -84,7 +84,7 @@ if ( isset($_SESSION['success']) ) {
     echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
     unset($_SESSION['success']);
 }
-$problem_id = 255;
+$problem_id = 256;
  
 ?>
 
@@ -102,7 +102,7 @@ $problem_id = 255;
 	<table   class = "onePerColumn">
 		<thead>
 			<tr>
-				<th><h4> <font color = "blue" size =5 >Problem Part </font>&nbsp; &nbsp; &nbsp; &nbsp; </th>
+				<th><h4> <font color = "blue" size =5 >Problem Part </font> </th>
 				<th>	<span class = "parta" > a) </span> </th>
 				<th>	<span class = "partb"> b) </span> </th>
 				<th>	<span class = "partc"> c) </span> </th>
@@ -205,7 +205,7 @@ $problem_id = 255;
 					});
 			});
  	var problem = $('input#prob_id').val();
-
+	
 
 
 	
@@ -241,7 +241,7 @@ if (n<2){$(".partb").hide();}
 
 
 
-	});
+
 	
 
 	
@@ -257,6 +257,17 @@ if (n<2){$(".partb").hide();}
 		
 		
 		event.preventDefault();
+		var OneIsChecked = $('input[name = "mc1"]:checked').length ==1;
+			if(!OneIsChecked){alert('Multiple choice 1 needs one radio button selected');
+			return;
+			}
+		
+	//	console.log (OneIsChecked);
+	
+	var mc1 = $('input[name = "mc1"]').val();
+	var mc2 = $('input[name = "mc2"]').val();
+	var mc3 = $('input[name = "mc3"]').val();
+
 		var inde = $('input#index_id').val();
 	
 	//	var s_name = $('input#stu_name_id').val();
@@ -276,7 +287,7 @@ if (n<2){$(".partb").hide();}
 			
 			
 			
-			$.post('fetchpblmqa.php', {problem_id : problem, index : inde , mc1 : mc1, mc2 : mc2, mc3 : mc3 , give_ans : give_ans, remove : remove }, function(data){
+			$.post('fetchpblmqa.php', {problem_id : problem, index : inde , mc1 : mc1, mc2 : mc2, mc3 : mc3 , n : n }, function(data){
 				
 				try{
 					var arr2 = JSON.parse(data);
@@ -516,7 +527,7 @@ if (n<2){$(".partb").hide();}
 			});
 	});
 	
-
+});
 	
 	
 </script>
