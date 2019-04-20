@@ -106,11 +106,7 @@ if ( isset($_SESSION['success']) ) {
 				alert ('problem data unavailable');
 			}
 		
-		
-		
 		// Get the html file name from the database
-			
-			
 			
 			var static_f = true;
 			var openup = arr.htmlfilenm;

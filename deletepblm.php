@@ -2,6 +2,19 @@
 session_start();
 require_once "pdo.php";
 
+
+
+if (isset($_SESSION['username'])) {
+	$username=$_SESSION['username'];
+} else {
+	 $_SESSION['error'] = 'Session was lost -  please log in again';
+	header('Location: QRPRepo.php');
+	return;
+}
+
+
+
+
 if ( isset($_POST['delete']) && isset($_POST['problem_id']) ) {
   
   // Delete the word file from the upload file folder

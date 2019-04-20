@@ -1,6 +1,8 @@
 
 var problem_id = localStorage.getItem('problem_id');
 var stu_name = localStorage.getItem('stu_name');
+
+if (stu_name == null) { stu_name = ""};
 var name_length = stu_name.length;
 if(name_length<1){
 	stu_name = "__________________________";
@@ -33,18 +35,17 @@ var iid = localStorage.getItem('iid');
 var title = localStorage.getItem('title');
 var static_flag = localStorage.getItem('static_flag');
 
-/* 			localStorage.setItem('contrib_first',contrib_first);
-			localStorage.setItem('contrib_last',contrib_last);
-			localStorage.setItem('contrib_university',contrib_university);
-			localStorage.setItem('nm_author',arr.nm_author);
-			localStorage.setItem('specif_ref',arr.specif_ref);
- */
-var contrib_first = localStorage.getItem('contrib_first');
-var contrib_last = localStorage.getItem('contrib_last');
-var contrib_university = localStorage.getItem('contrib_university');
-var nm_author = localStorage.getItem('nm_author');
-var specif_ref = localStorage.getItem('specif_ref');
 
+var contrib_first = localStorage.getItem('contrib_first');
+if (contrib_first == null){contrib_first = " ";}
+var contrib_last = localStorage.getItem('contrib_last');
+if (contrib_last = null) {contrib_last = " ";}
+var contrib_university = localStorage.getItem('contrib_university');
+if (contrib_university == null){contrib_university = " ";}
+var nm_author = localStorage.getItem('nm_author');
+if (nm_author == null){nm_author = " ";}
+var specif_ref = localStorage.getItem('specif_ref');
+if (specif_ref == null){specif_ref = " ";}
 
 
 var nvar1 = localStorage.getItem('nv_1'); 
@@ -159,6 +160,31 @@ x = "bc_"+localStorage.getItem('nv_13');
 var bc_var13 = localStorage.getItem(x);
 x = "bc_"+localStorage.getItem('nv_14');
 var bc_var14 = localStorage.getItem(x);
+
+
+// This is the Multiple choice stuff called from numericToMC.php for making questions you can print outerHTML
+
+						
+
+var MC_flag = localStorage.getItem('MC_flag');
+if (MC_flag != null ){
+var key_a = localStorage.getItem('key_a');
+var opt_a_1 = localStorage.getItem('opt_a_1');
+var opt_a_2 = localStorage.getItem('opt_a_2');
+var opt_a_3 = localStorage.getItem('opt_a_3');
+var opt_a_4 = localStorage.getItem('opt_a_4');
+var key_b = localStorage.getItem('key_b');
+var opt_b_1 = localStorage.getItem('opt_b_1');
+var opt_b_2 = localStorage.getItem('opt_b_2');
+var opt_b_3 = localStorage.getItem('opt_b_3');
+var opt_b_4 = localStorage.getItem('opt_b_4');
+var key_c = localStorage.getItem('key_c');
+var opt_c_1 = localStorage.getItem('opt_c_1');
+var opt_c_2 = localStorage.getItem('opt_c_2');
+var opt_c_3 = localStorage.getItem('opt_c_3');
+var opt_c_4 = localStorage.getItem('opt_c_4');
+
+}
 
 
 
@@ -290,6 +316,154 @@ $(document).ready(function(){
 			$("#box3-start").nextUntil("#box3-end").wrapAll("<div id='old_basecase'></div>");
 			 $("#old_basecase").hide();
 
+	
+	
+	
+	
+	
+	// Search thru all of the document looking for the markups for the questions and put thm in a div 
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			   // put in a div element at the start of the markup
+			  if( current_content.indexOf("p==a==p") !=-1) {
+				  $(this).closest('p').before('<div id="boxa-start">');
+			  }
+			 // put the end of the div before the next one or after the current one if the next one does not exist 
+				  if( current_content.indexOf("p==b==p") !=-1) {
+				  
+				 $(this).closest('p').before('<div id="boxa-end">');
+			  } else if( current_content.indexOf("p==a==p") !=-1) {
+				  $(this).closest('p').after('<div id="boxa-end">');
+			  }
+			});
+			// put all the content between the tags in a div
+
+			$("#boxa-start").nextUntil("#boxa-end").wrapAll("<div id='parta'></div>");
+
+// Search thru all of the document looking for the markups for the questions and put thm in a div 
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			  if( current_content.indexOf("p==b==p") !=-1) {
+				  $(this).closest('p').before('<div id="boxb-start">');
+			  }
+				  if( current_content.indexOf("p==c==p") !=-1) {
+				 $(this).closest('p').before('<div id="boxb-end">');
+			  } else if( current_content.indexOf("p==b==p") !=-1) {
+				  $(this).closest('p').after('<div id="boxb-end">');
+			  }
+			});
+			$("#boxb-start").nextUntil("#boxb-end").wrapAll("<div id='partb'></div>");
+
+
+// Search thru all of the document looking for the markups for the questions and put thm in a div 
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			  if( current_content.indexOf("p==c==p") !=-1) {
+				  $(this).closest('p').before('<div id="boxc-start">');
+			  }
+				  if( current_content.indexOf("p==d==p") !=-1) {
+				 $(this).closest('p').before('<div id="boxc-end">');
+			  } else if( current_content.indexOf("p==c==p") !=-1) {
+				  $(this).closest('p').after('<div id="boxc-end">');
+			  }
+			});
+			$("#boxc-start").nextUntil("#boxc-end").wrapAll("<div id='partc'></div>");
+
+// Search thru all of the document looking for the markups for the questions and put thm in a div 
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			  if( current_content.indexOf("p==d==p") !=-1) {
+				  $(this).closest('p').before('<div id="boxd-start">');
+			  }
+				  if( current_content.indexOf("p==e==p") !=-1) {
+				 $(this).closest('p').before('<div id="boxd-end">');
+			  } else if( current_content.indexOf("p==d==p") !=-1) {
+				  $(this).closest('p').after('<div id="boxd-end">');
+			  }
+			});
+			$("#boxd-start").nextUntil("#boxd-end").wrapAll("<div id='partd'></div>");
+
+// Search thru all of the document looking for the markups for the questions and put thm in a div 
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			  if( current_content.indexOf("p==e==p") !=-1) {
+				  $(this).closest('p').before('<div id="boxe-start">');
+			  }
+				  if( current_content.indexOf("p==f==p") !=-1) {
+				 $(this).closest('p').before('<div id="boxe-end">');
+			  } else if( current_content.indexOf("p==e==p") !=-1) {
+				  $(this).closest('p').after('<div id="boxe-end">');
+			  }
+			});
+			$("#boxe-start").nextUntil("#boxe-end").wrapAll("<div id='parte'></div>");
+
+// Search thru all of the document looking for the markups for the questions and put thm in a div 
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			  if( current_content.indexOf("p==f==p") !=-1) {
+				  $(this).closest('p').before('<div id="boxf-start">');
+			  }
+				  if( current_content.indexOf("p==g==p") !=-1) {
+				 $(this).closest('p').before('<div id="boxf-end">');
+			  } else if( current_content.indexOf("p==f==p") !=-1) {
+				  $(this).closest('p').after('<div id="boxf-end">');
+			  }
+			});
+			$("#boxf-start").nextUntil("#boxf-end").wrapAll("<div id='partf'></div>");
+
+// Search thru all of the document looking for the markups for the questions and put thm in a div 
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			  if( current_content.indexOf("p==g==p") !=-1) {
+				  $(this).closest('p').before('<div id="boxg-start">');
+			  }
+				  if( current_content.indexOf("p==h==p") !=-1) {
+				 $(this).closest('p').before('<div id="boxg-end">');
+			  } else if( current_content.indexOf("p==g==p") !=-1) {
+				  $(this).closest('p').after('<div id="boxg-end">');
+			  }
+			});
+			$("#boxg-start").nextUntil("#boxg-end").wrapAll("<div id='partg'></div>");
+
+// Search thru all of the document looking for the markups for the questions and put thm in a div 
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			  if( current_content.indexOf("p==h==p") !=-1) {
+				  $(this).closest('p').before('<div id="boxh-start">');
+			  }
+				  if( current_content.indexOf("p==i==p") !=-1) {
+				 $(this).closest('p').before('<div id="boxh-end">');
+			  } else if( current_content.indexOf("p==h==p") !=-1) {
+				  $(this).closest('p').after('<div id="boxh-end">');
+			  }
+			});
+			$("#boxh-start").nextUntil("#boxh-end").wrapAll("<div id='parth'></div>");
+
+// Search thru all of the document looking for the markups for the questions and put thm in a div 
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			  if( current_content.indexOf("p==i==p") !=-1) {
+				  $(this).closest('p').before('<div id="boxi-start">');
+			  }
+				  if( current_content.indexOf("p==j==p") !=-1) {
+				 $(this).closest('p').before('<div id="boxi-end">');
+			  } else if( current_content.indexOf("p==i==p") !=-1) {
+				  $(this).closest('p').after('<div id="boxi-end">');
+			  }
+			});
+			$("#boxi-start").nextUntil("#boxi-end").wrapAll("<div id='parti'></div>");
+
+// Search thru all of the document looking for the markups for the questions and put thm in a div 
+			 $( "p" ).each(function( index ) {
+			   var current_content =  $(this).text();
+			  if( current_content.indexOf("p==j==p") !=-1) {
+					$(this).closest('p').before('<div id="boxj-start">');
+					$(this).closest('p').after('<div id="boxj-end">');
+			 }
+			  
+			});
+			$("#boxj-start").nextUntil("#boxj-end").wrapAll("<div id='partj'></div>");
+
 
 			// Search thru all of the document looking for the markups and put divs for those
 			 $( "p" ).each(function( index ) {
@@ -394,7 +568,7 @@ $(document).ready(function(){
 
 
 
-			  // Cloning the problem staement to get the basecase
+			  // Cloning the problem statement to get the basecase
 
 			  var problem_st = document.getElementById('problem');
 			var clone = problem_st.cloneNode(true);
@@ -482,6 +656,7 @@ $(document).ready(function(){
 			// $("a".oldHref).prop('href', newHref);
 
 			// genrate an QRcode dynamically using the newHref  This had to be pretty large before the QR reader can read it
+			// This worked but had to be fairly large for most QR readers to recognize it - options in the code may be able to be refined
 
 
 			/* let qrcode = new QRCode("output", {

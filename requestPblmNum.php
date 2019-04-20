@@ -1,8 +1,25 @@
 <?php
 require_once "pdo.php";
 session_start();
-$username=$_SESSION['username'];
+
 $discipline = '';	
+
+if (isset($_SESSION['username'])) {
+	
+	$username=$_SESSION['username'];
+	
+} else {
+	 $_SESSION['error'] = 'Session was lost -  please log in again';
+	
+	header('Location: QRPRepo.php');
+	return;
+	 
+	 
+	 
+	// die();
+}
+
+
 // get the name email and school name using the username from the users table
 
 	$sql = " SELECT * FROM Users where username = :username";
@@ -58,8 +75,8 @@ if(isset($_POST['title'])){
 		
 // Process the data and put it in the problem sheet
 	  $game_prob_flag=0;
-	  $sql = "INSERT INTO Problem (users_id, title, nm_author, game_prob_flag, subject, course, primary_concept, secondary_concept,tertiary_concept, status, specif_ref, computation_name)	
-	  VALUES (:users_id, :title,:nm_author, :game_prob_flag, :subject, :course, :primary_concept, :secondary_concept, :tertiary_concept, :status, :specref, :computation)";
+	  $sql = "INSERT INTO Problem (users_id, title, nm_author, game_prob_flag, subject, course, primary_concept, secondary_concept,tertiary_concept, status, specif_ref, computation_name, unpubl_auth )	
+	  VALUES (:users_id, :title,:nm_author, :game_prob_flag, :subject, :course, :primary_concept, :secondary_concept, :tertiary_concept, :status, :specref, :computation, :unpubl_auth)";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
 				':users_id' => $users_id,
@@ -73,7 +90,8 @@ if(isset($_POST['title'])){
 				':tertiary_concept' => $_POST['t_concept'],
 				':status' => 'num issued',
 				':specref' => $_POST['spec_ref'],
-				':computation' => $_POST['computation']
+				':computation' => $_POST['computation'],
+				':unpubl_auth' => $_POST['un_nm_author']
 				));			
 				
 				
@@ -151,7 +169,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 </header>
 
 
-<p>Please provide:</p>
+<p><b>Please provide:</b></p>
 <form role = "form" method="POST" action ="" >
 <p></p>
 <div class = "row">
@@ -209,7 +227,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 	</div>
 </div>					
 
-</br>
+
 <div id = "add_concept">
 			<b>Don't see an Appropriate Concept in the Dropdown? 
 				<a href="inputConcept.php">Input Concept</b></a> 
@@ -218,7 +236,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 <p>Other Descriptor(s) Instructors may Search for (e.g. water treatment cooling tower )(optional):
 <input type="text" name="t_concept" ></p>
 
-
+</br>
 
 <div class = "row">	
 	<div class = "form-group">
@@ -242,35 +260,49 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		
 		</select>
 	</div>
-</div>				
+</div>		
+</br>		
 <!-- <div class = "row">
 	<p> The Author of the Base-Case (if different than Contributor):
 	<input type="text" name="nm_author" ></p>
 </div>  -->
-</br>			
-<div class = "row">	
+</br>	
+<div id = "publ_auth">		
+	<div class = "row" >	
+		<div class = "form-group">
+			<label for = "course">Author of Published Base-Case (if different than Contributor):</label>
+			<select required class = "form-control" id = "nm_author" name = "nm_author">	
+			<option selected = "" disabled = ""> Select Author </option>		
+			</select>
+		</div>
+	</div>					
+
+	<div id = "add_auth">	
+		<b>Don't see an Appropriate Published Author in the Dropdown? 
+				<a href="inputAuthor.php">Add an Author</b></a> 
+	</div>	
+</div>	
+</br>
+<div class = "row" id = "unpub_author">	
 	<div class = "form-group">
-		<label for = "course">Author of the Base-Case (if different than Contributor):</label>
-		<select required class = "form-control" id = "nm_author" name = "nm_author">	
-		<option selected = "" disabled = ""> Select Author </option>		
+		<label for = "course">Author of <u> Unpublished </u> Base-Case (if different than Contributor):</label>
+		<input   type="text" name="un_nm_author" id = "un_nm_author" ></p>
+		
 		</select>
+		
 	</div>
 </div>					
 <p>
-<div id = "add_auth">	
-	<b>Don't see an Appropriate Author in the Dropdown? 
-			<a href="inputAuthor.php">Add an Author</b></a> 
-</div>			
-</br>
 <div class = "row">
 	<p>Specific Reference (e.g. Felder 4th ex 3.2):
 	<input type="text" name="spec_ref" ></p>
 </div>
 <p>
+</br>
 <p></p>
 <p><input  type="submit" value="Get Problem Number"/>
-
-<a href="QRPRepo.php">Cancel</a></p>
+&nbsp; &nbsp; 
+<a href="QRPRepo.php"><b><font color = "blue">Cancel </font></a></p>
 </form>
 
 	<script type="text/javascript">
@@ -337,9 +369,18 @@ $(document).ready(function(){
 					 
 				})
 			
+			$("#nm_author").change(function(){
+				$('#unpub_author').hide();
+			})
+			$("input[name=un_nm_author]").keypress(function(){
+				$('#publ_auth').hide();
 			})
 			
-	
+			
+			
+			
+			})
+			
 		})
 		
 		

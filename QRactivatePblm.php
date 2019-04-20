@@ -2,6 +2,16 @@
 require_once "pdo.php";
 session_start();
 
+if (isset($_SESSION['username'])) {
+	$username=$_SESSION['username'];
+} else {
+	 $_SESSION['error'] = 'Session was lost -  please log in again';
+	header('Location: QRPRepo.php');
+	return;
+}
+
+
+
 // Guardian: Make sure that problem_id is present
 if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
   $_SESSION['error'] = "Missing problem_id";

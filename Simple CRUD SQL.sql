@@ -852,6 +852,8 @@ CREATE TABLE IF NOT EXISTS `University` (
  INSERT INTO `University` (`university_name`) VALUES ('West Virginia Univeristy Institute of Technology');
 
 
-
+ALTER TABLE Problem	ADD unpubl_auth varchar(128);
+	
+	
 
 	
