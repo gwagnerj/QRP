@@ -62,7 +62,8 @@ if(isset($_POST['index'])){
 
 <style>
 table, th, td {
-  border: 1px solid black;
+	width = 20
+  // border: 1px solid black;
 }
 </style>
 
@@ -71,7 +72,7 @@ table, th, td {
 
 <body>
 <header>
-<h1>Quick Response Homework </h1>
+<h1>Quick Response Multiple Choice </h1>
 </header>
 
 <?php
@@ -83,12 +84,11 @@ if ( isset($_SESSION['success']) ) {
     echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
     unset($_SESSION['success']);
 }
-
+$problem_id = 255;
  
 ?>
 
-<h3>Print the problem statement with "Ctrl P"</h3>
-<p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>
+
 <form method="POST">
 	<!-- <p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p> -->
 	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
@@ -99,7 +99,7 @@ if ( isset($_SESSION['success']) ) {
 	
 	
 	
-	<table  width="600" class = "onePerColumn">
+	<table   class = "onePerColumn">
 		<thead>
 			<tr>
 				<th><h4> <font color = "blue" size =5 >Problem Part </font>&nbsp; &nbsp; &nbsp; &nbsp; </th>
@@ -119,240 +119,135 @@ if ( isset($_SESSION['success']) ) {
 			<div id = mc1>
 			<tr><td>	<font color = "blue" size =5 > Multiple Choice 1 </font> </td>
 				
-				<td><span class = "parta"><input type="radio" name="mc1" value="parta"> </span></td>
-				<td><span class = "partb"><input type="radio" name="mc1" value="partb"> </span></td>
-				<td><span class = "partc"><input type="radio" name="mc1" value="partc"> </span></td>
-				<td><span class = "partd"><input type="radio" name="mc1" value="partd"> </span></td>
-				<td><span class = "parte"><input type="radio" name="mc1" value="parte"> </span></td>
-				<td><span class = "partf"><input type="radio" name="mc1" value="partf"> </span></td>
-				<td><span class = "partg"><input type="radio" name="mc1" value="partg"> </span></td>
-				<td><span class = "parth"><input type="radio" name="mc1" value="parth"> </span></td>
-				<td><span class = "parti"><input type="radio" name="mc1" value="parti"> </span></td>
-				<td><span class = "partj"><input type="radio" name="mc1" value="partj"> </span></td>
+				<td><span class = "parta"><input type="radio" name="mc1" Value="ans_a" checked = "checked"> </span></td>
+				<td><span class = "partb"><input type="radio" name="mc1" Value="ans_b"> </span></td>
+				<td><span class = "partc"><input type="radio" name="mc1" Value="ans_c"> </span></td>
+				<td><span class = "partd"><input type="radio" name="mc1" Value="ans_d"> </span></td>
+				<td><span class = "parte"><input type="radio" name="mc1" Value="ans_e"> </span></td>
+				<td><span class = "partf"><input type="radio" name="mc1" Value="ans_f"> </span></td>
+				<td><span class = "partg"><input type="radio" name="mc1" Value="ans_g"> </span></td>
+				<td><span class = "parth"><input type="radio" name="mc1" Value="ans_h"> </span></td>
+				<td><span class = "parti"><input type="radio" name="mc1" Value="ans_i"> </span></td>
+				<td><span class = "partj"><input type="radio" name="mc1" Value="ans_j"> </span></td>
 			
 			<tr><td>	<font color = "blue" size =5 > Multiple Choice 2 </font> </td>
 				
-				<td><span class = "parta"><input type="radio" name="mc2" value="parta"> </span></td>
-				<td><span class = "partb"><input type="radio" name="mc2" value="partb"> </span></td>
-				<td><span class = "partc"><input type="radio" name="mc2" value="partc"> </span></td>
-				<td><span class = "partd"><input type="radio" name="mc2" value="partd"> </span></td>
-				<td><span class = "parte"><input type="radio" name="mc2" value="parte"> </span></td>
-				<td><span class = "partf"><input type="radio" name="mc2" value="partf"> </span></td>
-				<td><span class = "partg"><input type="radio" name="mc2" value="partg"> </span></td>
-				<td><span class = "parth"><input type="radio" name="mc2" value="parth"> </span></td>
-				<td><span class = "parti"><input type="radio" name="mc2" value="parti"> </span></td>
-				<td><span class = "partj"><input type="radio" name="mc2" value="partj"> </span></td>	
+				<td><span class = "parta"><input type="radio" name="mc2" Value="ans_a"> </span></td>
+				<td><span class = "partb"><input type="radio" name="mc2" Value="ans_b" checked = "checked"> </span></td>
+				<td><span class = "partc"><input type="radio" name="mc2" Value="ans_c"> </span></td>
+				<td><span class = "partd"><input type="radio" name="mc2" Value="ans_d"> </span></td>
+				<td><span class = "parte"><input type="radio" name="mc2" Value="ans_e"> </span></td>
+				<td><span class = "partf"><input type="radio" name="mc2" Value="ans_f"> </span></td>
+				<td><span class = "partg"><input type="radio" name="mc2" Value="ans_g"> </span></td>
+				<td><span class = "parth"><input type="radio" name="mc2" Value="ans_h"> </span></td>
+				<td><span class = "parti"><input type="radio" name="mc2" Value="ans_i"> </span></td>
+				<td><span class = "partj"><input type="radio" name="mc2" Value="ans_j"> </span></td>	
 				
 			<tr><td>	<font color = "blue" size =5 > Multiple Choice 3 </font> </td>
 				
-				<td><span class = "parta"><input type="radio" name="mc3" value="parta"> </span></td>
-				<td><span class = "partb"><input type="radio" name="mc3" value="partb"> </span></td>
-				<td><span class = "partc"><input type="radio" name="mc3" value="partc"> </span></td>
-				<td><span class = "partd"><input type="radio" name="mc3" value="partd"> </span></td>
-				<td><span class = "parte"><input type="radio" name="mc3" value="parte"> </span></td>
-				<td><span class = "partf"><input type="radio" name="mc3" value="partf"> </span></td>
-				<td><span class = "partg"><input type="radio" name="mc3" value="partg"> </span></td>
-				<td><span class = "parth"><input type="radio" name="mc3" value="parth"> </span></td>
-				<td><span class = "parti"><input type="radio" name="mc3" value="parti"> </span></td>
-				<td><span class = "partj"><input type="radio" name="mc3" value="partj"> </span></td>	
+				<td><span class = "parta"><input type="radio" name="mc3" Value="ans_a"> </span></td>
+				<td><span class = "partb"><input type="radio" name="mc3" Value="ans_b"> </span></td>
+				<td><span class = "partc"><input type="radio" name="mc3" Value="ans_c" checked = "checked"> </span></td>
+				<td><span class = "partd"><input type="radio" name="mc3" Value="ans_d"> </span></td>
+				<td><span class = "parte"><input type="radio" name="mc3" Value="ans_e"> </span></td>
+				<td><span class = "partf"><input type="radio" name="mc3" Value="ans_f"> </span></td>
+				<td><span class = "partg"><input type="radio" name="mc3" Value="ans_g"> </span></td>
+				<td><span class = "parth"><input type="radio" name="mc3" Value="ans_h"> </span></td>
+				<td><span class = "parti"><input type="radio" name="mc3" Value="ans_i"> </span></td>
+				<td><span class = "partj"><input type="radio" name="mc3" Value="ans_j"> </span></td>	
 				
 			<tr><td>	<font color = "blue" size =5 > Give Answers </font> </td>
 				
-				<td><span class = "parta"><input type="checkbox" name="give_ans" value="parta"> </span></td>
-				<td><span class = "partb"><input type="checkbox" name="give_ans" value="partb"> </span></td>
-				<td><span class = "partc"><input type="checkbox" name="give_ans" value="partc"> </span></td>
-				<td><span class = "partd"><input type="checkbox" name="give_ans" value="partd"> </span></td>
-				<td><span class = "parte"><input type="checkbox" name="give_ans" value="parte"> </span></td>
-				<td><span class = "partf"><input type="checkbox" name="give_ans" value="partf"> </span></td>
-				<td><span class = "partg"><input type="checkbox" name="give_ans" value="partg"> </span></td>
-				<td><span class = "parth"><input type="checkbox" name="give_ans" value="parth"> </span></td>
-				<td><span class = "parti"><input type="checkbox" name="give_ans" value="parti"> </span></td>
-				<td><span class = "partj"><input type="checkbox" name="give_ans" value="partj"> </span></td>	
+				<td><span class = "parta"><input type="checkbox" name="give_ans" value="ans_a"> </span></td>
+				<td><span class = "partb"><input type="checkbox" name="give_ans" value="ans_b"> </span></td>
+				<td><span class = "partc"><input type="checkbox" name="give_ans" value="ans_c"> </span></td>
+				<td><span class = "partd"><input type="checkbox" name="give_ans" value="ans_d"> </span></td>
+				<td><span class = "parte"><input type="checkbox" name="give_ans" value="ans_e"> </span></td>
+				<td><span class = "partf"><input type="checkbox" name="give_ans" value="ans_f"> </span></td>
+				<td><span class = "partg"><input type="checkbox" name="give_ans" value="ans_g"> </span></td>
+				<td><span class = "parth"><input type="checkbox" name="give_ans" value="ans_h"> </span></td>
+				<td><span class = "parti"><input type="checkbox" name="give_ans" value="ans_i"> </span></td>
+				<td><span class = "partj"><input type="checkbox" name="give_ans" value="ans_j"> </span></td>	
 				
-			<tr><td>	<font color = "blue" size =5 > Remove </font> </td>
+			<tr class = "row5"><td>	<font color = "blue" size =5 > Remove </font> </td>
 				
-				<td><span class = "parta"><input type="checkbox" name="remove" value="parta"> </span></td>
-				<td><span class = "partb"><input type="checkbox" name="remove" value="partb"> </span></td>
-				<td><span class = "partc"><input type="checkbox" name="remove" value="partc"> </span></td>
-				<td><span class = "partd"><input type="checkbox" name="remove" value="partd"> </span></td>
-				<td><span class = "parte"><input type="checkbox" name="remove" value="parte"> </span></td>
-				<td><span class = "partf"><input type="checkbox" name="remove" value="partf"> </span></td>
-				<td><span class = "partg"><input type="checkbox" name="remove" value="partg"> </span></td>
-				<td><span class = "parth"><input type="checkbox" name="remove" value="parth"> </span></td>
-				<td><span class = "parti"><input type="checkbox" name="remove" value="parti"> </span></td>
-				<td><span class = "partj"><input type="checkbox" name="remove" value="partj">	
+				<td><span class = "parta"><input type="checkbox" name="remove" value="ans_a"> </span></td>
+				<td><span class = "partb"><input type="checkbox" name="remove" value="ans_b"> </span></td>
+				<td><span class = "partc"><input type="checkbox" name="remove" value="ans_c"> </span></td>
+				<td><span class = "partd"><input type="checkbox" name="remove" value="ans_d" checked = "checked"> </span></td>
+				<td><span class = "parte"><input type="checkbox" name="remove" value="ans_e" checked = "checked"> </span></td>
+				<td><span class = "partf"><input type="checkbox" name="remove" value="ans_f" checked = "checked"> </span></td>
+				<td><span class = "partg"><input type="checkbox" name="remove" value="ans_g" checked = "checked"> </span></td>
+				<td><span class = "parth"><input type="checkbox" name="remove" value="ans_h" checked = "checked"> </span></td>
+				<td><span class = "parti"><input type="checkbox" name="remove" value="ans_i" checked = "checked"> </span></td>
+				<td><span class = "partj"><input type="checkbox" name="remove" value="ans_j" checked = "checked">	
 				
 				
 		</table>		
-		<!--	
-			
-				<h4> <font color = "blue" size =5 >Part </font>&nbsp; &nbsp; &nbsp; &nbsp; MC Question 1 &nbsp; &nbsp; MC Question 1 &nbsp; &nbsp; MC Question 1 &nbsp; &nbsp; Remove &nbsp; &nbsp; Give Answers   </br>
-		<div id = parta>
-			<font color = "blue" size =5 > a: </font>
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="parta" value="mc1"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="parta" value="mc2"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="parta" value="mc3">
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="parta" value="remove" checked = "Checked"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="parta" value="give_ans"> 
-	<!--
-		</div>
-		<div id = partb>
-			<font color = "blue" size =5 > b: </font>
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partb" value="mc1"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="partb" value="mc2"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="partb" value="mc3">
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partb" value="remove" checked = "Checked"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partb" value="give_ans"> 
-	
-		</div>
-		<div id = partc>
-			<font color = "blue" size =5 > c: </font>
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partc" value="mc1"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="partc" value="mc2"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="partc" value="mc3">
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partc" value="remove" checked = "Checked"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partc" value="give_ans"> 
-		</div>
-		<div id = partd>
-			<font color = "blue" size =5 > d: </font>
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partd" value="mc1"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="partd" value="mc2"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="partd" value="mc3">
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partd" value="remove" checked = "Checked"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partd" value="give_ans"> 
-		</div>
-		<div id = parte>
-			<font color = "blue" size =5 > e: </font>
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="parte" value="mc1"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="parte" value="mc2"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="parte" value="mc3">
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="parte" value="remove" checked = "Checked"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="parte" value="give_ans"> 
-		</div>
-		<div id = partf>
-			<font color = "blue" size =5 > f: </font>
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partf" value="mc1"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="partf" value="mc2"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="partf" value="mc3">
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partf" value="remove" checked = "Checked"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partf" value="give_ans"> 
-		</div>
-		<div id = partg>
-			<font color = "blue" size =5 > g: </font>
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partg" value="mc1"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="partg" value="mc2"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="partg" value="mc3">
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partg" value="remove" checked = "Checked"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partg" value="give_ans"> 
-		</div>
-		<div id = parth>
-			<font color = "blue" size =5 > h: </font>
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="parth" value="mc1"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="parth" value="mc2"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="parth" value="mc3">
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="parth" value="remove" checked = "Checked"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="parth" value="give_ans"> 
-		</div>
-		<div id = parti>
-			<font color = "blue" size =5 > i: </font>
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="parti" value="mc1"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="parti" value="mc2"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="parti" value="mc3">
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="parti" value="remove" checked = "Checked"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="parti" value="give_ans"> 
-		</div>
-		<div id = partj>
-			<font color = "blue" size =5 > j: </font>
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partj" value="mc1"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="partj" value="mc2"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-			<input type="radio" name="partj" value="mc3">
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partj" value="remove" checked = "Checked"> 
-			&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-			<input type="radio" name="partj" value="give_ans"> 
-		</div>
-	-->	
+		
 	
 	<p><input type = "submit" value="Submit" id="submit_id" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp; &nbsp; </p>
 	</form>
 
 	
 <script>
-//Relies on a CSS class name onePerColumn being applied to the table.
 
-
-
-
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
 	
 	$(document).ready(function(){
-		
-		  $(".onePerColumn :radio").change(function(){
+	// this next bit makes it so you can not have two columns with the same radio value
+			 $(".onePerColumn :radio,:checkbox").change(function(){
 				var col = $(this).attr("value");
-				$(".onePerColumn :radio[value='" + col + "']:checked").not(this).each(function(){
-				  $(this).prop('checked',false);
-				});
+					$(".onePerColumn :radio[value='" + col + "']:checked,.onePerColumn :checkbox[value='" + col + "']:checked").not(this).each(function(){
+						$(this).prop('checked',false);
+					});
 			});
- 
+ 	var problem = $('input#prob_id').val();
+
+
+
+	
+// find out how many parts are in the problem
+
+	$.post('fetchPartsInProblem.php', {problem_id : problem, }, function(data){
+				
+				try{
+					var arrn = JSON.parse(data);
+				}
+				catch(err) {
+					alert ('problem data unavailable');
+				}
+
+	var n = arrn.n
+	console.log (n);
+
+if (n<10){$(".partj").hide();}
+if (n<9){$(".parti").hide();}
+if (n<8){$(".parth").hide();}
+if (n<7){$(".partg").hide();}
+if (n<6){$(".partf").hide();}
+if (n<5){$(".parte").hide();}
+if (n<4){$(".partd").hide();}
+if (n<3){$(".partc").hide();}
+if (n<2){$(".partb").hide();}
+
+
+
+
+
+
+
+
+
+	});
+	
+
+	
 		
 		
+	
 	$('input#submit_id').on('click',function(event){
 		
 		
@@ -363,7 +258,7 @@ if ( isset($_SESSION['success']) ) {
 		
 		event.preventDefault();
 		var inde = $('input#index_id').val();
-		var problem = $('input#prob_id').val();
+	
 	//	var s_name = $('input#stu_name_id').val();
 		var statusFlag=true;
 	
@@ -621,7 +516,7 @@ if ( isset($_SESSION['success']) ) {
 			});
 	});
 	
-	
+
 	
 	
 </script>
