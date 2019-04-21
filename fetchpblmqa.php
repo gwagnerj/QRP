@@ -4,33 +4,13 @@ session_start();
 
 // THis is called by NumerictoMC.php and is used to get the problem data from the qa table to develop the responses
  
-  /*   $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(':problem_id' => $_POST['problem_id']));
-	$data = $stmt -> fetch();
-	// need to put some error checking here
-		$rows=$data; */
-// query the input table for the actual input values
-	
-
-/* 	 $users_id = $rows['users_id'];
-	
-	$sql = "SELECT * FROM Users WHERE users_id = :users_id";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(':users_id' => $users_id));
-	$data2 = $stmt -> fetch();
-		$row_user=$data2;
-		$rows=array_merge($rows,$row_user);
-	
- */
-	
-	
-	// $dex = $_POST['index']; 
-	$dex = 3;  // temp
+ 
+	 $dex = $_POST['index']; 
+	// $dex = 3;  // temp
  
 	$stmt = $pdo->prepare("SELECT * FROM qa where problem_id = :problem_id AND dex = :dex");
-	// $stmt->execute(array(":problem_id" => $_POST['problem_id'],":dex" => $dex ));
-	 $stmt->execute(array(":problem_id" => 256, ":dex" => $dex ));
+	 $stmt->execute(array(":problem_id" => $_POST['problem_id'],":dex" => $dex ));
+	// $stmt->execute(array(":problem_id" => 256, ":dex" => $dex ));  // temp
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
 	
 		if ( $row === false ) {
@@ -39,18 +19,18 @@ session_start();
 		}	
 
 
- $mc1 = 'ans_a'; // temp
- $mc2 = 'ans_b'; // temp
- $mc3 = 'ans_c'; // temp
+// $mc1 = 'ans_a'; // temp
+// $mc2 = 'ans_b'; // temp
+// $mc3 = 'ans_c'; // temp
 	
-	 // $mc1 = $_POST['mc1'];	
-	 // $mc2 = $_POST['mc2'];
-	 // $mc3 = $_POST['mc3'];	
+	  $mc1 = $_POST['mc1'];	
+	  $mc2 = $_POST['mc2'];
+	  $mc3 = $_POST['mc3'];	
 	
 
-	$n = 3;  // temp
+	// $n = 3;  // temp
 	
-	//$n = $_POST['n'];
+	$n = $_POST['n'];
 	
 	
 	//for ($m =0; $m<$n-1;$m++){
@@ -83,8 +63,8 @@ session_start();
 	 // this get the range of answers for all of the indicies to compute the options for the MC question
 	 
 		$stmt = $pdo->prepare("SELECT `". $mc1."` FROM qa where problem_id = :problem_id ");
-		// $stmt->execute(array(":problem_id" => $_POST['problem_id']));  
-		 $stmt->execute(array(":problem_id" => 256 )); // temp
+		$stmt->execute(array(":problem_id" => $_POST['problem_id']));  
+	//	 $stmt->execute(array(":problem_id" => 256 )); // temp
 		$mc1_arr = $stmt->fetchALL(PDO::FETCH_COLUMN);
 		
 	//print_r($mc1_arr);
@@ -125,8 +105,8 @@ session_start();
 			
 
 		$stmt = $pdo->prepare("SELECT `". $mc2."` FROM qa where problem_id = :problem_id ");
-			// $stmt->execute(array(":problem_id" => $_POST['problem_id'] ));  
-			 $stmt->execute(array(":problem_id" => 256 )); // temp
+			 $stmt->execute(array(":problem_id" => $_POST['problem_id'] ));  
+			// $stmt->execute(array(":problem_id" => 256 )); // temp
 			$mc2_arr = $stmt->fetchALL(PDO::FETCH_COLUMN);
 			
 	//	print_r($mc2_arr);
@@ -193,8 +173,8 @@ session_start();
 	if (isset($mc3)){		
 
 		$stmt = $pdo->prepare("SELECT `". $mc3."` FROM qa where problem_id = :problem_id ");
-			// $stmt->execute(array(":problem_id" => $_POST['problem_id'] ));  
-			 $stmt->execute(array(":problem_id" => 256 )); // temp
+			 $stmt->execute(array(":problem_id" => $_POST['problem_id'] ));  
+			// $stmt->execute(array(":problem_id" => 256 )); // temp
 			$mc3_arr = $stmt->fetchALL(PDO::FETCH_COLUMN);
 			
 	//	print_r($mc2_arr);
@@ -230,27 +210,17 @@ session_start();
 	
 	}
 	
-//	print_r($ans);
-//	print_r($alt_1); 
-//	print_r($alt_2); 
-//	print_r($alt_3); 
+
 	
 $alt_1assoc = array('opt_i_1' => $alt_1[0], 'opt_ii_1' => $alt_1[1], 'opt_iii_1' => $alt_1[2],'opt_iv_1' => $alt_1[3],'key_1' => $ans_mc1);
 $alt_2assoc = array('opt_i_2' => $alt_2[0], 'opt_ii_2' => $alt_2[1], 'opt_iii_2' => $alt_2[2],'opt_iv_2' => $alt_2[3],'key_2' => $ans_mc2);
 $alt_3assoc = array('opt_i_3' => $alt_3[0], 'opt_ii_3' => $alt_3[1], 'opt_iii_3' => $alt_3[2],'opt_iv_3' => $alt_3[3],'key_3' => $ans_mc3);
 
-//Print_r ($alt_1assoc);
-//Print_r ($alt_2assoc);
-//Print_r ($alt_3assoc);
+
 
 $resp_arr = array_merge($ans,$alt_1assoc,$alt_2assoc,$alt_3assoc);
 
-	/* $resp_arr = array('key_a' => $ans_a, 'opt_a_1' => $alt_a[0],'opt_a_2' => $alt_a[1],'opt_a_3' => $alt_a[2],'opt_a_4' => $alt_a[3],
-					'key_b' => $ans_b, 'opt_b_1' => $alt_b[0],'opt_b_2' => $alt_b[1],'opt_b_3' => $alt_b[2],'opt_b_4' => $alt_b[3],
-					'key_c' => $ans_c, 'opt_c_1' => $alt_c[0],'opt_c_2' => $alt_c[1],'opt_c_3' => $alt_c[2],'opt_c_4' => $alt_c[3]
-	); */
-	
-	
+
 	 echo json_encode($resp_arr);
 	
 	
