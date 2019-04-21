@@ -24,10 +24,13 @@ session_start();
 	
  */
 	
+	
+	// $dex = $_POST['index']; 
+	$dex = 3;  // temp
  
 	$stmt = $pdo->prepare("SELECT * FROM qa where problem_id = :problem_id AND dex = :dex");
-	// $stmt->execute(array(":problem_id" => $_POST['problem_id'],":dex" => $_POST['index'] ));
-	 $stmt->execute(array(":problem_id" => 256, ":dex" => 8 ));
+	// $stmt->execute(array(":problem_id" => $_POST['problem_id'],":dex" => $dex ));
+	 $stmt->execute(array(":problem_id" => 256, ":dex" => $dex ));
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
 	
 		if ( $row === false ) {
@@ -44,10 +47,7 @@ session_start();
 	 // $mc2 = $_POST['mc2'];
 	 // $mc3 = $_POST['mc3'];	
 	
-	 
-	
-	
-	// $m=0;
+
 	$n = 3;  // temp
 	
 	//$n = $_POST['n'];
@@ -68,15 +68,15 @@ session_start();
 	foreach ($row as $key => $value)		
 		if($key == $mc3) {	$ans_mc3 = $value;}
 		
-	 print_r ($ans_mc2);
+	// print_r ($ans_mc2);
 	 // print_r ($y); 
 	  // $ answers is an array of all the answers for the problem.  It is an Associative array that has n elements with the keys being the table fields
 	  $ans = array_slice($row,3,$n,true);  // the answers start at an indix of 3
-	  print_r($ans);
+	//  print_r($ans);
 	  
 	  // $keyArray - an array with the keys for the key value pairs in ans and so can get the keys by number key $keyArray[0] = 'ans_a'
 	$keyArray = array_keys($ans);
-	print_r($keyArray);
+//	print_r($keyArray);
 	
 	
 	 
@@ -112,7 +112,7 @@ session_start();
 			}
 			
 			if($bin_1 != $r){
-				$alt_1[$j] = $min_1 + $range_1_div7 * ($r-1)+rand(1,999)/1000*$range_1_div7;
+				$alt_1[$j] = $min_1 + $range_1_div7 * ($r-1)+seedRand($dex)*$range_1_div7;
 			} else {
 				$alt_1[$j] = $ans_mc1;	
 			}
@@ -148,6 +148,7 @@ session_start();
 		// everse the order if part a and part b will have the same response
 		if (abs($bin_2 - $bin_2)<=1){
 			for ($j=3; $j>=0;$j--) {
+					$k = abs($j-3);
 					if ($bin_2_even) {
 						$r = $j*2+2;
 					} else {
@@ -155,12 +156,13 @@ session_start();
 					}
 					
 					if($bin_2 != $r){
-						$alt_2[$j] = $min_2 + $range_2_div7*($r-1)+rand(1,999)/1000*$range_2_div7;
+						
+						$alt_2[$k] = $min_2 + $range_2_div7*($r-1)+seedRand($dex)*$range_2_div7;
 					} else {
-						$alt_2[$j] = $ans_mc2;	
+						$alt_2[$k] = $ans_mc2;	
 					}
 					
-					 $alt_2[$j] = sigFig($alt_2[$j],3);
+					 $alt_2[$k] = sigFig($alt_2[$k],3);
 			}
 		
 		 } else {
@@ -173,7 +175,7 @@ session_start();
 					}
 					
 					if($bin_2 != $r){
-						$alt_2[$j] = $min_2 + $range_2_div7*($r-1)+rand(1,999)/1000*$range_2_div7;
+						$alt_2[$j] = $min_2 + $range_2_div7*($r-1)+seedRand($dex)*$range_2_div7;
 					} else {
 						$alt_2[$j] = $ans_mc2;	
 					}
@@ -184,15 +186,11 @@ session_start();
 		} 
 	
 	}
+	
+	
 	// algorithm for c
 	
-	
-	
-	
-	
-	
 	if (isset($mc3)){		
-			
 
 		$stmt = $pdo->prepare("SELECT `". $mc3."` FROM qa where problem_id = :problem_id ");
 			// $stmt->execute(array(":problem_id" => $_POST['problem_id'] ));  
@@ -200,8 +198,6 @@ session_start();
 			$mc3_arr = $stmt->fetchALL(PDO::FETCH_COLUMN);
 			
 	//	print_r($mc2_arr);
-	
-	
 	
 		$min_3 = min($mc3_arr);
 		$max_3 = max($mc3_arr);
@@ -234,9 +230,20 @@ session_start();
 	
 	}
 	
-	print_r($alt_3); 
+//	print_r($ans);
+//	print_r($alt_1); 
+//	print_r($alt_2); 
+//	print_r($alt_3); 
 	
+$alt_1assoc = array('opt_i_1' => $alt_1[0], 'opt_ii_1' => $alt_1[1], 'opt_iii_1' => $alt_1[2],'opt_iv_1' => $alt_1[3],'key_1' => $ans_mc1);
+$alt_2assoc = array('opt_i_2' => $alt_2[0], 'opt_ii_2' => $alt_2[1], 'opt_iii_2' => $alt_2[2],'opt_iv_2' => $alt_2[3],'key_2' => $ans_mc2);
+$alt_3assoc = array('opt_i_3' => $alt_3[0], 'opt_ii_3' => $alt_3[1], 'opt_iii_3' => $alt_3[2],'opt_iv_3' => $alt_3[3],'key_3' => $ans_mc3);
 
+//Print_r ($alt_1assoc);
+//Print_r ($alt_2assoc);
+//Print_r ($alt_3assoc);
+
+$resp_arr = array_merge($ans,$alt_1assoc,$alt_2assoc,$alt_3assoc);
 
 	/* $resp_arr = array('key_a' => $ans_a, 'opt_a_1' => $alt_a[0],'opt_a_2' => $alt_a[1],'opt_a_3' => $alt_a[2],'opt_a_4' => $alt_a[3],
 					'key_b' => $ans_b, 'opt_b_1' => $alt_b[0],'opt_b_2' => $alt_b[1],'opt_b_3' => $alt_b[2],'opt_b_4' => $alt_b[3],
@@ -244,7 +251,7 @@ session_start();
 	); */
 	
 	
-	// echo json_encode($resp_arr);
+	 echo json_encode($resp_arr);
 	
 	
 	
@@ -264,6 +271,14 @@ function sigFig($value, $digits)
     $answer = round($value, $decimalPlaces);
     return $answer;
 }	
+
+function seedRand($seed){
+	// simple seeded random number generator for a number between 0 and 1 but will give the same for a given seed
+	$a = (48271*$seed)% (2^31-1);
+	$randnum = ((48271*$a)%(2^31-1))/(2^31-1);
+	return $randnum;
+}
+
 	
 ?>	
 
