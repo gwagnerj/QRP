@@ -116,7 +116,7 @@ $problem_id = 256;
 			
 			
 			
-			<div id = mc1>
+			
 			<tr><td>	<font color = "blue" size =5 > Multiple Choice 1 </font> </td>
 				
 				<td><span class = "parta"><input type="radio" name="mc1" Value="ans_a" checked = "checked"> </span></td>
@@ -217,11 +217,11 @@ $problem_id = 256;
 					var arrn = JSON.parse(data);
 				}
 				catch(err) {
-					alert ('problem data unavailable');
+					alert ('problem data unavailable n tot found');
 				}
 
 	var n = arrn.n
-	console.log (n);
+	// console.log (n);
 
 if (n<10){$(".partj").hide();}
 if (n<9){$(".parti").hide();}
@@ -232,28 +232,8 @@ if (n<5){$(".parte").hide();}
 if (n<4){$(".partd").hide();}
 if (n<3){$(".partc").hide();}
 if (n<2){$(".partb").hide();}
-
-
-
-
-
-
-
-
-
-
-	
-
-	
-		
-		
 	
 	$('input#submit_id').on('click',function(event){
-		
-		
-		
-		
-		
 		
 		
 		event.preventDefault();
@@ -264,9 +244,13 @@ if (n<2){$(".partb").hide();}
 		
 	//	console.log (OneIsChecked);
 	
-	var mc1 = $('input[name = "mc1"]').val();
-	var mc2 = $('input[name = "mc2"]').val();
-	var mc3 = $('input[name = "mc3"]').val();
+	var mc1 = $('input[name = "mc1"]:checked').val();
+	var mc2 = $('input[name = "mc2"]:checked').val();
+	var mc3 = $('input[name = "mc3"]:checked').val();
+	
+		
+	
+	
 
 		var inde = $('input#index_id').val();
 	
@@ -282,8 +266,12 @@ if (n<2){$(".partb").hide();}
 					var arr = JSON.parse(data);
 				}
 				catch(err) {
-					alert ('problem data unavailable');
+					alert ('problem input data unavailable');
 				}
+			
+			console.log (mc1);
+			console.log (mc2);
+			console.log (mc3);
 			
 			
 			
@@ -293,7 +281,7 @@ if (n<2){$(".partb").hide();}
 					var arr2 = JSON.parse(data);
 				}
 				catch(err) {
-					alert ('problem data unavailable');
+					alert ('problem  qa data unavailable');
 				}
 			
 			

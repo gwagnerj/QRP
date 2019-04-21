@@ -26,208 +26,225 @@ session_start();
 	
  
 	$stmt = $pdo->prepare("SELECT * FROM qa where problem_id = :problem_id AND dex = :dex");
-	 $stmt->execute(array(":problem_id" => $_POST['problem_id'],":dex" => $_POST['index'] ));
-	// $stmt->execute(array(":problem_id" => 256, ":dex" => 8 ));
+	// $stmt->execute(array(":problem_id" => $_POST['problem_id'],":dex" => $_POST['index'] ));
+	 $stmt->execute(array(":problem_id" => 256, ":dex" => 8 ));
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
 	
 		if ( $row === false ) {
 			$_SESSION['error'] = 'could not read row of table qa values';
 	
 		}	
+
+
+ $mc1 = 'ans_a'; // temp
+ $mc2 = 'ans_b'; // temp
+ $mc3 = 'ans_c'; // temp
 	
-	$ans_a = $row['ans_a'];
-	$ans_b = $row['ans_b'];
-	$ans_c = $row['ans_c'];
-	$ans_d = $row['ans_d'];
-	$ans_e = $row['ans_e'];
-	$ans_f = $row['ans_f']; 
+	 // $mc1 = $_POST['mc1'];	
+	 // $mc2 = $_POST['mc2'];
+	 // $mc3 = $_POST['mc3'];	
 	
-	
-	 for ($i = 2; $i < 200; $i++){
-		$stmt = $pdo->prepare("SELECT * FROM qa where problem_id = :problem_id AND dex = :dex");
-		 $stmt->execute(array(":problem_id" => $_POST['problem_id'],":dex" => $i ));
-		// $stmt->execute(array(":problem_id" => 256,":dex" => $i ));
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			
-			$all_ans_a[$i-2] = $row['ans_a'];
-			$all_ans_b[$i-2] = $row['ans_b'];
-			$all_ans_c[$i-2] = $row['ans_c'];
-			$all_ans_d[$i-2] = $row['ans_d'];
-			$all_ans_e[$i-2] = $row['ans_e'];
-			$all_ans_f[$i-2] = $row['ans_f'];
-	} 
+	 
 	
 	
+	// $m=0;
+	$n = 3;  // temp
+	
+	//$n = $_POST['n'];
 	
 	
-// algorithm for a responses
+	//for ($m =0; $m<$n-1;$m++){
+	//	$ans[$m]= $row["'".$mc1."'"];
+	//	$ans_mc1 =  $mc1_i;
+	//$ans_mc1 = array_values($row);	
+	//}
+	//  $newArray = array_keys($row);
+	foreach ($row as $key => $value)
+		if($key == $mc1){$ans_mc1 = $value;	} 
+		
+		
+	foreach ($row as $key => $value)	
+		if($key == $mc2) {	$ans_mc2 = $value;}
+	foreach ($row as $key => $value)		
+		if($key == $mc3) {	$ans_mc3 = $value;}
+		
+	 print_r ($ans_mc2);
+	 // print_r ($y); 
+	  // $ answers is an array of all the answers for the problem.  It is an Associative array that has n elements with the keys being the table fields
+	  $ans = array_slice($row,3,$n,true);  // the answers start at an indix of 3
+	  print_r($ans);
+	  
+	  // $keyArray - an array with the keys for the key value pairs in ans and so can get the keys by number key $keyArray[0] = 'ans_a'
+	$keyArray = array_keys($ans);
+	print_r($keyArray);
 	
-	$min_a = min($all_ans_a);
-	$max_a = max($all_ans_a);
-	$range_a_18 = ($max_a - $min_a)/7;
-	$bin_a = intval(($ans_a - $min_a)/$range_a_18)+1;
+	
+	 
+	 // this get the range of answers for all of the indicies to compute the options for the MC question
+	 
+		$stmt = $pdo->prepare("SELECT `". $mc1."` FROM qa where problem_id = :problem_id ");
+		// $stmt->execute(array(":problem_id" => $_POST['problem_id']));  
+		 $stmt->execute(array(":problem_id" => 256 )); // temp
+		$mc1_arr = $stmt->fetchALL(PDO::FETCH_COLUMN);
+		
+	//print_r($mc1_arr);
+		
+		// algorithm for a responses for the the first mc question
+	
+	$min_1 = min($mc1_arr);
+	$max_1 = max($mc1_arr);
+	$range_1_div7 = ($max_1 - $min_1)/7;
+	$bin_1 = intval(($ans_mc1 - $min_1)/$range_1_div7)+1;
 	
 	
 	// check to see if even or odd
-	if($bin_a % 2 == 0){
-		$bin_a_even = true;
+	if($bin_1 % 2 == 0){
+		$bin_1_even = true;
 	} else {
-		$bin_a_even = false;
+		$bin_1_even = false;
 	}
 	
 	for ($j=0; $j<=3;$j++) {
-			if ($bin_a_even) {
+			if ($bin_1_even) {
 				$r = $j*2+2;
 			} else {
 				$r = $j*2+1;
 			}
 			
-			if($bin_a != $r){
-				$alt_a[$j] = $min_a + $range_a_18*($r-1)+rand(1,999)/1000*$range_a_18;
+			if($bin_1 != $r){
+				$alt_1[$j] = $min_1 + $range_1_div7 * ($r-1)+rand(1,999)/1000*$range_1_div7;
 			} else {
-				$alt_a[$j] = $ans_a;	
+				$alt_1[$j] = $ans_mc1;	
 			}
 			
-			 $alt_a[$j] = sigFig($alt_a[$j],3);
+			 $alt_1[$j] = sigFig($alt_1[$j],3);
 	}
-	
+		
+		
+	if (isset($mc2)){		
+			
+
+		$stmt = $pdo->prepare("SELECT `". $mc2."` FROM qa where problem_id = :problem_id ");
+			// $stmt->execute(array(":problem_id" => $_POST['problem_id'] ));  
+			 $stmt->execute(array(":problem_id" => 256 )); // temp
+			$mc2_arr = $stmt->fetchALL(PDO::FETCH_COLUMN);
+			
+	//	print_r($mc2_arr);
+		
 	// algorithm for b
+		$min_2 = min($mc2_arr);
+		$max_2 = max($mc2_arr);
+		$range_2_div7 = ($max_2 - $min_2)/7;
+		$bin_2 = intval(($ans_mc2 - $min_2)/$range_2_div7)+1;
+
+
+		
+		
+		if($bin_2 % 2 == 0){
+			$bin_2_even = true;
+		} else {
+			$bin_2_even = false;
+		}
+		// everse the order if part a and part b will have the same response
+		if (abs($bin_2 - $bin_2)<=1){
+			for ($j=3; $j>=0;$j--) {
+					if ($bin_2_even) {
+						$r = $j*2+2;
+					} else {
+						$r = $j*2+1;
+					}
+					
+					if($bin_2 != $r){
+						$alt_2[$j] = $min_2 + $range_2_div7*($r-1)+rand(1,999)/1000*$range_2_div7;
+					} else {
+						$alt_2[$j] = $ans_mc2;	
+					}
+					
+					 $alt_2[$j] = sigFig($alt_2[$j],3);
+			}
+		
+		 } else {
+			
+			for ($j=0; $j<=3;$j++) {
+					if ($bin_2_even) {
+						$r = $j*2+2;
+					} else {
+						$r = $j*2+1;
+					}
+					
+					if($bin_2 != $r){
+						$alt_2[$j] = $min_2 + $range_2_div7*($r-1)+rand(1,999)/1000*$range_2_div7;
+					} else {
+						$alt_2[$j] = $ans_mc2;	
+					}
+					
+					 $alt_2[$j] = sigFig($alt_2[$j],3);
+			}
+			
+		} 
 	
-	$min_b = min($all_ans_b);
-	$max_b = max($all_ans_b);
-	$range_b_18 = ($max_b - $min_b)/7;
-	$bin_b = intval(($ans_b - $min_b)/$range_b_18)+1;
-	
-	if($bin_b % 2 == 0){
-		$bin_b_even = true;
-	} else {
-		$bin_b_even = false;
 	}
-	// everse the order if part a and part b will have the same response
-	if (abs($bin_a - $bin_b)<=1){
-		for ($j=3; $j>=0;$j--) {
-				if ($bin_b_even) {
-					$r = $j*2+2;
-				} else {
-					$r = $j*2+1;
-				}
-				
-				if($bin_b != $r){
-					$alt_b[$j] = $min_b + $range_b_18*($r-1)+rand(1,999)/1000*$range_b_18;
-				} else {
-					$alt_b[$j] = $ans_b;	
-				}
-				
-				 $alt_b[$j] = sigFig($alt_b[$j],3);
-		}
-	
-	 } else {
-		
-		for ($j=0; $j<=3;$j++) {
-				if ($bin_b_even) {
-					$r = $j*2+2;
-				} else {
-					$r = $j*2+1;
-				}
-				
-				if($bin_b != $r){
-					$alt_b[$j] = $min_b + $range_b_18*($r-1)+rand(1,999)/1000*$range_b_18;
-				} else {
-					$alt_b[$j] = $ans_b;	
-				}
-				
-				 $alt_b[$j] = sigFig($alt_b[$j],3);
-		}
-		
-	} 
-	
 	// algorithm for c
 	
-	$min_c = min($all_ans_c);
-	$max_c = max($all_ans_c);
-	$range_c_18 = ($max_c - $min_c)/7;
-	$bin_c = intval(($ans_c - $min_c)/$range_c_18)+1;
 	
-	if($bin_c % 2 == 0){
-		$bin_c_even = true;
-	} else {
-		$bin_c_even = false;
+	
+	
+	
+	
+	if (isset($mc3)){		
+			
+
+		$stmt = $pdo->prepare("SELECT `". $mc3."` FROM qa where problem_id = :problem_id ");
+			// $stmt->execute(array(":problem_id" => $_POST['problem_id'] ));  
+			 $stmt->execute(array(":problem_id" => 256 )); // temp
+			$mc3_arr = $stmt->fetchALL(PDO::FETCH_COLUMN);
+			
+	//	print_r($mc2_arr);
+	
+	
+	
+		$min_3 = min($mc3_arr);
+		$max_3 = max($mc3_arr);
+		$range_3_div7 = ($max_3 - $min_3)/7;
+		$bin_3 = intval(($ans_mc3 - $min_3)/$range_3_div7)+1;
+
+		
+		if($bin_3 % 2 == 0){
+			$bin_3_even = true;
+		} else {
+			$bin_3_even = false;
+		}
+		
+		
+		for ($j=0; $j<=3;$j++) {
+				if ($bin_3_even) {
+					$r = $j*2+2;
+				} else {
+					$r = $j*2+1;
+				}
+				
+				if($bin_3 != $r){
+					$alt_3[$j] = $min_3 + $range_3_div7*($r-1)+rand(1,999)/1000*$range_3_div7;
+				} else {
+					$alt_3[$j] = $ans_mc3;	
+				}
+				
+				 $alt_3[$j] = sigFig($alt_3[$j],3);
+		}
+	
 	}
 	
+	print_r($alt_3); 
 	
-	for ($j=0; $j<=3;$j++) {
-			if ($bin_c_even) {
-				$r = $j*2+2;
-			} else {
-				$r = $j*2+1;
-			}
-			
-			if($bin_c != $r){
-				$alt_c[$j] = $min_c + $range_c_18*($r-1)+rand(1,999)/1000*$range_c_18;
-			} else {
-				$alt_c[$j] = $ans_c;	
-			}
-			
-			 $alt_c[$j] = sigFig($alt_c[$j],3);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/* echo (" For part a ");
-	echo $ans_a;
-	echo (" ");
-	echo ($min_a);
-	echo (" ");
-	echo ($max_a);
-	echo (" ");
-	echo $bin_a;
-	echo (" ");
-	
-	
-	print_r($alt_a);
-	
-	echo (" For part b ");
-	
-	echo ($ans_b);
-	echo (" ");
-	echo ($min_b);
-	echo (" ");
-	echo ($max_b);
-	echo (" ");
-	echo $bin_b;
-	echo (" ");
-	echo (" ");
-	
-	print_r($alt_b);
-	
-	echo (" For part c ");
-	
-	echo ($ans_c);
-	echo (" ");
-	echo ($min_c);
-	echo (" ");
-	echo ($max_c);
-	echo (" ");
-	echo $bin_c;
-	echo (" ");
-	echo (" ");
-	
-	print_r($alt_c); */
-	
-	$resp_arr = array('key_a' => $ans_a, 'opt_a_1' => $alt_a[0],'opt_a_2' => $alt_a[1],'opt_a_3' => $alt_a[2],'opt_a_4' => $alt_a[3],
+
+
+	/* $resp_arr = array('key_a' => $ans_a, 'opt_a_1' => $alt_a[0],'opt_a_2' => $alt_a[1],'opt_a_3' => $alt_a[2],'opt_a_4' => $alt_a[3],
 					'key_b' => $ans_b, 'opt_b_1' => $alt_b[0],'opt_b_2' => $alt_b[1],'opt_b_3' => $alt_b[2],'opt_b_4' => $alt_b[3],
 					'key_c' => $ans_c, 'opt_c_1' => $alt_c[0],'opt_c_2' => $alt_c[1],'opt_c_3' => $alt_c[2],'opt_c_4' => $alt_c[3]
-	);
+	); */
 	
 	
-	 echo json_encode($resp_arr);
+	// echo json_encode($resp_arr);
 	
 	
 	
