@@ -529,7 +529,10 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 				echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
 				echo('<a href="suspendpblm.php?problem_id='.$row['problem_id'].'">Susp-unSus</a> / ');
 			}
+				echo('<a href="numericToMC.php?problem_id='.$row['problem_id'].'">make M/C </a>');
+				echo ('</br>');
 				echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$users_id.'">Act-deAct</a>');
+				
 			//echo('<a href="downloadpblm.php?problem_id='.$row['problem_id'].'">Download</a>');
 			  echo("</td><td>");
 			
@@ -563,6 +566,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 	$(".inlinebar1").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
 	$(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
 	
+	localStorage.setItem('MC_flag','false');  // initialize multiple choice flag to false
 	
 	
 	

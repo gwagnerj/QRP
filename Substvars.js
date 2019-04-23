@@ -1,4 +1,7 @@
 
+// localStorage.clear();
+//	localStorage.setItem('MC_flag','false');  // initialize multiple choice flag to false
+
 var problem_id = localStorage.getItem('problem_id');
 var stu_name = localStorage.getItem('stu_name');
 
@@ -25,6 +28,7 @@ var time_pp1 = localStorage.getItem('time_pp1');
 var time_pp2 = localStorage.getItem('time_pp2');
 var time_pp3 = localStorage.getItem('time_pp3');
 var time_pp4 = localStorage.getItem('time_pp4');
+var MC_flag = false;
 
 // console.log ('reflect_flag is ',reflect_flag);
 // console.log ('explore_flag is ',explore_flag);
@@ -168,22 +172,20 @@ var bc_var14 = localStorage.getItem(x);
 
 var MC_flag = localStorage.getItem('MC_flag');
 if (MC_flag != null ){
-var key_a = localStorage.getItem('key_a');
-var opt_a_1 = localStorage.getItem('opt_a_1');
-var opt_a_2 = localStorage.getItem('opt_a_2');
-var opt_a_3 = localStorage.getItem('opt_a_3');
-var opt_a_4 = localStorage.getItem('opt_a_4');
-var key_b = localStorage.getItem('key_b');
-var opt_b_1 = localStorage.getItem('opt_b_1');
-var opt_b_2 = localStorage.getItem('opt_b_2');
-var opt_b_3 = localStorage.getItem('opt_b_3');
-var opt_b_4 = localStorage.getItem('opt_b_4');
-var key_c = localStorage.getItem('key_c');
-var opt_c_1 = localStorage.getItem('opt_c_1');
-var opt_c_2 = localStorage.getItem('opt_c_2');
-var opt_c_3 = localStorage.getItem('opt_c_3');
-var opt_c_4 = localStorage.getItem('opt_c_4');
-
+	var key_1 = localStorage.getItem('key_1');
+	var key_2 = localStorage.getItem('key_2');
+	var key_3 = localStorage.getItem('key_3');
+	var part_a = localStorage.getItem('part_a');
+	var part_b = localStorage.getItem('part_b');
+	var part_c = localStorage.getItem('part_c');
+	var part_d = localStorage.getItem('part_d');
+	var part_e = localStorage.getItem('part_e');
+	var part_f = localStorage.getItem('part_f');
+	var part_g = localStorage.getItem('part_g');
+	var part_h = localStorage.getItem('part_h');
+	var part_i = localStorage.getItem('part_i');
+	var part_j = localStorage.getItem('part_j');
+	var show_key = localStorage.getItem('show_key');
 }
 
 
@@ -1212,29 +1214,64 @@ $(document).ready(function(){
 	//console.log(static_flag);
 	 console.log('dex is ', dex);
 	  console.log('static_flag is ', static_flag);
-	if (dex =='1' || static_flag == 'true'){
-	//	 console.log('index is ', index);
-		$('#directions').hide();
-		 $('#Header_stuff').hide();	
-	 	if (dex == '1'){
+			if (dex =='1' || static_flag == 'true'){
+			//	 console.log('index is ', index);
+				$('#directions').hide();
+				 $('#Header_stuff').hide();	
+				if (dex == '1'){
+					
+					// $('#Header_stuff').show();	
+					$('#reflections').show();	
+					$('.nex-text-div').hide();
+					$('.nex-text-div2').hide();
+					$('.nex-text-div3').hide();
+					$('.nex-text-div4').hide();
+					
+					$('#reflections').before('<hr>'); 
+					
+					
+				}
+				var bc_message = "QR"+problem_id+"-PIN-"+pin+ " "+title+" - contributed by "+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field;
 			
-			// $('#Header_stuff').show();	
-			$('#reflections').show();	
-			$('.nex-text-div').hide();
-			$('.nex-text-div2').hide();
-			$('.nex-text-div3').hide();
-			$('.nex-text-div4').hide();
+				 $('body').prepend(bc_message).css("fontSize","8px");
+			}
+	// put in the value of the multiple choice 
+		
+		 console.log (MC_flag);
+		if (MC_flag =="true"){
 			
-			$('#reflections').before('<hr>'); 
+			$("#parta").append(part_a);
+			$("#partb").append(part_b);
+			$("#partc").append(part_c);
+			$("#partd").append(part_d);
+			$("#parte").append(part_e);
+			$("#partf").append(part_f);
+			$("#partg").append(part_g);
+			$("#parth").append(part_h);
+			$("#parti").append(part_i);
+			$("#partj").append(part_j);
 			
 			
+			if (part_a==""){$("#parta").hide();}
+			if (part_b==""){$("#partb").hide();}
+			if (part_c==""){$("#partc").hide();}
+			
+			if (part_d==""){$("#partd").hide();}
+			if (part_e==""){$("#parte").hide();}
+			if (part_f==""){$("#partf").hide();}
+			if (part_g==""){$("#partg").hide();}
+			if (part_h==""){$("#parth").hide();}
+			if (part_i==""){$("#parti").hide();}
+			if (part_j==""){$("#partj").hide();}
+		
+			console.log (show_key);
+			if(show_key == "1"){
+				if(key_2 == 0){key_2 = "";}
+				if(key_3 == 0){key_3 = "";}
+				
+				$("#problem").append("<p><font size = 2> Keys to M/C Questions: "+ key_1+ ", "+ key_2 +", "+ key_3+"</font></p>");
+			}
 		}
-		var bc_message = "QR"+problem_id+"-PIN-"+pin+ " "+title+" - contributed by "+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field;
-	
-		 $('body').prepend(bc_message).css("fontSize","8px");
-	}
-	
-	
 	
 		});
 

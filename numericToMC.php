@@ -29,9 +29,9 @@ $prob_Check = array('options'=>array('min_range'=>$prob_LLimit,'max_range'=>$pro
 	
 }  */
 
-if(isset($_POST['problem_id'])){
+if(isset($_GET['problem_id'])){
 	
-	$problem_id = htmlentities($_POST['problem_id']);
+	$problem_id = htmlentities($_GET['problem_id']);
 	
 	$_SESSION['problem_id']=$problem_id;
 }
@@ -84,13 +84,13 @@ if ( isset($_SESSION['success']) ) {
     echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
     unset($_SESSION['success']);
 }
-$problem_id = 256;
- 
+// $problem_id = 238; // temp
+ $index = 101;
 ?>
 
 
 <form method="POST">
-	<!-- <p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p> -->
+	
 	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
 	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> ></p>
 	
@@ -133,7 +133,7 @@ $problem_id = 256;
 			<tr><td>	<font color = "blue" size =5 > Multiple Choice 2 </font> </td>
 				
 				<td><span class = "parta"><input type="radio" name="mc2" Value="ans_a"> </span></td>
-				<td><span class = "partb"><input type="radio" name="mc2" Value="ans_b" checked = "checked"> </span></td>
+				<td><span class = "partb"><input type="radio" name="mc2" Value="ans_b" > </span></td>
 				<td><span class = "partc"><input type="radio" name="mc2" Value="ans_c"> </span></td>
 				<td><span class = "partd"><input type="radio" name="mc2" Value="ans_d"> </span></td>
 				<td><span class = "parte"><input type="radio" name="mc2" Value="ans_e"> </span></td>
@@ -147,7 +147,7 @@ $problem_id = 256;
 				
 				<td><span class = "parta"><input type="radio" name="mc3" Value="ans_a"> </span></td>
 				<td><span class = "partb"><input type="radio" name="mc3" Value="ans_b"> </span></td>
-				<td><span class = "partc"><input type="radio" name="mc3" Value="ans_c" checked = "checked"> </span></td>
+				<td><span class = "partc"><input type="radio" name="mc3" Value="ans_c" > </span></td>
 				<td><span class = "partd"><input type="radio" name="mc3" Value="ans_d"> </span></td>
 				<td><span class = "parte"><input type="radio" name="mc3" Value="ans_e"> </span></td>
 				<td><span class = "partf"><input type="radio" name="mc3" Value="ans_f"> </span></td>
@@ -172,8 +172,8 @@ $problem_id = 256;
 			<tr class = "row5"><td>	<font color = "blue" size =5 > Remove </font> </td>
 				
 				<td><span class = "parta"><input type="checkbox" name="remove" value="ans_a"> </span></td>
-				<td><span class = "partb"><input type="checkbox" name="remove" value="ans_b"> </span></td>
-				<td><span class = "partc"><input type="checkbox" name="remove" value="ans_c"> </span></td>
+				<td><span class = "partb"><input type="checkbox" name="remove" value="ans_b" checked = "checked"> </span></td>
+				<td><span class = "partc"><input type="checkbox" name="remove" value="ans_c" checked = "checked"> </span></td>
 				<td><span class = "partd"><input type="checkbox" name="remove" value="ans_d" checked = "checked"> </span></td>
 				<td><span class = "parte"><input type="checkbox" name="remove" value="ans_e" checked = "checked"> </span></td>
 				<td><span class = "partf"><input type="checkbox" name="remove" value="ans_f" checked = "checked"> </span></td>
@@ -185,7 +185,7 @@ $problem_id = 256;
 				
 		</table>		
 		
-	
+	<p><input type = "checkbox" value=1 name = "show_key" id="show_key" size="14" /> Show Key  </p>
 	<p><input type = "submit" value="Submit" id="submit_id" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp; &nbsp; </p>
 	</form>
 
@@ -197,7 +197,7 @@ $problem_id = 256;
 	
 	
 	$(document).ready(function(){
-	// this next bit makes it so you can not have two columns with the same radio value
+	// this next bit makes it so you can not have two columns with two items checked
 			 $(".onePerColumn :radio,:checkbox").change(function(){
 				var col = $(this).attr("value");
 					$(".onePerColumn :radio[value='" + col + "']:checked,.onePerColumn :checkbox[value='" + col + "']:checked").not(this).each(function(){
@@ -248,7 +248,31 @@ if (n<2){$(".partb").hide();}
 	var mc2 = $('input[name = "mc2"]:checked').val();
 	var mc3 = $('input[name = "mc3"]:checked').val();
 	
-		
+	
+	
+	
+	
+	var give_ans =[];
+	$.each($("input[name='give_ans']:checked"),function(){
+		give_ans.push($(this).val());
+	});
+	
+	console.log (give_ans);
+	
+	
+	var show_key = $('input[name = "show_key"]:checked').val();
+	if (show_key == undefined){show_key = 0;}
+	
+	//alert (show_key);
+	
+	var num_checked = 0;
+	num_checked = $('input:checked').length;
+	if (num_checked - show_key != 10){
+		//	alert (num_checked);
+		//	alert (show_key);
+			alert('Every column should have one item checked');
+			return;
+	}
 	
 	
 
@@ -268,55 +292,138 @@ if (n<2){$(".partb").hide();}
 				catch(err) {
 					alert ('problem input data unavailable');
 				}
+			// if (n<=2){mc3 = null;}
+			// if (n==1){mc2=null;}
+			
 			
 			console.log (mc1);
 			console.log (mc2);
 			console.log (mc3);
 			
+			// variables to pass
+			var part_a = "";
+			var part_b = "";
+			var part_c = "";
+			var part_d = "";
+			var part_e = "";
+			var part_f = "";
+			var part_g = "";
+			var part_h = "";
+			var part_i = "";
+			var part_j = "";
+		
+			console.log (n);
+			console.log(problem);
+			console.log(inde);
+			console.log(mc1);
+			console.log(mc2);
+				console.log(mc3);
 			
 			
-			$.post('fetchpblmqa.php', {problem_id : problem, index : inde , mc1 : mc1, mc2 : mc2, mc3 : mc3 , n : n }, function(data){
+			$.post('fetchpblmqa.php', {problem_id : problem, dex : inde , mc1 : mc1, mc2 : mc2, mc3 : mc3 , n : n }, function(data){
 				
 				try{
 					var arr2 = JSON.parse(data);
 				}
 				catch(err) {
-					alert ('problem  qa data unavailable');
+				//	var arr2 -> data.text();
+					
+					alert ('problem qa data is unavailable')
+					alert (err);
+					alert (arr2);
 				}
-			
-			
-			var key_a = arr2.key_a;
-			var opt_a_1 = arr2.opt_a_1;
-			var opt_a_2 = arr2.opt_a_2;
-			var opt_a_3 = arr2.opt_a_3;
-			var opt_a_4 = arr2.opt_a_4;
-			
-			console.log(key_a);
-			console.log(opt_a_1);
-			console.log(opt_a_2);
-			console.log(opt_a_3);
-			console.log(opt_a_4);
-			
+		// construct the multiple choice option strings
+		var mc1_str = "<p ><font size = '3'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;       i) "+arr2.opt_i_1+"   &nbsp;&nbsp;   ii) " +arr2.opt_ii_1+"  &nbsp;&nbsp;    iii) "+ arr2.opt_iii_1 + "  &nbsp;&nbsp;    iv) "+arr2.opt_iv_1+"</font> </p>";
+		var mc2_str = " <p ><font size = '3'>  &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;    &nbsp; &nbsp;&nbsp;        i) "+arr2.opt_i_2+"  &nbsp;&nbsp;    ii) " +arr2.opt_ii_2+"  &nbsp;&nbsp;    iii) "+ arr2.opt_iii_2 + "   &nbsp;&nbsp;   iv) "+arr2.opt_iv_2+"</font> </p>";
+		var mc3_str = " <p ><font size = '3'>   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;     &nbsp; &nbsp;&nbsp;      i) "+arr2.opt_i_3+"  &nbsp;&nbsp;    ii) " +arr2.opt_ii_3+"   &nbsp;&nbsp;   iii) "+ arr2.opt_iii_3 + " &nbsp;&nbsp;     iv) "+arr2.opt_iv_3+"</font> </p>";
 		
-			
-			
 		
+		// give them the answers for the parts of the problem the instructor wants to give them the answers
+			if(give_ans.includes("ans_a")){part_a = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_a+"</font> </p>";}
+			if(give_ans.includes("ans_b")){part_b = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_b+"</font> </p>";}
+			if(give_ans.includes("ans_c")){part_c = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_c+"</font> </p>";}
+			if(give_ans.includes("ans_d")){part_d = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_d+"</font> </p>";}
+			if(give_ans.includes("ans_e")){part_e = "<p ><font size = '2'>&nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;  &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_e+"</font> </p>";}
+			if(give_ans.includes("ans_f")){part_f = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_f+"</font> </p>";}
+			if(give_ans.includes("ans_g")){part_g = "<p ><font size = '2'>&nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;  &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_g+"</font> </p>";}
+			if(give_ans.includes("ans_h")){part_h = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_h+"</font> </p>";}
+			if(give_ans.includes("ans_i")){part_i = "<p ><font size = '2'>&nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;  &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_i+"</font> </p>";}
+			if(give_ans.includes("ans_j")){part_j = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_j+"</font> </p>";}
+			
+		// define the different parts of - know I should read into an array but...	
+			if(mc1 == "ans_a"){part_a = mc1_str;}
+			if(mc1 == "ans_b"){part_b = mc1_str;}
+			if(mc1 == "ans_c"){part_c = mc1_str;}
+			if(mc1 == "ans_d"){part_d = mc1_str;}
+			if(mc1 == "ans_e"){part_e = mc1_str;}
+			if(mc1 == "ans_f"){part_f = mc1_str;}
+			if(mc1 == "ans_g"){part_g = mc1_str;}
+			if(mc1 == "ans_h"){part_h = mc1_str;}
+			if(mc1 == "ans_i"){part_i = mc1_str;}
+			if(mc1 == "ans_j"){part_j = mc1_str;}
+			
+			if(mc2 == "ans_a"){part_a = mc2_str;}
+			if(mc2 == "ans_b"){part_b = mc2_str;}
+			if(mc2 == "ans_c"){part_c = mc2_str;}
+			if(mc2 == "ans_d"){part_d = mc2_str;}
+			if(mc2 == "ans_e"){part_e = mc2_str;}
+			if(mc2 == "ans_f"){part_f = mc2_str;}
+			if(mc2 == "ans_g"){part_g = mc2_str;}
+			if(mc2 == "ans_h"){part_h = mc2_str;}
+			if(mc2 == "ans_i"){part_i = mc2_str;}
+			if(mc2 == "ans_j"){part_j = mc2_str;}
+			
+			if(mc3 == "ans_a"){part_a = mc3_str;}
+			if(mc3 == "ans_b"){part_b = mc3_str;}
+			if(mc3 == "ans_c"){part_c = mc3_str;}
+			if(mc3 == "ans_d"){part_d = mc3_str;}
+			if(mc3 == "ans_e"){part_e = mc3_str;}
+			if(mc3 == "ans_f"){part_f = mc3_str;}
+			if(mc3 == "ans_g"){part_g = mc3_str;}
+			if(mc3 == "ans_h"){part_h = mc3_str;}
+			if(mc3 == "ans_i"){part_i = mc3_str;}
+			if(mc3 == "ans_j"){part_j = mc3_str;}
 			
 			
+			console.log ('part_a', part_a);
+			
+			console.log ('part_d', part_d);
+				console.log ('mc1_str', mc1_str);
+			
+			
+			
+			
+			
+			
+			var key_1 = arr2.key_1;
+			var opt_i_1 = arr2.opt_i_1;
+			var opt_ii_1 = arr2.opt_ii_1;
+			var opt_iii_1 = arr2.opt_iii_1;
+			var opt_iv_1 = arr2.opt_iv_1;
+			console.log('1st muliple choice Options');
+			console.log(key_1);
+			console.log(opt_i_1);
+			console.log(opt_ii_1);
+			console.log(opt_iii_1);
+			console.log(opt_iv_1);
+			console.log('2nd muliple choice Options');
+			console.log(arr2.key_2);
+			console.log(arr2.opt_i_2);
+			console.log(arr2.opt_ii_2);
+			console.log(arr2.opt_iii_2);
+			console.log(arr2.opt_iv_2);
+				console.log('3rd muliple choice Options');
+			console.log(arr2.key_3);
+			console.log(arr2.opt_i_3);
+			console.log(arr2.opt_ii_3);
+			console.log(arr2.opt_iii_3);
+			console.log(arr2.opt_iv_3);
+		
+			// alert ('wowo');
 			
 			//console.log(resp_a[50]);
 		// console.log (resp_a);	
-			
-			
-			
-			
-			
-			
-			
 			// Get the html file name from the database
-				
-				
-				
 				var static_f = true;
 				var openup = arr.htmlfilenm;
 				
@@ -374,22 +481,25 @@ if (n<2){$(".partb").hide();}
 						localStorage.setItem('index',inde);
 						localStorage.setItem('static_flag',static_f);
 						localStorage.setItem('MC_flag','true');
-						localStorage.setItem('key_a',key_a);
-						localStorage.setItem('opt_a_1',opt_a_1);
-						localStorage.setItem('opt_a_2',opt_a_2);
-						localStorage.setItem('opt_a_3',opt_a_3);
-						localStorage.setItem('opt_a_4',opt_a_4);
-						localStorage.setItem('key_b',arr2.key_b);
-						localStorage.setItem('opt_b_1',arr2.opt_b_1);
-						localStorage.setItem('opt_b_2',arr2.opt_b_2);
-						localStorage.setItem('opt_b_3',arr2.opt_b_3);
-						localStorage.setItem('opt_b_4',arr2.opt_b_4);
-						localStorage.setItem('key_c',arr2.key_c);
-						localStorage.setItem('opt_c_1',arr2.opt_c_1);
-						localStorage.setItem('opt_c_2',arr2.opt_c_2);
-						localStorage.setItem('opt_c_3',arr2.opt_c_3);
-						localStorage.setItem('opt_c_4',arr2.opt_c_4);
+						localStorage.setItem('key_1',arr2.key_1);
+						localStorage.setItem('key_2',arr2.key_2);
+						localStorage.setItem('key_3',arr2.key_3);
+						localStorage.setItem('part_a',part_a);
+						localStorage.setItem('part_b',part_b);
+						localStorage.setItem('part_c',part_c);
+						localStorage.setItem('part_d',part_d);
+						localStorage.setItem('part_e',part_e);
+						localStorage.setItem('part_f',part_f);
+						localStorage.setItem('part_g',part_g);
+						localStorage.setItem('part_h',part_h);
+						localStorage.setItem('part_i',part_i);
+						localStorage.setItem('part_j',part_j);
+						localStorage.setItem('show_key',show_key);
+
+
 						
+						// if the give answers box is checked send the answers to the page
+					//	if (){}
 						
 						
 						
