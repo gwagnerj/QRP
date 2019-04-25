@@ -7,7 +7,7 @@ session_start();
  
 	$n=0;
  
-	$stmt = $pdo->prepare("SELECT * FROM qa where problem_id = :problem_id AND dex = :dex");
+	$stmt = $pdo->prepare("SELECT * FROM `Qa` where problem_id = :problem_id AND dex = :dex");
 	 $stmt->execute(array(":problem_id" => $_POST['problem_id'],":dex" => 1 ));
 	 //$stmt->execute(array(":problem_id" => 256, ":dex" => 8 ));
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);

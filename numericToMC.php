@@ -217,7 +217,8 @@ if ( isset($_SESSION['success']) ) {
 					var arrn = JSON.parse(data);
 				}
 				catch(err) {
-					alert ('problem data unavailable n tot found');
+					alert ('problem data unavailable n not found');
+					alert (err);
 				}
 
 	var n = arrn.n

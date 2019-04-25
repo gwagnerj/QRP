@@ -23,7 +23,7 @@ session_start();
 	 $n = 2;  // temp  */ 
 	
  
-	$stmt = $pdo->prepare("SELECT * FROM qa where problem_id = :problem_id AND dex = :dex");
+	$stmt = $pdo->prepare("SELECT * FROM Qa where problem_id = :problem_id AND dex = :dex");
 	 $stmt->execute(array(":problem_id" => $problem_id,":dex" => $dex ));
 	
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -62,7 +62,7 @@ session_start();
 	 
 	 // this get the range of answers for all of the indicies to compute the options for the MC question
 	 
-		$stmt = $pdo->prepare("SELECT `". $mc1."` FROM qa where problem_id = :problem_id ");
+		$stmt = $pdo->prepare("SELECT `". $mc1."` FROM Qa where problem_id = :problem_id ");
 		$stmt->execute(array(":problem_id" => $problem_id));  
 		$mc1_arr = $stmt->fetchALL(PDO::FETCH_COLUMN);
 		
@@ -103,7 +103,7 @@ session_start();
 	if (isset($mc2) && substr($mc2,0,3)=='ans' ){		
 			
 
-		$stmt = $pdo->prepare("SELECT `". $mc2."` FROM qa where problem_id = :problem_id ");
+		$stmt = $pdo->prepare("SELECT `". $mc2."` FROM Qa where problem_id = :problem_id ");
 			 $stmt->execute(array(":problem_id" => $problem_id ));  
 		
 			$mc2_arr = $stmt->fetchALL(PDO::FETCH_COLUMN);
@@ -177,7 +177,7 @@ session_start();
 	
 	if (isset($mc3) && substr($mc3,0,3)=='ans'){		
 
-		$stmt = $pdo->prepare("SELECT `". $mc3."` FROM qa where problem_id = :problem_id ");
+		$stmt = $pdo->prepare("SELECT `". $mc3."` FROM Qa where problem_id = :problem_id ");
 			 $stmt->execute(array(":problem_id" => $problem_id ));  
 		
 			$mc3_arr = $stmt->fetchALL(PDO::FETCH_COLUMN);
