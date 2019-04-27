@@ -37,16 +37,20 @@ echo '</script>';
 <!DOCTYPE html>
 <html lang = "en">
 <head>
-<!--<link rel="icon" type="image/png" href="McKetta.png" />  
-<meta Charset = "utf-8">
+
+
+<link rel="icon" type="image/png" href="McKetta.png" >
+
 <title>QRHomework</title> -->
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
+
+
 </head>
 
 <body>
-
+<div id = substitute_me> Error - Load file is not working in QRdisplay file </div>
 <script>
 $(document).ready(function(){
 	
@@ -89,6 +93,9 @@ $(document).ready(function(){
 					
 					var openup = arr.htmlfilenm;
 					
+					openup = escape(openup);
+					
+					// openup = "'"+openup+"'";
 					
 					// alert(openup);
 					var game = arr.game_prob_flag;
@@ -98,7 +105,53 @@ $(document).ready(function(){
 					var contrib_last = arr.last;
 					var contrib_university = arr.university;
 					var static_f = false;
-					localStorage.setItem('contrib_first',contrib_first);
+				
+// next just put the substvars. js script in here but have it use the $('#substitute_me').load("uploads/"+openup+".html");  or something similar  THis should replace the stuff up
+// in the html part of this document and then operate on it with the script file form the substvars stuff.  I need to get rid of all of the localstorage stuff from both this script and the one from substvars
+// The substvars script will should be elliminated from all future uploaded html problem files.
+			
+				console.log (openup);
+			//	$('#substitute_me').load("uploads/"+encodeURIComponent(openup));
+			$('#substitute_me').load("uploads/"+openup, 'document').html();
+			
+			// now change the source of the images so that they are loaded properly
+			console.log('wtf');
+				
+					var imgPath = '';
+				$(document).ready(function(){	
+					
+					imgPath = $('img').prop('src');
+					var indexQRP = imgPath.indexOf('qrp')+4;
+					var addPath = "uploads/";
+					
+					/* var a = "I want apple";
+					var b = "an";
+					var position = 6; */
+					imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
+					console.log(imgPath);
+					$('img').prop('src', imgPath);
+					
+					
+					console.log(addPath);
+					console.log(indexQRP);
+					//imgName = str.replace()"QRP/uploads/"+imgName;
+
+			console.log (imgPath);
+				
+				});
+				/* $('img').each(function(){
+			 
+					// $(this)attr('src',$('.MsoNormal').attr('src').replace()
+					imgName = $(this).attr('src');
+					console.log (imgName);
+					imgName = "QRP/uploads/"+imgName;
+					$(this).attr('src',imgName);
+			//alert($(this).attr('src'));
+					}); */
+				
+				// have to put uploads/ in front of file 
+
+				localStorage.setItem('contrib_first',contrib_first);
 					localStorage.setItem('contrib_last',contrib_last);
 					localStorage.setItem('contrib_university',contrib_university);
 					localStorage.setItem('nm_author',arr.nm_author);
@@ -250,7 +303,7 @@ $(document).ready(function(){
 				
 			
 				
-				window.location.href="uploads/"+openup;
+				// window.location.href="uploads/"+openup;
 						} else {
 				
 					alert('not a homework problem');
