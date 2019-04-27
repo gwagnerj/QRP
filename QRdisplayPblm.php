@@ -118,26 +118,25 @@ $(document).ready(function(){
 			console.log('wtf');
 				
 					var imgPath = '';
-				$(document).ready(function(){	
-					
-					imgPath = $('img').prop('src');
-					var indexQRP = imgPath.indexOf('qrp')+4;
+					var indexQRP = '';
 					var addPath = "uploads/";
-					
-					/* var a = "I want apple";
-					var b = "an";
-					var position = 6; */
-					imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
-					console.log(imgPath);
-					$('img').prop('src', imgPath);
-					
-					
-					console.log(addPath);
-					console.log(indexQRP);
-					//imgName = str.replace()"QRP/uploads/"+imgName;
-
-			console.log (imgPath);
 				
+				
+				$(document).ready(function(){	
+					$('img').each(function(){
+						imgPath = $(this).prop('src');
+						indexQRP = imgPath.indexOf('qrp')+4;
+						imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
+						console.log(imgPath);
+						$(this).prop('src', imgPath);
+						
+						
+						console.log(addPath);
+						console.log(indexQRP);
+						//imgName = str.replace()"QRP/uploads/"+imgName;
+
+						console.log (imgPath);
+					});
 				});
 				/* $('img').each(function(){
 			 
