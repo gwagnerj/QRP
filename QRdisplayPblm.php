@@ -2,6 +2,29 @@
 require_once "pdo.php";
 session_start();
 
+
+
+
+ $sql = "SELECT `htmlfilenm` FROM Problem WHERE problem_id = :problem_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(':problem_id' => $_SESSION['problem_id']));
+	$data = $stmt -> fetch();
+	// need to put some error checking here
+		$rows=$data;
+
+
+$htmlfilenm = "uploads/".$rows['htmlfilenm'];
+
+//echo($htmlfilenm);
+
+$text = "This is the Euro symbol '€'.";
+
+echo 'Original : ', $text, PHP_EOL;
+echo 'TRANSLIT : ', iconv("Windows-1252", "UTF-8", include( $htmlfilenm)), PHP_EOL;
+
+
+$htmlfile = iconv("Windows-1252", "UTF-8", $htmlfilenm);
+
 // passing my php varables into the js varaibles needed for the script below
 $pass = array(
     'dex' => $_SESSION['dex'],
@@ -29,15 +52,17 @@ $pass = array(
 echo '<script>';
 echo 'var pass = ' . json_encode($pass) . ';';
 echo '</script>';
-
-
+  
+  
+ 
+ // 
 
 ?>
 
 <!DOCTYPE html>
 <html lang = "en">
 <head>
-
+<meta charset="UTF-8">
 
 <link rel="icon" type="image/png" href="McKetta.png" >
 
@@ -50,7 +75,11 @@ echo '</script>';
 </head>
 
 <body>
-<div id = substitute_me> Error - Load file is not working in QRdisplay file </div>
+<div id = substitute_mme> Error - Load file is not working in QRdisplay file </div>
+<?php   iconv("Windows-1252", "UTF-8", include($htmlfile)); 
+
+
+ ?>
 <script>
 $(document).ready(function(){
 	
@@ -111,8 +140,8 @@ $(document).ready(function(){
 // The substvars script will should be elliminated from all future uploaded html problem files.
 			
 				console.log (openup);
-			//	$('#substitute_me').load("uploads/"+encodeURIComponent(openup));
-			$('#substitute_me').load("uploads/"+openup, 'document').html();
+			
+		//	$('#substitute_me').load("uploads/"+openup, 'document').html();
 			
 			// now change the source of the images so that they are loaded properly
 			console.log('wtf');
@@ -122,7 +151,7 @@ $(document).ready(function(){
 					var addPath = "uploads/";
 				
 				
-				$(document).ready(function(){	
+				 $(document).ready(function(){	
 					$('img').each(function(){
 						imgPath = $(this).prop('src');
 						indexQRP = imgPath.indexOf('qrp')+4;
@@ -137,7 +166,7 @@ $(document).ready(function(){
 
 						console.log (imgPath);
 					});
-				});
+				}); 
 				/* $('img').each(function(){
 			 
 					// $(this)attr('src',$('.MsoNormal').attr('src').replace()
