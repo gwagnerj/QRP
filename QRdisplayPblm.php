@@ -17,13 +17,13 @@ $htmlfilenm = "uploads/".$rows['htmlfilenm'];
 
 //echo($htmlfilenm);
 
-$text = "This is the Euro symbol '€'.";
+/* $text = "This is the Euro symbol '€'.";
 
 echo 'Original : ', $text, PHP_EOL;
-echo 'TRANSLIT : ', iconv("Windows-1252", "UTF-8", include( $htmlfilenm)), PHP_EOL;
+echo 'TRANSLIT : ', iconv("Windows-1252", "UTF-8", include( $htmlfilenm)), PHP_EOL; */
 
 
-$htmlfile = iconv("Windows-1252", "UTF-8", $htmlfilenm);
+// $htmlfile = iconv("Windows-1252", "UTF-8", $htmlfilenm);
 
 // passing my php varables into the js varaibles needed for the script below
 $pass = array(
@@ -69,15 +69,19 @@ echo '</script>';
 <title>QRHomework</title> -->
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+
+
 
 
 
 </head>
 
 <body>
-<div id = substitute_mme> Error - Load file is not working in QRdisplay file </div>
-<?php   iconv("Windows-1252", "UTF-8", include($htmlfile)); 
-
+<div id = substitute_me>  </div>
+<?php  //iconv("Windows-1252", "UTF-8", include($htmlfile)); 
+			include($htmlfilenm);
 
  ?>
 <script>
@@ -139,7 +143,7 @@ $(document).ready(function(){
 // in the html part of this document and then operate on it with the script file form the substvars stuff.  I need to get rid of all of the localstorage stuff from both this script and the one from substvars
 // The substvars script will should be elliminated from all future uploaded html problem files.
 			
-				console.log (openup);
+			//	console.log (openup);
 			
 		//	$('#substitute_me').load("uploads/"+openup, 'document').html();
 			
@@ -365,7 +369,7 @@ $(document).ready(function(){
 });
 
 </script>
-
+<script src="./Substvars.js"></script>
 
 
 </body>
