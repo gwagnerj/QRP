@@ -88,7 +88,7 @@ if ( isset($_SESSION['success']) ) {
  $index = 101;
 ?>
 
-
+<div id = substitute_me>
 <form method="POST">
 	
 	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
@@ -189,7 +189,7 @@ if ( isset($_SESSION['success']) ) {
 	<p><input type = "submit" value="Submit" id="submit_id" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp; &nbsp; </p>
 	</form>
 
-	
+	  </div>
 <script>
 
 	
@@ -293,8 +293,67 @@ if (n<2){$(".partb").hide();}
 				catch(err) {
 					alert ('problem input data unavailable');
 				}
+				
+				
+							var openup = arr.htmlfilenm;
+						openup = escape(openup);
+						 console.log ('openupfilename',openup);
+						
+						var game = arr.game_prob_flag;
+						var status = arr.status;
+						var prob_num = arr.problem_id;
+						var contrib_first = arr.first;
+						var contrib_last = arr.last;
+						var contrib_university = arr.university;
+					//	var newPath = "uploads/"+openup+ " 'document'";
+								$('#substitute_me').load("uploads/"+openup, 'document').html();
+					
+					
+			
+
+						$(document).ready(function(){	
+								
+								var imgPath = '';
+								var indexQRP = '';
+								var addPath = "uploads/";
+								
+								
+									$('img').each(function(){
+										
+										imgPath = $(this).prop('src');
+											console.log('imagepath before',imgPath);
+										//	alert (imgPath);
+											//referrer.toLowerCase().indexOf
+										indexQRP = imgPath.toLowerCase().indexOf('qrp')+4;
+										console.log('indexofQRP',indexQRP);
+										imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
+										console.log('imagepath',imgPath);
+										
+										$(this).prop('src', imgPath);
+									
+									});
+						
+						});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
 			// if (n<=2){mc3 = null;}
 			// if (n==1){mc2=null;}
+			
 			
 			
 			console.log (mc1);
@@ -436,66 +495,69 @@ if (n<2){$(".partb").hide();}
 				var contrib_first = arr.first;
 				var contrib_last = arr.last;
 				var contrib_university = arr.university;
-				localStorage.setItem('contrib_first',contrib_first);
-				localStorage.setItem('contrib_last',contrib_last);
-				localStorage.setItem('contrib_university',contrib_university);
-				localStorage.setItem('nm_author',arr.nm_author);
-				localStorage.setItem('specif_ref',arr.specif_ref);
+				
+				$('#substitute_me').load("uploads/"+openup, 'document').html();
+				
+				sessionStorage.setItem('contrib_first',contrib_first);
+				sessionStorage.setItem('contrib_last',contrib_last);
+				sessionStorage.setItem('contrib_university',contrib_university);
+				sessionStorage.setItem('nm_author',arr.nm_author);
+				sessionStorage.setItem('specif_ref',arr.specif_ref);
 				
 			//	console.log(contrib_first);
 			//	console.log('arr', arr);
 				if (status !== 'suspended'){
-					if (game==0){
-						localStorage.setItem('nv_1',arr.nv_1);
-						localStorage.setItem(arr.nv_1,arr.v_1);
-						localStorage.setItem('nv_2',arr.nv_2);
-						localStorage.setItem(arr.nv_2,arr.v_2);
-						localStorage.setItem('nv_3',arr.nv_3);
-						localStorage.setItem(arr.nv_3,arr.v_3);
-						localStorage.setItem('nv_4',arr.nv_4);
-						localStorage.setItem(arr.nv_4,arr.v_4);
-						localStorage.setItem('nv_5',arr.nv_5);
-						localStorage.setItem(arr.nv_5,arr.v_5);
-						localStorage.setItem('nv_6',arr.nv_6);
-						localStorage.setItem(arr.nv_6,arr.v_6);
-						localStorage.setItem('nv_7',arr.nv_7);
-						localStorage.setItem(arr.nv_7,arr.v_7);
-						localStorage.setItem('nv_8',arr.nv_8);
-						localStorage.setItem(arr.nv_8,arr.v_8);
-						localStorage.setItem('nv_9',arr.nv_9);
-						localStorage.setItem(arr.nv_9,arr.v_9);
-						localStorage.setItem('nv_10',arr.nv_10);
-						localStorage.setItem(arr.nv_10,arr.v_10);
-						localStorage.setItem('nv_11',arr.nv_11);
-						localStorage.setItem(arr.nv_11,arr.v_11);
-						localStorage.setItem('nv_12',arr.nv_12);
-						localStorage.setItem(arr.nv_12,arr.v_12);
-						localStorage.setItem('nv_13',arr.nv_13);
-						localStorage.setItem(arr.nv_13,arr.v_13);
-						localStorage.setItem('nv_14',arr.nv_14);
-						localStorage.setItem(arr.nv_14,arr.v_14);
+					
+						sessionStorage.setItem('nv_1',arr.nv_1);
+						sessionStorage.setItem(arr.nv_1,arr.v_1);
+						sessionStorage.setItem('nv_2',arr.nv_2);
+						sessionStorage.setItem(arr.nv_2,arr.v_2);
+						sessionStorage.setItem('nv_3',arr.nv_3);
+						sessionStorage.setItem(arr.nv_3,arr.v_3);
+						sessionStorage.setItem('nv_4',arr.nv_4);
+						sessionStorage.setItem(arr.nv_4,arr.v_4);
+						sessionStorage.setItem('nv_5',arr.nv_5);
+						sessionStorage.setItem(arr.nv_5,arr.v_5);
+						sessionStorage.setItem('nv_6',arr.nv_6);
+						sessionStorage.setItem(arr.nv_6,arr.v_6);
+						sessionStorage.setItem('nv_7',arr.nv_7);
+						sessionStorage.setItem(arr.nv_7,arr.v_7);
+						sessionStorage.setItem('nv_8',arr.nv_8);
+						sessionStorage.setItem(arr.nv_8,arr.v_8);
+						sessionStorage.setItem('nv_9',arr.nv_9);
+						sessionStorage.setItem(arr.nv_9,arr.v_9);
+						sessionStorage.setItem('nv_10',arr.nv_10);
+						sessionStorage.setItem(arr.nv_10,arr.v_10);
+						sessionStorage.setItem('nv_11',arr.nv_11);
+						sessionStorage.setItem(arr.nv_11,arr.v_11);
+						sessionStorage.setItem('nv_12',arr.nv_12);
+						sessionStorage.setItem(arr.nv_12,arr.v_12);
+						sessionStorage.setItem('nv_13',arr.nv_13);
+						sessionStorage.setItem(arr.nv_13,arr.v_13);
+						sessionStorage.setItem('nv_14',arr.nv_14);
+						sessionStorage.setItem(arr.nv_14,arr.v_14);
 						
 						
-						localStorage.setItem('title',arr.title);
-						//localStorage.setItem('stu_name',s_name);
-						localStorage.setItem('problem_id',problem);
-						localStorage.setItem('index',inde);
-						localStorage.setItem('static_flag',static_f);
-						localStorage.setItem('MC_flag','true');
-						localStorage.setItem('key_1',arr2.key_1);
-						localStorage.setItem('key_2',arr2.key_2);
-						localStorage.setItem('key_3',arr2.key_3);
-						localStorage.setItem('part_a',part_a);
-						localStorage.setItem('part_b',part_b);
-						localStorage.setItem('part_c',part_c);
-						localStorage.setItem('part_d',part_d);
-						localStorage.setItem('part_e',part_e);
-						localStorage.setItem('part_f',part_f);
-						localStorage.setItem('part_g',part_g);
-						localStorage.setItem('part_h',part_h);
-						localStorage.setItem('part_i',part_i);
-						localStorage.setItem('part_j',part_j);
-						localStorage.setItem('show_key',show_key);
+						sessionStorage.setItem('title',arr.title);
+						//sessionStorage.setItem('stu_name',s_name);
+						sessionStorage.setItem('problem_id',problem);
+						sessionStorage.setItem('index',inde);
+						sessionStorage.setItem('static_flag',static_f);
+						sessionStorage.setItem('MC_flag','true');
+						sessionStorage.setItem('key_1',arr2.key_1);
+						sessionStorage.setItem('key_2',arr2.key_2);
+						sessionStorage.setItem('key_3',arr2.key_3);
+						sessionStorage.setItem('part_a',part_a);
+						sessionStorage.setItem('part_b',part_b);
+						sessionStorage.setItem('part_c',part_c);
+						sessionStorage.setItem('part_d',part_d);
+						sessionStorage.setItem('part_e',part_e);
+						sessionStorage.setItem('part_f',part_f);
+						sessionStorage.setItem('part_g',part_g);
+						sessionStorage.setItem('part_h',part_h);
+						sessionStorage.setItem('part_i',part_i);
+						sessionStorage.setItem('part_j',part_j);
+						sessionStorage.setItem('show_key',show_key);
 
 
 						
@@ -504,14 +566,17 @@ if (n<2){$(".partb").hide();}
 						
 						
 						
-						
+					var script = document.createElement('script');
+						script.onload = function () {
+					};
+					
+					script.src = "Substvars.js";
+					document.head.appendChild(script);
+
 						
 				
-					window.location.href="uploads/"+openup;
-						} else {
-				
-				alert('not a homework problem');
-						} 
+					// window.location.href="uploads/"+openup;
+						
 				 } else {
 					
 						alert('This problem is temporarily suspended, please check back later.');
@@ -554,40 +619,40 @@ if (n<2){$(".partb").hide();}
 					if (game==0){
 						
 						var x = "bc_"+arr2.nv_1;
-						localStorage.setItem(x,arr2.v_1);
+						sessionStorage.setItem(x,arr2.v_1);
 						
 						x = "bc_"+arr2.nv_2;
-						localStorage.setItem(x,arr2.v_2);
+						sessionStorage.setItem(x,arr2.v_2);
 						
 						x = "bc_"+arr2.nv_3;
-						localStorage.setItem(x,arr2.v_3);
+						sessionStorage.setItem(x,arr2.v_3);
 							x = "bc_"+arr2.nv_4;
-						localStorage.setItem(x,arr2.v_4);
+						sessionStorage.setItem(x,arr2.v_4);
 						x = "bc_"+arr2.nv_5;
-						localStorage.setItem(x,arr2.v_5);
+						sessionStorage.setItem(x,arr2.v_5);
 						x = "bc_"+arr2.nv_6;
-						localStorage.setItem(x,arr2.v_6);
+						sessionStorage.setItem(x,arr2.v_6);
 							x = "bc_"+arr2.nv_7;
-						localStorage.setItem(x,arr2.v_7);
+						sessionStorage.setItem(x,arr2.v_7);
 						x = "bc_"+arr2.nv_8;
-						localStorage.setItem(x,arr2.v_8);
+						sessionStorage.setItem(x,arr2.v_8);
 						x = "bc_"+arr2.nv_9;
-						localStorage.setItem(x,arr2.v_9);
+						sessionStorage.setItem(x,arr2.v_9);
 							x = "bc_"+arr2.nv_10;
-						localStorage.setItem(x,arr2.v_10);
+						sessionStorage.setItem(x,arr2.v_10);
 						x = "bc_"+arr2.nv_11;
-						localStorage.setItem(x,arr2.v_11);
+						sessionStorage.setItem(x,arr2.v_11);
 						x = "bc_"+arr2.nv_12;
-						localStorage.setItem(x,arr2.v_12);
+						sessionStorage.setItem(x,arr2.v_12);
 							x = "bc_"+arr2.nv_13;
-						localStorage.setItem(x,arr2.v_13);
+						sessionStorage.setItem(x,arr2.v_13);
 						x = "bc_"+arr2.nv_14;
-						localStorage.setItem(x,arr2.v_14);
+						sessionStorage.setItem(x,arr2.v_14);
 						
-						 localStorage.setItem('title',arr2.title);
-						localStorage.setItem('stu_name',s_name);
-						localStorage.setItem('problem_id',problem);
-						localStorage.setItem('index',inde); 
+						 sessionStorage.setItem('title',arr2.title);
+						sessionStorage.setItem('stu_name',s_name);
+						sessionStorage.setItem('problem_id',problem);
+						sessionStorage.setItem('index',inde); 
 					
 				// redirect the browser to the problem file
 				
