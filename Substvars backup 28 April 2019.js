@@ -13,22 +13,21 @@ if(name_length<1){
 } else {
 	var stu_name_back = stu_name;
 }
-var dex = sessionStorage.getItem('dex');
-console.log (dex);
-var pin = sessionStorage.getItem('pin');
-var reflect_flag = sessionStorage.getItem('reflect_flag');
-var explore_flag = sessionStorage.getItem('explore_flag');
-var connect_flag = sessionStorage.getItem('connect_flag');
-var society_flag = sessionStorage.getItem('society_flag');
-var choice = sessionStorage.getItem('choice');
-var pp1 = sessionStorage.getItem('pp1');
-var pp2 = sessionStorage.getItem('pp2');
-var pp3 = sessionStorage.getItem('pp3');
-var pp4 = sessionStorage.getItem('pp4');
-var time_pp1 = sessionStorage.getItem('time_pp1');
-var time_pp2 = sessionStorage.getItem('time_pp2');
-var time_pp3 = sessionStorage.getItem('time_pp3');
-var time_pp4 = sessionStorage.getItem('time_pp4');
+var dex = localStorage.getItem('dex');
+var pin = localStorage.getItem('pin');
+var reflect_flag = localStorage.getItem('reflect_flag');
+var explore_flag = localStorage.getItem('explore_flag');
+var connect_flag = localStorage.getItem('connect_flag');
+var society_flag = localStorage.getItem('society_flag');
+var choice = localStorage.getItem('choice');
+var pp1 = localStorage.getItem('pp1');
+var pp2 = localStorage.getItem('pp2');
+var pp3 = localStorage.getItem('pp3');
+var pp4 = localStorage.getItem('pp4');
+var time_pp1 = localStorage.getItem('time_pp1');
+var time_pp2 = localStorage.getItem('time_pp2');
+var time_pp3 = localStorage.getItem('time_pp3');
+var time_pp4 = localStorage.getItem('time_pp4');
 var MC_flag = false;
 
 // console.log ('reflect_flag is ',reflect_flag);
@@ -36,26 +35,26 @@ var MC_flag = false;
 // console.log ('connect_flag is ',connect_flag);
 // console.log ('society_flag is ',society_flag);
 
-var iid = sessionStorage.getItem('iid');
-var title = sessionStorage.getItem('title');
-var static_flag = sessionStorage.getItem('static_flag');
+var iid = localStorage.getItem('iid');
+var title = localStorage.getItem('title');
+var static_flag = localStorage.getItem('static_flag');
 
 
-var contrib_first = sessionStorage.getItem('contrib_first');
+var contrib_first = localStorage.getItem('contrib_first');
 if (contrib_first == null){contrib_first = " ";}
-var contrib_last = sessionStorage.getItem('contrib_last');
+var contrib_last = localStorage.getItem('contrib_last');
 if (contrib_last = null) {contrib_last = " ";}
-var contrib_university = sessionStorage.getItem('contrib_university');
+var contrib_university = localStorage.getItem('contrib_university');
 if (contrib_university == null){contrib_university = " ";}
-var nm_author = sessionStorage.getItem('nm_author');
+var nm_author = localStorage.getItem('nm_author');
 if (nm_author == null){nm_author = " ";}
-var specif_ref = sessionStorage.getItem('specif_ref');
+var specif_ref = localStorage.getItem('specif_ref');
 if (specif_ref == null){specif_ref = " ";}
 
 
-var nvar1 = sessionStorage.getItem('nv_1'); 
+var nvar1 = localStorage.getItem('nv_1'); 
 
-var var1 = sessionStorage.getItem(nvar1);
+var var1 = localStorage.getItem(nvar1);
 
 
 nvar1 = "##"+nvar1+",.+?##";
@@ -63,130 +62,130 @@ var oNvar1 = new RegExp(nvar1,"g");
 
 
 
-var nvar2 = sessionStorage.getItem('nv_2'); 
-var var2 = sessionStorage.getItem(nvar2);
+var nvar2 = localStorage.getItem('nv_2'); 
+var var2 = localStorage.getItem(nvar2);
 nvar2 = "##"+nvar2+",.+?##";
 var oNvar2 = new RegExp(nvar2,"g");
 
-var nvar3 = sessionStorage.getItem('nv_3'); 
-var var3 = sessionStorage.getItem(nvar3);
+var nvar3 = localStorage.getItem('nv_3'); 
+var var3 = localStorage.getItem(nvar3);
 nvar3 = "##"+nvar3+",.+?##";
 var oNvar3 = new RegExp(nvar3,"g");
 
-var nvar4 = sessionStorage.getItem('nv_4'); 
-var var4 = sessionStorage.getItem(nvar4);
+var nvar4 = localStorage.getItem('nv_4'); 
+var var4 = localStorage.getItem(nvar4);
 nvar4 = "##"+nvar4+",.+?##";
 var oNvar4 = new RegExp(nvar4,"g");
 
-var nvar5 = sessionStorage.getItem('nv_5'); 
-var var5 = sessionStorage.getItem(nvar5);
+var nvar5 = localStorage.getItem('nv_5'); 
+var var5 = localStorage.getItem(nvar5);
 nvar5 = "##"+nvar5+",.+?##";
 var oNvar5 = new RegExp(nvar5,"g");
 
-var nvar6 = sessionStorage.getItem('nv_6'); 
-var var6 = sessionStorage.getItem(nvar6);
+var nvar6 = localStorage.getItem('nv_6'); 
+var var6 = localStorage.getItem(nvar6);
 nvar6 = "##"+nvar6+",.+?##";
 var oNvar6 = new RegExp(nvar6,"g");
 
-var nvar6 = sessionStorage.getItem('nv_6'); 
-var var6 = sessionStorage.getItem(nvar6);
+var nvar6 = localStorage.getItem('nv_6'); 
+var var6 = localStorage.getItem(nvar6);
 nvar6 = "##"+nvar6+",.+?##";
 var oNvar6 = new RegExp(nvar6,"g");
 
-var nvar7 = sessionStorage.getItem('nv_7'); 
-var var7 = sessionStorage.getItem(nvar7);
+var nvar7 = localStorage.getItem('nv_7'); 
+var var7 = localStorage.getItem(nvar7);
 nvar7 = "##"+nvar7+",.+?##";
 var oNvar7 = new RegExp(nvar7,"g");
 
-var nvar8 = sessionStorage.getItem('nv_8'); 
-var var8 = sessionStorage.getItem(nvar8);
+var nvar8 = localStorage.getItem('nv_8'); 
+var var8 = localStorage.getItem(nvar8);
 nvar8 = "##"+nvar8+",.+?##";
 var oNvar8 = new RegExp(nvar8,"g");
 
-var nvar9 = sessionStorage.getItem('nv_9'); 
-var var9 = sessionStorage.getItem(nvar9);
+var nvar9 = localStorage.getItem('nv_9'); 
+var var9 = localStorage.getItem(nvar9);
 nvar9 = "##"+nvar9+",.+?##";
 var oNvar9 = new RegExp(nvar9,"g");
 
-var nvar10 = sessionStorage.getItem('nv_10'); 
-var var10 = sessionStorage.getItem(nvar10);
+var nvar10 = localStorage.getItem('nv_10'); 
+var var10 = localStorage.getItem(nvar10);
 nvar10 = "##"+nvar10+",.+?##";
 var oNvar10 = new RegExp(nvar10,"g");
 
-var nvar11 = sessionStorage.getItem('nv_11'); 
-var var11 = sessionStorage.getItem(nvar11);
+var nvar11 = localStorage.getItem('nv_11'); 
+var var11 = localStorage.getItem(nvar11);
 nvar11 = "##"+nvar11+",.+?##";
 var oNvar11 = new RegExp(nvar11,"g");
 
-var nvar12 = sessionStorage.getItem('nv_12'); 
-var var12 = sessionStorage.getItem(nvar12);
+var nvar12 = localStorage.getItem('nv_12'); 
+var var12 = localStorage.getItem(nvar12);
 nvar12 = "##"+nvar12+",.+?##";
 var oNvar12 = new RegExp(nvar12,"g");
 
-var nvar13 = sessionStorage.getItem('nv_13'); 
-var var13 = sessionStorage.getItem(nvar13);
+var nvar13 = localStorage.getItem('nv_13'); 
+var var13 = localStorage.getItem(nvar13);
 nvar13 = "##"+nvar13+",.+?##";
 var oNvar13 = new RegExp(nvar13,"g");
 
-var nvar14 = sessionStorage.getItem('nv_14'); 
-var var14 = sessionStorage.getItem(nvar14);
+var nvar14 = localStorage.getItem('nv_14'); 
+var var14 = localStorage.getItem(nvar14);
 nvar14 = "##"+nvar14+",.+?##";
 var oNvar14 = new RegExp(nvar14,"g");
 
 
 
 // read in the basecase values for the variables
-var x = "bc_"+sessionStorage.getItem('nv_1');
-var bc_var1 = sessionStorage.getItem(x);
+var x = "bc_"+localStorage.getItem('nv_1');
+var bc_var1 = localStorage.getItem(x);
 
-x = "bc_"+sessionStorage.getItem('nv_2');
-var bc_var2 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_3');
-var bc_var3 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_4');
-var bc_var4 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_5');
-var bc_var5 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_6');
-var bc_var6 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_7');
-var bc_var7 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_8');
-var bc_var8 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_9');
-var bc_var9 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_10');
-var bc_var10 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_11');
-var bc_var11 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_12');
-var bc_var12 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_13');
-var bc_var13 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_14');
-var bc_var14 = sessionStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_2');
+var bc_var2 = localStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_3');
+var bc_var3 = localStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_4');
+var bc_var4 = localStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_5');
+var bc_var5 = localStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_6');
+var bc_var6 = localStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_7');
+var bc_var7 = localStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_8');
+var bc_var8 = localStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_9');
+var bc_var9 = localStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_10');
+var bc_var10 = localStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_11');
+var bc_var11 = localStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_12');
+var bc_var12 = localStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_13');
+var bc_var13 = localStorage.getItem(x);
+x = "bc_"+localStorage.getItem('nv_14');
+var bc_var14 = localStorage.getItem(x);
 
 
 // This is the Multiple choice stuff called from numericToMC.php for making questions you can print outerHTML
 
 						
 
-var MC_flag = sessionStorage.getItem('MC_flag');
+var MC_flag = localStorage.getItem('MC_flag');
 if (MC_flag != null ){
-	var key_1 = sessionStorage.getItem('key_1');
-	var key_2 = sessionStorage.getItem('key_2');
-	var key_3 = sessionStorage.getItem('key_3');
-	var part_a = sessionStorage.getItem('part_a');
-	var part_b = sessionStorage.getItem('part_b');
-	var part_c = sessionStorage.getItem('part_c');
-	var part_d = sessionStorage.getItem('part_d');
-	var part_e = sessionStorage.getItem('part_e');
-	var part_f = sessionStorage.getItem('part_f');
-	var part_g = sessionStorage.getItem('part_g');
-	var part_h = sessionStorage.getItem('part_h');
-	var part_i = sessionStorage.getItem('part_i');
-	var part_j = sessionStorage.getItem('part_j');
-	var show_key = sessionStorage.getItem('show_key');
+	var key_1 = localStorage.getItem('key_1');
+	var key_2 = localStorage.getItem('key_2');
+	var key_3 = localStorage.getItem('key_3');
+	var part_a = localStorage.getItem('part_a');
+	var part_b = localStorage.getItem('part_b');
+	var part_c = localStorage.getItem('part_c');
+	var part_d = localStorage.getItem('part_d');
+	var part_e = localStorage.getItem('part_e');
+	var part_f = localStorage.getItem('part_f');
+	var part_g = localStorage.getItem('part_g');
+	var part_h = localStorage.getItem('part_h');
+	var part_i = localStorage.getItem('part_i');
+	var part_j = localStorage.getItem('part_j');
+	var show_key = localStorage.getItem('show_key');
 }
 
 

@@ -91,9 +91,30 @@
 									// go the controller
 									$_SESSION['progress']=1;
 								
-									
-									header("Location: QRcontroller.php");
-									return; 
+									$_POST['progress']=0;
+									$_POST['checker']=0; 
+								
+								
+								
+								
+									// We are going transfer the variables that we have so far - iid, pin, problem_id, to js and that script will put these in local session varaibles for the subsequent
+									// files - this will allow the student to pull up muliple sessions in different tabs of the same browser
+									$pass = array(
+										'dex' => $_SESSION['dex'],
+										'problem_id' => $_SESSION['problem_id'],
+										'stu_name' => $_SESSION['stu_name'],
+										'pin' => $_SESSION['pin'],
+										'iid' => $_SESSION['iid'],
+									);
+									// echo ($pass['society_flag']);
+									//die();
+									echo '<script>';
+									echo 'var pass = ' . json_encode($pass) . ';';
+									echo '</script>';
+								
+
+									//header("Location: QRcontroller.php");
+									//return; 
 									
 								} else {
 
@@ -166,8 +187,62 @@
 	<p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	</form>
 
+<script>
+	// this is a function from 	https://stackoverflow.com/questions/19036684/jquery-redirect-with-post-data to post data and redirect without building a hidden from
+		$.extend(
+				{
+					redirectPost: function(location, args)
+					{
+						var form = $('<form></form>');
+						form.attr("method", "post");
+						form.attr("action", location);
+
+						$.each( args, function( key, value ) {
+							var field = $('<input></input>');
+
+							field.attr("type", "hidden");
+							field.attr("name", key);
+							field.attr("value", value);
+
+							form.append(field);
+						});
+						$(form).appendTo('body').submit();
+					}
+				});
+		
+		
+		
+		
+		
+		
+		
+		var dex = pass['dex'];
+		var problem = pass['problem_id'];
+		var s_name = pass['stu_name'];
+		var pin = pass['pin'];
+		var iid = pass['iid'];
 	
 
+		sessionStorage.setItem('dex',dex);
+		sessionStorage.setItem('problem_id',problem);
+		sessionStorage.setItem('stu_name',s_name);
+		sessionStorage.setItem('pin',pin);
+		sessionStorage.setItem('iid',iid);
+		
+		/*  $("form").submit(function(e){
+			e.preventDefault();
+		}); */
+		
+	//	$.post( "QRcontroller.php", { progress: "1", dex: dex } );
+	//	 window.location.href = "QRcontroller.php";
+	
+	
+	var file = "QRcontroller.php";
+	$.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid });
+	
+	
+		
+</script>
 
 </body>
 </html>

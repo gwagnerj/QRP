@@ -2,6 +2,21 @@
 require_once "pdo.php";
 session_start();
 
+
+if(isset($_POST['progress'])) {
+	echo 'poost progress is set';
+	echo $_POST['progress'];
+	echo $_POST['stu_name'];
+	die();
+} else {
+	echo 'poost progress is NOT set';
+	die();
+}
+
+
+
+
+
 if(isset($_SESSION['stu_name'])) {
 	$stu_name = $_SESSION['stu_name'];
 } else {

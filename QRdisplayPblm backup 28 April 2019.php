@@ -66,7 +66,7 @@ echo '</script>';
 
 <link rel="icon" type="image/png" href="McKetta.png" >
 
-<title>QRHomework</title> 
+<title>QRHomework</title> -->
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
@@ -148,7 +148,7 @@ $(document).ready(function(){
 		//	$('#substitute_me').load("uploads/"+openup, 'document').html();
 			
 			// now change the source of the images so that they are loaded properly
-			//console.log('wtf');
+			console.log('wtf');
 				
 					var imgPath = '';
 					var indexQRP = '';
@@ -160,15 +160,15 @@ $(document).ready(function(){
 						imgPath = $(this).prop('src');
 						indexQRP = imgPath.indexOf('qrp')+4;
 						imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
-						// console.log(imgPath);
+						console.log(imgPath);
 						$(this).prop('src', imgPath);
 						
 						
-						// console.log(addPath);
-						// console.log(indexQRP);
+						console.log(addPath);
+						console.log(indexQRP);
 						//imgName = str.replace()"QRP/uploads/"+imgName;
 
-						// console.log (imgPath);
+						console.log (imgPath);
 					});
 				}); 
 				/* $('img').each(function(){
@@ -183,66 +183,66 @@ $(document).ready(function(){
 				
 				// have to put uploads/ in front of file 
 
-					sessionStorage.setItem('contrib_first',contrib_first);
-					sessionStorage.setItem('contrib_last',contrib_last);
-					sessionStorage.setItem('contrib_university',contrib_university);
-					sessionStorage.setItem('nm_author',arr.nm_author);
-					sessionStorage.setItem('specif_ref',arr.specif_ref);
+				localStorage.setItem('contrib_first',contrib_first);
+					localStorage.setItem('contrib_last',contrib_last);
+					localStorage.setItem('contrib_university',contrib_university);
+					localStorage.setItem('nm_author',arr.nm_author);
+					localStorage.setItem('specif_ref',arr.specif_ref);
 					
-				//	console.log(contrib_first);
+					console.log(contrib_first);
 				//	console.log('arr', arr);
 					if (status !== 'suspended'){
 						if (game==0){
-							sessionStorage.setItem('nv_1',arr.nv_1);
-							sessionStorage.setItem(arr.nv_1,arr.v_1);
-							sessionStorage.setItem('nv_2',arr.nv_2);
-							sessionStorage.setItem(arr.nv_2,arr.v_2);
-							sessionStorage.setItem('nv_3',arr.nv_3);
-							sessionStorage.setItem(arr.nv_3,arr.v_3);
-							sessionStorage.setItem('nv_4',arr.nv_4);
-							sessionStorage.setItem(arr.nv_4,arr.v_4);
-							sessionStorage.setItem('nv_5',arr.nv_5);
-							sessionStorage.setItem(arr.nv_5,arr.v_5);
-							sessionStorage.setItem('nv_6',arr.nv_6);
-							sessionStorage.setItem(arr.nv_6,arr.v_6);
-							sessionStorage.setItem('nv_7',arr.nv_7);
-							sessionStorage.setItem(arr.nv_7,arr.v_7);
-							sessionStorage.setItem('nv_8',arr.nv_8);
-							sessionStorage.setItem(arr.nv_8,arr.v_8);
-							sessionStorage.setItem('nv_9',arr.nv_9);
-							sessionStorage.setItem(arr.nv_9,arr.v_9);
-							sessionStorage.setItem('nv_10',arr.nv_10);
-							sessionStorage.setItem(arr.nv_10,arr.v_10);
-							sessionStorage.setItem('nv_11',arr.nv_11);
-							sessionStorage.setItem(arr.nv_11,arr.v_11);
-							sessionStorage.setItem('nv_12',arr.nv_12);
-							sessionStorage.setItem(arr.nv_12,arr.v_12);
-							sessionStorage.setItem('nv_13',arr.nv_13);
-							sessionStorage.setItem(arr.nv_13,arr.v_13);
-							sessionStorage.setItem('nv_14',arr.nv_14);
-							sessionStorage.setItem(arr.nv_14,arr.v_14);
+							localStorage.setItem('nv_1',arr.nv_1);
+							localStorage.setItem(arr.nv_1,arr.v_1);
+							localStorage.setItem('nv_2',arr.nv_2);
+							localStorage.setItem(arr.nv_2,arr.v_2);
+							localStorage.setItem('nv_3',arr.nv_3);
+							localStorage.setItem(arr.nv_3,arr.v_3);
+							localStorage.setItem('nv_4',arr.nv_4);
+							localStorage.setItem(arr.nv_4,arr.v_4);
+							localStorage.setItem('nv_5',arr.nv_5);
+							localStorage.setItem(arr.nv_5,arr.v_5);
+							localStorage.setItem('nv_6',arr.nv_6);
+							localStorage.setItem(arr.nv_6,arr.v_6);
+							localStorage.setItem('nv_7',arr.nv_7);
+							localStorage.setItem(arr.nv_7,arr.v_7);
+							localStorage.setItem('nv_8',arr.nv_8);
+							localStorage.setItem(arr.nv_8,arr.v_8);
+							localStorage.setItem('nv_9',arr.nv_9);
+							localStorage.setItem(arr.nv_9,arr.v_9);
+							localStorage.setItem('nv_10',arr.nv_10);
+							localStorage.setItem(arr.nv_10,arr.v_10);
+							localStorage.setItem('nv_11',arr.nv_11);
+							localStorage.setItem(arr.nv_11,arr.v_11);
+							localStorage.setItem('nv_12',arr.nv_12);
+							localStorage.setItem(arr.nv_12,arr.v_12);
+							localStorage.setItem('nv_13',arr.nv_13);
+							localStorage.setItem(arr.nv_13,arr.v_13);
+							localStorage.setItem('nv_14',arr.nv_14);
+							localStorage.setItem(arr.nv_14,arr.v_14);
 							
 							
-							sessionStorage.setItem('title',arr.title);
-							sessionStorage.setItem('stu_name',s_name);
-							sessionStorage.setItem('problem_id',problem);
-							sessionStorage.setItem('dex',dex);
-							sessionStorage.setItem('pin',pin);
-							sessionStorage.setItem('reflect_flag',reflect_flag);
-							sessionStorage.setItem('explore_flag',explore_flag);
-							sessionStorage.setItem('connect_flag',connect_flag);
-							sessionStorage.setItem('society_flag',society_flag);
-							sessionStorage.setItem('choice',choice);
-							sessionStorage.setItem('static_flag',static_f);
-							sessionStorage.setItem('iid',iid);
-							sessionStorage.setItem('pp1',pp1);
-							sessionStorage.setItem('pp2',pp2);
-							sessionStorage.setItem('pp3',pp3);
-							sessionStorage.setItem('pp4',pp4);
-							sessionStorage.setItem('time_pp1',time_pp1);
-							sessionStorage.setItem('time_pp2',time_pp2);
-							sessionStorage.setItem('time_pp3',time_pp3);
-							sessionStorage.setItem('time_pp4',time_pp4);
+							localStorage.setItem('title',arr.title);
+							localStorage.setItem('stu_name',s_name);
+							localStorage.setItem('problem_id',problem);
+							localStorage.setItem('dex',dex);
+							localStorage.setItem('pin',pin);
+							localStorage.setItem('reflect_flag',reflect_flag);
+							localStorage.setItem('explore_flag',explore_flag);
+							localStorage.setItem('connect_flag',connect_flag);
+							localStorage.setItem('society_flag',society_flag);
+							localStorage.setItem('choice',choice);
+							localStorage.setItem('static_flag',static_f);
+							localStorage.setItem('iid',iid);
+							localStorage.setItem('pp1',pp1);
+							localStorage.setItem('pp2',pp2);
+							localStorage.setItem('pp3',pp3);
+							localStorage.setItem('pp4',pp4);
+							localStorage.setItem('time_pp1',time_pp1);
+							localStorage.setItem('time_pp2',time_pp2);
+							localStorage.setItem('time_pp3',time_pp3);
+							localStorage.setItem('time_pp4',time_pp4);
 					
 					//	window.location.href="uploads/"+openup;
 						} else {
@@ -291,40 +291,40 @@ $(document).ready(function(){
 						if (game==0){
 							
 							var x = "bc_"+arr2.nv_1;
-							sessionStorage.setItem(x,arr2.v_1);
+							localStorage.setItem(x,arr2.v_1);
 							
 							x = "bc_"+arr2.nv_2;
-							sessionStorage.setItem(x,arr2.v_2);
+							localStorage.setItem(x,arr2.v_2);
 							
 							x = "bc_"+arr2.nv_3;
-							sessionStorage.setItem(x,arr2.v_3);
+							localStorage.setItem(x,arr2.v_3);
 								x = "bc_"+arr2.nv_4;
-							sessionStorage.setItem(x,arr2.v_4);
+							localStorage.setItem(x,arr2.v_4);
 							x = "bc_"+arr2.nv_5;
-							sessionStorage.setItem(x,arr2.v_5);
+							localStorage.setItem(x,arr2.v_5);
 							x = "bc_"+arr2.nv_6;
-							sessionStorage.setItem(x,arr2.v_6);
+							localStorage.setItem(x,arr2.v_6);
 								x = "bc_"+arr2.nv_7;
-							sessionStorage.setItem(x,arr2.v_7);
+							localStorage.setItem(x,arr2.v_7);
 							x = "bc_"+arr2.nv_8;
-							sessionStorage.setItem(x,arr2.v_8);
+							localStorage.setItem(x,arr2.v_8);
 							x = "bc_"+arr2.nv_9;
-							sessionStorage.setItem(x,arr2.v_9);
+							localStorage.setItem(x,arr2.v_9);
 								x = "bc_"+arr2.nv_10;
-							sessionStorage.setItem(x,arr2.v_10);
+							localStorage.setItem(x,arr2.v_10);
 							x = "bc_"+arr2.nv_11;
-							sessionStorage.setItem(x,arr2.v_11);
+							localStorage.setItem(x,arr2.v_11);
 							x = "bc_"+arr2.nv_12;
-							sessionStorage.setItem(x,arr2.v_12);
+							localStorage.setItem(x,arr2.v_12);
 								x = "bc_"+arr2.nv_13;
-							sessionStorage.setItem(x,arr2.v_13);
+							localStorage.setItem(x,arr2.v_13);
 							x = "bc_"+arr2.nv_14;
-							sessionStorage.setItem(x,arr2.v_14);
+							localStorage.setItem(x,arr2.v_14);
 							
-							/* sessionStorage.setItem('title',arr2.title);
-							sessionStorage.setItem('stu_name',s_name);
-							sessionStorage.setItem('problem_id',problem);
-							sessionStorage.setItem('index',inde); */
+							/* localStorage.setItem('title',arr2.title);
+							localStorage.setItem('stu_name',s_name);
+							localStorage.setItem('problem_id',problem);
+							localStorage.setItem('index',inde); */
 						
 					// redirect the browser to the problem file
 					
@@ -333,14 +333,8 @@ $(document).ready(function(){
 				// should run the php in the model to test the user input make sure the instructor ID or last name is vaiid and create and entry in the temp table if there 
 				// isnt one and read the status if there is one and put it in the hidden html or get it via Json and AJAX
 				
-			// load the external javascript file to make the magic happen
-				var script = document.createElement('script');
-					script.onload = function () {
-						//do stuff with the script
-					};
-					script.src = "Substvars.js";
-
-					document.head.appendChild(script);
+			
+				
 				// window.location.href="uploads/"+openup;
 						} else {
 				
@@ -375,8 +369,8 @@ $(document).ready(function(){
 });
 
 </script>
+<script src="./Substvars.js"></script>
 
 
- 
 </body>
 </html>
