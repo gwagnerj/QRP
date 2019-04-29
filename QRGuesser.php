@@ -6,31 +6,6 @@
 	
 Require_once "pdo.php";
 
-/* $pass = array(
-    'dex' => $_SESSION['dex'],
-    'problem_id' => $_SESSION['problem_id'],
-	'pin' => $_SESSION['pin'],
-	'iid' => $_SESSION['iid'],
-	'pp1' => $_SESSION['pp1'],
-	'pp2' => $_SESSION['pp2'],
-	'pp3' => $_SESSION['pp3'],
-	'pp4' => $_SESSION['pp4'],
-	'time_pp1' => $_SESSION['time_pp1'],
-	'time_pp2' => $_SESSION['time_pp2'],
-	'time_pp3' => $_SESSION['time_pp3'],
-	'time_pp4' => $_SESSION['time_pp4'],
-	
-);
-
-echo '<script>';
-echo 'var pass = ' . json_encode($pass) . ';';
-echo '</script>'; */
-
-	
-	// initialize some variables
-	// put this in to get the file up needs to be removed when ready for prime time
-		
-		
 
 	
 	$probParts=0;
@@ -53,10 +28,10 @@ $stmt->execute(array(":problem_id" => $_SESSION['problem_id'], ":dex" => $_SESSI
 $row = $stmt -> fetch();
 if ( $row === false ) {
     $_SESSION['error'] = 'Bad value for problem_id';
-    header( 'Location: QRPindex.php' ) ;
+    header( 'Location: QRPhomework.php' ) ;
     return;
 }	
-		$soln = array_slice($row,6); // this would mean the database table Qa would have the dame structure
+		$soln = array_slice($row,6); // this would mean the database table Qa would have the same structure or this will get messed up - could fetch an ASSOC array instead
 	
 
 	for ($i = 0;$i<=9; $i++){  

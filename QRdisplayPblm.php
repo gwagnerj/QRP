@@ -2,60 +2,77 @@
 require_once "pdo.php";
 session_start();
 
+
+// this strips out the get parameters so they are not in the url - its is not really secure data but I would rather not having people monkeying with them
+// if they do not what they are doing
+
+ if (!empty($_GET)) {
+        $_SESSION['got'] = $_GET;
+        header('Location: QRdisplayPblm.php');
+        die;
+    } else{
+        if (!empty($_SESSION['got'])) {
+            $_GET = $_SESSION['got'];
+            unset($_SESSION['got']);
+        }
+
+        //use the $_GET vars here..
+    
+
 //  Set the varaibles to the Get Parameters or if they do not exist try the session variables if those don't exist error back to QRhomework
 
 
-if(isset($_GET['problem_id'])) {
-		$problem_id = htmlentities($_GET['problem_id']);
-	}else if(isset($_SESSION['problem_id'])) {
-		$problem_id = htmlentities($_SESSION['problem_id']);
-	} else {
-		$_SESSION['error'] = 'problem_id is not being read into the diplay error 30';
-		header("Location: QRhomework.php");
-		return;
-} 
+	if(isset($_GET['problem_id'])) {
+			$problem_id = htmlentities($_GET['problem_id']);
+		}else if(isset($_SESSION['problem_id'])) {
+			$problem_id = htmlentities($_SESSION['problem_id']);
+		} else {
+			$_SESSION['error'] = 'problem_id is not being read into the diplay error 30';
+			header("Location: QRhomework.php");
+			return;
+	} 
 
-if(isset($_GET['dex'])) {
-		$dex = htmlentities($_GET['dex']);
-	}else if(isset($_SESSION['dex'])) {
-		$dex = htmlentities($_SESSION['dex']);
-	} else {
-		$_SESSION['error'] = 'dex is not being read into the diplay error 31';
-		header("Location: QRhomework.php");
-		return;
-} 
+	if(isset($_GET['dex'])) {
+			$dex = htmlentities($_GET['dex']);
+		}else if(isset($_SESSION['dex'])) {
+			$dex = htmlentities($_SESSION['dex']);
+		} else {
+			$_SESSION['error'] = 'dex is not being read into the diplay error 31';
+			header("Location: QRhomework.php");
+			return;
+	} 
 
-if(isset($_GET['pin'])) {
-		$pin = htmlentities($_GET['pin']);
-	}else if(isset($_SESSION['pin'])) {
-		$pin = htmlentities($_SESSION['pin']);
-	} else {
-		$_SESSION['error'] = 'pin is not being read into the diplay error 32';
-		header("Location: QRhomework.php");
-		return;
-} 
+	if(isset($_GET['pin'])) {
+			$pin = htmlentities($_GET['pin']);
+		}else if(isset($_SESSION['pin'])) {
+			$pin = htmlentities($_SESSION['pin']);
+		} else {
+			$_SESSION['error'] = 'pin is not being read into the diplay error 32';
+			header("Location: QRhomework.php");
+			return;
+	} 
 
-if(isset($_GET['iid'])) {
-		$iid = htmlentities($_GET['iid']);
-	}else if(isset($_SESSION['iid'])) {
-		$iid = htmlentities($_SESSION['iid']);
-	} else {
-		$_SESSION['error'] = 'iid is not being read into the diplay error 33';
-		header("Location: QRhomework.php");
-		return;
-} 
+	if(isset($_GET['iid'])) {
+			$iid = htmlentities($_GET['iid']);
+		}else if(isset($_SESSION['iid'])) {
+			$iid = htmlentities($_SESSION['iid']);
+		} else {
+			$_SESSION['error'] = 'iid is not being read into the diplay error 33';
+			header("Location: QRhomework.php");
+			return;
+	} 
 
-if(isset($_GET['stu_name'])) {
-		$stu_name = htmlentities($_GET['stu_name']);
-	}else if(isset($_SESSION['stu_name'])) {
-		$stu_name = htmlentities($_SESSION['stu_name']);
-	} else {
-		$_SESSION['error'] = 'stu_name is not being read into the diplay error 34';
-		header("Location: QRhomework.php");
-		return;
-} 
+	if(isset($_GET['stu_name'])) {
+			$stu_name = htmlentities($_GET['stu_name']);
+		}else if(isset($_SESSION['stu_name'])) {
+			$stu_name = htmlentities($_SESSION['stu_name']);
+		} else {
+			$_SESSION['error'] = 'stu_name is not being read into the diplay error 34';
+			header("Location: QRhomework.php");
+			return;
+	} 
 
-
+	}
 // can do the same as above ot the rest of the varaibles but won't unless I have trouble
 
 
@@ -135,8 +152,6 @@ echo '</script>';
  ?>
 <script>
 $(document).ready(function(){
-	
-		
 		var dex = pass['dex'];
 		var problem = pass['problem_id'];
 		var s_name = pass['stu_name'];
@@ -155,7 +170,6 @@ $(document).ready(function(){
 		var time_pp2 = pass['time_pp2'];
 		var time_pp3 = pass['time_pp3'];
 		var time_pp4 = pass['time_pp4'];
-		
 		var statusFlag=true;
 			
 			
@@ -189,8 +203,7 @@ $(document).ready(function(){
 					var contrib_university = arr.university;
 					var static_f = false;
 					
-					console.log(contrib_first);
-					console.log(contrib_last);
+					
 				
 // next just put the substvars. js script in here but have it use the $('#substitute_me').load("uploads/"+openup+".html");  or something similar  THis should replace the stuff up
 // in the html part of this document and then operate on it with the script file form the substvars stuff.  I need to get rid of all of the localstorage stuff from both this script and the one from substvars
@@ -203,36 +216,26 @@ $(document).ready(function(){
 			// now change the source of the images so that they are loaded properly
 			//console.log('wtf');
 				
-					var imgPath = '';
-					var indexQRP = '';
-					var addPath = "uploads/";
+					
 				
 				
 				 $(document).ready(function(){	
+					
+					var imgPath = '';
+					var indexQRP = '';
+					var addPath = "uploads/";
+					
+					
 					$('img').each(function(){
+						
 						imgPath = $(this).prop('src');
-						indexQRP = imgPath.indexOf('qrp')+4;
+						indexQRP = imgPath.indexOf('QRP')+4;
 						imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
-						// console.log(imgPath);
 						$(this).prop('src', imgPath);
-						
-						
-						// console.log(addPath);
-						// console.log(indexQRP);
-						//imgName = str.replace()"QRP/uploads/"+imgName;
-
-						// console.log (imgPath);
+					
 					});
 				}); 
-				/* $('img').each(function(){
-			 
-					// $(this)attr('src',$('.MsoNormal').attr('src').replace()
-					imgName = $(this).attr('src');
-					console.log (imgName);
-					imgName = "QRP/uploads/"+imgName;
-					$(this).attr('src',imgName);
-			//alert($(this).attr('src'));
-					}); */
+				
 				
 				// have to put uploads/ in front of file 
 
@@ -280,17 +283,17 @@ $(document).ready(function(){
 							
 							
 							sessionStorage.setItem('title',arr.title);
-							sessionStorage.setItem('stu_name',s_name);
+							/* sessionStorage.setItem('stu_name',s_name);
 							sessionStorage.setItem('problem_id',problem);
 							sessionStorage.setItem('dex',dex);
 							sessionStorage.setItem('pin',pin);
+							sessionStorage.setItem('iid',iid); */
 							sessionStorage.setItem('reflect_flag',reflect_flag);
 							sessionStorage.setItem('explore_flag',explore_flag);
 							sessionStorage.setItem('connect_flag',connect_flag);
 							sessionStorage.setItem('society_flag',society_flag);
 							sessionStorage.setItem('choice',choice);
 							sessionStorage.setItem('static_flag',static_f);
-							sessionStorage.setItem('iid',iid);
 							sessionStorage.setItem('pp1',pp1);
 							sessionStorage.setItem('pp2',pp2);
 							sessionStorage.setItem('pp3',pp3);

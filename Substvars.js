@@ -957,7 +957,7 @@ $(document).ready(function(){
 					// e.preventDefault();
 					 console.log("hello1");
 					//alert('do something');
-					window.location.replace('../QRhomework.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid+'&stu_name='+stu_name_back);
+					window.location.replace('../QRP/QRhomework.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid+'&stu_name='+stu_name_back);
 					
 				 });
 			

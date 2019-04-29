@@ -150,24 +150,7 @@ if (!isset($_POST['progress'])&& !isset($_SESSION['progress'])) {
 						);
 						return;
 
- /* 'dex' => $_SESSION['dex'],
-    'problem_id' => $_SESSION['problem_id'],
-    'stu_name' => $_SESSION['stu_name'],
-	'pin' => $_SESSION['pin'],
-	'reflect_flag' => $_SESSION['reflect_flag'],
-	'explore_flag' => $_SESSION['explore_flag'],  // these are set in 
-	'connect_flag' => $_SESSION['connect_flag'],
-	'society_flag' => $_SESSION['society_flag'],
-	'choice' => $_SESSION['choice'],
-	'iid' => $_SESSION['iid'],
-	'pp1' => $_SESSION['pp1'],
-	'pp2' => $_SESSION['pp2'],
-	'pp3' => $_SESSION['pp3'],
-	'pp4' => $_SESSION['pp4'],
-	'time_pp1' => $_SESSION['time_pp1'],
-	'time_pp2' => $_SESSION['time_pp2'],
-	'time_pp3' => $_SESSION['time_pp3'],
-	'time_pp4' => $_SESSION['time_pp4'], */
+ 
 
 
 

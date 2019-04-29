@@ -1,6 +1,10 @@
 <?php
 	require_once "pdo.php";
 	session_start();
+	
+	 clearstatcache();
+	
+	
 	$_SESSION['progress']=0;
 	$_SESSION['checker']=0;  // tells where the getiid where to come back to here or the checker
 	$stu_name = '';
@@ -9,7 +13,7 @@
 	$pin='';
 	$iid='';
 	$instr_last='';
-
+ 
 	// first time thru set scriptflag to zero - this will turn to 1 if the script ran
 	if (!isset($sc_flag)){$sc_flag=0;}
 			
@@ -148,6 +152,7 @@
 </header>
 
 <?php
+
 	if(isset($_POST['pin']) || isset($_POST['problem_id']) || isset($_POST['iid'])){
 		if ( isset($_SESSION['error']) ) {
 			echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
