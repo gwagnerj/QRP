@@ -3,27 +3,15 @@ require_once "pdo.php";
 session_start();
 
 
-if(isset($_POST['progress'])) {
-	echo 'poost progress is set';
-	echo $_POST['progress'];
-	echo $_POST['stu_name'];
-	die();
-} else {
-	echo 'poost progress is NOT set';
-	die();
-}
 
 
-
-
-
-if(isset($_SESSION['stu_name'])) {
-	$stu_name = $_SESSION['stu_name'];
+if(isset($_POST['stu_name'])) {
+	$stu_name = $_POST['stu_name'];
 } else {
 	$stu_name = '';
 }
 
-if (!isset($_SESSION['progress'])) {
+if (!isset($_POST['progress'])&& !isset($_SESSION['progress'])) {
 	
 	$_SESSION['error'] = 'error occured in controller - progress not set';
 	header("Location: QRhomework.php");
@@ -43,8 +31,8 @@ if (!isset($_SESSION['progress'])) {
 		$sql = "SELECT * FROM Assign WHERE iid=:iid AND prob_num=:prob_num" ;
 		$stmt = $pdo->prepare($sql);
 		$stmt -> execute(array(
-		':iid'=>$_SESSION['iid'],
-		':prob_num' => abs($_SESSION['problem_id'])
+		':iid'=>$_POST['iid'],
+		':prob_num' => abs($_POST['problem_id'])
 		));
 		$assn_row =$stmt ->fetch();
 		if ( $assn_row === false ) {
@@ -64,9 +52,9 @@ if (!isset($_SESSION['progress'])) {
 			$sql = "SELECT * FROM Activity WHERE iid=:iid AND problem_id=:problem_id AND pin =:pin" ;
 			$stmt = $pdo->prepare($sql);
 			$stmt -> execute(array(
-			':iid'=>$_SESSION['iid'],
-			':problem_id' =>abs($_SESSION['problem_id']),
-			':pin' =>$_SESSION['pin']
+			':iid'=>$_POST['iid'],
+			':problem_id' =>abs($_POST['problem_id']),
+			':pin' =>$_POST['pin']
 			));
 			$activity_row =$stmt ->fetch();
 			if ( $activity_row === false ) {
@@ -77,9 +65,9 @@ if (!isset($_SESSION['progress'])) {
 				$stmt = $pdo->prepare($sql);
 				$stmt -> execute(array(
 				':problem_id' => $assn_row['prob_num'],
-				':pin' => $_SESSION['pin'],
+				':pin' => $_POST['pin'],
 				':iid' => $assn_row['iid'],
-				':dex' => $_SESSION['dex'],
+				':dex' => $_POST['dex'],
 				':assign_id' => $assn_row['assign_id'],
 				':instr_last' => $assn_row['instr_last'],
 				':university' => $assn_row['university'],
@@ -97,13 +85,13 @@ if (!isset($_SESSION['progress'])) {
 				));
 			
 			$sql = "SELECT * FROM Activity WHERE iid=:iid AND problem_id=:problem_id AND pin =:pin" ;
-			$stmt = $pdo->prepare($sql);
-			$stmt -> execute(array(
-			':iid'=>$_SESSION['iid'],
-			':problem_id' =>abs($_SESSION['problem_id']),
-			':pin' =>$_SESSION['pin']
-			));
-			$activity_row =$stmt ->fetch();		
+				$stmt = $pdo->prepare($sql);
+				$stmt -> execute(array(
+				':iid'=>$_POST['iid'],
+				':problem_id' =>abs($_POST['problem_id']),
+				':pin' =>$_POST['pin']
+				));
+				$activity_row =$stmt ->fetch();		
 			
 			
 			}  
@@ -133,14 +121,64 @@ if (!isset($_SESSION['progress'])) {
 				
 				
 				
-				if (($pp1 != 1 && $pp2 !=1 && $pp3 !=1 && $pp4 != 1) || $_SESSION['problem_id']<0 || $_SESSION['pin'] == 0 ){
+				if (($pp1 != 1 && $pp2 !=1 && $pp3 !=1 && $pp4 != 1) || $_POST['problem_id']<0 || $_POST['pin'] == 0 ){
 					
 					// show them the actual numbered problem
-						$_SESSION['problem_id'] = abs($_SESSION['problem_id']);
+						$_SESSION['problem_id'] = abs($_POST['problem_id']);
+						$problem_id = abs($_POST['problem_id']);
 				
-					
-						header("Location: QRdisplayPblm.php");
+					// echo('<a href="QRhomework.php?problem_id='.$problem_id.'&pin='.$pin.'&iid='.$iid.'&stu_name='.$stu_name.'"><b> Return to Main Screen</b></a>');
+						
+						header("Location: QRdisplayPblm.php?problem_id=".$problem_id
+						."&pin=".$_POST['pin']
+						."&dex=".$_POST['dex']
+						."&stu_name=".$stu_name
+						."&iid=".$iid
+						."&reflect_flag=".$assn_row['reflect_flag']
+						."&explore_flag=".$assn_row['explore_flag']
+						."&connect_flag=".$assn_row['connect_flag']
+						."&society_flag=".$assn_row['society_flag']
+						."&choice=".$assn_row['ref_choice']
+						."&pp1=".$pp1
+						."&pp2=".$pp2
+						."&pp3=".$pp3
+						."&pp4=".$pp4
+						."&time_pp1=".$activity_row['time_pp1']
+						."&time_pp2=".$activity_row['time_pp2']
+						."&time_pp3=".$activity_row['time_pp3']
+						."&time_pp4=".$activity_row['time_pp4']
+						);
 						return;
+
+ /* 'dex' => $_SESSION['dex'],
+    'problem_id' => $_SESSION['problem_id'],
+    'stu_name' => $_SESSION['stu_name'],
+	'pin' => $_SESSION['pin'],
+	'reflect_flag' => $_SESSION['reflect_flag'],
+	'explore_flag' => $_SESSION['explore_flag'],  // these are set in 
+	'connect_flag' => $_SESSION['connect_flag'],
+	'society_flag' => $_SESSION['society_flag'],
+	'choice' => $_SESSION['choice'],
+	'iid' => $_SESSION['iid'],
+	'pp1' => $_SESSION['pp1'],
+	'pp2' => $_SESSION['pp2'],
+	'pp3' => $_SESSION['pp3'],
+	'pp4' => $_SESSION['pp4'],
+	'time_pp1' => $_SESSION['time_pp1'],
+	'time_pp2' => $_SESSION['time_pp2'],
+	'time_pp3' => $_SESSION['time_pp3'],
+	'time_pp4' => $_SESSION['time_pp4'], */
+
+
+
+
+
+
+
+
+
+
+
 					
 					
 				}

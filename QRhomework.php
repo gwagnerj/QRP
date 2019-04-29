@@ -14,7 +14,7 @@
 	if (!isset($sc_flag)){$sc_flag=0;}
 			
 
-	// if Get is set then it is coming from a back button of a problem
+	// if Get is set then it is coming from rtncode.php and may wnat another problem
 	
 	if(isset($_GET['stu_name'])){
 		
@@ -23,58 +23,47 @@
 	
 	
 	if(isset($_GET['problem_id'])){
-		
 		$problem_id = htmlentities($_GET['problem_id']);
-	} 
+	}
+	
 	if(isset($_GET['pin'])){
 		$pin = htmlentities($_GET['pin']);
 	}
+	
 	if(isset($_GET['iid'])){
 		$iid = htmlentities($_GET['iid']);
 	}
 	
 	
 	if(isset($_POST['stu_name'])){
-		
-		
 		$stu_name = htmlentities($_POST['stu_name']);
 		$_SESSION['stu_name']=$stu_name;
-		
 	} 
-
-	
 
 	if(isset($_POST['problem_id'])){
 		
 		$problem_id = htmlentities($_POST['problem_id']);
 			$_SESSION['problem_id']=$problem_id;
-			
 	} else {
 		$_SESSION['error']='The Problem Number is Required';
-		
 	}
 
 	if(isset($_POST['pin'])){
-		
 		$pin = htmlentities($_POST['pin']);
 		if ($pin>10000 or $pin<0){
 				$_SESSION['error']='Your PIN should be between 1 and 10000.';	
 			} else {
 				$_SESSION['pin']=$pin;
-				
 				$dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
 				$_SESSION['dex'] = $dex;
-				
-				
 			}
-		
 	} else {
 		$_SESSION['error']='Your PIN is Required';
-	
 	}
 
 	if(isset($_POST['iid'])){
 		$iid = htmlentities($_POST['iid']);
+		
 		$_SESSION['iid']=$iid;
 		
 				$sql = " SELECT 'user_id' FROM Users WHERE users_id = $iid" ;
@@ -85,6 +74,7 @@
 						if($stmt2->rowCount()){
 							// put this in so that if a negative problem_id is put in we go right  to the problem
 								$pos_problem_id = abs($problem_id);
+								// check to see that we have an active assignment for that problem by that instructor
 								$sql3 = "SELECT * FROM Assign WHERE iid=$iid AND prob_num=$pos_problem_id" ;
 								$stmt3 = $pdo->query($sql3);
 								if($stmt3->rowCount()){
@@ -93,8 +83,6 @@
 								
 									$_POST['progress']=0;
 									$_POST['checker']=0; 
-								
-								
 								
 								
 									// We are going transfer the variables that we have so far - iid, pin, problem_id, to js and that script will put these in local session varaibles for the subsequent
@@ -210,25 +198,20 @@
 					}
 				});
 		
-		
-		
-		
-		
-		
-		
 		var dex = pass['dex'];
 		var problem = pass['problem_id'];
 		var s_name = pass['stu_name'];
 		var pin = pass['pin'];
 		var iid = pass['iid'];
 	
-
 		sessionStorage.setItem('dex',dex);
 		sessionStorage.setItem('problem_id',problem);
 		sessionStorage.setItem('stu_name',s_name);
 		sessionStorage.setItem('pin',pin);
 		sessionStorage.setItem('iid',iid);
 		
+		
+	// this was the start of me doing the whole thing in JS and JQ - did it the other way - we will see	
 		/*  $("form").submit(function(e){
 			e.preventDefault();
 		}); */
@@ -238,7 +221,7 @@
 	
 	
 	var file = "QRcontroller.php";
-	$.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid });
+	 $.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid });
 	
 	
 		

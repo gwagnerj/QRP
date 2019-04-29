@@ -2,12 +2,68 @@
 require_once "pdo.php";
 session_start();
 
+//  Set the varaibles to the Get Parameters or if they do not exist try the session variables if those don't exist error back to QRhomework
+
+
+if(isset($_GET['problem_id'])) {
+		$problem_id = htmlentities($_GET['problem_id']);
+	}else if(isset($_SESSION['problem_id'])) {
+		$problem_id = htmlentities($_SESSION['problem_id']);
+	} else {
+		$_SESSION['error'] = 'problem_id is not being read into the diplay error 30';
+		header("Location: QRhomework.php");
+		return;
+} 
+
+if(isset($_GET['dex'])) {
+		$dex = htmlentities($_GET['dex']);
+	}else if(isset($_SESSION['dex'])) {
+		$dex = htmlentities($_SESSION['dex']);
+	} else {
+		$_SESSION['error'] = 'dex is not being read into the diplay error 31';
+		header("Location: QRhomework.php");
+		return;
+} 
+
+if(isset($_GET['pin'])) {
+		$pin = htmlentities($_GET['pin']);
+	}else if(isset($_SESSION['pin'])) {
+		$pin = htmlentities($_SESSION['pin']);
+	} else {
+		$_SESSION['error'] = 'pin is not being read into the diplay error 32';
+		header("Location: QRhomework.php");
+		return;
+} 
+
+if(isset($_GET['iid'])) {
+		$iid = htmlentities($_GET['iid']);
+	}else if(isset($_SESSION['iid'])) {
+		$iid = htmlentities($_SESSION['iid']);
+	} else {
+		$_SESSION['error'] = 'iid is not being read into the diplay error 33';
+		header("Location: QRhomework.php");
+		return;
+} 
+
+if(isset($_GET['stu_name'])) {
+		$stu_name = htmlentities($_GET['stu_name']);
+	}else if(isset($_SESSION['stu_name'])) {
+		$stu_name = htmlentities($_SESSION['stu_name']);
+	} else {
+		$_SESSION['error'] = 'stu_name is not being read into the diplay error 34';
+		header("Location: QRhomework.php");
+		return;
+} 
+
+
+// can do the same as above ot the rest of the varaibles but won't unless I have trouble
+
 
 
 
  $sql = "SELECT `htmlfilenm` FROM Problem WHERE problem_id = :problem_id";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(':problem_id' => $_SESSION['problem_id']));
+    $stmt->execute(array(':problem_id' => $problem_id));
 	$data = $stmt -> fetch();
 	// need to put some error checking here
 		$rows=$data;
@@ -15,38 +71,31 @@ session_start();
 
 $htmlfilenm = "uploads/".$rows['htmlfilenm'];
 
-//echo($htmlfilenm);
 
-/* $text = "This is the Euro symbol '€'.";
-
-echo 'Original : ', $text, PHP_EOL;
-echo 'TRANSLIT : ', iconv("Windows-1252", "UTF-8", include( $htmlfilenm)), PHP_EOL; */
-
-
-// $htmlfile = iconv("Windows-1252", "UTF-8", $htmlfilenm);
 
 // passing my php varables into the js varaibles needed for the script below
 $pass = array(
-    'dex' => $_SESSION['dex'],
-    'problem_id' => $_SESSION['problem_id'],
-    'stu_name' => $_SESSION['stu_name'],
-	'pin' => $_SESSION['pin'],
-	'reflect_flag' => $_SESSION['reflect_flag'],
-	'explore_flag' => $_SESSION['explore_flag'],
-	'connect_flag' => $_SESSION['connect_flag'],
-	'society_flag' => $_SESSION['society_flag'],
-	'choice' => $_SESSION['choice'],
-	'iid' => $_SESSION['iid'],
-	'pp1' => $_SESSION['pp1'],
-	'pp2' => $_SESSION['pp2'],
-	'pp3' => $_SESSION['pp3'],
-	'pp4' => $_SESSION['pp4'],
-	'time_pp1' => $_SESSION['time_pp1'],
-	'time_pp2' => $_SESSION['time_pp2'],
-	'time_pp3' => $_SESSION['time_pp3'],
-	'time_pp4' => $_SESSION['time_pp4'],
+    'dex' => $dex,
+    'problem_id' => $problem_id,
+    'stu_name' => $stu_name,
+	'pin' => $pin,
+	'iid' => $iid,
+	'reflect_flag' => $_GET['reflect_flag'],
+	'explore_flag' => $_GET['explore_flag'],  // these are set in 
+	'connect_flag' => $_GET['connect_flag'],
+	'society_flag' => $_GET['society_flag'],
+	'choice' => $_GET['choice'],
 	
+	'pp1' => $_GET['pp1'],
+	'pp2' => $_GET['pp2'],
+	'pp3' => $_GET['pp3'],
+	'pp4' => $_GET['pp4'],
+	'time_pp1' => $_GET['time_pp1'],
+	'time_pp2' => $_GET['time_pp2'],
+	'time_pp3' => $_GET['time_pp3'],
+	'time_pp4' => $_GET['time_pp4'],
 );
+
 // echo ($pass['society_flag']);
 //die();
 echo '<script>';
@@ -80,7 +129,7 @@ echo '</script>';
 
 <body>
 <div id = substitute_me>  </div>
-<?php  //iconv("Windows-1252", "UTF-8", include($htmlfile)); 
+<?php  //iconv("Windows-1252", "UTF-8", include($htmlfilenm)); 
 			include($htmlfilenm);
 
  ?>
@@ -94,7 +143,6 @@ $(document).ready(function(){
 		var pin = pass['pin'];
 		var iid = pass['iid'];
 		var reflect_flag = pass['reflect_flag'];
-		
 		var explore_flag = pass['explore_flag'];
 		var connect_flag = pass['connect_flag'];
 		var society_flag = pass['society_flag'];
@@ -109,7 +157,8 @@ $(document).ready(function(){
 		var time_pp4 = pass['time_pp4'];
 		
 		var statusFlag=true;
-			//alert ('here I am');
+			
+			
 		if($.trim(problem) != '' && problem > 0 && problem < 100000 && dex>=1 && dex<=200){
 	// alert(1);
 	
@@ -131,6 +180,7 @@ $(document).ready(function(){
 					// openup = "'"+openup+"'";
 					
 					// alert(openup);
+					//console.log (arr);
 					var game = arr.game_prob_flag;
 					var status = arr.status;
 					var prob_num = arr.problem_id;
@@ -138,6 +188,9 @@ $(document).ready(function(){
 					var contrib_last = arr.last;
 					var contrib_university = arr.university;
 					var static_f = false;
+					
+					console.log(contrib_first);
+					console.log(contrib_last);
 				
 // next just put the substvars. js script in here but have it use the $('#substitute_me').load("uploads/"+openup+".html");  or something similar  THis should replace the stuff up
 // in the html part of this document and then operate on it with the script file form the substvars stuff.  I need to get rid of all of the localstorage stuff from both this script and the one from substvars
@@ -189,7 +242,10 @@ $(document).ready(function(){
 					sessionStorage.setItem('nm_author',arr.nm_author);
 					sessionStorage.setItem('specif_ref',arr.specif_ref);
 					
-				//	console.log(contrib_first);
+					console.log(contrib_last);
+					var contrib_last2 = sessionStorage.getItem('contrib_last');
+					console.log('contrib_last 2',contrib_last2);
+					
 				//	console.log('arr', arr);
 					if (status !== 'suspended'){
 						if (game==0){
@@ -336,11 +392,11 @@ $(document).ready(function(){
 			// load the external javascript file to make the magic happen
 				var script = document.createElement('script');
 					script.onload = function () {
-						//do stuff with the script
 					};
+					
 					script.src = "Substvars.js";
-
 					document.head.appendChild(script);
+				
 				// window.location.href="uploads/"+openup;
 						} else {
 				

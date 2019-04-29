@@ -1,9 +1,8 @@
 
-// localStorage.clear();
-//	localStorage.setItem('MC_flag','false');  // initialize multiple choice flag to false
 
-var problem_id = localStorage.getItem('problem_id');
-var stu_name = localStorage.getItem('stu_name');
+
+var problem_id = sessionStorage.getItem('problem_id');
+var stu_name = sessionStorage.getItem('stu_name');
 
 if (stu_name == null) { stu_name = ""};
 var name_length = stu_name.length;
@@ -41,10 +40,15 @@ var title = sessionStorage.getItem('title');
 var static_flag = sessionStorage.getItem('static_flag');
 
 
+var contrib_last = sessionStorage.getItem('contrib_last');
+if (contrib_last == null) {contrib_last = " ";}
+// console.log('last',contrib_last);
+
 var contrib_first = sessionStorage.getItem('contrib_first');
 if (contrib_first == null){contrib_first = " ";}
-var contrib_last = sessionStorage.getItem('contrib_last');
-if (contrib_last = null) {contrib_last = " ";}
+
+//console.log(contrib_first);
+
 var contrib_university = sessionStorage.getItem('contrib_university');
 if (contrib_university == null){contrib_university = " ";}
 var nm_author = sessionStorage.getItem('nm_author');
@@ -233,7 +237,7 @@ $(document).ready(function(){
 	 $('p:first').before(Head_txt1,Head_txt3,'<hr>');
 	 
 	  
-	  $('p:first').before('\xa0\xa0<img border=0 width=50 height=50 id="McKetta_head" src="QRMcKetta.png"><hr>');
+	  $('p:first').before('\xa0\xa0<img border=0 width=50 height=50 id="McKetta_head" src="./uploads/QRMcKetta.png"><hr>');
 
 	//put real tags in the document to manipulate
 	 
