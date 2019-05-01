@@ -174,6 +174,7 @@
 	<font color=#003399 >  &nbsp; &nbsp; &nbsp;  or if you don't know: <a href="getiid.php"><b>Click Here</b></a></font></p>
 <!--	<p><font color=#003399>script_flag: </font><input type="number" name="s_flag" id="script_flag" size=3 value=<?php echo($sc_flag);?> ></p>  -->
 	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" required size=3 value=<?php echo($problem_id);?> ></p>
+		<p><font color=#003399>Assignment Number: </font><input type="number" name="assign_num" id="assign_num"  size=3 value=<?php // echo($Assign_num);?> ></p>
 	<p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	</form>
 
