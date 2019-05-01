@@ -24,7 +24,7 @@ if ( ! isset($_GET['iid']) ) {
   return;
 } else {
 	$_SESSION['iid']=$_GET['iid'];
-	
+	$iid = $_GET['iid'];
 }
  
 if ($_GET['problem_id']<1 or $_GET['problem_id']>1000000)  {
@@ -46,6 +46,7 @@ if ($_GET['pin']<0 or $_GET['pin']>10000)  {
 
 if ( isset($_GET['problem_id']) and  isset($_GET['pin'])) {
 	$_SESSION['problem_id'] = $_GET['problem_id'];
+	$problem_id =  $_GET['problem_id'];
 
 	$_SESSION['index'] = $dex;
 	$_SESSION['pin']=$_GET['pin'];
@@ -325,7 +326,7 @@ if (strlen($probData['hint_d'])>1){
 		} else  {
 		
 			$changed_c = true;
-			$_SESSION[respon_c]= $resp['c'];
+			$_SESSION['respon_c']= $resp['c'];
 		}
 		
 		if ($_SESSION['respon_d']== $resp['d']){
@@ -684,7 +685,12 @@ if ($partsFlag[9]){ ?>
  <hr>
 <p><b><font Color="red">When Finished:</font></b></p>
   <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
-  <?php $_SESSION['score'] = $PScore; $_SESSION['index'] = $index; $_SESSION['count'] = $count; ?>
+  <?php $_SESSION['score'] = $PScore; $_SESSION['index'] = $index; $_SESSION['count'] = $count;?>
+  <input type = "number" hidden name = "score"  value = <?php echo ($PScore); ?> > </input>
+  <input type = "number" hidden name = "problem_id"  value = <?php echo ($problem_id); ?> > </input>
+  <input type = "number" hidden name = "dex"  value = <?php echo ($dex); ?> > </input>
+   <input type = "number" hidden name = "iid"  value = <?php echo ($iid); ?> > </input>
+    <input type = "number" hidden name = "pin"  value = <?php echo ($pin); ?> > </input>
  <b><input type="submit" value="Rate & Get rtn Code" style = "width: 30%; background-color:yellow "></b>
  <p><br> </p>
  <hr>

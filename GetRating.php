@@ -2,9 +2,26 @@
  session_start();
   Require_once "pdo.php";
  
- $score = $_SESSION['score'];
+ $score = $_POST['score'];
+ $problem_id = $_POST['problem_id'];
+ $dex = $_POST['dex'];
+ $iid = $_POST['iid'];
+ $pin = $_POST['pin'];
+ 
+ // probably should put error checking here
+ 
 //$score = 0;
-// echo($score);
+ 
+ 
+ /* echo (' score is');
+ echo($score);
+ echo (' problem_id is');
+ echo($problem_id);
+ echo (' dex');
+ echo($dex);
+ echo (' iid is');
+ echo($iid);
+ die(); */
  
  if($_SESSION['pin']==0) {
 	 
@@ -37,7 +54,7 @@
 						
 							 $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
 							$stmt = $pdo->prepare($sql);
-							$stmt->execute(array(':problem_id' => $_SESSION['problem_id']));
+							$stmt->execute(array(':problem_id' => $problem_id));
 							$data = $stmt -> fetch();	
 								
 							$nm_diff = 'diff_stu_'.$_POST['difficulty'];
@@ -60,37 +77,37 @@
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':nmdiff' => $val_diff,
-									':pblm_num' => $_SESSION['problem_id']));
+									':pblm_num' => $problem_id));
 									
 							$sql = "UPDATE Problem SET $nm_eff = :nmeff WHERE problem_id = :pblm_num";
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':nmeff' => $val_eff,
-									':pblm_num' => $_SESSION['problem_id']));		
+									':pblm_num' => $problem_id));		
 									
 							$sql = "UPDATE Problem SET $nm_t_take1 = :holder WHERE problem_id = :pblm_num";
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':holder' => $val_t_take1,
-									':pblm_num' => $_SESSION['problem_id']));	
+									':pblm_num' => $problem_id));	
 
 							$sql = "UPDATE Problem SET $nm_t_take2 = :holder WHERE problem_id = :pblm_num";
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':holder' => $val_t_take2,
-									':pblm_num' => $_SESSION['problem_id']));	
+									':pblm_num' => $problem_id));	
 
 							$sql = "UPDATE Problem SET $nm_t_b4due = :holder WHERE problem_id = :pblm_num";
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':holder' => $val_t_b4due,
-									':pblm_num' => $_SESSION['problem_id']));	
+									':pblm_num' => $problem_id));	
 
 							$sql = "UPDATE Problem SET $nm_confidence = :holder WHERE problem_id = :pblm_num";
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':holder' => $val_confidence,
-									':pblm_num' => $_SESSION['problem_id']));	
+									':pblm_num' => $problem_id));	
 								
 			} else {
 				
@@ -107,7 +124,7 @@
 				
 					 $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
 							$stmt = $pdo->prepare($sql);
-							$stmt->execute(array(':problem_id' => $_SESSION['problem_id']));
+							$stmt->execute(array(':problem_id' => $problem_id));
 							$data = $stmt -> fetch();	
 								
 							
@@ -128,31 +145,31 @@
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':holder' => $val_t_take1_np,
-									':pblm_num' => $_SESSION['problem_id']));	
+									':pblm_num' => $problem_id));	
 
 							$sql = "UPDATE Problem SET $not_perfect = :holder WHERE problem_id = :pblm_num";
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':holder' => $not_perfect,
-									':pblm_num' => $_SESSION['problem_id']));	
+									':pblm_num' => $problem_id));	
 
 							$sql = "UPDATE Problem SET $nm_t_b4due_np = :holder WHERE problem_id = :pblm_num";
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':holder' => $val_t_b4due_np,
-									':pblm_num' => $_SESSION['problem_id']));	
+									':pblm_num' => $problem_id));	
 
 							$sql = "UPDATE Problem SET $nm_confidence_np = :holder WHERE problem_id = :pblm_num";
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':holder' => $val_confidence_np,
-									':pblm_num' => $_SESSION['problem_id']));	
+									':pblm_num' => $problem_id));	
 			}
 				
 
 // add the problem comments if they have been added
 
-			$prefix = '   name - '.$_SESSION['stu_name'].' PIN - '.$_SESSION['index'].' score - '.$score.' Comment--';
+			$prefix = '   name - '.$_SESSION['stu_name'].' PIN - '.$dex.' score - '.$score.' Comment--';
 
 			if (isset($_POST['prob_comments']) )
 			{
@@ -165,7 +182,7 @@
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':holder' => $prob_comments,
-									':pblm_num' => $_SESSION['problem_id']));	
+									':pblm_num' => $problem_id));	
 			}
 			if (isset($_POST['sug_hints']) )
 			{
@@ -178,10 +195,10 @@
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':holder' => $sug_hints,
-									':pblm_num' => $_SESSION['problem_id']));	
+									':pblm_num' => $problem_id));	
 			}
 
-			if (isset($_POST['qr_comments']) )
+			/* if (isset($_POST['qr_comments']) )
 			{
 				
 				$qr_comments =$prefix. htmlentities($_POST['qr_comments']).$data['qr_comments'];
@@ -192,20 +209,20 @@
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(
 									':holder' => $qr_comments,
-									':pblm_num' => $_SESSION['problem_id']));	
-			}
+									':pblm_num' => $problem_id));	
+			} */
 
 	// Put the score in the activity table 
 	
-	if(isset($_SESSION['problem_id']) && isset($_SESSION['iid']) && isset($_SESSION['pin'])){
+	if(isset($_POST['problem_id']) && isset($_POST['iid']) && isset($_POST['pin'])){
 		
 		$sql = "UPDATE Activity SET score = :score WHERE problem_id = :problem_id AND iid = :iid AND pin = :pin";
 		$stmt = $pdo->prepare($sql);
 		$stmt->execute(array(
-			':score' => $_SESSION['score'],
-			':problem_id' => $_SESSION['problem_id'],
-			':iid' => $_SESSION['iid'],
-			':pin' => $_SESSION['pin']
+			':score' => $score,
+			':problem_id' => $problem_id,
+			':iid' => $iid,
+			':pin' => $pin
 			));
 	}
 	
@@ -405,34 +422,34 @@ If I had to do it all over again I would have:  <br>
 	&nbsp &nbsp <input type="checkbox" name="too_long" value = 6 id = "six" size= 20  >&nbsp &nbsp  solved a simpler problem before attempting this one <br>
 	&nbsp &nbsp <input type="checkbox" name="too_long" value = 7 id = "seven" size= 20  >&nbsp &nbsp  nothing. I did everything I could <br>
 </div>
-	
+ <hr>
+	<p><b><font Color="red">When Finished:</font></b></p>
+	  <b><input type="submit" value="Get rtn Code" style = "width: 30%; background-color:yellow "></b>
+	 <p><br> </p>
+ <hr>	
 	
 	<div id = "p_comments_div"> 
 	<br>
-	Comments or suggestions for this problem:  <br>
-		&nbsp &nbsp <textarea name="prob_comments" id = "one" cols = "100" rows = "2" placeholder = "optional" maxlength = "2000" ></textarea>
+	Comments or suggestions for this problem (optional):  <br>
+		&nbsp &nbsp <textarea name="prob_comments" id = "one" cols = "100" rows = "2"  maxlength = "2000" ></textarea>
 	</div>		
 	
 	
 	<div id = "hints_div"> 
 	<br>
-	Suggestions for hint topics related to this problem:  <br>
-		&nbsp &nbsp <textarea name="sug_hints" id = "one" cols = "100" rows = "2" placeholder = "optional" maxlength = "2000" ></textarea>
+	Suggestions for hint topics related to this problem (optional):  <br>
+		&nbsp &nbsp <textarea name="sug_hints" id = "one" cols = "100" rows = "2"  maxlength = "2000" ></textarea>
 	</div>	
 
 	
- <hr>
-<p><b><font Color="red">When Finished:</font></b></p>
-  <b><input type="submit" value="Get rtn Code" style = "width: 30%; background-color:yellow "></b>
- <p><br> </p>
- <hr>
+
  
- <div id = "qr_comments_div"> 
+ <!--<div id = "qr_comments_div"> 
  <br>
 	Comments or suggestions for the QRhomework system:  <br>
 		&nbsp &nbsp <textarea name="qr_comments" id = "one" cols = "100" rows = "2" placeholder = "optional" maxlength = "2000" ></textarea>
 	</div>		
- 
+ -->
 </form>
 <script>
 
