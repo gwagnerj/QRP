@@ -149,35 +149,13 @@ if ( isset($_SESSION['success']) ) {
 			
 				
 
-		$(document).ready(function(){	
-					
-					var imgPath = '';
-					var indexQRP = '';
-					var addPath = "uploads/";
-					
-					
-						$('img').each(function(){
-							
-							imgPath = $(this).prop('src');
-								console.log('imagepath before',imgPath);
-							//	alert (imgPath);
-								//referrer.toLowerCase().indexOf
-							indexQRP = imgPath.toLowerCase().indexOf('qrp')+4;
-							console.log('indexofQRP',indexQRP);
-							imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
-							console.log('imagepath',imgPath);
-							
-							$(this).prop('src', imgPath);
-						
-						});
-			
-			});
+		
 				
 				
 			
 			//	console.log('arr', arr);
 				if (status !== 'suspended'){
-				
+						sessionStorage.setItem('MC_flag','false');
 						sessionStorage.setItem('nv_1',arr.nv_1);
 						sessionStorage.setItem(arr.nv_1,arr.v_1);
 						sessionStorage.setItem('nv_2',arr.nv_2);
@@ -257,7 +235,7 @@ if ( isset($_SESSION['success']) ) {
 			
 		//	Set up the basecase values into the local variables
 			if (statusFlag){
-				if (game==0){
+				
 					
 					var x = "bc_"+arr2.nv_1;
 					sessionStorage.setItem(x,arr2.v_1);
@@ -299,22 +277,59 @@ if ( isset($_SESSION['success']) ) {
 			
 		// alert (statusFlag);
 
-	
+	// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 		
+				
+				function loadScript( url, callback ) {
+					  var script = document.createElement( "script" )
+					  script.type = "text/javascript";
+					  if(script.readyState) {  // only required for IE <9
+						script.onreadystatechange = function() {
+						  if ( script.readyState === "loaded" || script.readyState === "complete" ) {
+							script.onreadystatechange = null;
+							callback();
+						  }
+						};
+					  } else {  //Others
+						script.onload = function() {
+						  callback();
+						};
+					  }
 
-				var script = document.createElement('script');
-					script.onload = function () {
-					};
+					  script.src = "Substvars.js";
+					  document.getElementsByTagName( "head" )[0].appendChild( script );
+					}
+
+
+					// call the function...
+					loadScript("Substvars.js", function() {
+					//  alert('script ready!'); 
+					  	var imgPath = '';
+						var indexQRP = '';
+						var addPath = "uploads/";
+					//	alert(addPath);
+								$('img').each(function(){
+									
+									imgPath = $(this).prop('src');
+										console.log('imagepath before',imgPath);
+								//		alert (imgPath);
+										//referrer.toLowerCase().indexOf
+									indexQRP = imgPath.toLowerCase().indexOf('qrp')+4;
+									console.log('indexofQRP',indexQRP);
+									imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
+									console.log('imagepath',imgPath);
+									
+									$(this).prop('src', imgPath);
+								
+								});
+					});
+
+			
 					
-					script.src = "Substvars.js";
-					document.head.appendChild(script);
-
+			
+			// });
 
 	// window.location.href="uploads/"+openup;
-				} else {
-		
-				alert('not a homework problem');
-					 
-				} 
+				
 				
 			}	else {
 				

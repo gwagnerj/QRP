@@ -529,7 +529,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 				echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
 				echo('<a href="suspendpblm.php?problem_id='.$row['problem_id'].'">Susp-unSus</a> / ');
 			}
-				echo('<a href="numericToMC.php?problem_id='.$row['problem_id'].'">make M/C </a>');
+				echo('<a href="numericToMC.php?problem_id='.$row['problem_id'].'"target = "_blank">make M/C </a>');
 				echo ('</br>');
 				echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$users_id.'">Act-deAct</a>');
 				

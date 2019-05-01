@@ -3,7 +3,7 @@ require_once "pdo.php";
 session_start();
 
 
-// this strips out the get parameters so they are not in the url - its is not really secure data but I would rather not having people messing with them
+// this strips out the get parameters so they are not in the url - its is not really secure data but I would rather not having people monkeying with them
 // if they do not what they are doing
 
  if (!empty($_GET)) {
@@ -379,50 +379,28 @@ $(document).ready(function(){
 				// isnt one and read the status if there is one and put it in the hidden html or get it via Json and AJAX
 				
 			// load the external javascript file to make the magic happen
-			// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 		
+				var script = document.createElement('script');
+					script.onload = function () {
+					};
+					
+					script.src = "Substvars.js";
+					document.head.appendChild(script);
 				
-				function loadScript( url, callback ) {
-					  var script = document.createElement( "script" )
-					  script.type = "text/javascript";
-					  if(script.readyState) {  // only required for IE <9
-						script.onreadystatechange = function() {
-						  if ( script.readyState === "loaded" || script.readyState === "complete" ) {
-							script.onreadystatechange = null;
-							callback();
-						  }
-						};
-					  } else {  //Others
-						script.onload = function() {
-						  callback();
-						};
-					  }
-
-					  script.src = "Substvars.js";
-					  document.getElementsByTagName( "head" )[0].appendChild( script );
-					}
-
-
-					// call the function...
-					loadScript("Substvars.js", function() {
-					//  alert('script ready!'); 
-					  	var imgPath = '';
-						var indexQRP = '';
-						var addPath = "uploads/";
-					//	alert(addPath);
-								$('img').each(function(){
-									
-									imgPath = $(this).prop('src');
-										console.log('imagepath before',imgPath);
-								//		alert (imgPath);
-										//referrer.toLowerCase().indexOf
-									indexQRP = imgPath.toLowerCase().indexOf('qrp')+4;
-									console.log('indexofQRP',indexQRP);
-									imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
-									console.log('imagepath',imgPath);
-									
-									$(this).prop('src', imgPath);
-								
-								});
+				
+					var imgPath = '';
+					var indexQRP = '';
+					var addPath = "uploads/";
+					
+					
+					$('img').each(function(){
+						
+						imgPath = $(this).prop('src');
+					//	alert(imgPath);
+						indexQRP = imgPath.toLowerCase().indexOf('qrp')+4;
+						imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
+					//		alert(imgPath);
+						$(this).prop('src', imgPath);
+					
 					});
 				
 				

@@ -650,7 +650,7 @@ $(document).ready(function(){
 			// replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=dex
 //!!~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			//var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;                             
-			var newHref = '../QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;
+			var newHref = '../QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;
 			// console.log (newHref);
 			var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
 			//var oldHref = $('a').attr('href');
@@ -1029,7 +1029,7 @@ $(document).ready(function(){
 								.insertAfter( '#box7-end' );
 								$('.display3').hide();
 								
-								 $('#box4-end').addClass('nex-text-div4')
+								 $('#box8-end').addClass('nex-text-div4')
 								.html( $('<textarea id= "society_box" placeholder ="Safety & Society" rows="1" cols = "150"/></textarea>').addClass( 'society_class' ) ) 
 								.append( $('<button/>').addClass( 'remove4' ).text( 'Remove' ) )
 								.append( $('<button/>').addClass( 'display4' ).text( 'society' ) )

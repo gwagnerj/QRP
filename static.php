@@ -72,7 +72,7 @@ if ( isset($_SESSION['success']) ) {
 
  
 ?>
-
+<div id = substitute_me> 
 <h3>Print the problem statement with "Ctrl P"</h3>
 <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>
 <form method="POST">
@@ -82,11 +82,11 @@ if ( isset($_SESSION['success']) ) {
 
 	<p><input type = "submit" value="Submit" id="submit_id" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>
-
+</div>
 	
 <script>
 	
-	$(document).ready(function(){
+	// $(document).ready(function(){
 	$('input#submit_id').on('click',function(event){
 		event.preventDefault();
 		var inde = $('input#index_id').val();
@@ -111,6 +111,29 @@ if ( isset($_SESSION['success']) ) {
 			var static_f = true;
 			var openup = arr.htmlfilenm;
 			
+			var static_f = true;
+			
+			
+			// alert(openup);
+			
+						var openup = arr.htmlfilenm;
+						openup = escape(openup);
+						 console.log ('openupfilename',openup);
+						
+						var game = arr.game_prob_flag;
+						var status = arr.status;
+						var prob_num = arr.problem_id;
+						var contrib_first = arr.first;
+						var contrib_last = arr.last;
+						var contrib_university = arr.university;
+					
+								$('#substitute_me').load("uploads/"+openup, 'document').html();
+			
+			
+			
+			
+			
+			
 			// alert(openup);
 			
 			var game = arr.game_prob_flag;
@@ -128,7 +151,7 @@ if ( isset($_SESSION['success']) ) {
 			console.log(contrib_first);
 		//	console.log('arr', arr);
 			if (status !== 'suspended'){
-				if (game==0){
+					sessionStorage.setItem('MC_flag','false');
 					sessionStorage.setItem('nv_1',arr.nv_1);
 					sessionStorage.setItem(arr.nv_1,arr.v_1);
 					sessionStorage.setItem('nv_2',arr.nv_2);
@@ -166,11 +189,8 @@ if ( isset($_SESSION['success']) ) {
 					sessionStorage.setItem('static_flag',static_f);
 			
 			
-			//	window.location.href="uploads/"+openup;
-				} else {
-		
-		alert('not a homework problem');
-				} 
+			
+				
 		 } else {
 			
 				alert('This problem is temporarily suspended, please check back later.');
@@ -251,8 +271,81 @@ if ( isset($_SESSION['success']) ) {
 			// redirect the browser to the problem file
 			
 		// alert (statusFlag);
+			// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 		
+				
+				function loadScript( url, callback ) {
+					  var script = document.createElement( "script" )
+					  script.type = "text/javascript";
+					  if(script.readyState) {  // only required for IE <9
+						script.onreadystatechange = function() {
+						  if ( script.readyState === "loaded" || script.readyState === "complete" ) {
+							script.onreadystatechange = null;
+							callback();
+						  }
+						};
+					  } else {  //Others
+						script.onload = function() {
+						  callback();
+						};
+					  }
 
-		window.location.href="uploads/"+openup;
+					  script.src = "Substvars.js";
+					  document.getElementsByTagName( "head" )[0].appendChild( script );
+					}
+
+
+					// call the function...
+					loadScript("Substvars.js", function() {
+					//  alert('script ready!'); 
+					  	var imgPath = '';
+						var indexQRP = '';
+						var addPath = "uploads/";
+					//	alert(addPath);
+								$('img').each(function(){
+									
+									imgPath = $(this).prop('src');
+										console.log('imagepath before',imgPath);
+								//		alert (imgPath);
+										//referrer.toLowerCase().indexOf
+									indexQRP = imgPath.toLowerCase().indexOf('qrp')+4;
+									console.log('indexofQRP',indexQRP);
+									imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
+									console.log('imagepath',imgPath);
+									
+									$(this).prop('src', imgPath);
+								
+								});
+					});
+					
+					
+					
+					
+					
+					
+					
+					
+					/* var script = document.createElement('script');
+						script.onload = function () {
+					};
+					
+					script.src = "Substvars.js";
+					document.head.appendChild(script); */
+
+				// $(document).ready(function(){
+				// alert (3);
+				
+				// Load the pictures in 
+
+				
+					
+							
+				 //	});
+
+
+
+
+
+		//window.location.href="uploads/"+openup;
 				} else {
 		
 			alert('not a homework problem');
@@ -283,8 +376,10 @@ if ( isset($_SESSION['success']) ) {
 		
 	}
 });
-});
+// });
 </script>
+
+
 
 </body>
 </html>

@@ -5,6 +5,7 @@ session_start();
 //$stu_name = '';
 $problem_id= '';
 $index='';
+$pin='';
 /* 
 Was setting this up to do more php input validation - but have put it off
 $PIN_LLimit = 1;
@@ -72,7 +73,7 @@ if ( isset($_SESSION['success']) ) {
 
  
 ?>
-
+<div id = substitute_me> 
 <h3>Print the problem statement with "Ctrl P"</h3>
 <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>
 <form method="POST">
@@ -82,7 +83,7 @@ if ( isset($_SESSION['success']) ) {
 	<p><font color=#003399>PIN: </font><input type="number" name="pin" id="pin_id" size=3 value=<?php echo($pin);?> ></p>
 	
 	</form>
-
+</div>
 	
 <script>
 	
@@ -113,9 +114,28 @@ if ( isset($_SESSION['success']) ) {
 			
 			
 			var static_f = true;
-			var openup = arr.htmlfilenm;
+			
 			
 			// alert(openup);
+			
+						var openup = arr.htmlfilenm;
+						openup = escape(openup);
+						 console.log ('openupfilename',openup);
+						
+						var game = arr.game_prob_flag;
+						var status = arr.status;
+						var prob_num = arr.problem_id;
+						var contrib_first = arr.first;
+						var contrib_last = arr.last;
+						var contrib_university = arr.university;
+					
+								$('#substitute_me').load("uploads/"+openup, 'document').html();
+			
+			
+			
+			
+			
+			
 			
 			var game = arr.game_prob_flag;
 			var status = arr.status;
@@ -132,7 +152,7 @@ if ( isset($_SESSION['success']) ) {
 			console.log(contrib_first);
 		//	console.log('arr', arr);
 			if (status !== 'suspended'){
-				if (game==0){
+					sessionStorage.setItem('MC_flag','false');
 					sessionStorage.setItem('nv_1',arr.nv_1);
 					sessionStorage.setItem(arr.nv_1,arr.v_1);
 					sessionStorage.setItem('nv_2',arr.nv_2);
@@ -170,11 +190,7 @@ if ( isset($_SESSION['success']) ) {
 					sessionStorage.setItem('static_flag',static_f);
 					sessionStorage.setItem('pin',pin);
 			
-			//	window.location.href="uploads/"+openup;
-				} else {
-		
-		alert('not a homework problem');
-				} 
+			
 		 } else {
 			
 				alert('This problem is temporarily suspended, please check back later.');
@@ -256,7 +272,63 @@ if ( isset($_SESSION['success']) ) {
 			
 		// alert (statusFlag);
 
-		window.location.href="uploads/"+openup;
+		
+		// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 		
+				
+				function loadScript( url, callback ) {
+					  var script = document.createElement( "script" )
+					  script.type = "text/javascript";
+					  if(script.readyState) {  // only required for IE <9
+						script.onreadystatechange = function() {
+						  if ( script.readyState === "loaded" || script.readyState === "complete" ) {
+							script.onreadystatechange = null;
+							callback();
+						  }
+						};
+					  } else {  //Others
+						script.onload = function() {
+						  callback();
+						};
+					  }
+
+					  script.src = "Substvars.js";
+					  document.getElementsByTagName( "head" )[0].appendChild( script );
+					}
+
+
+					// call the function...
+					loadScript("Substvars.js", function() {
+					//  alert('script ready!'); 
+					  	var imgPath = '';
+						var indexQRP = '';
+						var addPath = "uploads/";
+					//	alert(addPath);
+								$('img').each(function(){
+									
+									imgPath = $(this).prop('src');
+										console.log('imagepath before',imgPath);
+								//		alert (imgPath);
+										//referrer.toLowerCase().indexOf
+									indexQRP = imgPath.toLowerCase().indexOf('qrp')+4;
+									console.log('indexofQRP',indexQRP);
+									imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
+									console.log('imagepath',imgPath);
+									
+									$(this).prop('src', imgPath);
+								
+								});
+					});
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//window.location.href="uploads/"+openup;
 				} else {
 		
 			alert('not a homework problem');

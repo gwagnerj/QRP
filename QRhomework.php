@@ -2,9 +2,6 @@
 	require_once "pdo.php";
 	session_start();
 	
-	 clearstatcache();
-	
-	
 	$_SESSION['progress']=0;
 	$_SESSION['checker']=0;  // tells where the getiid where to come back to here or the checker
 	$stu_name = '';
@@ -49,7 +46,7 @@
 		$problem_id = htmlentities($_POST['problem_id']);
 			$_SESSION['problem_id']=$problem_id;
 	} else {
-		$_SESSION['error']='The Problem Number is Required';
+	//	$_SESSION['error']='The Problem Number is Required';
 	}
 
 	if(isset($_POST['pin'])){
@@ -62,7 +59,7 @@
 				$_SESSION['dex'] = $dex;
 			}
 	} else {
-		$_SESSION['error']='Your PIN is Required';
+		//$_SESSION['error']='Your PIN is Required';
 	}
 
 	if(isset($_POST['iid'])){
@@ -127,7 +124,7 @@
 					
 					} else {
 						
-					$_SESSION['error']='The Instructor ID is Required';	
+					// $_SESSION['error']='The Instructor ID is Required';	
 						
 						
 					}
@@ -172,11 +169,11 @@
 	
 	<p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
 	
-	<p><font color=#003399>PIN: </font><input type="number" name="pin" id="pin_id" size=3 value=<?php echo($pin);?> ></p>
-	<p><font color=#003399>Instructor ID: </font><input type="text" name="iid" id="iid" size=5 value=<?php echo($iid.' ');?> >
+	<p><font color=#003399>PIN: </font><input type="number" min = "1" max = "10000" name="pin" id="pin_id" size=3 required value=<?php echo($pin);?> ></p>
+	<p><font color=#003399>Instructor ID: </font><input type="number"  min = 1 name="iid" id="iid" required size=5 value=<?php echo($iid.' ');?> >
 	<font color=#003399 >  &nbsp; &nbsp; &nbsp;  or if you don't know: <a href="getiid.php"><b>Click Here</b></a></font></p>
 <!--	<p><font color=#003399>script_flag: </font><input type="number" name="s_flag" id="script_flag" size=3 value=<?php echo($sc_flag);?> ></p>  -->
-	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
+	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" required size=3 value=<?php echo($problem_id);?> ></p>
 	<p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	</form>
 

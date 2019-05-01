@@ -62,13 +62,21 @@ $_POST['index']=$_SESSION['dex'];
 //echo('<form action = "getBC.php" method = "POST" target = "output_frame"> <input type = "hidden" name = "problem_id" value = "'.$_SESSION['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="PreView Basecase in Window"></form>');
 
 //echo('<form action = "staticAUTO.php" method = "POST" target = "output_frame"> <input type = "hidden" name = "problem_id" value = "'.$_SESSION['problem_id'].'"><input type = "hidden" name = "index" value = "'.$_SESSION['dex'].'" ><input type = "submit" value ="PreView Problem in Window"></form>');
+
+
 echo('<form action = "staticAUTO.php" method = "POST" target = "output_frame" id = "pblmInsert"> 
 <input type = "hidden" name = "problem_id" value = "'.$_SESSION['problem_id'].'">
 <input type = "hidden" name = "index" value = "'.$_SESSION['dex'].'" >
 <input type = "hidden" name = "pin" value = "'.$_SESSION['pin'].'" >
 </form>');
 
-echo('<p><form action = "staticAUTO.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$_SESSION['problem_id'].'"><input type = "hidden" name = "index" value = "'.$_SESSION['dex'].'" ><input type = "submit" value ="PreView Problem in a Separate Browser Window"></form></p>');
+// open the problem in a new tab
+
+echo('<p><form action = "staticAUTO.php" method = "POST" target = "_blank"> 
+<input type = "hidden" name = "problem_id" value = "'.$_SESSION['problem_id'].'">
+<input type = "hidden" name = "index" value = "'.$_SESSION['dex'].'" >
+<input type = "submit" value ="PreView Problem in a Separate Browser Tab">
+</form></p>');
 
 ?>
 
