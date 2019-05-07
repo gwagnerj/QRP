@@ -284,7 +284,7 @@
 			$sql = "UPDATE Activity SET num_try = :num_try WHERE problem_id = :problem_id AND iid = :iid AND pin = :pin";
 		$stmt = $pdo->prepare($sql);
 		$stmt->execute(array(
-			':num_try' => $count,
+			':num_try' => $count-1,
 			':problem_id' => $problem_id,
 			':iid' => $iid,
 			':pin' => $pin
