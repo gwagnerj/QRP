@@ -580,7 +580,7 @@ if (n<2){$(".partb").hide();}
 										console.log('imagepath before',imgPath);
 								//		alert (imgPath);
 										//referrer.toLowerCase().indexOf
-									indexQRP = imgPath.toLowerCase().indexOf('qrp')+4;
+									indexQRP = imgPath.toLowerCase().indexOf('/qrp/')+5;
 									console.log('indexofQRP',indexQRP);
 									imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
 									console.log('imagepath',imgPath);

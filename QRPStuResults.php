@@ -107,7 +107,7 @@ $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 	echo('t-spent');
     echo("</th><th>");
 
-	 echo('Average Score <br> All Time');
+	 echo('Tries to get 100 <br> All Time');
 	 echo("</th>");
 	
 	 echo("</thead>");
@@ -198,7 +198,39 @@ $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 					echo('</font>');
 				}
 	echo("</td><td>");
-	echo('average');
+				if(!isset($row2["num_try_1"])){$num_try_1 = 0;} else {$num_try_1 = $row2["num_try_1"];}
+				if(!isset($row2["num_try_2"])){$num_try_2 = 0;} else {$num_try_2 = $row2["num_try_2"];}
+				if(!isset($row2["num_try_3"])){$num_try_3 = 0;} else {$num_try_3 = $row2["num_try_3"];}
+				if(!isset($row2["num_try_4"])){$num_try_4 = 0;} else {$num_try_4 = $row2["num_try_4"];}
+				if(!isset($row2["num_try_5"])){$num_try_5 = 0;} else {$num_try_5 = $row2["num_try_5"];}
+				if(!isset($row2["num_try_6"])){$num_try_6 = 0;} else {$num_try_6 = $row2["num_try_6"];}
+			
+			 
+				$num_try_tot = $num_try_1+$num_try_2+$num_try_3+$num_try_4+$num_try_5+$num_try_6;
+			 
+				if ($num_try_tot ==0){
+					echo(' ');	
+				} else {
+					
+					$max_cat=max($num_try_1,$num_try_2,$num_try_3,$num_try_4,$num_try_5,$num_try_6);
+					
+					echo('<font size="1">mode = ');
+					if($max_cat == $num_try_1){echo("1");}
+					if($max_cat == $num_try_2){echo("2-4");}
+					if($max_cat == $num_try_3){echo("5-10");}
+					if($max_cat == $num_try_4){echo("11-20");}
+					if($max_cat == $num_try_5){echo("21-40");}
+					if($max_cat == $num_try_6){echo("over 41");}
+			 
+					 echo('<span class="inlinebar2">'.$num_try_1." ,".$num_try_2.", ".$num_try_3." , ".$num_try_4.", ".$num_try_5." ,".$num_try_6.'</span>');
+					echo('<br><font size="1">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1 &nbsp;&nbsp;&nbsp; 2-4 &nbsp;&nbsp;5-10&nbsp;11-20&nbsp;21-40&nbsp;&nbsp; >41  '."</font>");
+					echo('<br><font size="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; numer of tries'."</font>");
+					echo('</font>');
+				}
+	
+	
+	
+	
 	echo("</td>");
 	echo("</tbody>");
 	echo("</table>");
@@ -232,6 +264,8 @@ echo ('<table id="table_format3" class = "a" border="1" >'."\n");
 	echo('Guestimates');
     echo("</th><th>");
 	echo('Planning');
+	 echo("</th><th>");
+	echo('tries');
     echo("</th><th>");
 	echo('t_PProb3');
     echo("</th><th>");
@@ -274,6 +308,8 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			if ($row['time_pp1']!=0){echo(htmlentities($row['time_pp1']));} else {echo('');	}
 			echo("</td><td>");
 			if ($row['time_pp2']!=0){echo(htmlentities($row['time_pp2']));} else {echo('');	}
+			echo("</td><td>");
+			if ($row['num_try']!=0){echo(htmlentities($row['num_try']));} else {echo('');	}
 			echo("</td><td>");
 			if ($row['time_pp3']!=0){echo(htmlentities($row['time_pp3']));} else {echo('');	}
 			echo("</td><td>");

@@ -38,7 +38,7 @@ if ($_GET['pin']<0 or $_GET['pin']>10000)  {
   return;
 }
 	$pin = $_GET['pin'];			
-	$dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
+	$dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200 / this formula has to match the one in the QRHomework.php
 	$_SESSION['index'] = $dex;
 
 
@@ -83,6 +83,7 @@ if ( isset($_GET['problem_id']) and  isset($_GET['pin'])) {
 	
 	$count='';  // counts the times the check button is placed
 	$score=0.0;
+	$_SESSION['wrote_try_flag']=false;
 
 	$tol_key=array_keys($tol);
 	$resp_key=array_keys($resp);
@@ -480,6 +481,53 @@ if (strlen($probData['hint_d'])>1){
 	$_SESSION['rand']=$rand;
 	$_SESSION['rand2']=$rand2;
 
+// If $PScore gets to 100, write the number of tries to the problem in the proper bin num_try_1 is first try, num_try_2 is 2 - 3 tries ...
+// doing it here instead of the GetRating.php allows to keep track of external people solving the problem by bruit force guessing we can write the tries to the activity table in that module 
+//
+
+// if they scored 100 and have not wrote the number of tries before
+// count is actually one more than it should be
+	
+	if ($PScore == 100 && !$_SESSION['wrote_try_flag']) {
+			
+			$_SESSION['wrote_try_flag'] = true;
+				
+			if ($count == 2){ 
+				$sql = "UPDATE Problem SET `num_try_1` = coalesce(`num_try_1`+1,1) WHERE problem_id = :problem_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(':problem_id' => $problem_id));		
+			}	
+			if ($count >= 3 && $count <= 5){ 
+				$sql = "UPDATE Problem SET `num_try_2` = coalesce(`num_try_2`+1,1) WHERE problem_id = :problem_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(':problem_id' => $problem_id));		
+			}
+			if ($count >= 6 && $count <= 11){ 
+				$sql = "UPDATE Problem SET `num_try_3` = coalesce(`num_try_3`+1,1) WHERE problem_id = :problem_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(':problem_id' => $problem_id));		
+			}					
+			if ($count >= 12 && $count <= 21){ 
+				$sql = "UPDATE Problem SET `num_try_4` = coalesce(`num_try_4`+1,1) WHERE problem_id = :problem_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(':problem_id' => $problem_id));		
+			}					
+
+			if ($count >= 22 && $count <= 41){ 
+				$sql = "UPDATE Problem SET `num_try_5` = coalesce(`num_try_5`+1,1) WHERE problem_id = :problem_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(':problem_id' => $problem_id));		
+			}					
+			if ($count >= 42 ){ 
+				$sql = "UPDATE Problem SET `num_try_6` = coalesce(`num_try_6`+1,1) WHERE problem_id = :problem_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(':problem_id' => $problem_id));		
+			}					
+	
+	
+}
+
+
 	
 if(isset($_POST['pin']) && $index<=200 && $index>0 && $dispAnsflag)
 	{
@@ -685,12 +733,14 @@ if ($partsFlag[9]){ ?>
  <hr>
 <p><b><font Color="red">When Finished:</font></b></p>
   <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
-  <?php $_SESSION['score'] = $PScore; $_SESSION['index'] = $index; $_SESSION['count'] = $count;?>
+  <?php  $_SESSION['score'] = $PScore; $_SESSION['index'] = $index; $_SESSION['count'] = $count;?> 
+  
   <input type = "number" hidden name = "score"  value = <?php echo ($PScore); ?> > </input>
   <input type = "number" hidden name = "problem_id"  value = <?php echo ($problem_id); ?> > </input>
   <input type = "number" hidden name = "dex"  value = <?php echo ($dex); ?> > </input>
    <input type = "number" hidden name = "iid"  value = <?php echo ($iid); ?> > </input>
     <input type = "number" hidden name = "pin"  value = <?php echo ($pin); ?> > </input>
+	 <input type = "number" hidden name = "count"  value = <?php echo ($count); ?> > </input>
  <b><input type="submit" value="Rate & Get rtn Code" style = "width: 30%; background-color:yellow "></b>
  <p><br> </p>
  <hr>

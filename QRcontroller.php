@@ -5,15 +5,64 @@ session_start();
 
 
 
+
+
+if (isset($_POST['problem_id'])){
+	$problem_id = $_POST['problem_id'];
+}elseif(isset($_GET['problem_id'])){
+	$problem_id = $_GET['problem_id'];
+} elseif(isset($_SESSION['problem_id'])){
+	$problem_id = $_SESSION['problem_id'];
+} else {
+	
+	$_SESSION['error'] = 'problem ID not set';
+}
+
+if (isset($_POST['iid'])){
+	$iid = $_POST['iid'];
+}  elseif(isset($_GET['iid'])){
+	$iid = $_GET['iid'];
+} elseif(isset($_SESSION['iid'])){
+	$iid = $_SESSION['iid'];
+} else {
+	$_SESSION['error'] = 'instructor ID not set';
+}
+if (isset($_POST['dex'])){
+	$dex = $_POST['dex'];
+}  elseif(isset($_GET['dex'])){
+	$dex = $_GET['dex'];
+} elseif(isset($_SESSION['iid'])){
+	$dex = $_SESSION['dex'];
+} else {
+	$_SESSION['error'] = 'dex not set';
+}
+if (isset($_POST['pin'])){
+	$pin = $_POST['pin'];
+}  elseif(isset($_GET['pin'])){
+	$pin = $_GET['pin'];
+} elseif(isset($_SESSION['iid'])){
+	$pin = $_SESSION['pin'];
+} else {
+	$_SESSION['error'] = 'pin not set';
+}
+
+
 if(isset($_POST['stu_name'])) {
 	$stu_name = $_POST['stu_name'];
 } else {
 	$stu_name = '';
 }
 
-if (!isset($_POST['progress'])&& !isset($_SESSION['progress'])) {
+if (isset($_POST['progress'])) {
+	$_SESSION['progress'] = $_POST['progress'];
+}
+
+
+if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 	
 	$_SESSION['error'] = 'error occured in controller - progress not set';
+	
+	
 	header("Location: QRhomework.php");
 	return;
 	
@@ -21,7 +70,7 @@ if (!isset($_POST['progress'])&& !isset($_SESSION['progress'])) {
 	
 	if($_SESSION['progress']==1){
 		/*  is there an entry in the Activity table for this instructor, student PIN and problem number? 
-		  if there is not create and entry  if these is then get students current progress in either case get the 
+		  if there is not create an entry  if these is then get students current progress in either case get the 
 		reqirements for the problem and check against student progress to know where to go next
 		
 		 */
@@ -31,8 +80,8 @@ if (!isset($_POST['progress'])&& !isset($_SESSION['progress'])) {
 		$sql = "SELECT * FROM Assign WHERE iid=:iid AND prob_num=:prob_num" ;
 		$stmt = $pdo->prepare($sql);
 		$stmt -> execute(array(
-		':iid'=>$_POST['iid'],
-		':prob_num' => abs($_POST['problem_id'])
+		':iid'=>$iid,
+		':prob_num' => abs($problem_id)
 		));
 		$assn_row =$stmt ->fetch();
 		if ( $assn_row === false ) {
@@ -52,22 +101,22 @@ if (!isset($_POST['progress'])&& !isset($_SESSION['progress'])) {
 			$sql = "SELECT * FROM Activity WHERE iid=:iid AND problem_id=:problem_id AND pin =:pin" ;
 			$stmt = $pdo->prepare($sql);
 			$stmt -> execute(array(
-			':iid'=>$_POST['iid'],
-			':problem_id' =>abs($_POST['problem_id']),
-			':pin' =>$_POST['pin']
+			':iid'=>$iid,
+			':problem_id' =>abs($problem_id),
+			':pin' =>$pin
 			));
 			$activity_row =$stmt ->fetch();
 			if ( $activity_row === false ) {
 			
-			// put code in to create and entry activity table
+			//  create and entry activity table
 				$sql = 'INSERT INTO Activity (problem_id, pin,iid, dex, assign_id, instr_last, university,pp1,pp2,pp3,pp4,post_pblm1,post_pblm2,post_pblm3,score,help_coins_used,assist_coins_gained,stu_name)	
 						VALUES (:problem_id, :pin, :iid, :dex, :assign_id, :instr_last,:university,:pp1,:pp2,:pp3,:pp4,:post_pblm1,:post_pblm2,:post_pblm3, :score,:help_coins_used, :assist_coins_gained, :stu_name)';
 				$stmt = $pdo->prepare($sql);
 				$stmt -> execute(array(
 				':problem_id' => $assn_row['prob_num'],
-				':pin' => $_POST['pin'],
+				':pin' => $pin,
 				':iid' => $assn_row['iid'],
-				':dex' => $_POST['dex'],
+				':dex' => $dex,
 				':assign_id' => $assn_row['assign_id'],
 				':instr_last' => $assn_row['instr_last'],
 				':university' => $assn_row['university'],
@@ -87,9 +136,9 @@ if (!isset($_POST['progress'])&& !isset($_SESSION['progress'])) {
 			$sql = "SELECT * FROM Activity WHERE iid=:iid AND problem_id=:problem_id AND pin =:pin" ;
 				$stmt = $pdo->prepare($sql);
 				$stmt -> execute(array(
-				':iid'=>$_POST['iid'],
-				':problem_id' =>abs($_POST['problem_id']),
-				':pin' =>$_POST['pin']
+				':iid'=>$iid,
+				':problem_id' =>abs($problem_id),
+				':pin' =>$pin
 				));
 				$activity_row =$stmt ->fetch();		
 			
@@ -119,19 +168,22 @@ if (!isset($_POST['progress'])&& !isset($_SESSION['progress'])) {
 				
 				
 				
+				// so the logic is read from the assignment table and if say pre-problem 1 was assigned put it in the activity table
+				// then read from the activity table if say proproblem 1 is not 1 then move on but if it is one we need to display the pre problem.  once preproblem 1 is done that will write a 2 to the activity table 
+				// so if pre problem 1 is ero that should mean it was never assigned.  If preproblem 1 (pp1) is 1 that means it is assined and undone.  If pp1 is 2 that means it 
+				// was assigned and completed.  QRguesser.php should set pp1 in the acitvity table to 2 where as QRplanning would set pp2
 				
-				
-				if (($pp1 != 1 && $pp2 !=1 && $pp3 !=1 && $pp4 != 1) || $_POST['problem_id']<0 || $_POST['pin'] == 0 ){
+				if (($pp1 != 1 && $pp2 !=1 && $pp3 !=1 && $pp4 != 1) || $problem_id<0 || $pin == 0 ){
 					
 					// show them the actual numbered problem
-						$_SESSION['problem_id'] = abs($_POST['problem_id']);
-						$problem_id = abs($_POST['problem_id']);
+						$_SESSION['problem_id'] = abs($problem_id);
+						$problem_id = abs($problem_id);
 				
 					// echo('<a href="QRhomework.php?problem_id='.$problem_id.'&pin='.$pin.'&iid='.$iid.'&stu_name='.$stu_name.'"><b> Return to Main Screen</b></a>');
 						
 						header("Location: QRdisplayPblm.php?problem_id=".$problem_id
-						."&pin=".$_POST['pin']
-						."&dex=".$_POST['dex']
+						."&pin=".$pin
+						."&dex=".$dex
 						."&stu_name=".$stu_name
 						."&iid=".$iid
 						."&reflect_flag=".$assn_row['reflect_flag']

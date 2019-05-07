@@ -2,16 +2,73 @@
  session_start();
   Require_once "pdo.php";
  
- $score = $_POST['score'];
- $problem_id = $_POST['problem_id'];
- $dex = $_POST['dex'];
- $iid = $_POST['iid'];
- $pin = $_POST['pin'];
+ if (isset($_POST['score'])){
+	$score = $_POST['score'];
+}elseif(isset($_GET['score'])){
+	$score = $_GET['score'];
+} elseif(isset($_SESSION['score'])){
+	$score = $_SESSION['score'];
+} else {
+	
+	$_SESSION['error'] = 'score not set';
+}
  
- // probably should put error checking here
+ if (isset($_POST['problem_id'])){
+	$problem_id = $_POST['problem_id'];
+}elseif(isset($_GET['problem_id'])){
+	$problem_id = $_GET['problem_id'];
+} elseif(isset($_SESSION['problem_id'])){
+	$problem_id = $_SESSION['problem_id'];
+} else {
+	
+	$_SESSION['error'] = 'problem_id not set';
+}
  
-//$score = 0;
+ if (isset($_POST['dex'])){
+	$dex = $_POST['dex'];
+}elseif(isset($_GET['dex'])){
+	$dex = $_GET['dex'];
+} elseif(isset($_SESSION['dex'])){
+	$dex = $_SESSION['dex'];
+} else {
+	
+	$_SESSION['error'] = 'dex not set';
+}
  
+ if (isset($_POST['pin'])){
+	$pin = $_POST['pin'];
+}elseif(isset($_GET['pin'])){
+	$pin = $_GET['pin'];
+} elseif(isset($_SESSION['pin'])){
+	$pin = $_SESSION['pin'];
+} else {
+	
+	$_SESSION['error'] = 'pin not set';
+}
+ 
+ if (isset($_POST['iid'])){
+	$iid = $_POST['iid'];
+}elseif(isset($_GET['iid'])){
+	$iid = $_GET['iid'];
+} elseif(isset($_SESSION['iid'])){
+	$iid = $_SESSION['iid'];
+} else {
+	
+	$_SESSION['error'] = 'iid not set';
+}
+ 
+ if (isset($_POST['count'])){
+	$count = $_POST['count'];
+}elseif(isset($_GET['count'])){
+	$count = $_GET['count'];
+} elseif(isset($_SESSION['count'])){
+	$count = $_SESSION['count'];
+} else {
+	
+	$_SESSION['error'] = 'count not set';
+}
+ 
+  
  
  /* echo (' score is');
  echo($score);
@@ -23,15 +80,14 @@
  echo($iid);
  die(); */
  
- if($_SESSION['pin']==0) {
+ 
+ // basecase so no need for a return
+ if($pin==0) {
 	 
 	 	header( 'Location: QRhomework.php' ) ;
 		return;		
 	 
  }
-
-
-
 
 
 
@@ -214,7 +270,7 @@
 
 	// Put the score in the activity table 
 	
-	if(isset($_POST['problem_id']) && isset($_POST['iid']) && isset($_POST['pin'])){
+	// if(isset($_POST['problem_id']) && isset($_POST['iid']) && isset($_POST['pin'])){
 		
 		$sql = "UPDATE Activity SET score = :score WHERE problem_id = :problem_id AND iid = :iid AND pin = :pin";
 		$stmt = $pdo->prepare($sql);
@@ -224,7 +280,18 @@
 			':iid' => $iid,
 			':pin' => $pin
 			));
-	}
+			
+			$sql = "UPDATE Activity SET num_try = :num_try WHERE problem_id = :problem_id AND iid = :iid AND pin = :pin";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(
+			':num_try' => $count,
+			':problem_id' => $problem_id,
+			':iid' => $iid,
+			':pin' => $pin
+			));
+	// }
+	
+	
 	
 	// change the headers to the rtnCode.php
 

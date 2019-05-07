@@ -2,6 +2,10 @@
  session_start();
   Require_once "pdo.php";
   
+
+ 
+ 
+ 
  $rand=$_SESSION['rand'];
  $rand2=$_SESSION['rand2'];
   

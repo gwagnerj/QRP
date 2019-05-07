@@ -20,19 +20,26 @@
 	if(isset($_GET['stu_name'])){
 		
 		$stu_name = htmlentities($_GET['stu_name']);
-	} 
-	
+	} elseif (isset($_SESSION['stu_name'])){
+		$stu_name = htmlentities($_SESSION['stu_name']);
+	}
 	
 	if(isset($_GET['problem_id'])){
 		$problem_id = htmlentities($_GET['problem_id']);
+	} elseif (isset($_SESSION['problem_id'])){
+		$problem_id = htmlentities($_SESSION['problem_id']);
 	}
 	
 	if(isset($_GET['pin'])){
 		$pin = htmlentities($_GET['pin']);
+	} elseif (isset($_SESSION['pin'])){
+		$pin = htmlentities($_SESSION['pin']);
 	}
 	
 	if(isset($_GET['iid'])){
 		$iid = htmlentities($_GET['iid']);
+	} elseif (isset($_SESSION['iid'])){
+		$iid = htmlentities($_SESSION['iid']);
 	}
 	
 	
@@ -174,7 +181,7 @@
 	<font color=#003399 >  &nbsp; &nbsp; &nbsp;  or if you don't know: <a href="getiid.php"><b>Click Here</b></a></font></p>
 <!--	<p><font color=#003399>script_flag: </font><input type="number" name="s_flag" id="script_flag" size=3 value=<?php echo($sc_flag);?> ></p>  -->
 	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" required size=3 value=<?php echo($problem_id);?> ></p>
-		<p><font color=#003399>Assignment Number: </font><input type="number" name="assign_num" id="assign_num"  size=3 value=<?php // echo($Assign_num);?> ></p>
+<!--		<p><font color=#003399>Assignment Number: </font><input type="number" name="assign_num" id="assign_num"  size=3 value=<?php // echo($Assign_num);?> ></p>  Could put the assignment in as an option if they don't know the problem num or if the instructor has multiple assignments for the same problem--> 
 	<p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	</form>
 

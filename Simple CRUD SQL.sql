@@ -854,6 +854,15 @@ CREATE TABLE IF NOT EXISTS `University` (
 
 ALTER TABLE Problem	ADD unpubl_auth varchar(128);
 	
-	
-
+	ALTER TABLE Problem 
+  ADD num_try_1 int,
+  ADD num_try_2 int,
+  ADD num_try_3 int,
+  ADD num_try_4 int,
+  ADD num_try_5 int,
+  ADD num_try_6 int,
+  ADD num_try_7 int;
+ 
+	ALTER TABLE Activity 
+  ADD num_try int;
 	
