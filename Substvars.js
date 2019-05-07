@@ -211,7 +211,7 @@ $(document).ready(function(){
 	var reflections = "Required Reflections: "+(reflect_flag==1 ? ' reflect ' : "")+(explore_flag==1 ? ' explore ' : "")
 			+ (connect_flag==1 ? ' connect ' :"")+(society_flag==1 ? ' society ' :"");
 		
-	} else if (choice != 0 && choice.toLowerCase != null) {
+	} else if (choice != 0 && choice != null && choice != "NULL" ) {
 		var reflections = "Reflections: Pick Any "+ choice ;
 		
 	} else {
