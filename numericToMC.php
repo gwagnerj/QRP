@@ -307,31 +307,6 @@ if (n<2){$(".partb").hide();}
 						var contrib_university = arr.university;
 					//	var newPath = "uploads/"+openup+ " 'document'";
 								$('#substitute_me').load("uploads/"+openup, 'document').html();
-					
-					
-			
-
-					
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			
-			// if (n<=2){mc3 = null;}
-			// if (n==1){mc2=null;}
-			
 			
 			
 			console.log (mc1);
@@ -427,10 +402,6 @@ if (n<2){$(".partb").hide();}
 			
 			console.log ('part_d', part_d);
 				console.log ('mc1_str', mc1_str);
-			
-			
-			
-			
 			
 			
 			var key_1 = arr2.key_1;
@@ -610,90 +581,7 @@ if (n<2){$(".partb").hide();}
 		});
 	  });			
 	  
-	  /*  $.post('fetchpblminput.php', {problem_id : problem, index : 1 }, function(data){
-				
-				var arr2 = JSON.parse(data);
-			// Get the html file name from the database
-				
-			//	var openup = arr.htmlfilenm;
-			
-			var openup = arr2.htmlfilenm;		
-			//	alert(openup);
-			
-		//	alert (openup);
-			if (openup == null){
-				
-			alert('problem not present');
-			return;
-				
-			}
-			
-			
-			var game = arr2.game_prob_flag;
-				
-			//	Set up the basecase values into the local variables
-				if (statusFlag){
-					if (game==0){
-						
-						var x = "bc_"+arr2.nv_1;
-						sessionStorage.setItem(x,arr2.v_1);
-						
-						x = "bc_"+arr2.nv_2;
-						sessionStorage.setItem(x,arr2.v_2);
-						
-						x = "bc_"+arr2.nv_3;
-						sessionStorage.setItem(x,arr2.v_3);
-							x = "bc_"+arr2.nv_4;
-						sessionStorage.setItem(x,arr2.v_4);
-						x = "bc_"+arr2.nv_5;
-						sessionStorage.setItem(x,arr2.v_5);
-						x = "bc_"+arr2.nv_6;
-						sessionStorage.setItem(x,arr2.v_6);
-							x = "bc_"+arr2.nv_7;
-						sessionStorage.setItem(x,arr2.v_7);
-						x = "bc_"+arr2.nv_8;
-						sessionStorage.setItem(x,arr2.v_8);
-						x = "bc_"+arr2.nv_9;
-						sessionStorage.setItem(x,arr2.v_9);
-							x = "bc_"+arr2.nv_10;
-						sessionStorage.setItem(x,arr2.v_10);
-						x = "bc_"+arr2.nv_11;
-						sessionStorage.setItem(x,arr2.v_11);
-						x = "bc_"+arr2.nv_12;
-						sessionStorage.setItem(x,arr2.v_12);
-							x = "bc_"+arr2.nv_13;
-						sessionStorage.setItem(x,arr2.v_13);
-						x = "bc_"+arr2.nv_14;
-						sessionStorage.setItem(x,arr2.v_14);
-						
-						 sessionStorage.setItem('title',arr2.title);
-						sessionStorage.setItem('stu_name',s_name);
-						sessionStorage.setItem('problem_id',problem);
-						sessionStorage.setItem('index',inde); 
-					
-				// redirect the browser to the problem file
-				
-			// alert (statusFlag);
-
-			window.location.href="uploads/"+openup;
-					} else {
-			
-				alert('not a homework problem');
-					} 
-				} else {
-					
-				// alert('This problem is temporarily suspended, please check back later on2.');
-							return;
-					
-					
-				}
-
-	   
-
-
-
-				
-	  }); */
+	 
 	  
 	  
 	  

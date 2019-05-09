@@ -59,11 +59,11 @@ table.a {
     table-layout: fixed;
     width: 100%;    
 	}
-	 .widget-1 { width:150px; } 
+	 .widget-1 { width:100px; } 
 	  .widget-2 { width:150px; } 
 	  .widget-3 { width:150px; } 
 	  .widget-4 { width:150px; } 
-	  .widget-5 { width:150px; } 
+	  .widget-5 { width:100px; } 
 	  .widget-6 { width:150px; } 
 	  .widget-7 { width:150px; } 
 	  .widget-8 { width:150px; } 
@@ -192,12 +192,7 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
     echo("</th><th>");
 	echo('diff');
 	 echo("</th><th>");
-	/*  
-	echo('t_b4due');
-    echo("</th><th>");
-	echo('t_spent');
-	echo("</th><th>");
-	 */
+	
 	echo('Stu Res');
     echo("</th><th>");
 	echo('Contrib');
@@ -210,7 +205,7 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 	 echo("</th><th>");
 	 echo('Course');
     echo("</th><th>");
-	echo('Concepts ');
+	echo('Concept');
     echo("</th><th>");
     echo('Compute');
     echo("</th><th>");
@@ -220,9 +215,9 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
     echo("</th><th>");
 	echo('Author');
     echo("</th><th>");
-	 echo('Functions');
+	 echo('Func');
 	   echo("</th><th>");
-	 echo('Base-Case');
+	 echo('Display');
     //echo("</th><th>");
 	// echo('Soln');
 	echo("</th></tr>\n");
@@ -252,8 +247,6 @@ Problem.confidence_np_1 as confidence_np_1,Problem.confidence_np_2 as confidence
  Problem.activity_directions as activity_directions, Problem.computation_name as computation_name
 
 FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id ;");
-
-
 
 
 
@@ -336,103 +329,10 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 							echo('<br><font size="1"> < 100 ='.$percent_np.' %'."</font>");
 					}
 			}
-			/* 
-				echo("</td><td>");
-				if(!isset($row["t_b4due_1"])){$t_b4due_1 = 0;} else {$t_b4due_1 = $row["t_b4due_1"];}
-				if(!isset($row["t_b4due_2"])){$t_b4due_2 = 0;} else {$t_b4due_2 = $row["t_b4due_2"];}
-				if(!isset($row["t_b4due_3"])){$t_b4due_3 = 0;} else {$t_b4due_3 = $row["t_b4due_3"];}
-				if(!isset($row["t_b4due_4"])){$t_b4due_4 = 0;} else {$t_b4due_4 = $row["t_b4due_4"];}
-				if(!isset($row["t_b4due_5"])){$t_b4due_5 = 0;} else {$t_b4due_5 = $row["t_b4due_5"];}
-				if(!isset($row["t_b4due_6"])){$t_b4due_6 = 0;} else {$t_b4due_6 = $row["t_b4due_6"];}
-				if(!isset($row["t_b4due_7"])){$t_b4due_7 = 0;} else {$t_b4due_7 = $row["t_b4due_7"];}
-			 
-				if(!isset($row["t_b4due_np_1"])){$t_b4due_np_1 = 0;} else {$t_b4due_np_1 = $row["t_b4due_np_1"];}
-				if(!isset($row["t_b4due_np_2"])){$t_b4due_np_2 = 0;} else {$t_b4due_np_2 = $row["t_b4due_np_2"];}
-				if(!isset($row["t_b4due_np_3"])){$t_b4due_np_3 = 0;} else {$t_b4due_np_3 = $row["t_b4due_np_3"];}
-				if(!isset($row["t_b4due_np_4"])){$t_b4due_np_4 = 0;} else {$t_b4due_np_4 = $row["t_b4due_np_4"];}
-				if(!isset($row["t_b4due_np_5"])){$t_b4due_np_5 = 0;} else {$t_b4due_np_5 = $row["t_b4due_np_5"];}
-				if(!isset($row["t_b4due_np_6"])){$t_b4due_np_6 = 0;} else {$t_b4due_np_6 = $row["t_b4due_np_6"];}
-				if(!isset($row["t_b4due_np_7"])){$t_b4due_np_7 = 0;} else {$t_b4due_np_7 = $row["t_b4due_np_7"];}
-			 
-				$t_b4due_tot = $t_b4due_1+$t_b4due_2+$t_b4due_3+$t_b4due_4+$t_b4due_5+$t_b4due_6+$t_b4due_7;
-				$t_b4due_np_tot = $t_b4due_np_1+$t_b4due_np_2+$t_b4due_np_3+$t_b4due_np_4+$t_b4due_np_5+$t_b4due_np_6+$t_b4due_np_7;
-				$tot_tb4due=$t_b4due_tot+$t_b4due_np_tot;
-			 
-				if ($tot_tb4due ==0){
-					echo(' ');	
-				} else {
-			 
-					$max_cat=max($t_b4due_1+$t_b4due_np_1,$t_b4due_2+$t_b4due_np_2,$t_b4due_3+$t_b4due_np_3,$t_b4due_4+$t_b4due_np_4,$t_b4due_5+$t_b4due_np_5,$t_b4due_6+$t_b4due_np_6,$t_b4due_7+$t_b4due_np_7);
-					
-					echo('<font size="1">mode = ');
-					if($max_cat == $t_b4due_1+$t_b4due_np_1){echo("< 1h");}
-					if($max_cat == $t_b4due_2+$t_b4due_np_2){echo(" 1-5h");}
-					if($max_cat == $t_b4due_3+$t_b4due_np_3){echo(" 5-12h");}
-					if($max_cat == $t_b4due_4+$t_b4due_np_4){echo(" 12-24h");}
-					if($max_cat == $t_b4due_5+$t_b4due_np_5){echo(" 1-2d");}
-					if($max_cat == $t_b4due_6+$t_b4due_np_6){echo(" 2-7d");}
-					if($max_cat == $t_b4due_7+$t_b4due_np_7){echo(" >1wk");}
-			 
-					 echo('<span class="inlinebar2">'.$t_b4due_7.": ".$t_b4due_np_7." ,".$t_b4due_6.": ".$t_b4due_np_6." ,".$t_b4due_5.": ".$t_b4due_np_5.", ".$t_b4due_4.": ".$t_b4due_np_4." , ".$t_b4due_3.": ".$t_b4due_np_3.", ".$t_b4due_2.": ".$t_b4due_np_2." ,".$t_b4due_1.": ".$t_b4due_np_1.'</span>');
-					echo('<br><font size="1">  early &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; late'."</font>");
-					echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t_b4due'."</font>");
-					echo('</font>');
-				}
-			 
 			
 			echo("</td><td>");
-			
-				if(!isset($row["t_take1_1"])){$t_take1_1 = 0;} else {$t_take1_1 = $row["t_take1_1"];}
-				if(!isset($row["t_take1_2"])){$t_take1_2 = 0;} else {$t_take1_2 = $row["t_take1_2"];}
-				if(!isset($row["t_take1_3"])){$t_take1_3 = 0;} else {$t_take1_3 = $row["t_take1_3"];}
-				if(!isset($row["t_take1_4"])){$t_take1_4 = 0;} else {$t_take1_4 = $row["t_take1_4"];}
-				if(!isset($row["t_take1_5"])){$t_take1_5 = 0;} else {$t_take1_5 = $row["t_take1_5"];}
-				if(!isset($row["t_take1_6"])){$t_take1_6 = 0;} else {$t_take1_6 = $row["t_take1_6"];}
-			
-			 
-				if(!isset($row["t_take1_np_1"])){$t_take1_np_1 = 0;} else {$t_take1_np_1 = $row["t_take1_np_1"];}
-				if(!isset($row["t_take1_np_2"])){$t_take1_np_2 = 0;} else {$t_take1_np_2 = $row["t_take1_np_2"];}
-				if(!isset($row["t_take1_np_3"])){$t_take1_np_3 = 0;} else {$t_take1_np_3 = $row["t_take1_np_3"];}
-				if(!isset($row["t_take1_np_4"])){$t_take1_np_4 = 0;} else {$t_take1_np_4 = $row["t_take1_np_4"];}
-				if(!isset($row["t_take1_np_5"])){$t_take1_np_5 = 0;} else {$t_take1_np_5 = $row["t_take1_np_5"];}
-				if(!isset($row["t_take1_np_6"])){$t_take1_np_6 = 0;} else {$t_take1_np_6 = $row["t_take1_np_6"];}
-				
-			 
-				$t_take1_tot = $t_take1_1+$t_take1_2+$t_take1_3+$t_take1_4+$t_take1_5+$t_take1_6;
-				$t_take1_np_tot = $t_take1_np_1+$t_take1_np_2+$t_take1_np_3+$t_take1_np_4+$t_take1_np_5+$t_take1_np_6;
-				$tot_take1=$t_take1_tot+$t_take1_np_tot;
-			 
-				if ($tot_take1 ==0){
-					echo(' ');	
-				} else {
-					
-					$max_cat=max($t_take1_1+$t_take1_np_1,$t_take1_2+$t_take1_np_2,$t_take1_3+$t_take1_np_3,$t_take1_4+$t_take1_np_4,$t_take1_5+$t_take1_np_5,$t_take1_6+$t_take1_np_6);
-					
-					echo('<font size="1">mode = ');
-					if($max_cat == $t_take1_1+$t_take1_np_1){echo("< 5m");}
-					if($max_cat == $t_take1_2+$t_take1_np_2){echo(" 5-15m");}
-					if($max_cat == $t_take1_3+$t_take1_np_3){echo(" 15-30m");}
-					if($max_cat == $t_take1_4+$t_take1_np_4){echo(" 30-60m");}
-					if($max_cat == $t_take1_5+$t_take1_np_5){echo(" 1-3h");}
-					if($max_cat == $t_take1_6+$t_take1_np_6){echo(" >3h");}
-			 
-					 echo('<span class="inlinebar2">'.$t_take1_1.": ".$t_take1_np_1." ,".$t_take1_2.": ".$t_take1_np_2.", ".$t_take1_3.": ".$t_take1_np_3." , ".$t_take1_4.": ".$t_take1_np_4.", ".$t_take1_5.": ".$t_take1_np_5." ,".$t_take1_6.": ".$t_take1_np_6.'</span>');
-					echo('<br><font size="1"><5min &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;>3h'."</font>");
-					echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t spent'."</font>");
-					echo('</font>');
-				}
-				
-			*/
-			echo("</td><td>");
-				
-				/* $sql5="SELECT * FROM Activity WHERE problem_id = :problem_id ";
-				$stmt5 = $pdo->prepare($sql5);
-				$stmt5->execute(array(
-					':problem_id' => $row['problem_id']
-				));
 				
 				
-				if (($row5 = $stmt5->fetch(PDO::FETCH_ASSOC))=== false){ */
 				if ($tot_attempt ==0){
 					echo(' ');	
 				} else {
@@ -538,16 +438,11 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			
 			
 			if($row['status']!='num issued') {
-				echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="PreView"></form>');
+				echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="Base-case"></form>');
+				echo("&nbsp; ");
+				echo('<form action = "getGame.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Game"></form>');
 			}
 		
-		
-		/*   
-			echo("</td><td>");
-			if(isset($_SESSION['username'])){
-				echo('<form action = "QRPRepo.php" method = "POST" > <input type = "hidden" name = "soln_preview" value ="'.$row['soln_pblm'].'"><input type = "submit" value ="PreView"></form>');
-			} 
-		*/
 		   echo("</td></tr>\n");
    }
 }
