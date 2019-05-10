@@ -49,6 +49,8 @@ table, th, td {
 	width = 20
   // border: 1px solid black;
 }
+
+
 </style>
 
 
@@ -86,7 +88,7 @@ if ( isset($_SESSION['success']) ) {
 	<table   class = "onePerColumn">
 		<thead>
 			<tr>
-				<th><h4> <font color = "blue" size =5 >Varaible Name -></font> </th>
+				<th><h4> <font color = "blue" size =5 >Varaible Name </font> </th>
 				<th>	<span class = "nv_1" id = "nv_1" > nv_1 </span> </th>
 				<th>	<span class = "nv_2" id = "nv_2" > nv_2 </span> </th>
 				<th>	<span class = "nv_3" id = "nv_3" > nv_3 </span> </th>
@@ -124,7 +126,7 @@ if ( isset($_SESSION['success']) ) {
 			<tr><td>	<font color = "blue" size =5 > Oval </font> </td>
 				
 				<td><span class = "nv_1"><input type="radio" name="oval" Value="ans_nv_1" > </span></td>
-				<td><span class = "nv_2"><input type="radio" name="oval" Value="ans_nv_2"> </span></td>
+				<td><span class = "nv_2"><input type="radio" name="oval" Value="ans_nv_2" checked = "checked"> </span></td>
 				<td><span class = "nv_3"><input type="radio" name="oval" Value="ans_nv_3"> </span></td>
 				<td><span class = "nv_4"><input type="radio" name="oval" Value="ans_nv_4"> </span></td>
 				<td><span class = "nv_5"><input type="radio" name="oval" Value="ans_nv_5"> </span></td>
@@ -142,7 +144,7 @@ if ( isset($_SESSION['success']) ) {
 				
 				<td><span class = "nv_1"><input type="radio" name="trap" Value="ans_nv_1" > </span></td>
 				<td><span class = "nv_2"><input type="radio" name="trap" Value="ans_nv_2"> </span></td>
-				<td><span class = "nv_3"><input type="radio" name="trap" Value="ans_nv_3"> </span></td>
+				<td><span class = "nv_3"><input type="radio" name="trap" Value="ans_nv_3" checked = "checked"> </span></td>
 				<td><span class = "nv_4"><input type="radio" name="trap" Value="ans_nv_4"> </span></td>
 				<td><span class = "nv_5"><input type="radio" name="trap" Value="ans_nv_5"> </span></td>
 				<td><span class = "nv_6"><input type="radio" name="trap" Value="ans_nv_6"> </span></td>
@@ -160,7 +162,7 @@ if ( isset($_SESSION['success']) ) {
 				<td><span class = "nv_1"><input type="radio" name="hex" Value="ans_nv_1" > </span></td>
 				<td><span class = "nv_2"><input type="radio" name="hex" Value="ans_nv_2"> </span></td>
 				<td><span class = "nv_3"><input type="radio" name="hex" Value="ans_nv_3"> </span></td>
-				<td><span class = "nv_4"><input type="radio" name="hex" Value="ans_nv_4"> </span></td>
+				<td><span class = "nv_4"><input type="radio" name="hex" Value="ans_nv_4" checked = "checked"> </span></td>
 				<td><span class = "nv_5"><input type="radio" name="hex" Value="ans_nv_5"> </span></td>
 				<td><span class = "nv_6"><input type="radio" name="hex" Value="ans_nv_6"> </span></td>
 				<td><span class = "nv_7"><input type="radio" name="hex" Value="ans_nv_7"> </span></td>
@@ -185,8 +187,10 @@ if ( isset($_SESSION['success']) ) {
 <script>
 
 	
-	
-	
+	var rect = "";
+	var oval = "";
+	var trap = "";
+	var hex = "";
 	
 	$(document).ready(function(){
 	// this next bit makes it so you can not have two columns with two items checked
@@ -214,11 +218,11 @@ if ( isset($_SESSION['success']) ) {
 					alert (err);
 				}
 
-	var nv_1 = arrn.nv_1
+	/* var nv_1 = arrn.nv_1
 	console.log (arrn.nv_1);
 console.log (arrn.nv_2);
 console.log (arrn.nv_3);
-console.log (arrn.nv_14);
+console.log (arrn.nv_14); */
 
 
 if(arrn.nv_14 == null || arrn.nv_14 == "Null" ){$(".nv_14").hide();}else {$("#nv_14").html(arrn.nv_14);}
@@ -244,42 +248,113 @@ if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1
 		
 		
 		event.preventDefault();
-		var OneIsChecked = $('input[name = "mc1"]:checked').length ==1;
-			if(!OneIsChecked){alert('Multiple choice 1 needs one radio button selected');
+		/* var OneIsChecked = $('input[name = "rect"]:checked').length ==1;  // not sure I need this 
+			if(!OneIsChecked){alert('Rectangle needs at leat one checked');
 			return;
-			}
+			} */
 		
 	//	console.log (OneIsChecked);
 	
-	var mc1 = $('input[name = "mc1"]:checked').val();
-	var mc2 = $('input[name = "mc2"]:checked').val();
-	var mc3 = $('input[name = "mc3"]:checked').val();
+	 rect = $('input[name = "rect"]:checked').val();
+	 oval = $('input[name = "oval"]:checked').val();
+	 trap = $('input[name = "trap"]:checked').val();
+	hex = $('input[name = "hex"]:checked').val();
+	
+	// this is disgraceful but here goes - got tired of more sophisticated
+	
+	if(rect == "ans_nv_1") {rect = arrn.nv_1;}
+	if(rect == "ans_nv_2") {rect = arrn.nv_2;}
+	if(rect == "ans_nv_3") {rect = arrn.nv_3;}
+	if(rect == "ans_nv_4") {rect = arrn.nv_4;}
+	if(rect == "ans_nv_5") {rect = arrn.nv_5;}
+	if(rect == "ans_nv_6") {rect = arrn.nv_6;}
+	if(rect == "ans_nv_7") {rect = arrn.nv_7;}
+	if(rect == "ans_nv_8") {rect = arrn.nv_8;}
+	if(rect == "ans_nv_9") {rect = arrn.nv_9;}
+	if(rect == "ans_nv_10") {rect = arrn.nv_10;}
+	if(rect == "ans_nv_11") {rect = arrn.nv_11;}
+	if(rect == "ans_nv_12") {rect = arrn.nv_12;}
+	if(rect == "ans_nv_13") {rect = arrn.nv_13;}
+	if(rect == "ans_nv_14") {rect = arrn.nv_14;}
+	
+	if(oval == "ans_nv_1") {oval = arrn.nv_1;}
+	if(oval == "ans_nv_2") {oval = arrn.nv_2;}
+	if(oval == "ans_nv_3") {oval = arrn.nv_3;}
+	if(oval == "ans_nv_4") {oval = arrn.nv_4;}
+	if(oval == "ans_nv_5") {oval = arrn.nv_5;}
+	if(oval == "ans_nv_6") {oval = arrn.nv_6;}
+	if(oval == "ans_nv_7") {oval = arrn.nv_7;}
+	if(oval == "ans_nv_8") {oval = arrn.nv_8;}
+	if(oval == "ans_nv_9") {oval = arrn.nv_9;}
+	if(oval == "ans_nv_10") {oval = arrn.nv_10;}
+	if(oval == "ans_nv_11") {oval = arrn.nv_11;}
+	if(oval == "ans_nv_12") {oval = arrn.nv_12;}
+	if(oval == "ans_nv_13") {oval = arrn.nv_13;}
+	if(oval == "ans_nv_14") {oval = arrn.nv_14;}
+	
+	if(trap == "ans_nv_1") {trap = arrn.nv_1;}
+	if(trap == "ans_nv_2") {trap = arrn.nv_2;}
+	if(trap == "ans_nv_3") {trap = arrn.nv_3;}
+	if(trap == "ans_nv_4") {trap = arrn.nv_4;}
+	if(trap == "ans_nv_5") {trap = arrn.nv_5;}
+	if(trap == "ans_nv_6") {trap = arrn.nv_6;}
+	if(trap == "ans_nv_7") {trap = arrn.nv_7;}
+	if(trap == "ans_nv_8") {trap = arrn.nv_8;}
+	if(trap == "ans_nv_9") {trap = arrn.nv_9;}
+	if(trap == "ans_nv_10") {trap = arrn.nv_10;}
+	if(trap == "ans_nv_11") {trap = arrn.nv_11;}
+	if(trap == "ans_nv_12") {trap = arrn.nv_12;}
+	if(trap == "ans_nv_13") {trap = arrn.nv_13;}
+	if(trap == "ans_nv_14") {trap = arrn.nv_14;}
+	
+	if(hex == "ans_nv_1") {hex = arrn.nv_1;}
+	if(hex == "ans_nv_2") {hex = arrn.nv_2;}
+	if(hex == "ans_nv_3") {hex = arrn.nv_3;}
+	if(hex == "ans_nv_4") {hex = arrn.nv_4;}
+	if(hex == "ans_nv_5") {hex = arrn.nv_5;}
+	if(hex == "ans_nv_6") {hex = arrn.nv_6;}
+	if(hex == "ans_nv_7") {hex = arrn.nv_7;}
+	if(hex == "ans_nv_8") {hex = arrn.nv_8;}
+	if(hex == "ans_nv_9") {hex = arrn.nv_9;}
+	if(hex == "ans_nv_10") {hex = arrn.nv_10;}
+	if(hex == "ans_nv_11") {hex = arrn.nv_11;}
+	if(hex == "ans_nv_12") {hex = arrn.nv_12;}
+	if(hex == "ans_nv_13") {hex = arrn.nv_13;}
+	if(hex == "ans_nv_14") {hex = arrn.nv_14;}
+	
+	console.log ('rect',rect);
+	console.log ('oval',oval);
+	console.log ('trap',trap);
+	console.log ('hex',hex);
+	
+	
+	// now write these values to the Game table along with the problem_id and the instructor_id
 	
 	
 	
 	
 	
-	var give_ans =[];
+	/*  var give_ans =[];
 	$.each($("input[name='give_ans']:checked"),function(){
 		give_ans.push($(this).val());
-	});
+	}); 
 	
-	console.log (give_ans);
+	console.log (give_ans); */
 	
 	
-	var show_key = $('input[name = "show_key"]:checked').val();
-	if (show_key == undefined){show_key = 0;}
+	/* var show_key = $('input[name = "show_key"]:checked').val();
+	if (show_key == undefined){show_key = 0;} */
 	
 	//alert (show_key);
 	
-	var num_checked = 0;
+	/* var num_checked = 0;
 	num_checked = $('input:checked').length;
 	if (num_checked - show_key != 10){
 		//	alert (num_checked);
 		//	alert (show_key);
 			alert('Every column should have one item checked');
 			return;
-	}
+	} */
 	
 	
 

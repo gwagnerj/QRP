@@ -363,7 +363,7 @@ CREATE TABLE IF NOT EXISTS `Coinbank` (
 CREATE TABLE IF NOT EXISTS `Assign` (
   `assign_id` int(11) NOT NULL AUTO_INCREMENT,
   `instr_last` varchar(50) NOT NULL,
-   `iid` varchar(16) NOT NULL,
+   `iid` int(11) NOT NULL,
    `university` varchar(255) NOT NULL,
    assign_t_created time,
     assign_num int,
@@ -866,3 +866,20 @@ ALTER TABLE Problem	ADD unpubl_auth varchar(128);
 	ALTER TABLE Activity 
   ADD num_try int;
 	
+	
+	CREATE TABLE IF NOT EXISTS `Game` (
+  `game_id` int(11) NOT NULL AUTO_INCREMENT,
+   `problem_id` int(11) NOT NULL,
+  `iid` int(11) NOT NULL,
+	`rect` varchar(30),
+	`oval` varchar(30),
+	`trap` varchar(30),
+	`hexa` varchar(30),
+	`time_delete` datetime,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`game_id`),
+   CONSTRAINT FOREIGN KEY (`problem_id`) REFERENCES `Problem` (`problem_id`) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
