@@ -876,7 +876,8 @@ ALTER TABLE Problem	ADD unpubl_auth varchar(128);
 	`trap` varchar(30),
 	`hexa` varchar(30),
 	`time_delete` datetime,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`game_id`),
    CONSTRAINT FOREIGN KEY (`problem_id`) REFERENCES `Problem` (`problem_id`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
