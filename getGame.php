@@ -1,5 +1,5 @@
 <?php
-
+require_once "pdo.php";
 session_start();
 
 // this is a project to get game questions from the nummeic problems in the repository
@@ -17,22 +17,29 @@ $index='';
 if(isset($_POST['problem_id'])){
 	$problem_id = htmlentities($_POST['problem_id']);
 	$_SESSION['problem_id']=$problem_id;
+} else {
+
+	$_SESSION['error'] = 'problem id was not set';
+	header('Location: QRPRepo.php');
+	return;
+	
+}
+
+if(isset($_POST['iid'])){
+	$iid = htmlentities($_POST['iid']);
+	$_SESSION['iid']=$iid;
+} else {
+
+	$_SESSION['error'] = 'user_id iid was not set';
+	header('Location: QRPRepo.php');
+	return;
 }
 
 
-if(isset($_GET['problem_id'])){
-	$problem_id = htmlentities($_GET['problem_id']);
-	$_SESSION['problem_id']=$problem_id;
-}
+// need to check the database to see if there is an entry and change activate to deactivate  code should be similar to QRactivate.php but for now
+$activate_flag = 1; // temp
 
-if(isset($_POST['index'])){
-	
-	$index = htmlentities($_POST['index']);
-	
-	$_SESSION['index']=$index;
-	
-	
-}
+
 
 ?>
 <!DOCTYPE html>
@@ -70,16 +77,32 @@ if ( isset($_SESSION['success']) ) {
     echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
     unset($_SESSION['success']);
 }
- $problem_id = 238; // temp
- $index = 101; // temp  should just have them put one in
+// $problem_id = 238; // temp
+// $index = 101; // temp  should just have them put one in
 ?>
 
 <div id = substitute_me>
+
+<p><font color=#003399>Problem Number: </font> <?php echo($problem_id);?> &nbsp; &nbsp;
+	<font color=#003399>Your Instructor ID: </font><?php echo($iid);?></p>
+
 <form method="POST">
 	
-	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> ></p>
-	<p><font color=#003399>PIN: </font><input type="number" name="index" id="index_id" size=3 value=<?php echo($index);?> ></p>
+		<?php
+				if($activate_flag== 1){
+							 echo('<h4><input type="checkbox" name="activate" id = "activate" checked > Activate - make available to students </h4>');
+					
+				} else {
+					
+					echo('<h4><input type="checkbox" name="deactivate" id = "deactivate" > Deactivate </h4>');
+				}
+			
+			?>
 	
+	
+	<p><font color=#003399> </font><input type="hidden" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> >
+	<p><font color=#003399> </font><input type="hidden" name="iid" id="iid" size=3 value=<?php echo($iid);?> >
+	<p><font color=#003399>Index of Dataset </font><input type="number" name="dex" id="dex" size=3 value=101 ></p>
 	
 	
 	
@@ -159,20 +182,20 @@ if ( isset($_SESSION['success']) ) {
 				
 			<tr><td>	<font color = "blue" size =5 > Hexagon </font> </td>
 				
-				<td><span class = "nv_1"><input type="radio" name="hex" Value="ans_nv_1" > </span></td>
-				<td><span class = "nv_2"><input type="radio" name="hex" Value="ans_nv_2"> </span></td>
-				<td><span class = "nv_3"><input type="radio" name="hex" Value="ans_nv_3"> </span></td>
-				<td><span class = "nv_4"><input type="radio" name="hex" Value="ans_nv_4" checked = "checked"> </span></td>
-				<td><span class = "nv_5"><input type="radio" name="hex" Value="ans_nv_5"> </span></td>
-				<td><span class = "nv_6"><input type="radio" name="hex" Value="ans_nv_6"> </span></td>
-				<td><span class = "nv_7"><input type="radio" name="hex" Value="ans_nv_7"> </span></td>
-				<td><span class = "nv_8"><input type="radio" name="hex" Value="ans_nv_8"> </span></td>
-				<td><span class = "nv_9"><input type="radio" name="hex" Value="ans_nv_9"> </span></td>
-				<td><span class = "nv_10"><input type="radio" name="hex" Value="ans_nv_10"> </span></td>
-				<td><span class = "nv_11"><input type="radio" name="hex" Value="ans_nv_11"> </span></td>
-				<td><span class = "nv_12"><input type="radio" name="hex" Value="ans_nv_12"> </span></td>
-				<td><span class = "nv_13"><input type="radio" name="hex" Value="ans_nv_13"> </span></td>
-				<td><span class = "nv_14"><input type="radio" name="hex" Value="ans_nv_14"> </span></td>
+				<td><span class = "nv_1"><input type="radio" name="hexa" Value="ans_nv_1" > </span></td>
+				<td><span class = "nv_2"><input type="radio" name="hexa" Value="ans_nv_2"> </span></td>
+				<td><span class = "nv_3"><input type="radio" name="hexa" Value="ans_nv_3"> </span></td>
+				<td><span class = "nv_4"><input type="radio" name="hexa" Value="ans_nv_4" checked = "checked"> </span></td>
+				<td><span class = "nv_5"><input type="radio" name="hexa" Value="ans_nv_5"> </span></td>
+				<td><span class = "nv_6"><input type="radio" name="hexa" Value="ans_nv_6"> </span></td>
+				<td><span class = "nv_7"><input type="radio" name="hexa" Value="ans_nv_7"> </span></td>
+				<td><span class = "nv_8"><input type="radio" name="hexa" Value="ans_nv_8"> </span></td>
+				<td><span class = "nv_9"><input type="radio" name="hexa" Value="ans_nv_9"> </span></td>
+				<td><span class = "nv_10"><input type="radio" name="hexa" Value="ans_nv_10"> </span></td>
+				<td><span class = "nv_11"><input type="radio" name="hexa" Value="ans_nv_11"> </span></td>
+				<td><span class = "nv_12"><input type="radio" name="hexa" Value="ans_nv_12"> </span></td>
+				<td><span class = "nv_13"><input type="radio" name="hexa" Value="ans_nv_13"> </span></td>
+				<td><span class = "nv_14"><input type="radio" name="hexa" Value="ans_nv_14"> </span></td>
 				
 			
 				
@@ -184,13 +207,21 @@ if ( isset($_SESSION['success']) ) {
 	</form>
 
 	  </div>
+	  
+	  <?php
+		if($activate_flag== 1){
+				echo ('<p> &nbsp; </p><hr>');
+				echo ('<p><a href="QRPRepo.php">Cancel</a></p>');
+		}
+		
+		?>
 <script>
 
 	
 	var rect = "";
 	var oval = "";
 	var trap = "";
-	var hex = "";
+	var hexa = "";
 	
 	$(document).ready(function(){
 	// this next bit makes it so you can not have two columns with two items checked
@@ -202,8 +233,17 @@ if ( isset($_SESSION['success']) ) {
 			});
  	
 	var problem = $('input#prob_id').val();
+	var iid = $('input#iid').val();
+	var dex = $('input#dex').val();
+	if($("#activate").is(':checked')) {
+	var activate_flag = 1;  // checked
+	} else {
+		var activate_flag = 0; // unchecked
+	}
 	
-
+console.log('problem_id',problem); // temp
+console.log('iid',iid); // temp
+console.log('dex',dex); // temp
 
 	
 // Get the variables names that are not null for the problem
@@ -238,7 +278,7 @@ if(arrn.nv_5 == null || arrn.nv_5 == "Null" ){$(".nv_5").hide();}else {$("#nv_5"
 if(arrn.nv_4 == null || arrn.nv_4 == "Null" ){$(".nv_4").hide();}else {$("#nv_4").html(arrn.nv_4);}
 if(arrn.nv_3 == null || arrn.nv_3 == "Null" ){$(".nv_3").hide();}else {$("#nv_3").html(arrn.nv_3);}
 if(arrn.nv_2 == null || arrn.nv_2 == "Null" ){$(".nv_2").hide();}else {$("#nv_2").html(arrn.nv_2);}
-if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1").html(arrn.nv_1);}
+if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1").html( arrn.nv_1 );}
 
 
 
@@ -258,7 +298,7 @@ if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1
 	 rect = $('input[name = "rect"]:checked').val();
 	 oval = $('input[name = "oval"]:checked').val();
 	 trap = $('input[name = "trap"]:checked').val();
-	hex = $('input[name = "hex"]:checked').val();
+	hexa = $('input[name = "hexa"]:checked').val();
 	
 	// this is disgraceful but here goes - got tired of more sophisticated
 	
@@ -307,33 +347,42 @@ if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1
 	if(trap == "ans_nv_13") {trap = arrn.nv_13;}
 	if(trap == "ans_nv_14") {trap = arrn.nv_14;}
 	
-	if(hex == "ans_nv_1") {hex = arrn.nv_1;}
-	if(hex == "ans_nv_2") {hex = arrn.nv_2;}
-	if(hex == "ans_nv_3") {hex = arrn.nv_3;}
-	if(hex == "ans_nv_4") {hex = arrn.nv_4;}
-	if(hex == "ans_nv_5") {hex = arrn.nv_5;}
-	if(hex == "ans_nv_6") {hex = arrn.nv_6;}
-	if(hex == "ans_nv_7") {hex = arrn.nv_7;}
-	if(hex == "ans_nv_8") {hex = arrn.nv_8;}
-	if(hex == "ans_nv_9") {hex = arrn.nv_9;}
-	if(hex == "ans_nv_10") {hex = arrn.nv_10;}
-	if(hex == "ans_nv_11") {hex = arrn.nv_11;}
-	if(hex == "ans_nv_12") {hex = arrn.nv_12;}
-	if(hex == "ans_nv_13") {hex = arrn.nv_13;}
-	if(hex == "ans_nv_14") {hex = arrn.nv_14;}
+	if(hexa == "ans_nv_1") {hexa = arrn.nv_1;}
+	if(hexa == "ans_nv_2") {hexa = arrn.nv_2;}
+	if(hexa == "ans_nv_3") {hexa = arrn.nv_3;}
+	if(hexa == "ans_nv_4") {hexa = arrn.nv_4;}
+	if(hexa == "ans_nv_5") {hexa = arrn.nv_5;}
+	if(hexa == "ans_nv_6") {hexa = arrn.nv_6;}
+	if(hexa == "ans_nv_7") {hexa = arrn.nv_7;}
+	if(hexa == "ans_nv_8") {hexa = arrn.nv_8;}
+	if(hexa == "ans_nv_9") {hexa = arrn.nv_9;}
+	if(hexa == "ans_nv_10") {hexa = arrn.nv_10;}
+	if(hexa == "ans_nv_11") {hexa = arrn.nv_11;}
+	if(hexa == "ans_nv_12") {hexa = arrn.nv_12;}
+	if(hexa == "ans_nv_13") {hexa = arrn.nv_13;}
+	if(hexa == "ans_nv_14") {hexa = arrn.nv_14;}
 	
+	console.log('problem_id',problem); // temp
+	console.log('iid',iid); // temp
+	console.log('dex',dex); // temp
 	console.log ('rect',rect);
 	console.log ('oval',oval);
 	console.log ('trap',trap);
-	console.log ('hex',hex);
+	console.log ('hexa',hexa);
+	console.log ('activate_flag',activate_flag);
 	
-	
-	// now write these values to the Game table along with the problem_id and the instructor_id
-	
-	
-	
-	
-	
+	// now write these values to a php file that will  the Game table along with the problem_id and the instructor_id
+	if (activate_flag == 1) {
+		 $.post('GameRW.php', {problem_id : problem, iid : iid, activate_flag : activate_flag, rect : rect, oval : oval, trap : trap, hexa : hexa }, function(data){
+						
+						try{
+							var arr = JSON.parse(data);
+						}
+						catch(err) {
+							alert ('problem data unavailable');
+						}
+		 });
+	}
 	/*  var give_ans =[];
 	$.each($("input[name='give_ans']:checked"),function(){
 		give_ans.push($(this).val());
