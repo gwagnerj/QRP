@@ -138,6 +138,27 @@ nvar14 = "##"+nvar14+",.+?##";
 var oNvar14 = new RegExp(nvar14,"g");
 
 
+console.log ('Subst nvar1',nvar1); // temp
+console.log ('Subst var1',var1);
+console.log ('Subst oNvar1',oNvar1);
+
+console.log ('Subst nvar2',nvar2);
+console.log ('Subst var2',var2);
+console.log ('Subst oNvar2',oNvar2);
+
+console.log ('Subst nvar3',nvar3);
+console.log ('Subst var3',var3);
+console.log ('Subst oNvar3',oNvar3);
+
+console.log ('Subst nvar4',nvar4);
+console.log ('Subst var4',var4);
+console.log ('Subst oNvar4',oNvar4);
+
+console.log ('Subst nvar5',nvar5);
+console.log ('Subst var5',var5);
+console.log ('Subst oNvar5',oNvar5);
+
+
 
 // read in the basecase values for the variables
 var x = "bc_"+sessionStorage.getItem('nv_1');
