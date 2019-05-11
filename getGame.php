@@ -101,8 +101,8 @@ if ( isset($_SESSION['success']) ) {
 	
 	
 	<p><font color=#003399> </font><input type="hidden" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> >
-	<p><font color=#003399> </font><input type="hidden" name="iid" id="iid" size=3 value=<?php echo($iid);?> >
-	<p><font color=#003399>Index of Dataset </font><input type="number" name="dex" id="dex" size=3 required min = "2" max = "199" ></p>
+	 <p><font color=#003399> </font><input type="hidden" name="iid" id="iid" size=3 value=<?php echo($iid);?> > 
+	<div id ="dex_input"><p><font color=#003399>Index of Dataset - must print off each version since the number of vars > input shapes </font><input type="number" name="dex" id="dex" size=3 required min = "2" max = "199" ></p></div>
 	<p><font color=#003399>Time in Minutes for Students to Work Problem </font><input type="number" name="work_time" id="work_time" value = 15 size=3 required min = "1" max = "199" ></p>
 	<p><font color=#003399>How long in days to keep this Game Problem Active </font><input type="number" name="time_delete" value = 30 id="time_delete" size=3 required min = "1" ></p>
 	
@@ -217,12 +217,15 @@ if ( isset($_SESSION['success']) ) {
 		?>
 <script>
 
-	
+	var dex = -1;  // this is the value if we don'e have to put in a dex
 	var rect = "";
 	var oval = "";
 	var trap = "";
 	var hexa = "";
 	var game_id;
+	var num_tot_vars = 0;
+	var num_checked = 0;
+	$("#dex_input").hide();
 	
 	
 	$(document).ready(function(){
@@ -264,22 +267,22 @@ if ( isset($_SESSION['success']) ) {
 				console.log (arrn.nv_14); */
 
 
-			if(arrn.nv_14 == null || arrn.nv_14 == "Null" ){$(".nv_14").hide();}else {$("#nv_14").html(arrn.nv_14);}
-			if(arrn.nv_13 == null || arrn.nv_13 == "Null" ){$(".nv_13").hide();}else {$("#nv_13").html(arrn.nv_13);}
-			if(arrn.nv_12 == null || arrn.nv_12 == "Null" ){$(".nv_12").hide();}else {$("#nv_12").html(arrn.nv_12);}
-			if(arrn.nv_11 == null || arrn.nv_11 == "Null" ){$(".nv_11").hide();}else {$("#nv_11").html(arrn.nv_11);}
-			if(arrn.nv_10 == null || arrn.nv_10 == "Null" ){$(".nv_10").hide();}else {$("#nv_10").html(arrn.nv_10);}
-			if(arrn.nv_9 == null || arrn.nv_9 == "Null" ){$(".nv_9").hide();}else {$("#nv_9").html(arrn.nv_9);}
-			if(arrn.nv_8 == null || arrn.nv_8 == "Null" ){$(".nv_8").hide();}else {$("#nv_8").html(arrn.nv_8);}
-			if(arrn.nv_7 == null || arrn.nv_7 == "Null" ){$(".nv_7").hide();}else {$("#nv_7").html(arrn.nv_7);}
-			if(arrn.nv_6 == null || arrn.nv_6 == "Null" ){$(".nv_6").hide();}else {$("#nv_6").html(arrn.nv_6);}
-			if(arrn.nv_5 == null || arrn.nv_5 == "Null" ){$(".nv_5").hide();}else {$("#nv_5").html(arrn.nv_5);}
-			if(arrn.nv_4 == null || arrn.nv_4 == "Null" ){$(".nv_4").hide();}else {$("#nv_4").html(arrn.nv_4);}
-			if(arrn.nv_3 == null || arrn.nv_3 == "Null" ){$(".nv_3").hide();}else {$("#nv_3").html(arrn.nv_3);}
-			if(arrn.nv_2 == null || arrn.nv_2 == "Null" ){$(".nv_2").hide();}else {$("#nv_2").html(arrn.nv_2);}
-			if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1").html( arrn.nv_1 );}
+			if(arrn.nv_14 == null || arrn.nv_14 == "Null" ){$(".nv_14").hide();}else {$("#nv_14").html(arrn.nv_14); num_tot_vars++;}
+			if(arrn.nv_13 == null || arrn.nv_13 == "Null" ){$(".nv_13").hide();}else {$("#nv_13").html(arrn.nv_13);num_tot_vars++;}
+			if(arrn.nv_12 == null || arrn.nv_12 == "Null" ){$(".nv_12").hide();}else {$("#nv_12").html(arrn.nv_12);num_tot_vars++;}
+			if(arrn.nv_11 == null || arrn.nv_11 == "Null" ){$(".nv_11").hide();}else {$("#nv_11").html(arrn.nv_11);num_tot_vars++;}
+			if(arrn.nv_10 == null || arrn.nv_10 == "Null" ){$(".nv_10").hide();}else {$("#nv_10").html(arrn.nv_10);num_tot_vars++;}
+			if(arrn.nv_9 == null || arrn.nv_9 == "Null" ){$(".nv_9").hide();}else {$("#nv_9").html(arrn.nv_9);num_tot_vars++;}
+			if(arrn.nv_8 == null || arrn.nv_8 == "Null" ){$(".nv_8").hide();}else {$("#nv_8").html(arrn.nv_8);num_tot_vars++;}
+			if(arrn.nv_7 == null || arrn.nv_7 == "Null" ){$(".nv_7").hide();}else {$("#nv_7").html(arrn.nv_7);num_tot_vars++;}
+			if(arrn.nv_6 == null || arrn.nv_6 == "Null" ){$(".nv_6").hide();}else {$("#nv_6").html(arrn.nv_6);num_tot_vars++;}
+			if(arrn.nv_5 == null || arrn.nv_5 == "Null" ){$(".nv_5").hide();}else {$("#nv_5").html(arrn.nv_5);num_tot_vars++;}
+			if(arrn.nv_4 == null || arrn.nv_4 == "Null" ){$(".nv_4").hide();}else {$("#nv_4").html(arrn.nv_4);num_tot_vars++;}
+			if(arrn.nv_3 == null || arrn.nv_3 == "Null" ){$(".nv_3").hide();}else {$("#nv_3").html(arrn.nv_3);num_tot_vars++;}
+			if(arrn.nv_2 == null || arrn.nv_2 == "Null" ){$(".nv_2").hide();}else {$("#nv_2").html(arrn.nv_2);num_tot_vars++;}
+			if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1").html( arrn.nv_1 );num_tot_vars++;}
 
-
+			if (num_tot_vars > 4){ $("#dex_input").show();}
 
  // we are here editing this file
 	
@@ -291,13 +294,16 @@ if ( isset($_SESSION['success']) ) {
 			if(!OneIsChecked){alert('Rectangle needs at least one checked');
 			return;
 			} */
-		
+		if ($("#dex_input").is(':visible')){
+				dex = $('input#dex').val();
+			 }
 	//	console.log (OneIsChecked);
-	if ($('input#dex').val() >= 2 && $('input#dex').val()<=200 && $('input#work_time').val() >= 2 && $('input#work_time').val()<=200 && $('input#time_delete').val()>=1){	
-			var dex = $('input#dex').val();
+	if (((dex >= 2 && dex<=200)||dex==-1) && $('input#work_time').val() >= 2 && $('input#work_time').val()<=200 && $('input#time_delete').val()>=1){	
+			 
+			 
 			var work_time = $('input#work_time').val();
 			var time_delete = $('input#time_delete').val();
-			
+			// get the values of the ones that are checked
 			 rect = $('input[name = "rect"]:checked').val();
 			 oval = $('input[name = "oval"]:checked').val();
 			 trap = $('input[name = "trap"]:checked').val();
@@ -324,65 +330,68 @@ if ( isset($_SESSION['success']) ) {
 			
 			console.log ('rect_shape',rect_shape);
 			
-			if(rect == "ans_nv_1") {rect = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,rect_shape);}
-			if(rect == "ans_nv_2") {rect = arrn.nv_2; sessionStorage.setItem(arrn.nv_2,rect_shape);}
-			if(rect == "ans_nv_3") {rect = arrn.nv_3; sessionStorage.setItem(arrn.nv_3,rect_shape);}
-			if(rect == "ans_nv_4") {rect = arrn.nv_4; sessionStorage.setItem(arrn.nv_4,rect_shape);}
-			if(rect == "ans_nv_5") {rect = arrn.nv_5; sessionStorage.setItem(arrn.nv_5,rect_shape);}
-			if(rect == "ans_nv_6") {rect = arrn.nv_6; sessionStorage.setItem(arrn.nv_6,rect_shape);}
-			if(rect == "ans_nv_7") {rect = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,rect_shape);}
-			if(rect == "ans_nv_8") {rect = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,rect_shape);}
-			if(rect == "ans_nv_9") {rect = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,rect_shape);}
-			if(rect == "ans_nv_10") {rect = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,rect_shape);}
-			if(rect == "ans_nv_11") {rect = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,rect_shape);}
-			if(rect == "ans_nv_12") {rect = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,rect_shape);}
-			if(rect == "ans_nv_13") {rect = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,rect_shape);}
-			if(rect == "ans_nv_14") {rect = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,rect_shape);}
+			if(rect == "ans_nv_1") {rect = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,rect_shape);num_checked++;}
+			if(rect == "ans_nv_2") {rect = arrn.nv_2; sessionStorage.setItem(arrn.nv_2,rect_shape);num_checked++;}
+			if(rect == "ans_nv_3") {rect = arrn.nv_3; sessionStorage.setItem(arrn.nv_3,rect_shape);num_checked++;}
+			if(rect == "ans_nv_4") {rect = arrn.nv_4; sessionStorage.setItem(arrn.nv_4,rect_shape);num_checked++;}
+			if(rect == "ans_nv_5") {rect = arrn.nv_5; sessionStorage.setItem(arrn.nv_5,rect_shape);num_checked++;}
+			if(rect == "ans_nv_6") {rect = arrn.nv_6; sessionStorage.setItem(arrn.nv_6,rect_shape);num_checked++;}
+			if(rect == "ans_nv_7") {rect = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,rect_shape);num_checked++;}
+			if(rect == "ans_nv_8") {rect = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,rect_shape);num_checked++;}
+			if(rect == "ans_nv_9") {rect = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,rect_shape);num_checked++;}
+			if(rect == "ans_nv_10") {rect = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,rect_shape);num_checked++;}
+			if(rect == "ans_nv_11") {rect = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,rect_shape);num_checked++;}
+			if(rect == "ans_nv_12") {rect = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,rect_shape);num_checked++;}
+			if(rect == "ans_nv_13") {rect = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,rect_shape);num_checked++;}
+			if(rect == "ans_nv_14") {rect = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,rect_shape);num_checked++;}
 			
-			if(oval == "ans_nv_1") {oval = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,oval_shape);}
-			if(oval == "ans_nv_2") {oval = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,oval_shape);}
-			if(oval == "ans_nv_3") {oval = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,oval_shape);}
-			if(oval == "ans_nv_4") {oval = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,oval_shape);}
-			if(oval == "ans_nv_5") {oval = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,oval_shape);}
-			if(oval == "ans_nv_6") {oval = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,oval_shape);}
-			if(oval == "ans_nv_7") {oval = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,oval_shape);}
-			if(oval == "ans_nv_8") {oval = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,oval_shape);}
-			if(oval == "ans_nv_9") {oval = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,oval_shape);}
-			if(oval == "ans_nv_10") {oval = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,oval_shape);}
-			if(oval == "ans_nv_11") {oval = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,oval_shape);}
-			if(oval == "ans_nv_12") {oval = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,oval_shape);}
-			if(oval == "ans_nv_13") {oval = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,oval_shape);}
-			if(oval == "ans_nv_14") {oval = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,oval_shape);}
+			if(oval == "ans_nv_1") {oval = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,oval_shape);num_checked++;}
+			if(oval == "ans_nv_2") {oval = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,oval_shape);num_checked++;}
+			if(oval == "ans_nv_3") {oval = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,oval_shape);num_checked++;}
+			if(oval == "ans_nv_4") {oval = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,oval_shape);num_checked++;}
+			if(oval == "ans_nv_5") {oval = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,oval_shape);num_checked++;}
+			if(oval == "ans_nv_6") {oval = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,oval_shape);num_checked++;}
+			if(oval == "ans_nv_7") {oval = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,oval_shape);num_checked++;}
+			if(oval == "ans_nv_8") {oval = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,oval_shape);num_checked++;}
+			if(oval == "ans_nv_9") {oval = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,oval_shape);num_checked++;}
+			if(oval == "ans_nv_10") {oval = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,oval_shape);num_checked++;}
+			if(oval == "ans_nv_11") {oval = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,oval_shape);num_checked++;}
+			if(oval == "ans_nv_12") {oval = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,oval_shape);num_checked++;}
+			if(oval == "ans_nv_13") {oval = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,oval_shape);num_checked++;}
+			if(oval == "ans_nv_14") {oval = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,oval_shape);num_checked++;}
 			
-			if(trap == "ans_nv_1") {trap = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,trap_shape);}
-			if(trap == "ans_nv_2") {trap = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,trap_shape);}
-			if(trap == "ans_nv_3") {trap = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,trap_shape);}
-			if(trap == "ans_nv_4") {trap = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,trap_shape);}
-			if(trap == "ans_nv_5") {trap = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,trap_shape);}
-			if(trap == "ans_nv_6") {trap = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,trap_shape);}
-			if(trap == "ans_nv_7") {trap = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,trap_shape);}
-			if(trap == "ans_nv_8") {trap = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,trap_shape);}
-			if(trap == "ans_nv_9") {trap = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,trap_shape);}
-			if(trap == "ans_nv_10") {trap = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,trap_shape);}
-			if(trap == "ans_nv_11") {trap = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,trap_shape);}
-			if(trap == "ans_nv_12") {trap = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,trap_shape);}
-			if(trap == "ans_nv_13") {trap = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,trap_shape);}
-			if(trap == "ans_nv_14") {trap = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,trap_shape);}
+			if(trap == "ans_nv_1") {trap = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,trap_shape);num_checked++;}
+			if(trap == "ans_nv_2") {trap = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,trap_shape);num_checked++;}
+			if(trap == "ans_nv_3") {trap = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,trap_shape);num_checked++;}
+			if(trap == "ans_nv_4") {trap = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,trap_shape);num_checked++;}
+			if(trap == "ans_nv_5") {trap = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,trap_shape);num_checked++;}
+			if(trap == "ans_nv_6") {trap = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,trap_shape);num_checked++;}
+			if(trap == "ans_nv_7") {trap = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,trap_shape);num_checked++;}
+			if(trap == "ans_nv_8") {trap = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,trap_shape);num_checked++;}
+			if(trap == "ans_nv_9") {trap = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,trap_shape);num_checked++;}
+			if(trap == "ans_nv_10") {trap = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,trap_shape);num_checked++;}
+			if(trap == "ans_nv_11") {trap = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,trap_shape);num_checked++;}
+			if(trap == "ans_nv_12") {trap = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,trap_shape);num_checked++;}
+			if(trap == "ans_nv_13") {trap = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,trap_shape);num_checked++;}
+			if(trap == "ans_nv_14") {trap = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,trap_shape);num_checked++;}
 			
-			if(hexa == "ans_nv_1") {hexa = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,hexa_shape);}
-			if(hexa == "ans_nv_2") {hexa = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,hexa_shape);}
-			if(hexa == "ans_nv_3") {hexa = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,hexa_shape);}
-			if(hexa == "ans_nv_4") {hexa = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,hexa_shape);}
-			if(hexa == "ans_nv_5") {hexa = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,hexa_shape);}
-			if(hexa == "ans_nv_6") {hexa = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,hexa_shape);}
-			if(hexa == "ans_nv_7") {hexa = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,hexa_shape);}
-			if(hexa == "ans_nv_8") {hexa = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,hexa_shape);}
-			if(hexa == "ans_nv_9") {hexa = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,hexa_shape);}
-			if(hexa == "ans_nv_10") {hexa = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,hexa_shape);}
-			if(hexa == "ans_nv_11") {hexa = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,hexa_shape);}
-			if(hexa == "ans_nv_12") {hexa = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,hexa_shape);}
-			if(hexa == "ans_nv_13") {hexa = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,hexa_shape);}
-			if(hexa == "ans_nv_14") {hexa = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,hexa_shape);}
+			if(hexa == "ans_nv_1") {hexa = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_2") {hexa = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_3") {hexa = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_4") {hexa = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_5") {hexa = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_6") {hexa = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_7") {hexa = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_8") {hexa = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_9") {hexa = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_10") {hexa = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_11") {hexa = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_12") {hexa = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_13") {hexa = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,hexa_shape);num_checked++;}
+			if(hexa == "ans_nv_14") {hexa = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,hexa_shape);num_checked++;}
+			
+			
+	if(num_checked>=num_tot_vars || dex != -1) {
 			
 			console.log('problem_id',problem); // temp
 			console.log('iid',iid); // temp
@@ -416,7 +425,7 @@ if ( isset($_SESSION['success']) ) {
 			// we are here temp can we just call static auto
 			
 
-				var inde = dex;
+				var inde = Math.abs(dex);
 			
 			//	var s_name = $('input#stu_name_id').val();
 				var statusFlag=true;
@@ -641,7 +650,7 @@ if ( isset($_SESSION['success']) ) {
 			}
 			
 			
-			
+	} else {$("#dex_input").show(); alert ("must select more variables or fill in a the index set for each version of the game problem" );}
 			
 			} else {
 					alert ("invalid input - index must have a value between 2 and 200 and both time values must have values");
