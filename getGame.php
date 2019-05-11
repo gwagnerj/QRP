@@ -306,9 +306,14 @@ if ( isset($_SESSION['success']) ) {
 			 trap = $('input[name = "trap"]:checked').val();
 			hexa = $('input[name = "hexa"]:checked').val();
 			
-			// this is disgraceful but here goes - got tired of more sophisticated
+			// this is disgraceful but here goes - got tired of trying more sophisticated stuff
+			var rect_shape = ' <svg width = "46" Height = "15"  > <rect width = "40" height = "15" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
+			var oval_shape = ' <svg width = "46" Height = "15"  > <rect width = "40" height = "15" rx = "10" ry = "10" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
+			var trap_shape = '<svg  width="46" height="15" >  <polygon  fill="white" stroke="green" stroke-width="3" points="6,15 35,15 41,0 0,0"/> </svg>';
+   
 			
-			if(rect == "ans_nv_1") {rect = arrn.nv_1;}
+			
+			if(rect == "ans_nv_1") {rect = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,rect_shape);}
 			if(rect == "ans_nv_2") {rect = arrn.nv_2;}
 			if(rect == "ans_nv_3") {rect = arrn.nv_3;}
 			if(rect == "ans_nv_4") {rect = arrn.nv_4;}
@@ -324,7 +329,7 @@ if ( isset($_SESSION['success']) ) {
 			if(rect == "ans_nv_14") {rect = arrn.nv_14;}
 			
 			if(oval == "ans_nv_1") {oval = arrn.nv_1;}
-			if(oval == "ans_nv_2") {oval = arrn.nv_2;}
+			if(oval == "ans_nv_2") {oval = arrn.nv_2; sessionStorage.setItem(arrn.nv_2,oval_shape);}
 			if(oval == "ans_nv_3") {oval = arrn.nv_3;}
 			if(oval == "ans_nv_4") {oval = arrn.nv_4;}
 			if(oval == "ans_nv_5") {oval = arrn.nv_5;}
@@ -340,7 +345,7 @@ if ( isset($_SESSION['success']) ) {
 			
 			if(trap == "ans_nv_1") {trap = arrn.nv_1;}
 			if(trap == "ans_nv_2") {trap = arrn.nv_2;}
-			if(trap == "ans_nv_3") {trap = arrn.nv_3;}
+			if(trap == "ans_nv_3") {trap = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,trap_shape);}
 			if(trap == "ans_nv_4") {trap = arrn.nv_4;}
 			if(trap == "ans_nv_5") {trap = arrn.nv_5;}
 			if(trap == "ans_nv_6") {trap = arrn.nv_6;}
@@ -435,28 +440,6 @@ if ( isset($_SESSION['success']) ) {
 					
 						var static_f = true;
 					
-					
-				
-					
-				
-				/* 	// alert ('wowo');
-					
-					//console.log(resp_a[50]);
-				// console.log (resp_a);	
-					// Get the html file name from the database
-					
-						var openup = arr.htmlfilenm;
-						
-						// alert(openup);
-						
-						var game = arr.game_prob_flag;
-						var status = arr.status;
-						var prob_num = arr.problem_id;
-						var contrib_first = arr.first;
-						var contrib_last = arr.last;
-						var contrib_university = arr.university;
-						
-						$('#substitute_me').load("uploads/"+openup, 'document').html(); */
 						
 						sessionStorage.setItem('contrib_first',contrib_first);
 						sessionStorage.setItem('contrib_last',contrib_last);
@@ -467,13 +450,20 @@ if ( isset($_SESSION['success']) ) {
 					//	console.log(contrib_first);
 					//	console.log('arr', arr);
 						if (status !== 'suspended'){
-							
-								sessionStorage.setItem('nv_1',arr.nv_1);
-								sessionStorage.setItem(arr.nv_1,arr.v_1);
-								sessionStorage.setItem('nv_2',arr.nv_2);
-								sessionStorage.setItem(arr.nv_2,arr.v_2);
+								if(sessionStorage.getItem(arr.nv_1)==null){
+									sessionStorage.setItem('nv_1',arr.nv_1);
+									sessionStorage.setItem(arr.nv_1,arr.v_1);
+								}
+								
+								if(sessionStorage.getItem(arr.nv_2)==null){
+									sessionStorage.setItem('nv_2',arr.nv_2);
+									sessionStorage.setItem(arr.nv_2,arr.v_2);
+								}
+								
+								if(sessionStorage.getItem(arr.nv_3)==null){
 								sessionStorage.setItem('nv_3',arr.nv_3);
 								sessionStorage.setItem(arr.nv_3,arr.v_3);
+								}
 								sessionStorage.setItem('nv_4',arr.nv_4);
 								sessionStorage.setItem(arr.nv_4,arr.v_4);
 								sessionStorage.setItem('nv_5',arr.nv_5);
