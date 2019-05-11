@@ -291,7 +291,7 @@ if ( isset($_SESSION['success']) ) {
 		
 	event.preventDefault();
 		/* var OneIsChecked = $('input[name = "rect"]:checked').length ==1;  // not sure I need this 
-			if(!OneIsChecked){alert('Rectangle needs at leat one checked');
+			if(!OneIsChecked){alert('Rectangle needs at least one checked');
 			return;
 			} */
 		
@@ -429,131 +429,22 @@ if ( isset($_SESSION['success']) ) {
 										$('#substitute_me').load("uploads/"+openup, 'document').html();
 					
 					
-					console.log (mc1);
-					console.log (mc2);
-					console.log (mc3);
 					
-					// variables to pass
-					var part_a = "";
-					var part_b = "";
-					var part_c = "";
-					var part_d = "";
-					var part_e = "";
-					var part_f = "";
-					var part_g = "";
-					var part_h = "";
-					var part_i = "";
-					var part_j = "";
+					
+					
+					
+						var static_f = true;
+					
+					
 				
-					console.log (n);
-					console.log(problem);
-					console.log(inde);
-					console.log(mc1);
-					console.log(mc2);
-						console.log(mc3);
 					
-					
-					$.post('fetchpblmqa.php', {problem_id : problem, dex : inde , mc1 : mc1, mc2 : mc2, mc3 : mc3 , n : n }, function(data){
-						
-						try{
-							var arr2 = JSON.parse(data);
-						}
-						catch(err) {
-						//	var arr2 -> data.text();
-							
-							alert ('problem qa data is unavailable')
-							alert (err);
-							alert (arr2);
-						}
-				// construct the multiple choice option strings
-				var mc1_str = "<p ><font size = '3'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;       i) "+arr2.opt_i_1+"   &nbsp;&nbsp;   ii) " +arr2.opt_ii_1+"  &nbsp;&nbsp;    iii) "+ arr2.opt_iii_1 + "  &nbsp;&nbsp;    iv) "+arr2.opt_iv_1+"</font> </p>";
-				var mc2_str = " <p ><font size = '3'>  &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;    &nbsp; &nbsp;&nbsp;        i) "+arr2.opt_i_2+"  &nbsp;&nbsp;    ii) " +arr2.opt_ii_2+"  &nbsp;&nbsp;    iii) "+ arr2.opt_iii_2 + "   &nbsp;&nbsp;   iv) "+arr2.opt_iv_2+"</font> </p>";
-				var mc3_str = " <p ><font size = '3'>   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;     &nbsp; &nbsp;&nbsp;      i) "+arr2.opt_i_3+"  &nbsp;&nbsp;    ii) " +arr2.opt_ii_3+"   &nbsp;&nbsp;   iii) "+ arr2.opt_iii_3 + " &nbsp;&nbsp;     iv) "+arr2.opt_iv_3+"</font> </p>";
 				
-				
-				// give them the answers for the parts of the problem the instructor wants to give them the answers
-					if(give_ans.includes("ans_a")){part_a = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_a+"</font> </p>";}
-					if(give_ans.includes("ans_b")){part_b = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_b+"</font> </p>";}
-					if(give_ans.includes("ans_c")){part_c = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_c+"</font> </p>";}
-					if(give_ans.includes("ans_d")){part_d = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_d+"</font> </p>";}
-					if(give_ans.includes("ans_e")){part_e = "<p ><font size = '2'>&nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;  &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_e+"</font> </p>";}
-					if(give_ans.includes("ans_f")){part_f = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_f+"</font> </p>";}
-					if(give_ans.includes("ans_g")){part_g = "<p ><font size = '2'>&nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;  &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_g+"</font> </p>";}
-					if(give_ans.includes("ans_h")){part_h = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_h+"</font> </p>";}
-					if(give_ans.includes("ans_i")){part_i = "<p ><font size = '2'>&nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;  &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_i+"</font> </p>";}
-					if(give_ans.includes("ans_j")){part_j = "<p ><font size = '2'> &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;   &nbsp; &nbsp;&nbsp;the answer to this part is "+arr2.ans_j+"</font> </p>";}
-					
-				// define the different parts of - know I should read into an array but...	
-					if(mc1 == "ans_a"){part_a = mc1_str;}
-					if(mc1 == "ans_b"){part_b = mc1_str;}
-					if(mc1 == "ans_c"){part_c = mc1_str;}
-					if(mc1 == "ans_d"){part_d = mc1_str;}
-					if(mc1 == "ans_e"){part_e = mc1_str;}
-					if(mc1 == "ans_f"){part_f = mc1_str;}
-					if(mc1 == "ans_g"){part_g = mc1_str;}
-					if(mc1 == "ans_h"){part_h = mc1_str;}
-					if(mc1 == "ans_i"){part_i = mc1_str;}
-					if(mc1 == "ans_j"){part_j = mc1_str;}
-					
-					if(mc2 == "ans_a"){part_a = mc2_str;}
-					if(mc2 == "ans_b"){part_b = mc2_str;}
-					if(mc2 == "ans_c"){part_c = mc2_str;}
-					if(mc2 == "ans_d"){part_d = mc2_str;}
-					if(mc2 == "ans_e"){part_e = mc2_str;}
-					if(mc2 == "ans_f"){part_f = mc2_str;}
-					if(mc2 == "ans_g"){part_g = mc2_str;}
-					if(mc2 == "ans_h"){part_h = mc2_str;}
-					if(mc2 == "ans_i"){part_i = mc2_str;}
-					if(mc2 == "ans_j"){part_j = mc2_str;}
-					
-					if(mc3 == "ans_a"){part_a = mc3_str;}
-					if(mc3 == "ans_b"){part_b = mc3_str;}
-					if(mc3 == "ans_c"){part_c = mc3_str;}
-					if(mc3 == "ans_d"){part_d = mc3_str;}
-					if(mc3 == "ans_e"){part_e = mc3_str;}
-					if(mc3 == "ans_f"){part_f = mc3_str;}
-					if(mc3 == "ans_g"){part_g = mc3_str;}
-					if(mc3 == "ans_h"){part_h = mc3_str;}
-					if(mc3 == "ans_i"){part_i = mc3_str;}
-					if(mc3 == "ans_j"){part_j = mc3_str;}
-					
-					
-					console.log ('part_a', part_a);
-					
-					console.log ('part_d', part_d);
-						console.log ('mc1_str', mc1_str);
-					
-					
-					var key_1 = arr2.key_1;
-					var opt_i_1 = arr2.opt_i_1;
-					var opt_ii_1 = arr2.opt_ii_1;
-					var opt_iii_1 = arr2.opt_iii_1;
-					var opt_iv_1 = arr2.opt_iv_1;
-					console.log('1st muliple choice Options');
-					console.log(key_1);
-					console.log(opt_i_1);
-					console.log(opt_ii_1);
-					console.log(opt_iii_1);
-					console.log(opt_iv_1);
-					console.log('2nd muliple choice Options');
-					console.log(arr2.key_2);
-					console.log(arr2.opt_i_2);
-					console.log(arr2.opt_ii_2);
-					console.log(arr2.opt_iii_2);
-					console.log(arr2.opt_iv_2);
-						console.log('3rd muliple choice Options');
-					console.log(arr2.key_3);
-					console.log(arr2.opt_i_3);
-					console.log(arr2.opt_ii_3);
-					console.log(arr2.opt_iii_3);
-					console.log(arr2.opt_iv_3);
-				
-					// alert ('wowo');
+				/* 	// alert ('wowo');
 					
 					//console.log(resp_a[50]);
 				// console.log (resp_a);	
 					// Get the html file name from the database
-						var static_f = true;
+					
 						var openup = arr.htmlfilenm;
 						
 						// alert(openup);
@@ -565,7 +456,7 @@ if ( isset($_SESSION['success']) ) {
 						var contrib_last = arr.last;
 						var contrib_university = arr.university;
 						
-						$('#substitute_me').load("uploads/"+openup, 'document').html();
+						$('#substitute_me').load("uploads/"+openup, 'document').html(); */
 						
 						sessionStorage.setItem('contrib_first',contrib_first);
 						sessionStorage.setItem('contrib_last',contrib_last);
@@ -608,25 +499,12 @@ if ( isset($_SESSION['success']) ) {
 								
 								
 								sessionStorage.setItem('title',arr.title);
-								//sessionStorage.setItem('stu_name',s_name);
+								
 								sessionStorage.setItem('problem_id',problem);
 								sessionStorage.setItem('index',inde);
 								sessionStorage.setItem('static_flag',static_f);
-								sessionStorage.setItem('MC_flag','true');
-								sessionStorage.setItem('key_1',arr2.key_1);
-								sessionStorage.setItem('key_2',arr2.key_2);
-								sessionStorage.setItem('key_3',arr2.key_3);
-								sessionStorage.setItem('part_a',part_a);
-								sessionStorage.setItem('part_b',part_b);
-								sessionStorage.setItem('part_c',part_c);
-								sessionStorage.setItem('part_d',part_d);
-								sessionStorage.setItem('part_e',part_e);
-								sessionStorage.setItem('part_f',part_f);
-								sessionStorage.setItem('part_g',part_g);
-								sessionStorage.setItem('part_h',part_h);
-								sessionStorage.setItem('part_i',part_i);
-								sessionStorage.setItem('part_j',part_j);
-								sessionStorage.setItem('show_key',show_key);
+								sessionStorage.setItem('MC_flag','false');
+								
 
 
 								
@@ -698,7 +576,7 @@ if ( isset($_SESSION['success']) ) {
 
 						 
 					
-					});
+					
 				  });			
 			  
 			 
