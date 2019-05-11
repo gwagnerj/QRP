@@ -2,6 +2,7 @@
 require_once "pdo.php";
 session_start();
 
+// THis is called by getGame.php to write the game variables to the game table (what is the name of rectangle varaible...) for a particular problem_id, iid and dex and return a game_id
 
 if (isset($_POST['problem_id'])){
 	$problem_id = $_POST['problem_id'];
@@ -147,7 +148,18 @@ if (isset($_POST['activate_flag'])){
 			
 		}
 		
+		$stmt = $pdo->prepare("SELECT `game_id` FROM `Game` where problem_id = :problem_id AND dex = :dex AND iid = :iid");
+		 $stmt->execute(array(":problem_id" => $problem_id,":dex" => $dex, ":iid" => $iid ));
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+	
+		if ( $row === false ) {
+			$_SESSION['error'] = 'could not read game_id from Game table';
+	
+		}	
 		
+		$game_id = $row['game_id'];
+		$resp_arr = array('game_id' => $game_id);
+	 echo json_encode($resp_arr);
 	}
 	
 	

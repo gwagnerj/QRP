@@ -222,7 +222,7 @@ if ( isset($_SESSION['success']) ) {
 	var oval = "";
 	var trap = "";
 	var hexa = "";
-	
+	var game_id;
 	
 	
 	$(document).ready(function(){
@@ -243,9 +243,9 @@ if ( isset($_SESSION['success']) ) {
 		var activate_flag = 0; // unchecked
 	}
 	
-console.log('problem_id',problem); // temp
-console.log('iid',iid); // temp
-console.log('dex',dex); // temp
+// console.log('problem_id',problem); // temp
+// console.log('iid',iid); // temp
+// console.log('dex',dex); // temp
 
 	
 // Get the variables names that are not null for the problem
@@ -260,27 +260,27 @@ console.log('dex',dex); // temp
 					alert (err);
 				}
 
-	/* var nv_1 = arrn.nv_1
-	console.log (arrn.nv_1);
-console.log (arrn.nv_2);
-console.log (arrn.nv_3);
-console.log (arrn.nv_14); */
+					/* var nv_1 = arrn.nv_1
+					console.log (arrn.nv_1);
+				console.log (arrn.nv_2);
+				console.log (arrn.nv_3);
+				console.log (arrn.nv_14); */
 
 
-if(arrn.nv_14 == null || arrn.nv_14 == "Null" ){$(".nv_14").hide();}else {$("#nv_14").html(arrn.nv_14);}
-if(arrn.nv_13 == null || arrn.nv_13 == "Null" ){$(".nv_13").hide();}else {$("#nv_13").html(arrn.nv_13);}
-if(arrn.nv_12 == null || arrn.nv_12 == "Null" ){$(".nv_12").hide();}else {$("#nv_12").html(arrn.nv_12);}
-if(arrn.nv_11 == null || arrn.nv_11 == "Null" ){$(".nv_11").hide();}else {$("#nv_11").html(arrn.nv_11);}
-if(arrn.nv_10 == null || arrn.nv_10 == "Null" ){$(".nv_10").hide();}else {$("#nv_10").html(arrn.nv_10);}
-if(arrn.nv_9 == null || arrn.nv_9 == "Null" ){$(".nv_9").hide();}else {$("#nv_9").html(arrn.nv_9);}
-if(arrn.nv_8 == null || arrn.nv_8 == "Null" ){$(".nv_8").hide();}else {$("#nv_8").html(arrn.nv_8);}
-if(arrn.nv_7 == null || arrn.nv_7 == "Null" ){$(".nv_7").hide();}else {$("#nv_7").html(arrn.nv_7);}
-if(arrn.nv_6 == null || arrn.nv_6 == "Null" ){$(".nv_6").hide();}else {$("#nv_6").html(arrn.nv_6);}
-if(arrn.nv_5 == null || arrn.nv_5 == "Null" ){$(".nv_5").hide();}else {$("#nv_5").html(arrn.nv_5);}
-if(arrn.nv_4 == null || arrn.nv_4 == "Null" ){$(".nv_4").hide();}else {$("#nv_4").html(arrn.nv_4);}
-if(arrn.nv_3 == null || arrn.nv_3 == "Null" ){$(".nv_3").hide();}else {$("#nv_3").html(arrn.nv_3);}
-if(arrn.nv_2 == null || arrn.nv_2 == "Null" ){$(".nv_2").hide();}else {$("#nv_2").html(arrn.nv_2);}
-if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1").html( arrn.nv_1 );}
+			if(arrn.nv_14 == null || arrn.nv_14 == "Null" ){$(".nv_14").hide();}else {$("#nv_14").html(arrn.nv_14);}
+			if(arrn.nv_13 == null || arrn.nv_13 == "Null" ){$(".nv_13").hide();}else {$("#nv_13").html(arrn.nv_13);}
+			if(arrn.nv_12 == null || arrn.nv_12 == "Null" ){$(".nv_12").hide();}else {$("#nv_12").html(arrn.nv_12);}
+			if(arrn.nv_11 == null || arrn.nv_11 == "Null" ){$(".nv_11").hide();}else {$("#nv_11").html(arrn.nv_11);}
+			if(arrn.nv_10 == null || arrn.nv_10 == "Null" ){$(".nv_10").hide();}else {$("#nv_10").html(arrn.nv_10);}
+			if(arrn.nv_9 == null || arrn.nv_9 == "Null" ){$(".nv_9").hide();}else {$("#nv_9").html(arrn.nv_9);}
+			if(arrn.nv_8 == null || arrn.nv_8 == "Null" ){$(".nv_8").hide();}else {$("#nv_8").html(arrn.nv_8);}
+			if(arrn.nv_7 == null || arrn.nv_7 == "Null" ){$(".nv_7").hide();}else {$("#nv_7").html(arrn.nv_7);}
+			if(arrn.nv_6 == null || arrn.nv_6 == "Null" ){$(".nv_6").hide();}else {$("#nv_6").html(arrn.nv_6);}
+			if(arrn.nv_5 == null || arrn.nv_5 == "Null" ){$(".nv_5").hide();}else {$("#nv_5").html(arrn.nv_5);}
+			if(arrn.nv_4 == null || arrn.nv_4 == "Null" ){$(".nv_4").hide();}else {$("#nv_4").html(arrn.nv_4);}
+			if(arrn.nv_3 == null || arrn.nv_3 == "Null" ){$(".nv_3").hide();}else {$("#nv_3").html(arrn.nv_3);}
+			if(arrn.nv_2 == null || arrn.nv_2 == "Null" ){$(".nv_2").hide();}else {$("#nv_2").html(arrn.nv_2);}
+			if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1").html( arrn.nv_1 );}
 
 
 
@@ -289,7 +289,7 @@ if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1
 	$('input#submit_id').on('click',function(event){
 		
 		
-		event.preventDefault();
+	event.preventDefault();
 		/* var OneIsChecked = $('input[name = "rect"]:checked').length ==1;  // not sure I need this 
 			if(!OneIsChecked){alert('Rectangle needs at leat one checked');
 			return;
@@ -384,15 +384,17 @@ if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1
 				 $.post('GameRW.php', {problem_id : problem, iid : iid, dex : dex, activate_flag : activate_flag, rect : rect, oval : oval, trap : trap, hexa : hexa, work_time : work_time, time_delete : time_delete }, function(data){
 								
 								try{
-									var arr = JSON.parse(data);
+									var arrGame = JSON.parse(data);
 								}
 								catch(err) {
 									alert ('problem data unavailable');
 								}
-				 });
-			}
+				
+					var	game_id = arrGame.game_id;
+					console.log('game_id',game_id);
 			
 			
+			// we are here temp can we just call static auto
 			
 
 				var inde = dex;
@@ -646,7 +648,7 @@ if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1
 								  }
 								};
 							  } else {  //Others
-								script.onload = function() {
+								script.onload = function() {		``
 								  callback();
 								};
 							  }
@@ -712,6 +714,13 @@ if(arrn.nv_1 == null || arrn.nv_1 == "Null" ){$(".nv_1").hide();} else {$("#nv_1
 							
 							}
 					
+			
+				});
+			}
+			
+			
+			
+			
 			} else {
 					alert ("invalid input - index must have a value between 2 and 200 and both time values must have values");
 	
