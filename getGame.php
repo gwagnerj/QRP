@@ -309,11 +309,11 @@ if ( isset($_SESSION['success']) ) {
 			var oval_svg = oval_width+6;
 			
 			// this is disgraceful but here goes - got tired of trying more sophisticated stuff
-			//var rect_shape = ' <svg width = '+rect_svg+' height = "20"  > <rect width = '+rect_width+' x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
-			//	var oval_shape = ' <svg width = '+oval_svg+' height = "20"  > <rect width = '+oval_width+' x="5" y="3" height = "15" rx = "10" ry = "10" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
+			var rect_shape = ' <svg width = '+rect_svg+' height = "20"  > <rect width = '+rect_width+' x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
+			var oval_shape = ' <svg width = '+oval_svg+' height = "20"  > <rect width = '+oval_width+' x="5" y="3" height = "15" rx = "10" ry = "10" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
 			
-			var rect_shape = ' <svg width = "46" height = "20"  > <rect width = "40" x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
-			var oval_shape = ' <svg width = "46" height = "20"  > <rect width = "40" x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
+			// var rect_shape = ' <svg width = "46" height = "20"  > <rect width = "40" x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
+			// var oval_shape = ' <svg width = "46" height = "20"  > <rect width = "40" x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
 			var trap_shape = '<svg  width="46" height="15" >  <polygon  fill="white" stroke="green" stroke-width="3" points="6,0 35,0 41,15 0,15"/> </svg>';
 			var hexa_shape = '<svg  width="46" height="16" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="6,0 35,0 41,8 35,16 6,16 0,8"/> </svg>';
 			
