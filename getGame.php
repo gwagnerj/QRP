@@ -65,7 +65,7 @@ table, th, td {
 
 <body>
 <header>
-<h1>Quick Response Game Problem Set-up </h1>
+<h1>Quick Response Game </h1>
 </header>
 
 <?php
@@ -81,7 +81,8 @@ if ( isset($_SESSION['success']) ) {
 // $index = 101; // temp  should just have them put one in
 ?>
 
-<div id = substitute_me>
+<h2>  <span id = "game_num">  </span></h2>
+<div id = "substitute_me">
 
 <p><font color=#003399>Problem Number: </font> <?php echo($problem_id);?> &nbsp; &nbsp;
 	<font color=#003399>Your Instructor ID: </font><?php echo($iid);?></p>
@@ -629,7 +630,7 @@ if ( isset($_SESSION['success']) ) {
 										});
 							});
 								
-						
+							$("#game_num").html("Game Number: "+ game_id);
 								
 						 } else {
 							
