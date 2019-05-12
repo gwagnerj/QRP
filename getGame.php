@@ -307,19 +307,29 @@ if ( isset($_SESSION['success']) ) {
 			 trap = $('input[name = "trap"]:checked').val();
 			hexa = $('input[name = "hexa"]:checked').val();
 			
-			var rect_width = 50;
-			var rect_svg = rect_width+6;
-			var oval_width = 70;
-			var oval_svg = oval_width+6;
 			
-			// this is disgraceful but here goes - got tired of trying more sophisticated stuff
+			var rect_width = 50;
+			var oval_width = 50;
+			var trap_width = 50;
+			var hexa_width = 50;
+			
+			var rect_svg = rect_width+6;
+			var oval_svg = oval_width+6;
+			var trap_svg = oval_width+6;
+			
+			var trapx_pt2 = trap_width-6;
+			
+			var hexa_svg = oval_width+6;
+			var hexax_pt2 = trap_width-6;
+			
+			
 			var rect_shape = ' <svg width = '+rect_svg+' height = "20"  > <rect width = '+rect_width+' x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
 			var oval_shape = ' <svg width = '+oval_svg+' height = "20"  > <rect width = '+oval_width+' x="5" y="3" height = "15" rx = "10" ry = "10" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
+			var trap_shape = '<svg  width = '+trap_svg+' height="15" >  <polygon  fill="white" stroke="green" stroke-width="3" points="6,0 '+trapx_pt2+',0 '+trap_width+',15 0,15"/> </svg>';
+			var hexa_shape = '<svg  width = '+hexa_svg+' height="16" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="6,0 '+hexax_pt2+',0 '+hexa_width+',8 '+hexax_pt2+',16 6,16 0,8"/> </svg>';
 			
-			// var rect_shape = ' <svg width = "46" height = "20"  > <rect width = "40" x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
-			// var oval_shape = ' <svg width = "46" height = "20"  > <rect width = "40" x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
-			var trap_shape = '<svg  width="46" height="15" >  <polygon  fill="white" stroke="green" stroke-width="3" points="6,0 35,0 41,15 0,15"/> </svg>';
-			var hexa_shape = '<svg  width="46" height="16" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="6,0 35,0 41,8 35,16 6,16 0,8"/> </svg>';
+			// var trap_shape = '<svg  width="46" height="15" >  <polygon  fill="white" stroke="green" stroke-width="3" points="6,0 35,0 41,15 0,15"/> </svg>';
+			// var hexa_shape = '<svg  width="46" height="16" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="6,0 35,0 41,8 35,16 6,16 0,8"/> </svg>';
 			
 			/* rect_shape = "rect";
 			oval_shape = "oval";
@@ -327,6 +337,8 @@ if ( isset($_SESSION['success']) ) {
 			hexa_shape = "hexa"; */
 			
 			console.log ('rect_shape',rect_shape);
+			
+			// this is disgraceful but here goes - got tired of trying more sophisticated stuff
 			
 			if(rect == "ans_nv_1") {rect = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,rect_shape);num_checked++;}
 			if(rect == "ans_nv_2") {rect = arrn.nv_2; sessionStorage.setItem(arrn.nv_2,rect_shape);num_checked++;}
@@ -617,14 +629,12 @@ if ( isset($_SESSION['success']) ) {
 										});
 							});
 								
-							//	});	
 						
-							// window.location.href="uploads/"+openup;
 								
 						 } else {
 							
 								alert('This problem is temporarily suspended, please check back later.');
-								//window.location.href="QRhomework.php";
+								//window.location.href="QRrepo.php";
 								
 								statusFlag=false;
 								//return;
