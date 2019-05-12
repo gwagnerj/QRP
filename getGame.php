@@ -425,7 +425,7 @@ if ( isset($_SESSION['success']) ) {
 			console.log ('work_time',work_time);
 			console.log ('activate_flag',activate_flag);
 			
-			// now write these values to a php file that will  the Game table along with the problem_id and the instructor_id
+			// now write these values to a php file that will the Game table along with the problem_id and the instructor_id and get the game_id
 			if (activate_flag == 1) {
 				 $.post('GameRW.php', {problem_id : problem, iid : iid, dex : dex, activate_flag : activate_flag, rect : rect, oval : oval, trap : trap, hexa : hexa, work_time : work_time, time_delete : time_delete }, function(data){
 								
