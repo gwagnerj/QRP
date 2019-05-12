@@ -102,7 +102,7 @@ if ( isset($_SESSION['success']) ) {
 	
 	<p><font color=#003399> </font><input type="hidden" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> >
 	 <p><font color=#003399> </font><input type="hidden" name="iid" id="iid" size=3 value=<?php echo($iid);?> > 
-	<div id ="dex_input"><p><font color=#003399>Index of Dataset - must print off each version since the number of vars > input shapes </font><input type="number" name="dex" id="dex" size=3 required min = "2" max = "199" ></p></div>
+	<div id ="dex_input"><p><font color=#003399>Index of Dataset - must print off each version since the number of vars > selected shapes </font><input type="number" name="dex" id="dex" size=3 required min = "2" max = "199" ></p></div>
 	<p><font color=#003399>Time in Minutes for Students to Work Problem </font><input type="number" name="work_time" id="work_time" value = 15 size=3 required min = "1" max = "199" ></p>
 	<p><font color=#003399>How long in days to keep this Game Problem Active </font><input type="number" name="time_delete" value = 30 id="time_delete" size=3 required min = "1" ></p>
 	
@@ -294,9 +294,7 @@ if ( isset($_SESSION['success']) ) {
 			if(!OneIsChecked){alert('Rectangle needs at least one checked');
 			return;
 			} */
-		if ($("#dex_input").is(':visible')){
-				dex = $('input#dex').val();
-			 }
+		console.log ('dex1',dex);
 	//	console.log (OneIsChecked);
 	if (((dex >= 2 && dex<=200)||dex==-1) && $('input#work_time').val() >= 2 && $('input#work_time').val()<=200 && $('input#time_delete').val()>=1){	
 			 
@@ -389,6 +387,13 @@ if ( isset($_SESSION['success']) ) {
 			if(hexa == "ans_nv_12") {hexa = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,hexa_shape);num_checked++;}
 			if(hexa == "ans_nv_13") {hexa = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,hexa_shape);num_checked++;}
 			if(hexa == "ans_nv_14") {hexa = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,hexa_shape);num_checked++;}
+			
+			console.log ('num_checked',num_checked);
+			console.log ('num_tot_vars',num_tot_vars); 
+			
+			if ($("#dex_input").is(':visible') && num_checked!=num_tot_vars  ){
+				dex = $('input#dex').val();
+			 } else {dex = -1;}
 			
 			
 	if(num_checked>=num_tot_vars || dex != -1) {
@@ -650,7 +655,7 @@ if ( isset($_SESSION['success']) ) {
 			}
 			
 			
-	} else {$("#dex_input").show(); alert ("must select more variables or fill in a the index set for each version of the game problem" );}
+	} else {$("#dex_input").show(); num_checked = 0; alert ("must select more variables or fill in a the index set for each version of the game problem" );}
 			
 			} else {
 					alert ("invalid input - index must have a value between 2 and 200 and both time values must have values");
