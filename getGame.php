@@ -131,72 +131,72 @@ if ( isset($_SESSION['success']) ) {
 			
 			<tr><td>	<font color = "blue" size =5 > Rectangle </font> </td>
 				
-				<td><span class = "nv_1"><input type="radio" name="rect" Value="ans_nv_1" checked = "checked"> </span></td>
-				<td><span class = "nv_2"><input type="radio" name="rect" Value="ans_nv_2"> </span></td>
-				<td><span class = "nv_3"><input type="radio" name="rect" Value="ans_nv_3"> </span></td>
-				<td><span class = "nv_4"><input type="radio" name="rect" Value="ans_nv_4"> </span></td>
-				<td><span class = "nv_5"><input type="radio" name="rect" Value="ans_nv_5"> </span></td>
-				<td><span class = "nv_6"><input type="radio" name="rect" Value="ans_nv_6"> </span></td>
-				<td><span class = "nv_7"><input type="radio" name="rect" Value="ans_nv_7"> </span></td>
-				<td><span class = "nv_8"><input type="radio" name="rect" Value="ans_nv_8"> </span></td>
-				<td><span class = "nv_9"><input type="radio" name="rect" Value="ans_nv_9"> </span></td>
-				<td><span class = "nv_10"><input type="radio" name="rect" Value="ans_nv_10"> </span></td>
-				<td><span class = "nv_11"><input type="radio" name="rect" Value="ans_nv_11"> </span></td>
-				<td><span class = "nv_12"><input type="radio" name="rect" Value="ans_nv_12"> </span></td>
-				<td><span class = "nv_13"><input type="radio" name="rect" Value="ans_nv_13"> </span></td>
-				<td><span class = "nv_14"><input type="radio" name="rect" Value="ans_nv_14"> </span></td>
+				<td><span class = "nv_1"><input type="radio" name="rect" Value="v_1" checked = "checked"> </span></td>
+				<td><span class = "nv_2"><input type="radio" name="rect" Value="v_2"> </span></td>
+				<td><span class = "nv_3"><input type="radio" name="rect" Value="v_3"> </span></td>
+				<td><span class = "nv_4"><input type="radio" name="rect" Value="v_4"> </span></td>
+				<td><span class = "nv_5"><input type="radio" name="rect" Value="v_5"> </span></td>
+				<td><span class = "nv_6"><input type="radio" name="rect" Value="v_6"> </span></td>
+				<td><span class = "nv_7"><input type="radio" name="rect" Value="v_7"> </span></td>
+				<td><span class = "nv_8"><input type="radio" name="rect" Value="v_8"> </span></td>
+				<td><span class = "nv_9"><input type="radio" name="rect" Value="v_9"> </span></td>
+				<td><span class = "nv_10"><input type="radio" name="rect" Value="v_10"> </span></td>
+				<td><span class = "nv_11"><input type="radio" name="rect" Value="v_11"> </span></td>
+				<td><span class = "nv_12"><input type="radio" name="rect" Value="v_12"> </span></td>
+				<td><span class = "nv_13"><input type="radio" name="rect" Value="v_13"> </span></td>
+				<td><span class = "nv_14"><input type="radio" name="rect" Value="v_14"> </span></td>
 			
 			
 			<tr><td>	<font color = "blue" size =5 > Oval </font> </td>
 				
-				<td><span class = "nv_1"><input type="radio" name="oval" Value="ans_nv_1" > </span></td>
-				<td><span class = "nv_2"><input type="radio" name="oval" Value="ans_nv_2" checked = "checked"> </span></td>
-				<td><span class = "nv_3"><input type="radio" name="oval" Value="ans_nv_3"> </span></td>
-				<td><span class = "nv_4"><input type="radio" name="oval" Value="ans_nv_4"> </span></td>
-				<td><span class = "nv_5"><input type="radio" name="oval" Value="ans_nv_5"> </span></td>
-				<td><span class = "nv_6"><input type="radio" name="oval" Value="ans_nv_6"> </span></td>
-				<td><span class = "nv_7"><input type="radio" name="oval" Value="ans_nv_7"> </span></td>
-				<td><span class = "nv_8"><input type="radio" name="oval" Value="ans_nv_8"> </span></td>
-				<td><span class = "nv_9"><input type="radio" name="oval" Value="ans_nv_9"> </span></td>
-				<td><span class = "nv_10"><input type="radio" name="oval" Value="ans_nv_10"> </span></td>
-				<td><span class = "nv_11"><input type="radio" name="oval" Value="ans_nv_11"> </span></td>
-				<td><span class = "nv_12"><input type="radio" name="oval" Value="ans_nv_12"> </span></td>
-				<td><span class = "nv_13"><input type="radio" name="oval" Value="ans_nv_13"> </span></td>
-				<td><span class = "nv_14"><input type="radio" name="oval" Value="ans_nv_14"> </span></td>
+				<td><span class = "nv_1"><input type="radio" name="oval" Value="v_1" > </span></td>
+				<td><span class = "nv_2"><input type="radio" name="oval" Value="v_2" checked = "checked"> </span></td>
+				<td><span class = "nv_3"><input type="radio" name="oval" Value="v_3"> </span></td>
+				<td><span class = "nv_4"><input type="radio" name="oval" Value="v_4"> </span></td>
+				<td><span class = "nv_5"><input type="radio" name="oval" Value="v_5"> </span></td>
+				<td><span class = "nv_6"><input type="radio" name="oval" Value="v_6"> </span></td>
+				<td><span class = "nv_7"><input type="radio" name="oval" Value="v_7"> </span></td>
+				<td><span class = "nv_8"><input type="radio" name="oval" Value="v_8"> </span></td>
+				<td><span class = "nv_9"><input type="radio" name="oval" Value="v_9"> </span></td>
+				<td><span class = "nv_10"><input type="radio" name="oval" Value="v_10"> </span></td>
+				<td><span class = "nv_11"><input type="radio" name="oval" Value="v_11"> </span></td>
+				<td><span class = "nv_12"><input type="radio" name="oval" Value="v_12"> </span></td>
+				<td><span class = "nv_13"><input type="radio" name="oval" Value="v_13"> </span></td>
+				<td><span class = "nv_14"><input type="radio" name="oval" Value="v_14"> </span></td>
 				
 			<tr><td>	<font color = "blue" size =5 > Trapazoid </font> </td>
 				
-				<td><span class = "nv_1"><input type="radio" name="trap" Value="ans_nv_1" > </span></td>
-				<td><span class = "nv_2"><input type="radio" name="trap" Value="ans_nv_2"> </span></td>
-				<td><span class = "nv_3"><input type="radio" name="trap" Value="ans_nv_3" checked = "checked"> </span></td>
-				<td><span class = "nv_4"><input type="radio" name="trap" Value="ans_nv_4"> </span></td>
-				<td><span class = "nv_5"><input type="radio" name="trap" Value="ans_nv_5"> </span></td>
-				<td><span class = "nv_6"><input type="radio" name="trap" Value="ans_nv_6"> </span></td>
-				<td><span class = "nv_7"><input type="radio" name="trap" Value="ans_nv_7"> </span></td>
-				<td><span class = "nv_8"><input type="radio" name="trap" Value="ans_nv_8"> </span></td>
-				<td><span class = "nv_9"><input type="radio" name="trap" Value="ans_nv_9"> </span></td>
-				<td><span class = "nv_10"><input type="radio" name="trap" Value="ans_nv_10"> </span></td>
-				<td><span class = "nv_11"><input type="radio" name="trap" Value="ans_nv_11"> </span></td>
-				<td><span class = "nv_12"><input type="radio" name="trap" Value="ans_nv_12"> </span></td>
-				<td><span class = "nv_13"><input type="radio" name="trap" Value="ans_nv_13"> </span></td>
-				<td><span class = "nv_14"><input type="radio" name="trap" Value="ans_nv_14"> </span></td>
+				<td><span class = "nv_1"><input type="radio" name="trap" Value="v_1" > </span></td>
+				<td><span class = "nv_2"><input type="radio" name="trap" Value="v_2"> </span></td>
+				<td><span class = "nv_3"><input type="radio" name="trap" Value="v_3" checked = "checked"> </span></td>
+				<td><span class = "nv_4"><input type="radio" name="trap" Value="v_4"> </span></td>
+				<td><span class = "nv_5"><input type="radio" name="trap" Value="v_5"> </span></td>
+				<td><span class = "nv_6"><input type="radio" name="trap" Value="v_6"> </span></td>
+				<td><span class = "nv_7"><input type="radio" name="trap" Value="v_7"> </span></td>
+				<td><span class = "nv_8"><input type="radio" name="trap" Value="v_8"> </span></td>
+				<td><span class = "nv_9"><input type="radio" name="trap" Value="v_9"> </span></td>
+				<td><span class = "nv_10"><input type="radio" name="trap" Value="v_10"> </span></td>
+				<td><span class = "nv_11"><input type="radio" name="trap" Value="v_11"> </span></td>
+				<td><span class = "nv_12"><input type="radio" name="trap" Value="v_12"> </span></td>
+				<td><span class = "nv_13"><input type="radio" name="trap" Value="v_13"> </span></td>
+				<td><span class = "nv_14"><input type="radio" name="trap" Value="v_14"> </span></td>
 				
 			<tr><td>	<font color = "blue" size =5 > Hexagon </font> </td>
 				
-				<td><span class = "nv_1"><input type="radio" name="hexa" Value="ans_nv_1" > </span></td>
-				<td><span class = "nv_2"><input type="radio" name="hexa" Value="ans_nv_2"> </span></td>
-				<td><span class = "nv_3"><input type="radio" name="hexa" Value="ans_nv_3"> </span></td>
-				<td><span class = "nv_4"><input type="radio" name="hexa" Value="ans_nv_4" checked = "checked"> </span></td>
-				<td><span class = "nv_5"><input type="radio" name="hexa" Value="ans_nv_5"> </span></td>
-				<td><span class = "nv_6"><input type="radio" name="hexa" Value="ans_nv_6"> </span></td>
-				<td><span class = "nv_7"><input type="radio" name="hexa" Value="ans_nv_7"> </span></td>
-				<td><span class = "nv_8"><input type="radio" name="hexa" Value="ans_nv_8"> </span></td>
-				<td><span class = "nv_9"><input type="radio" name="hexa" Value="ans_nv_9"> </span></td>
-				<td><span class = "nv_10"><input type="radio" name="hexa" Value="ans_nv_10"> </span></td>
-				<td><span class = "nv_11"><input type="radio" name="hexa" Value="ans_nv_11"> </span></td>
-				<td><span class = "nv_12"><input type="radio" name="hexa" Value="ans_nv_12"> </span></td>
-				<td><span class = "nv_13"><input type="radio" name="hexa" Value="ans_nv_13"> </span></td>
-				<td><span class = "nv_14"><input type="radio" name="hexa" Value="ans_nv_14"> </span></td>
+				<td><span class = "nv_1"><input type="radio" name="hexa" Value="v_1" > </span></td>
+				<td><span class = "nv_2"><input type="radio" name="hexa" Value="v_2"> </span></td>
+				<td><span class = "nv_3"><input type="radio" name="hexa" Value="v_3"> </span></td>
+				<td><span class = "nv_4"><input type="radio" name="hexa" Value="v_4" checked = "checked"> </span></td>
+				<td><span class = "nv_5"><input type="radio" name="hexa" Value="v_5"> </span></td>
+				<td><span class = "nv_6"><input type="radio" name="hexa" Value="v_6"> </span></td>
+				<td><span class = "nv_7"><input type="radio" name="hexa" Value="v_7"> </span></td>
+				<td><span class = "nv_8"><input type="radio" name="hexa" Value="v_8"> </span></td>
+				<td><span class = "nv_9"><input type="radio" name="hexa" Value="v_9"> </span></td>
+				<td><span class = "nv_10"><input type="radio" name="hexa" Value="v_10"> </span></td>
+				<td><span class = "nv_11"><input type="radio" name="hexa" Value="v_11"> </span></td>
+				<td><span class = "nv_12"><input type="radio" name="hexa" Value="v_12"> </span></td>
+				<td><span class = "nv_13"><input type="radio" name="hexa" Value="v_13"> </span></td>
+				<td><span class = "nv_14"><input type="radio" name="hexa" Value="v_14"> </span></td>
 				
 			
 				
@@ -224,6 +224,11 @@ if ( isset($_SESSION['success']) ) {
 	var trap = "";
 	var hexa = "";
 	var game_id;
+	var rect_vnum = "";
+	var oval_vnum = "";
+	var trap_vnum = "";
+	var hexa_vnum = "";
+	
 	var num_tot_vars = 0;
 	var num_checked = 0;
 	$("#dex_input").hide();
@@ -303,10 +308,10 @@ if ( isset($_SESSION['success']) ) {
 			var work_time = $('input#work_time').val();
 			var time_delete = $('input#time_delete').val();
 			// get the values of the ones that are checked
-			 rect = $('input[name = "rect"]:checked').val();
-			 oval = $('input[name = "oval"]:checked').val();
-			 trap = $('input[name = "trap"]:checked').val();
-			hexa = $('input[name = "hexa"]:checked').val();
+			 rect_vnum = $('input[name = "rect"]:checked').val();
+			 oval_vnum = $('input[name = "oval"]:checked').val();
+			 trap_vnum = $('input[name = "trap"]:checked').val();
+			hexa_vnum = $('input[name = "hexa"]:checked').val();
 			
 			
 			var rect_width = 50;
@@ -341,65 +346,65 @@ if ( isset($_SESSION['success']) ) {
 			
 			// this is disgraceful but here goes - got tired of trying more sophisticated stuff
 			
-			if(rect == "ans_nv_1") {rect = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,rect_shape);num_checked++;}
-			if(rect == "ans_nv_2") {rect = arrn.nv_2; sessionStorage.setItem(arrn.nv_2,rect_shape);num_checked++;}
-			if(rect == "ans_nv_3") {rect = arrn.nv_3; sessionStorage.setItem(arrn.nv_3,rect_shape);num_checked++;}
-			if(rect == "ans_nv_4") {rect = arrn.nv_4; sessionStorage.setItem(arrn.nv_4,rect_shape);num_checked++;}
-			if(rect == "ans_nv_5") {rect = arrn.nv_5; sessionStorage.setItem(arrn.nv_5,rect_shape);num_checked++;}
-			if(rect == "ans_nv_6") {rect = arrn.nv_6; sessionStorage.setItem(arrn.nv_6,rect_shape);num_checked++;}
-			if(rect == "ans_nv_7") {rect = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,rect_shape);num_checked++;}
-			if(rect == "ans_nv_8") {rect = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,rect_shape);num_checked++;}
-			if(rect == "ans_nv_9") {rect = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,rect_shape);num_checked++;}
-			if(rect == "ans_nv_10") {rect = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,rect_shape);num_checked++;}
-			if(rect == "ans_nv_11") {rect = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,rect_shape);num_checked++;}
-			if(rect == "ans_nv_12") {rect = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,rect_shape);num_checked++;}
-			if(rect == "ans_nv_13") {rect = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,rect_shape);num_checked++;}
-			if(rect == "ans_nv_14") {rect = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,rect_shape);num_checked++;}
+			if(rect_vnum == "v_1") {rect = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,rect_shape);num_checked++; }
+			if(rect_vnum == "v_2") {rect = arrn.nv_2; sessionStorage.setItem(arrn.nv_2,rect_shape);num_checked++;}
+			if(rect_vnum == "v_3") {rect = arrn.nv_3; sessionStorage.setItem(arrn.nv_3,rect_shape);num_checked++;}
+			if(rect_vnum == "v_4") {rect = arrn.nv_4; sessionStorage.setItem(arrn.nv_4,rect_shape);num_checked++;}
+			if(rect_vnum == "v_5") {rect = arrn.nv_5; sessionStorage.setItem(arrn.nv_5,rect_shape);num_checked++;}
+			if(rect_vnum == "v_6") {rect = arrn.nv_6; sessionStorage.setItem(arrn.nv_6,rect_shape);num_checked++;}
+			if(rect_vnum == "v_7") {rect = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,rect_shape);num_checked++;}
+			if(rect_vnum == "v_8") {rect = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,rect_shape);num_checked++;}
+			if(rect_vnum == "v_9") {rect = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,rect_shape);num_checked++;}
+			if(rect_vnum == "v_10") {rect = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,rect_shape);num_checked++;}
+			if(rect_vnum == "v_11") {rect = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,rect_shape);num_checked++;}
+			if(rect_vnum == "v_12") {rect = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,rect_shape);num_checked++;}
+			if(rect_vnum == "v_13") {rect = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,rect_shape);num_checked++;}
+			if(rect_vnum == "v_14") {rect = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,rect_shape);num_checked++;}
 			
-			if(oval == "ans_nv_1") {oval = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,oval_shape);num_checked++;}
-			if(oval == "ans_nv_2") {oval = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,oval_shape);num_checked++;}
-			if(oval == "ans_nv_3") {oval = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,oval_shape);num_checked++;}
-			if(oval == "ans_nv_4") {oval = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,oval_shape);num_checked++;}
-			if(oval == "ans_nv_5") {oval = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,oval_shape);num_checked++;}
-			if(oval == "ans_nv_6") {oval = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,oval_shape);num_checked++;}
-			if(oval == "ans_nv_7") {oval = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,oval_shape);num_checked++;}
-			if(oval == "ans_nv_8") {oval = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,oval_shape);num_checked++;}
-			if(oval == "ans_nv_9") {oval = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,oval_shape);num_checked++;}
-			if(oval == "ans_nv_10") {oval = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,oval_shape);num_checked++;}
-			if(oval == "ans_nv_11") {oval = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,oval_shape);num_checked++;}
-			if(oval == "ans_nv_12") {oval = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,oval_shape);num_checked++;}
-			if(oval == "ans_nv_13") {oval = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,oval_shape);num_checked++;}
-			if(oval == "ans_nv_14") {oval = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,oval_shape);num_checked++;}
+			if(oval_vnum == "v_1") {oval = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,oval_shape);num_checked++;}
+			if(oval_vnum == "v_2") {oval = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,oval_shape);num_checked++;}
+			if(oval_vnum == "v_3") {oval = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,oval_shape);num_checked++;}
+			if(oval_vnum == "v_4") {oval = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,oval_shape);num_checked++;}
+			if(oval_vnum == "v_5") {oval = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,oval_shape);num_checked++;}
+			if(oval_vnum == "v_6") {oval = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,oval_shape);num_checked++;}
+			if(oval_vnum == "v_7") {oval = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,oval_shape);num_checked++;}
+			if(oval_vnum == "v_8") {oval = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,oval_shape);num_checked++;}
+			if(oval_vnum == "v_9") {oval = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,oval_shape);num_checked++;}
+			if(oval_vnum == "v_10") {oval = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,oval_shape);num_checked++;}
+			if(oval_vnum == "v_11") {oval = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,oval_shape);num_checked++;}
+			if(oval_vnum == "v_12") {oval = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,oval_shape);num_checked++;}
+			if(oval_vnum == "v_13") {oval = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,oval_shape);num_checked++;}
+			if(oval_vnum == "v_14") {oval = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,oval_shape);num_checked++;}
 			
-			if(trap == "ans_nv_1") {trap = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,trap_shape);num_checked++;}
-			if(trap == "ans_nv_2") {trap = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,trap_shape);num_checked++;}
-			if(trap == "ans_nv_3") {trap = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,trap_shape);num_checked++;}
-			if(trap == "ans_nv_4") {trap = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,trap_shape);num_checked++;}
-			if(trap == "ans_nv_5") {trap = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,trap_shape);num_checked++;}
-			if(trap == "ans_nv_6") {trap = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,trap_shape);num_checked++;}
-			if(trap == "ans_nv_7") {trap = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,trap_shape);num_checked++;}
-			if(trap == "ans_nv_8") {trap = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,trap_shape);num_checked++;}
-			if(trap == "ans_nv_9") {trap = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,trap_shape);num_checked++;}
-			if(trap == "ans_nv_10") {trap = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,trap_shape);num_checked++;}
-			if(trap == "ans_nv_11") {trap = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,trap_shape);num_checked++;}
-			if(trap == "ans_nv_12") {trap = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,trap_shape);num_checked++;}
-			if(trap == "ans_nv_13") {trap = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,trap_shape);num_checked++;}
-			if(trap == "ans_nv_14") {trap = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,trap_shape);num_checked++;}
+			if(trap_vnum == "v_1") {trap = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,trap_shape);num_checked++;}
+			if(trap_vnum == "v_2") {trap = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,trap_shape);num_checked++;}
+			if(trap_vnum == "v_3") {trap = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,trap_shape);num_checked++;}
+			if(trap_vnum == "v_4") {trap = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,trap_shape);num_checked++;}
+			if(trap_vnum == "v_5") {trap = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,trap_shape);num_checked++;}
+			if(trap_vnum == "v_6") {trap = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,trap_shape);num_checked++;}
+			if(trap_vnum == "v_7") {trap = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,trap_shape);num_checked++;}
+			if(trap_vnum == "v_8") {trap = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,trap_shape);num_checked++;}
+			if(trap_vnum == "v_9") {trap = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,trap_shape);num_checked++;}
+			if(trap_vnum == "v_10") {trap = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,trap_shape);num_checked++;}
+			if(trap_vnum == "v_11") {trap = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,trap_shape);num_checked++;}
+			if(trap_vnum == "v_12") {trap = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,trap_shape);num_checked++;}
+			if(trap_vnum == "v_13") {trap = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,trap_shape);num_checked++;}
+			if(trap_vnum == "v_14") {trap = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,trap_shape);num_checked++;}
 			
-			if(hexa == "ans_nv_1") {hexa = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_2") {hexa = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_3") {hexa = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_4") {hexa = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_5") {hexa = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_6") {hexa = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_7") {hexa = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_8") {hexa = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_9") {hexa = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_10") {hexa = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_11") {hexa = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_12") {hexa = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_13") {hexa = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,hexa_shape);num_checked++;}
-			if(hexa == "ans_nv_14") {hexa = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_1") {hexa = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_2") {hexa = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_3") {hexa = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_4") {hexa = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_5") {hexa = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_6") {hexa = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_7") {hexa = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_8") {hexa = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_9") {hexa = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_10") {hexa = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_11") {hexa = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_12") {hexa = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_13") {hexa = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,hexa_shape);num_checked++;}
+			if(hexa_vnum == "v_14") {hexa = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,hexa_shape);num_checked++;}
 			
 			console.log ('num_checked',num_checked);
 			console.log ('num_tot_vars',num_tot_vars); 
