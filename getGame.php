@@ -234,43 +234,43 @@ if ( isset($_SESSION['success']) ) {
 	$("#dex_input").hide();
 	
 	
-	$(document).ready(function(){
-	// this next bit makes it so you can not have two columns with two items checked
-			 $(".onePerColumn :radio,:checkbox").change(function(){
-				var col = $(this).attr("value");
-					$(".onePerColumn :radio[value='" + col + "']:checked,.onePerColumn :checkbox[value='" + col + "']:checked").not(this).each(function(){
-						$(this).prop('checked',false);
-					});
+$(document).ready(function(){
+		// this next bit makes it so you can not have two columns with two items checked
+		 $(".onePerColumn :radio,:checkbox").change(function(){
+			var col = $(this).attr("value");
+			$(".onePerColumn :radio[value='" + col + "']:checked,.onePerColumn :checkbox[value='" + col + "']:checked").not(this).each(function(){
+				$(this).prop('checked',false);
 			});
- 	
-	var problem = $('input#prob_id').val();
-	var iid = $('input#iid').val();
-	
-	if($("#activate").is(':checked')) {
-	var activate_flag = 1;  // checked
-	} else {
-		var activate_flag = 0; // unchecked
-	}
-	
+		});
+		
+		var problem = $('input#prob_id').val();
+		var iid = $('input#iid').val();
+		
+		if($("#activate").is(':checked')) {
+			var activate_flag = 1;  // checked
+		} else {
+			var activate_flag = 0; // unchecked
+		}
+		
 
-	
-// Get the variables names that are not null for the problem
+		
+	// Get the variables names that are not null for the problem
 
-	$.post('fetchVarsInProblem.php', {problem_id : problem, }, function(data){
-				
-				try{
-					var arrn = JSON.parse(data);
-				}
-				catch(err) {
-					alert ('problem data unavailable variables not found');
-					alert (err);
-				}
+		$.post('fetchVarsInProblem.php', {problem_id : problem, }, function(data){
+					
+			try{
+				var arrn = JSON.parse(data);
+			}
+			catch(err) {
+				alert ('problem data unavailable variables not found');
+				alert (err);
+			}
 
-					/* var nv_1 = arrn.nv_1
-					console.log (arrn.nv_1);
-				console.log (arrn.nv_2);
-				console.log (arrn.nv_3);
-				console.log (arrn.nv_14); */
+				/* var nv_1 = arrn.nv_1
+				console.log (arrn.nv_1);
+			console.log (arrn.nv_2);
+			console.log (arrn.nv_3);
+			console.log (arrn.nv_14); */
 
 
 			if(arrn.nv_14 == null || arrn.nv_14 == "Null" ){$(".nv_14").hide();}else {$("#nv_14").html(arrn.nv_14); num_tot_vars++;}
@@ -290,402 +290,359 @@ if ( isset($_SESSION['success']) ) {
 
 			if (num_tot_vars > 4){ $("#dex_input").show();}
 
- // we are here editing this file
-	
-	$('input#submit_id').on('click',function(event){
+			
 		
-		
-	event.preventDefault();
-		/* var OneIsChecked = $('input[name = "rect"]:checked').length ==1;  // not sure I need this 
-			if(!OneIsChecked){alert('Rectangle needs at least one checked');
-			return;
-			} */
-		console.log ('dex1',dex);
-	//	console.log (OneIsChecked);
-	if (((dex >= 2 && dex<=200)||dex==-1) && $('input#work_time').val() >= 2 && $('input#work_time').val()<=200 && $('input#time_delete').val()>=1){	
-			 
-			 
-			var work_time = $('input#work_time').val();
-			var time_delete = $('input#time_delete').val();
-			// get the values of the ones that are checked
-			 rect_vnum = $('input[name = "rect"]:checked').val();
-			 oval_vnum = $('input[name = "oval"]:checked').val();
-			 trap_vnum = $('input[name = "trap"]:checked').val();
-			hexa_vnum = $('input[name = "hexa"]:checked').val();
-			
-			
-			var rect_width = 50;
-			var oval_width = 50;
-			var trap_width = 50;
-			var hexa_width = 50;
-			
-			var rect_svg = rect_width+6;
-			var oval_svg = oval_width+6;
-			var trap_svg = oval_width+6;
-			
-			var trapx_pt2 = trap_width-6;
-			
-			var hexa_svg = oval_width+6;
-			var hexax_pt2 = trap_width-6;
-			
-			
-			var rect_shape = ' <svg width = '+rect_svg+' height = "20"  > <rect width = '+rect_width+' x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
-			var oval_shape = ' <svg width = '+oval_svg+' height = "20"  > <rect width = '+oval_width+' x="5" y="3" height = "15" rx = "10" ry = "10" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
-			var trap_shape = '<svg  width = '+trap_svg+' height="15" >  <polygon  fill="white" stroke="green" stroke-width="3" points="6,0 '+trapx_pt2+',0 '+trap_width+',15 0,15"/> </svg>';
-			var hexa_shape = '<svg  width = '+hexa_svg+' height="16" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="6,0 '+hexax_pt2+',0 '+hexa_width+',8 '+hexax_pt2+',16 6,16 0,8"/> </svg>';
-			
-			// var trap_shape = '<svg  width="46" height="15" >  <polygon  fill="white" stroke="green" stroke-width="3" points="6,0 35,0 41,15 0,15"/> </svg>';
-			// var hexa_shape = '<svg  width="46" height="16" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="6,0 35,0 41,8 35,16 6,16 0,8"/> </svg>';
-			
-			/* rect_shape = "rect";
-			oval_shape = "oval";
-			trap_shape = "trap";
-			hexa_shape = "hexa"; */
-			
-			console.log ('rect_shape',rect_shape);
-			
-			// this is disgraceful but here goes - got tired of trying more sophisticated stuff
-			
-			if(rect_vnum == "v_1") {rect = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,rect_shape);num_checked++; }
-			if(rect_vnum == "v_2") {rect = arrn.nv_2; sessionStorage.setItem(arrn.nv_2,rect_shape);num_checked++;}
-			if(rect_vnum == "v_3") {rect = arrn.nv_3; sessionStorage.setItem(arrn.nv_3,rect_shape);num_checked++;}
-			if(rect_vnum == "v_4") {rect = arrn.nv_4; sessionStorage.setItem(arrn.nv_4,rect_shape);num_checked++;}
-			if(rect_vnum == "v_5") {rect = arrn.nv_5; sessionStorage.setItem(arrn.nv_5,rect_shape);num_checked++;}
-			if(rect_vnum == "v_6") {rect = arrn.nv_6; sessionStorage.setItem(arrn.nv_6,rect_shape);num_checked++;}
-			if(rect_vnum == "v_7") {rect = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,rect_shape);num_checked++;}
-			if(rect_vnum == "v_8") {rect = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,rect_shape);num_checked++;}
-			if(rect_vnum == "v_9") {rect = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,rect_shape);num_checked++;}
-			if(rect_vnum == "v_10") {rect = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,rect_shape);num_checked++;}
-			if(rect_vnum == "v_11") {rect = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,rect_shape);num_checked++;}
-			if(rect_vnum == "v_12") {rect = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,rect_shape);num_checked++;}
-			if(rect_vnum == "v_13") {rect = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,rect_shape);num_checked++;}
-			if(rect_vnum == "v_14") {rect = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,rect_shape);num_checked++;}
-			
-			if(oval_vnum == "v_1") {oval = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,oval_shape);num_checked++;}
-			if(oval_vnum == "v_2") {oval = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,oval_shape);num_checked++;}
-			if(oval_vnum == "v_3") {oval = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,oval_shape);num_checked++;}
-			if(oval_vnum == "v_4") {oval = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,oval_shape);num_checked++;}
-			if(oval_vnum == "v_5") {oval = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,oval_shape);num_checked++;}
-			if(oval_vnum == "v_6") {oval = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,oval_shape);num_checked++;}
-			if(oval_vnum == "v_7") {oval = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,oval_shape);num_checked++;}
-			if(oval_vnum == "v_8") {oval = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,oval_shape);num_checked++;}
-			if(oval_vnum == "v_9") {oval = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,oval_shape);num_checked++;}
-			if(oval_vnum == "v_10") {oval = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,oval_shape);num_checked++;}
-			if(oval_vnum == "v_11") {oval = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,oval_shape);num_checked++;}
-			if(oval_vnum == "v_12") {oval = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,oval_shape);num_checked++;}
-			if(oval_vnum == "v_13") {oval = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,oval_shape);num_checked++;}
-			if(oval_vnum == "v_14") {oval = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,oval_shape);num_checked++;}
-			
-			if(trap_vnum == "v_1") {trap = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,trap_shape);num_checked++;}
-			if(trap_vnum == "v_2") {trap = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,trap_shape);num_checked++;}
-			if(trap_vnum == "v_3") {trap = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,trap_shape);num_checked++;}
-			if(trap_vnum == "v_4") {trap = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,trap_shape);num_checked++;}
-			if(trap_vnum == "v_5") {trap = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,trap_shape);num_checked++;}
-			if(trap_vnum == "v_6") {trap = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,trap_shape);num_checked++;}
-			if(trap_vnum == "v_7") {trap = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,trap_shape);num_checked++;}
-			if(trap_vnum == "v_8") {trap = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,trap_shape);num_checked++;}
-			if(trap_vnum == "v_9") {trap = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,trap_shape);num_checked++;}
-			if(trap_vnum == "v_10") {trap = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,trap_shape);num_checked++;}
-			if(trap_vnum == "v_11") {trap = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,trap_shape);num_checked++;}
-			if(trap_vnum == "v_12") {trap = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,trap_shape);num_checked++;}
-			if(trap_vnum == "v_13") {trap = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,trap_shape);num_checked++;}
-			if(trap_vnum == "v_14") {trap = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,trap_shape);num_checked++;}
-			
-			if(hexa_vnum == "v_1") {hexa = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_2") {hexa = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_3") {hexa = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_4") {hexa = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_5") {hexa = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_6") {hexa = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_7") {hexa = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_8") {hexa = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_9") {hexa = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_10") {hexa = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_11") {hexa = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_12") {hexa = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_13") {hexa = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,hexa_shape);num_checked++;}
-			if(hexa_vnum == "v_14") {hexa = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,hexa_shape);num_checked++;}
-			
-			console.log ('num_checked',num_checked);
-			console.log ('num_tot_vars',num_tot_vars); 
-			
-			if ($("#dex_input").is(':visible') && num_checked!=num_tot_vars  ){
-				dex = $('input#dex').val();
-			 } else {dex = -1;}
-			
-			
-	if(num_checked>=num_tot_vars || dex != -1) {
-			
-			console.log('problem_id',problem); // temp
-			console.log('iid',iid); // temp
-			console.log('dex',dex); // temp
-			console.log ('rect',rect);
-			console.log ('oval',oval);
-			console.log ('trap',trap);
-			console.log ('hexa',hexa);
-			
-			
-			
-			console.log ('time_delete',time_delete);
-			console.log ('work_time',work_time);
-			console.log ('activate_flag',activate_flag);
-			
-			// now write these values to a php file that will the Game table along with the problem_id and the instructor_id and get the game_id
-			if (activate_flag == 1) {
-				 $.post('GameRW.php', {problem_id : problem, iid : iid, dex : dex, activate_flag : activate_flag, rect : rect, oval : oval, trap : trap, hexa : hexa, work_time : work_time, time_delete : time_delete }, function(data){
-								
-								try{
-									var arrGame = JSON.parse(data);
-								}
-								catch(err) {
-									alert ('problem data unavailable');
-								}
+			$('input#submit_id').on('click',function(event){
 				
-					var	game_id = arrGame.game_id;
-					console.log('game_id',game_id);
-			
-			
-			// we are here temp can we just call static auto
-			
-
-				var inde = Math.abs(dex);
-			
-			//	var s_name = $('input#stu_name_id').val();
-				var statusFlag=true;
-			
-				if($.trim(problem) != '' && problem > 0 && problem < 100000 && inde>=1 && inde<=200){
-			// alert(1);
-			
-					 $.post('fetchpblminput.php', {problem_id : problem, index : inde }, function(data){
+				
+				event.preventDefault();
+				/* var OneIsChecked = $('input[name = "rect"]:checked').length ==1;  // not sure I need this 
+					if(!OneIsChecked){alert('Rectangle needs at least one checked');
+					return;
+					} */
+				console.log ('dex1',dex);
+				//	console.log (OneIsChecked);
+				if (((dex >= 2 && dex<=200)||dex==-1) && $('input#work_time').val() >= 2 && $('input#work_time').val()<=200 && $('input#time_delete').val()>=1){	
+				 
+				 
+				var work_time = $('input#work_time').val();
+				var time_delete = $('input#time_delete').val();
+				// get the values of the ones that are checked
+				 rect_vnum = $('input[name = "rect"]:checked').val();
+				 oval_vnum = $('input[name = "oval"]:checked').val();
+				 trap_vnum = $('input[name = "trap"]:checked').val();
+				hexa_vnum = $('input[name = "hexa"]:checked').val();
+				
+				
+				var rect_width = 50;
+				var oval_width = 50;
+				var trap_width = 50;
+				var hexa_width = 50;
+				
+				var rect_svg = rect_width+6;
+				var oval_svg = oval_width+6;
+				var trap_svg = oval_width+6;
+				
+				var trapx_pt2 = trap_width-6;
+				
+				var hexa_svg = oval_width+6;
+				var hexax_pt2 = trap_width-6;
+				
+				
+				var rect_shape = ' <svg width = '+rect_svg+' height = "20"  > <rect width = '+rect_width+' x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
+				var oval_shape = ' <svg width = '+oval_svg+' height = "20"  > <rect width = '+oval_width+' x="5" y="3" height = "15" rx = "10" ry = "10" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
+				var trap_shape = '<svg  width = '+trap_svg+' height="15" >  <polygon  fill="white" stroke="green" stroke-width="3" points="6,0 '+trapx_pt2+',0 '+trap_width+',15 0,15"/> </svg>';
+				var hexa_shape = '<svg  width = '+hexa_svg+' height="16" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="6,0 '+hexax_pt2+',0 '+hexa_width+',8 '+hexax_pt2+',16 6,16 0,8"/> </svg>';
+				
+				// var trap_shape = '<svg  width="46" height="15" >  <polygon  fill="white" stroke="green" stroke-width="3" points="6,0 35,0 41,15 0,15"/> </svg>';
+				// var hexa_shape = '<svg  width="46" height="16" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="6,0 35,0 41,8 35,16 6,16 0,8"/> </svg>';
+				
+				/* rect_shape = "rect";
+				oval_shape = "oval";
+				trap_shape = "trap";
+				hexa_shape = "hexa"; */
+				
+				console.log ('rect_shape',rect_shape);
+				
+				// this is disgraceful but here goes - got tired of trying more sophisticated stuff
+				// in the future will have to put the sessionStorage stuff below after we know what the length of the shapes are
+				
+				if(rect_vnum == "v_1") {rect = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,rect_shape);num_checked++; }
+				if(rect_vnum == "v_2") {rect = arrn.nv_2; sessionStorage.setItem(arrn.nv_2,rect_shape);num_checked++;}
+				if(rect_vnum == "v_3") {rect = arrn.nv_3; sessionStorage.setItem(arrn.nv_3,rect_shape);num_checked++;}
+				if(rect_vnum == "v_4") {rect = arrn.nv_4; sessionStorage.setItem(arrn.nv_4,rect_shape);num_checked++;}
+				if(rect_vnum == "v_5") {rect = arrn.nv_5; sessionStorage.setItem(arrn.nv_5,rect_shape);num_checked++;}
+				if(rect_vnum == "v_6") {rect = arrn.nv_6; sessionStorage.setItem(arrn.nv_6,rect_shape);num_checked++;}
+				if(rect_vnum == "v_7") {rect = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,rect_shape);num_checked++;}
+				if(rect_vnum == "v_8") {rect = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,rect_shape);num_checked++;}
+				if(rect_vnum == "v_9") {rect = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,rect_shape);num_checked++;}
+				if(rect_vnum == "v_10") {rect = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,rect_shape);num_checked++;}
+				if(rect_vnum == "v_11") {rect = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,rect_shape);num_checked++;}
+				if(rect_vnum == "v_12") {rect = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,rect_shape);num_checked++;}
+				if(rect_vnum == "v_13") {rect = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,rect_shape);num_checked++;}
+				if(rect_vnum == "v_14") {rect = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,rect_shape);num_checked++;}
+				
+				if(oval_vnum == "v_1") {oval = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,oval_shape);num_checked++;}
+				if(oval_vnum == "v_2") {oval = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,oval_shape);num_checked++;}
+				if(oval_vnum == "v_3") {oval = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,oval_shape);num_checked++;}
+				if(oval_vnum == "v_4") {oval = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,oval_shape);num_checked++;}
+				if(oval_vnum == "v_5") {oval = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,oval_shape);num_checked++;}
+				if(oval_vnum == "v_6") {oval = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,oval_shape);num_checked++;}
+				if(oval_vnum == "v_7") {oval = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,oval_shape);num_checked++;}
+				if(oval_vnum == "v_8") {oval = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,oval_shape);num_checked++;}
+				if(oval_vnum == "v_9") {oval = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,oval_shape);num_checked++;}
+				if(oval_vnum == "v_10") {oval = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,oval_shape);num_checked++;}
+				if(oval_vnum == "v_11") {oval = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,oval_shape);num_checked++;}
+				if(oval_vnum == "v_12") {oval = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,oval_shape);num_checked++;}
+				if(oval_vnum == "v_13") {oval = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,oval_shape);num_checked++;}
+				if(oval_vnum == "v_14") {oval = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,oval_shape);num_checked++;}
+				
+				if(trap_vnum == "v_1") {trap = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,trap_shape);num_checked++;}
+				if(trap_vnum == "v_2") {trap = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,trap_shape);num_checked++;}
+				if(trap_vnum == "v_3") {trap = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,trap_shape);num_checked++;}
+				if(trap_vnum == "v_4") {trap = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,trap_shape);num_checked++;}
+				if(trap_vnum == "v_5") {trap = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,trap_shape);num_checked++;}
+				if(trap_vnum == "v_6") {trap = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,trap_shape);num_checked++;}
+				if(trap_vnum == "v_7") {trap = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,trap_shape);num_checked++;}
+				if(trap_vnum == "v_8") {trap = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,trap_shape);num_checked++;}
+				if(trap_vnum == "v_9") {trap = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,trap_shape);num_checked++;}
+				if(trap_vnum == "v_10") {trap = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,trap_shape);num_checked++;}
+				if(trap_vnum == "v_11") {trap = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,trap_shape);num_checked++;}
+				if(trap_vnum == "v_12") {trap = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,trap_shape);num_checked++;}
+				if(trap_vnum == "v_13") {trap = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,trap_shape);num_checked++;}
+				if(trap_vnum == "v_14") {trap = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,trap_shape);num_checked++;}
+				
+				if(hexa_vnum == "v_1") {hexa = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_2") {hexa = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_3") {hexa = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_4") {hexa = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_5") {hexa = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_6") {hexa = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_7") {hexa = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_8") {hexa = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_9") {hexa = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_10") {hexa = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_11") {hexa = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_12") {hexa = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_13") {hexa = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,hexa_shape);num_checked++;}
+				if(hexa_vnum == "v_14") {hexa = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,hexa_shape);num_checked++;}
+				
+				console.log ('num_checked',num_checked);
+				console.log ('num_tot_vars',num_tot_vars); 
+				
+				if ($("#dex_input").is(':visible') && num_checked!=num_tot_vars  ){
+					dex = $('input#dex').val();
+				 } else {dex = -1;}
+				
+				
+				if(num_checked>=num_tot_vars || dex != -1) {
+				
+					console.log('problem_id',problem); // temp
+					console.log('iid',iid); // temp
+					console.log('dex',dex); // temp
+					console.log ('rect',rect);
+					console.log ('oval',oval);
+					console.log ('trap',trap);
+					console.log ('hexa',hexa);
+				
+				
+				
+					console.log ('time_delete',time_delete);
+				
+						// from https://stackoverflow.com/questions/563406/add-days-to-javascript-date
 						
-						try{
-							var arr = JSON.parse(data);
-						}
-						catch(err) {
-							alert ('problem input data unavailable');
-						}
+						// Date.prototype.addDays=function(d){return new Date(this.valueOf()+864E5*d);}; */
+					/* 	var now = new Date();
+						time_delete = now.addDays(now,time_delete);
 						
-						
-									var openup = arr.htmlfilenm;
-								openup = escape(openup);
-								 console.log ('openupfilename',openup);
-								
-								var game = arr.game_prob_flag;
-								var status = arr.status;
-								var prob_num = arr.problem_id;
-								var contrib_first = arr.first;
-								var contrib_last = arr.last;
-								var contrib_university = arr.university;
-							//	var newPath = "uploads/"+openup+ " 'document'";
-										$('#substitute_me').load("uploads/"+openup, 'document').html();
-					
-					
-					
-					
-					
-					
-						var static_f = true;
-					
-						
-						sessionStorage.setItem('contrib_first',contrib_first);
-						sessionStorage.setItem('contrib_last',contrib_last);
-						sessionStorage.setItem('contrib_university',contrib_university);
-						sessionStorage.setItem('nm_author',arr.nm_author);
-						sessionStorage.setItem('specif_ref',arr.specif_ref);
-						
-					//	console.log(contrib_first);
-					//	console.log('arr', arr);
-						if (status !== 'suspended'){
-								sessionStorage.setItem('nv_1',arr.nv_1);
-								if(sessionStorage.getItem(arrn.nv_1)==null){
+						console.log ('time_delete2',time_delete);
+						console.log ('work_time',work_time);
+						console.log ('activate_flag',activate_flag); */
+				
+					// now write these values to a php file that will the Game table along with the problem_id and the instructor_id and get the game_id
+					if (activate_flag == 1) {
+						 $.post('GameRW.php', {problem_id : problem, iid : iid, dex : dex, activate_flag : activate_flag, rect : rect, oval : oval, trap : trap, hexa : hexa, work_time : work_time, time_delete : time_delete }, function(data){
 									
-									sessionStorage.setItem(arr.nv_1,arr.v_1);
+							try{
+								var arrGame = JSON.parse(data);
 							}
-								sessionStorage.setItem('nv_2',arr.nv_2);
-								if(sessionStorage.getItem(arrn.nv_2)==null){
-									
-									sessionStorage.setItem(arr.nv_2,arr.v_2);
-								}
-								
-								sessionStorage.setItem('nv_3',arr.nv_3);
-								if(sessionStorage.getItem(arrn.nv_3)==null){
-								
-								sessionStorage.setItem(arr.nv_3,arr.v_3);
-								}
-								
-									sessionStorage.setItem('nv_4',arr.nv_4);
-								if(sessionStorage.getItem(arrn.nv_4)==null){
-									
-									sessionStorage.setItem(arr.nv_4,arr.v_4);
-								}
-								sessionStorage.setItem('nv_5',arr.nv_5);
-								if(sessionStorage.getItem(arrn.nv_5)==null){
-									
-									sessionStorage.setItem(arr.nv_5,arr.v_5);
-								}
-								sessionStorage.setItem('nv_6',arr.nv_6);
-								if(sessionStorage.getItem(arr.nv_6)==null){
-									
-									sessionStorage.setItem(arr.nv_6,arr.v_6);
-								}
-								sessionStorage.setItem('nv_7',arr.nv_7);
-								if(sessionStorage.getItem(arr.nv_7)==null){
-									
-									sessionStorage.setItem(arr.nv_7,arr.v_7);
-								}
-								sessionStorage.setItem('nv_8',arr.nv_8);
-								if(sessionStorage.getItem(arr.nv_8)==null){
-									sessionStorage.setItem(arr.nv_8,arr.v_8);
-								}
-								sessionStorage.setItem('nv_9',arr.nv_9);
-								if(sessionStorage.getItem(arr.nv_9)==null){
-									sessionStorage.setItem(arr.nv_9,arr.v_9);
-								}
-								sessionStorage.setItem('nv_10',arr.nv_10);
-								if(sessionStorage.getItem(arr.nv_10)==null){
-									sessionStorage.setItem(arr.nv_10,arr.v_10);
-								}
-								sessionStorage.setItem('nv_10',arr.nv_11);
-								if(sessionStorage.getItem(arr.nv_11)==null){
-									sessionStorage.setItem(arr.nv_11,arr.v_11);
-								}
-								
-								sessionStorage.setItem('nv_12',arr.nv_12);
-								if(sessionStorage.getItem(arr.nv_12)==null){
-									
-									sessionStorage.setItem(arr.nv_12,arr.v_12);
-								}
-								sessionStorage.setItem('nv_13',arr.nv_13);
-								if(sessionStorage.getItem(arr.nv_13)==null){
-									
-									sessionStorage.setItem(arr.nv_13,arr.v_13);
-								
-								}
-								sessionStorage.setItem('nv_14',arr.nv_14);
-								if(sessionStorage.getItem(arr.nv_14)==null){
-									
-									sessionStorage.setItem(arr.nv_14,arr.v_14);
-								}
-								
-								console.log ("WTF",sessionStorage.getItem(arr.nv_1)); // temp
-								console.log (sessionStorage.getItem(arr.nv_2));
-								console.log (sessionStorage.getItem(arr.nv_3));
-								console.log (sessionStorage.getItem(arr.nv_4));
-								
-								
-								
-								sessionStorage.setItem('title',arr.title);
-								
-								sessionStorage.setItem('problem_id',problem);
-								sessionStorage.setItem('dex',dex);
-								sessionStorage.setItem('static_flag',static_f);
-								sessionStorage.setItem('MC_flag','false');
-								
-
-
-								
-								// if the give answers box is checked send the answers to the page
-							//	if (){}
-								
-								
-								
-							// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 		
-						
-						function loadScript( url, callback ) {
-							  var script = document.createElement( "script" )
-							  script.type = "text/javascript";
-							  if(script.readyState) {  // only required for IE <9
-								script.onreadystatechange = function() {
-								  if ( script.readyState === "loaded" || script.readyState === "complete" ) {
-									script.onreadystatechange = null;
-									callback();
-								  }
-								};
-							  } else {  //Others
-								script.onload = function() {		``
-								  callback();
-								};
-							  }
-
-							  script.src = "Substvars.js";
-							  document.getElementsByTagName( "head" )[0].appendChild( script );
+							catch(err) {
+								alert ('problem data unavailable from gameRW',err);
 							}
+					
+							var	game_id = arrGame.game_id;
+							console.log('game_id',game_id);
+				
+				
+							// now get the maximum length of each input varaible so we know how long to make the input boxes also write these values to the Game table so that game setup on the other end knows how big to make them
+							 $.post('GameVlength.php', {problem_id : problem, game_id : game_id, dex : dex, rect_vnum : rect_vnum, oval_vnum : oval_vnum, trap_vnum : trap_vnum, hexa_vnum : hexa_vnum }, function(data){
+									
+									try{
+										var arrGame = JSON.parse(data);
+									}
+									catch(err) {
+										alert ('problem data unavailable from Vlength',err);
+									}
+					
+									var	game_id = arrGame.game_id;
+									console.log('game_id',game_id);	
+				
 
-
-							// call the function...
-							loadScript("Substvars.js", function() {
-							//  alert('script ready!'); 
-								var imgPath = '';
-								var indexQRP = '';
-								var addPath = "uploads/";
-							//	alert(addPath);
-										$('img').each(function(){
+									var inde = Math.abs(dex);
+								
+									//	var s_name = $('input#stu_name_id').val();
+									var statusFlag=true;
+								
+									if($.trim(problem) != '' && problem > 0 && problem < 100000 && inde>=1 && inde<=200){
+								
+										 $.post('fetchpblminput.php', {problem_id : problem, index : inde }, function(data){
 											
-											imgPath = $(this).prop('src');
-												console.log('imagepath before',imgPath);
-										//		alert (imgPath);
-												//referrer.toLowerCase().indexOf
-											indexQRP = imgPath.toLowerCase().indexOf('/qrp/')+5;
-											console.log('indexofQRP',indexQRP);
-											imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
-											console.log('imagepath',imgPath);
+											try{
+												var arr = JSON.parse(data);
+											}
+											catch(err) {
+												alert ('problem input data unavailable');
+											}
+												
+												
+											var openup = arr.htmlfilenm;
+											openup = escape(openup);
+											 console.log ('openupfilename',openup);
 											
-											$(this).prop('src', imgPath);
+											var game = arr.game_prob_flag;
+											var status = arr.status;
+											var prob_num = arr.problem_id;
+											var contrib_first = arr.first;
+											var contrib_last = arr.last;
+											var contrib_university = arr.university;
+											//	var newPath = "uploads/"+openup+ " 'document'";
+											$('#substitute_me').load("uploads/"+openup, 'document').html();
+							
+							
+											var static_f = true;
 										
-										});
-							});
+											
+											sessionStorage.setItem('contrib_first',contrib_first);
+											sessionStorage.setItem('contrib_last',contrib_last);
+											sessionStorage.setItem('contrib_university',contrib_university);
+											sessionStorage.setItem('nm_author',arr.nm_author);
+											sessionStorage.setItem('specif_ref',arr.specif_ref);
 								
-							$("#game_num").html("Game Number: "+ game_id);
-								
-						 } else {
-							
-								alert('This problem is temporarily suspended, please check back later.');
-								//window.location.href="QRrepo.php";
-								
-								statusFlag=false;
-								//return;
-							
+											//	console.log(contrib_first);
+											//	console.log('arr', arr);
+											if (status !== 'suspended'){
+												sessionStorage.setItem('nv_1',arr.nv_1);
+												sessionStorage.setItem('nv_2',arr.nv_2);
+												sessionStorage.setItem('nv_3',arr.nv_3);
+												sessionStorage.setItem('nv_4',arr.nv_4);
+												sessionStorage.setItem('nv_5',arr.nv_5);
+												sessionStorage.setItem('nv_6',arr.nv_6);
+												sessionStorage.setItem('nv_7',arr.nv_7);
+												sessionStorage.setItem('nv_8',arr.nv_8);
+												sessionStorage.setItem('nv_9',arr.nv_9);
+												sessionStorage.setItem('nv_10',arr.nv_10);
+												sessionStorage.setItem('nv_10',arr.nv_11);
+												sessionStorage.setItem('nv_12',arr.nv_12);
+												sessionStorage.setItem('nv_13',arr.nv_13);
+												sessionStorage.setItem('nv_14',arr.nv_14);
+												
+												if(sessionStorage.getItem(arrn.nv_1)==null){sessionStorage.setItem(arr.nv_1,arr.v_1);}
+												if(sessionStorage.getItem(arrn.nv_2)==null){sessionStorage.setItem(arr.nv_2,arr.v_2);}
+												if(sessionStorage.getItem(arrn.nv_3)==null){sessionStorage.setItem(arr.nv_3,arr.v_3);}
+												if(sessionStorage.getItem(arrn.nv_4)==null){sessionStorage.setItem(arr.nv_4,arr.v_4);}
+												if(sessionStorage.getItem(arrn.nv_5)==null){sessionStorage.setItem(arr.nv_5,arr.v_5);}
+												if(sessionStorage.getItem(arrn.nv_6)==null){sessionStorage.setItem(arr.nv_6,arr.v_6);}
+												if(sessionStorage.getItem(arrn.nv_7)==null){sessionStorage.setItem(arr.nv_7,arr.v_7);}
+												if(sessionStorage.getItem(arrn.nv_8)==null){sessionStorage.setItem(arr.nv_8,arr.v_8);}
+												if(sessionStorage.getItem(arrn.nv_9)==null){sessionStorage.setItem(arr.nv_9,arr.v_9);}
+												if(sessionStorage.getItem(arrn.nv_10)==null){sessionStorage.setItem(arr.nv_10,arr.v_10);}
+												if(sessionStorage.getItem(arrn.nv_11)==null){sessionStorage.setItem(arr.nv_11,arr.v_11);}
+												if(sessionStorage.getItem(arrn.nv_12)==null){sessionStorage.setItem(arr.nv_12,arr.v_12);}
+												if(sessionStorage.getItem(arrn.nv_13)==null){sessionStorage.setItem(arr.nv_13,arr.v_13);}
+												if(sessionStorage.getItem(arrn.nv_14)==null){sessionStorage.setItem(arr.nv_14,arr.v_14);}
+										
+												console.log ("WTF",sessionStorage.getItem(arr.nv_1)); // temp
+												console.log (sessionStorage.getItem(arr.nv_2));
+												console.log (sessionStorage.getItem(arr.nv_3));
+												console.log (sessionStorage.getItem(arr.nv_4));
+												
+												
+												
+												sessionStorage.setItem('title',arr.title);
+												
+												sessionStorage.setItem('problem_id',problem);
+												sessionStorage.setItem('dex',dex);
+												sessionStorage.setItem('static_flag',static_f);
+												sessionStorage.setItem('MC_flag','false');
+										
 
-						 }
 
-						 
-					
-					
-				  });			
-			  
-			 
-			  
-			  
-			  
-			  
-					}
-						else{
+										
+												// if the give answers box is checked send the answers to the page
+								
+										
+										
+										
+												// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 		
+								
+												function loadScript( url, callback ) {
+													  var script = document.createElement( "script" )
+													  script.type = "text/javascript";
+													  if(script.readyState) {  // only required for IE <9
+														script.onreadystatechange = function() {
+														  if ( script.readyState === "loaded" || script.readyState === "complete" ) {
+															script.onreadystatechange = null;
+															callback();
+														  }
+														};
+													  } else {  //Others
+														script.onload = function() {		``
+														  callback();
+														};
+													  }
+
+													  script.src = "Substvars.js";
+													  document.getElementsByTagName( "head" )[0].appendChild( script );
+												}
+
+
+												// call the function...
+												loadScript("Substvars.js", function() {
+													//  alert('script ready!'); 
+													var imgPath = '';
+													var indexQRP = '';
+													var addPath = "uploads/";
+													//	alert(addPath);
+													$('img').each(function(){
+														
+														imgPath = $(this).prop('src');
+															console.log('imagepath before',imgPath);
+														//		alert (imgPath);
+															//referrer.toLowerCase().indexOf
+														indexQRP = imgPath.toLowerCase().indexOf('/qrp/')+5;
+														console.log('indexofQRP',indexQRP);
+														imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
+														console.log('imagepath',imgPath);
+														
+														$(this).prop('src', imgPath);
+												
+													});
+												});
+										
+												$("#game_num").html("Game Number: "+ game_id);
+										
+											} else {
+									
+												alert('This problem is temporarily suspended, please check back later.');
+												//window.location.href="QRrepo.php";
+											
+												statusFlag=false;
+												//return;
+											}
 							
-							alert ('invalid user input');
-							
-							
-							}
-					
-			
-				});
-			}
-			
-			
-	} else {$("#dex_input").show(); num_checked = 0; alert ("must select more variables or fill in a the index set for each version of the game problem" );}
-			
-			} else {
-					alert ("invalid input - index must have a value between 2 and 200 and both time values must have values");
-	
+										});			// fetch problem input
+				  
+									} else {  // input to get problem data ok
+										alert ('invalid user input');
+									}
+						
+				
+								}); // get Variable length so we know what size to make boxes
+						}); // Put selected varaibles into the Game table
+				
+					} // activate flag is set
+				} else {$("#dex_input").show(); num_checked = 0; alert ("must select more variables or fill in a the index set for each version of the game problem" );
+				}
+				
+			} else {alert ("invalid input - index must have a value between 2 and 200 and both time values must have values");
 			}	
-					
-					
-					
-			});
-	});
+						
+			 // numbers in form are valid
+		}); // on click
+		
+	});  // fetch vars in problem
 	
-});
-	
-	
+});	  // doc ready
 </script>
 
 </body>
