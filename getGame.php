@@ -431,13 +431,13 @@ $(document).ready(function(){
 				
 						// from https://stackoverflow.com/questions/563406/add-days-to-javascript-date
 						
-						// Date.prototype.addDays=function(d){return new Date(this.valueOf()+864E5*d);}; */
-					/* 	var now = new Date();
+						 Date.prototype.addDays=function(d){return new Date(this.valueOf()+864E5*d);}; 
+						var now = new Date();
 						time_delete = now.addDays(now,time_delete);
 						
 						console.log ('time_delete2',time_delete);
 						console.log ('work_time',work_time);
-						console.log ('activate_flag',activate_flag); */
+						console.log ('activate_flag',activate_flag);
 				
 					// now write these values to a php file that will the Game table along with the problem_id and the instructor_id and get the game_id
 					if (activate_flag == 1) {
