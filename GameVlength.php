@@ -3,7 +3,7 @@ require_once "pdo.php";
 session_start();
 
 // THis is called by getGame.php to write length of the varibles to the Game table and to return the lenth of those variables to the getGame program.  If dex is -1 it will get the longest one int he data set whereas if dex has a value between 1 and 200 it will return that particular value
-/* 	if (isset($_POST['problem_id'])){
+ 	if (isset($_POST['problem_id'])){
 		$problem_id = $_POST['problem_id'];
 	} else {
 		$_SESSION['error'] = 'problem_id not set';
@@ -41,27 +41,25 @@ session_start();
 
 	if (isset($_POST['trap_vnum'])){
 		$trap_vnum = $_POST['trap_vnum'];
-	} else 
+	} else {
 		$trap_vnum = 'null';
 	}
 
 	if (isset($_POST['hexa_vnum'])){
-		$hexa = $_POST['hexa_vnum'];
-		
-		
+		$hexa_vnum = $_POST['hexa_vnum'];
 	} else {
 		$hexa_vnum = 'null';
-	}
- */
+	} 
+
 	
  
  
-	 $problem_id = 293;  //temp
+	/* $problem_id = 293;  //temp
 	 $dex=-1;
 	 $rect_vnum = 'v_1';
 	 $oval_vnum = 'v_2';
 	 $trap_vnum = 'v_3';
-	 $hexa_vnum = 'v_4';
+	 $hexa_vnum = 'v_4'; */
 	
 	 
 	if ($dex !=-1){
@@ -141,7 +139,15 @@ session_start();
 		echo ('hexa_length ');
 		echo ($hexa_length); */
 		
-		die();
+		// write the values to the `Game` table
+		
+		
+		
+		
+		// return them to the calling program
+		
+		
+		
 	
 	
 	
@@ -152,7 +158,7 @@ session_start();
 		//  we need to write the info to the Game table unless it is already there then we should update it. 
 		
 		
-		$sql = "SELECT * FROM Game WHERE iid=:iid AND problem_id=:problem_id AND dex = :dex" ;
+		/* $sql = "SELECT * FROM Game WHERE iid=:iid AND problem_id=:problem_id AND dex = :dex" ;
 		$stmt = $pdo->prepare($sql);
 		$stmt -> execute(array(
 		':iid'=>$iid,
@@ -215,10 +221,16 @@ session_start();
 		}	
 		
 		$game_id = $row['game_id'];
-		$resp_arr = array('game_id' => $game_id);
+		
+		
+		 */
+		
+		
+		
+		$resp_arr = array('rect_length' => $rect_length, 'oval_length' => $oval_length, 'trap_length' => $trap_length, 'hexa_length' => $hexa_length, );
 	 echo json_encode($resp_arr);
 	
-	
+	die();
 	
 	
 	

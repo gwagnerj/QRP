@@ -451,23 +451,34 @@ $(document).ready(function(){
 							}
 					
 							var	game_id = arrGame.game_id;
-							console.log('game_id',game_id);
-				
+							console.log('game_id first',game_id);
+								console.log('problem first',problem);
+							console.log('dex first',dex);
+							console.log('rect_vnum first',rect_vnum);
+							console.log('oval_vnum first',oval_vnum);
+							console.log('trap_vnum first',trap_vnum);
+							console.log('hexa_vnum first',hexa_vnum);
 				
 							// now get the maximum length of each input varaible so we know how long to make the input boxes also write these values to the Game table so that game setup on the other end knows how big to make them
 							 $.post('GameVlength.php', {problem_id : problem, game_id : game_id, dex : dex, rect_vnum : rect_vnum, oval_vnum : oval_vnum, trap_vnum : trap_vnum, hexa_vnum : hexa_vnum }, function(data){
-									
+								
 									try{
-										var arrGame = JSON.parse(data);
+										var arrLength = JSON.parse(data);
 									}
 									catch(err) {
 										alert ('problem data unavailable from Vlength',err);
 									}
-					
-									var	game_id = arrGame.game_id;
-									console.log('game_id',game_id);	
-				
-
+									
+									var rect_length = arrLength.rect_length;
+									var oval_length = arrLength.oval_length;
+									var trap_length = arrLength.trap_length;
+									var hexa_length = arrLength.hexa_length;
+									
+									console.log('rect_length',rect_length);
+									console.log('oval_length',oval_length);
+									console.log('trap_length',trap_length);
+									console.log('hexa_length',hexa_length);
+									
 									var inde = Math.abs(dex);
 								
 									//	var s_name = $('input#stu_name_id').val();
