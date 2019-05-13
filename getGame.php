@@ -81,7 +81,7 @@ if ( isset($_SESSION['success']) ) {
 // $index = 101; // temp  should just have them put one in
 ?>
 
-<h2>  <span id = "game_num">  </span></h2>
+<h1>  <span id = "game_num">  </span></h1>
 <div id = "substitute_me">
 
 <p><font color=#003399>Problem Number: </font> <?php echo($problem_id);?> &nbsp; &nbsp;
@@ -530,33 +530,43 @@ $(document).ready(function(){
 									var trap_length = arrLength.trap_length;
 									var hexa_length = arrLength.hexa_length;
 									
-									console.log('rect_length',rect_length);
+									console.log('rect_length',rect_length); //temp
 									console.log('oval_length',oval_length);
 									console.log('trap_length',trap_length);
 									console.log('hexa_length',hexa_length);
 									
 									
 									// now adjust the length of the shapes
-									var char_to_width = 20;
+									var char_to_width = 18;
 									var rect_width = rect_length * char_to_width;
 									var oval_width = oval_length * char_to_width;
 									var trap_width = trap_length * char_to_width;
 									var hexa_width = hexa_length * char_to_width;
 									
-									var rect_svg = rect_width+12;
-									var oval_svg = oval_width+12;
-									var trap_svg = oval_width+12;
+									var rect_svg = rect_width+6;
+									var oval_svg = oval_width+6;
+									var trap_svg = trap_width+6;
 									
 									var trapx_pt2 = trap_width-6;
 									
-									var hexa_svg = oval_width+12;
-									var hexax_pt2 = trap_width-6;
+									var hexa_svg = hexa_width+12;
+									var hexax_pt2 = hexa_width-6;
+									
+									console.log('rect_width',rect_width);
+									console.log('oval_width',oval_width);
+									console.log('trap_width',trap_width);
+									console.log('hexa_width',hexa_width);
+									
+									console.log('rect_svg',rect_svg);
+									console.log('oval_svg',oval_svg);
+									console.log('trap_svg',trap_svg);
+									console.log('hexa_svg',hexa_svg);
 									
 									
-									var rect_shape = ' <svg width = '+rect_svg+' height = "20"  > <rect width = '+rect_width+' x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
-									var oval_shape = ' <svg width = '+oval_svg+' height = "20"  > <rect width = '+oval_width+' x="5" y="3" height = "15" rx = "10" ry = "10" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
-									var trap_shape = '<svg  width = '+trap_svg+' height="15" >  <polygon  fill="white" stroke="green" stroke-width="3" points="6,0 '+trapx_pt2+',0 '+trap_width+',15 0,15"/> </svg>';
-									var hexa_shape = '<svg  width = '+hexa_svg+' height="16" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="6,0 '+hexax_pt2+',0 '+hexa_width+',8 '+hexax_pt2+',16 6,16 0,8"/> </svg>';
+									var rect_shape = ' <svg width = '+rect_svg+' height = "26"  > <rect width = '+rect_width+' x="5" y="2" height = "22" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
+									var oval_shape = ' <svg width = '+oval_svg+' height = "26"  > <rect width = '+oval_width+' x="5" y="3" height = "22" rx = "12" ry = "12" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
+									var trap_shape = '<svg  width = '+trap_svg+' height="26" >  <polygon  fill="white" stroke="green" stroke-width="3" points="7,1 '+trapx_pt2+',1 '+trap_width+',25 1,25"/> </svg>';
+									var hexa_shape = '<svg  width = '+hexa_svg+' height="26" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="7,1 '+hexax_pt2+',1 '+hexa_width+',12 '+hexax_pt2+',24 7,24 1,12"/> </svg>';
 														
 									if(rect_vnum == "v_1") {sessionStorage.setItem(arrn.nv_1,rect_shape);}
 									if(rect_vnum == "v_2") {sessionStorage.setItem(arrn.nv_2,rect_shape);}
