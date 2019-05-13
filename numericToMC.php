@@ -29,15 +29,15 @@ $prob_Check = array('options'=>array('min_range'=>$prob_LLimit,'max_range'=>$pro
 	
 }  */
 
-if(isset($_GET['problem_id'])){
-	
+if(isset($_POST['problem_id'])){
+	$problem_id = htmlentities($_POST['problem_id']);
+	$_SESSION['problem_id']=$problem_id;
+} elseif(isset($_GET['problem_id'])){
 	$problem_id = htmlentities($_GET['problem_id']);
-	
 	$_SESSION['problem_id']=$problem_id;
 }
 
 if(isset($_POST['index'])){
-	
 	$index = htmlentities($_POST['index']);
 	/*
 		See comment above

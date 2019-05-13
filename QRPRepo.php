@@ -429,8 +429,8 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 				echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
 				echo('<a href="suspendpblm.php?problem_id='.$row['problem_id'].'">Susp-unSus</a> / ');
 			}
-				echo('<a href="numericToMC.php?problem_id='.$row['problem_id'].'"target = "_blank">make M/C </a>');
-				echo ('</br>');
+				//echo('<a href="numericToMC.php?problem_id='.$row['problem_id'].'"target = "_blank">make M/C </a>');
+			//	echo ('</br>');
 				echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$users_id.'">Act-deAct</a>');
 				
 			//echo('<a href="downloadpblm.php?problem_id='.$row['problem_id'].'">Download</a>');
@@ -441,6 +441,11 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 				echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="Base-case"></form>');
 				echo("&nbsp; ");
 				echo('<form action = "getGame.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Game"></form>');
+				echo("&nbsp; ");
+				echo('<form action = "numericToMC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Make MC"></form>');
+				
+				//echo('<a href="numericToMC.php?problem_id='.$row['problem_id'].'"target = "_blank">make M/C </a>');
+				// echo('<a href="numericToMC.php?problem_id='.$row['problem_id'].'"target = "_blank">make M/C </a>');
 			}
 		
 		   echo("</td></tr>\n");
