@@ -876,10 +876,10 @@ ALTER TABLE Problem	ADD unpubl_auth varchar(128);
 	`oval` varchar(30),
 	`trap` varchar(30),
 	`hexa` varchar(30),
-	`len_rect` int, -- length of characters of the 
-	`len_oval` int,
-	`len_trap` int,
-	`len_hexa` int,
+	`rect_length` int, -- length of characters of the 
+	`oval_length` int,
+	`trap_length` int,
+	`hexa_length` int,
 	`prep_time` int, -- time in minutes that students can discuss the problem without being shown their numbers 
 	`work_time` int, -- default number of minutes students have to work on the problem before auto submit
 	`post_time` int, -- time in minutes for - post problem numerical problem analysis

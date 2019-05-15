@@ -4,89 +4,91 @@ session_start();
 
 // THis is called by getGame.php to write the game variables to the game table (what is the name of rectangle varaible...) for a particular problem_id, iid and dex and return a game_id
 
-if (isset($_POST['problem_id'])){
-	$problem_id = $_POST['problem_id'];
-} else {
-	$_SESSION['error'] = 'problem_id not set';
-	header("Location: getGame.php");
-	return;
-}
+	if (isset($_POST['problem_id'])){
+		$problem_id = $_POST['problem_id'];
+	} else {
+		$_SESSION['error'] = 'problem_id not set';
+		header("Location: getGame.php");
+		return;
+	}
 
-if (isset($_POST['iid'])){
-	$iid = $_POST['iid'];
-} else {
-	$_SESSION['error'] = 'iid not set';
-	header("Location: getGame.php");
-	return;
-}
+	if (isset($_POST['iid'])){
+		$iid = $_POST['iid'];
+	} else {
+		$_SESSION['error'] = 'iid not set';
+		header("Location: getGame.php");
+		return;
+	}
 
-if (isset($_POST['dex'])){
-	$dex = $_POST['dex'];
-} else {
-	$_SESSION['error'] = 'dex not set';
-	header("Location: getGame.php");
-	return;
-}
+	if (isset($_POST['dex'])){
+		$dex = $_POST['dex'];
+	} else {
+		$_SESSION['error'] = 'dex not set';
+		header("Location: getGame.php");
+		return;
+	}
 
-if (isset($_POST['rect'])){
-	$rect = $_POST['rect'];
-} else {
-	$rect = 'null';
-}
+	if (isset($_POST['rect'])){
+		$rect = $_POST['rect'];
+	} else {
+		$rect = 'null';
+	}
 
-if (isset($_POST['oval'])){
-	$oval = $_POST['oval'];
-} else {
-	$oval = 'null';
-}
+	if (isset($_POST['oval'])){
+		$oval = $_POST['oval'];
+	} else {
+		$oval = 'null';
+	}
 
-if (isset($_POST['trap'])){
-	$trap = $_POST['trap'];
-} else {
-	$trap = 'null';
-}
+	if (isset($_POST['trap'])){
+		$trap = $_POST['trap'];
+	} else {
+		$trap = 'null';
+	}
 
-if (isset($_POST['hexa'])){
-	$hexa = $_POST['hexa'];
+	if (isset($_POST['hexa'])){
+		$hexa = $_POST['hexa'];
+		
+		
+	} else {
+		$hexa = 'null';
+	}
+	if (isset($_POST['work_time'])){
+		$work_time = $_POST['work_time'];
+	} else {
+		$work_time = 15;  // 15 minutes
+	}
+	if (isset($_POST['days_till_delete'])){
+		$days_till_delete = $_POST['days_till_delete'];
+	} else {
+		$days_till_delete = 30;  // 30 days
+	}
+
+
+	if (isset($_POST['activate_flag'])){
+		$activate_flag = $_POST['activate_flag'];
+	} else {
+		$_SESSION['error'] = 'activate_flag not set';
+		header("Location: getGame.php");
+		return;
+	}
+		
+ /* 
+	 $problem_id = 222;
+	 $iid = 5;
+	 $dex = 12;
+	 $rect = "foo";
+	 $oval = "bar";
+	 $trap = "wt";
+	 $hexa = "g";
+	 $activate_flag = 1;
+	 $days_till_delete = 15;
+	 $work_time = 20;
+	  */
+	 // get the expiration date
+	 $exp_date=Date('y:m:d', strtotime("+".$days_till_delete." days"));
+
 	
-	
-} else {
-	$hexa = 'null';
-}
-if (isset($_POST['work_time'])){
-	$work_time = $_POST['work_time'];
-} else {
-	$work_time = 15;  // 15 minutes
-}
-if (isset($_POST['time_delete'])){
-	$time_delete = $_POST['time_delete'];
-} else {
-	$time_delete = 10;  // 10 days
-}
-
-
-if (isset($_POST['activate_flag'])){
-	$activate_flag = $_POST['activate_flag'];
-} else {
-	$_SESSION['error'] = 'activate_flag not set';
-	header("Location: getGame.php");
-	return;
-}
-	
- 
- /* $problem_id = 222;
- $iid = 5;
- $dex = 12;
- $rect = "foo";
- $oval = "bar";
- $trap = "wt";
- $hexa = "g";
- $activate_flag = 1; */
- 
- 
- 
- 
- 
  
  
  
@@ -106,15 +108,15 @@ if (isset($_POST['activate_flag'])){
 		if ( $game_row === false ) {
 			
 			
-			$sql = 'INSERT INTO `Game` (problem_id, iid, work_time, time_delete, dex, rect, oval, trap,hexa)	
-						VALUES (:problem_id,  :iid, :work_time, :time_delete, :dex, :rect, :oval, :trap,:hexa)';
+			$sql = 'INSERT INTO `Game` (problem_id, iid, work_time, exp_date, dex, rect, oval, trap,hexa)	
+						VALUES (:problem_id,  :iid, :work_time, :exp_date, :dex, :rect, :oval, :trap,:hexa)';
 				$stmt = $pdo->prepare($sql);
 				$stmt -> execute(array(
 				':problem_id' => $problem_id,
 				':iid' => $iid,
 				':dex' => $dex,
 				':work_time' => $work_time,
-				':time_delete' => $time_delete,
+				':exp_date' => $exp_date,
 				':rect' => $rect,
 				':oval' => $oval,
 				':trap' => $trap,
@@ -130,7 +132,7 @@ if (isset($_POST['activate_flag'])){
 			
 			
 			
-			$sql = "UPDATE Game SET rect = :rect,  oval = :oval, trap = :trap, hexa = :hexa, work_time = :work_time, time_delete = :time_delete
+			$sql = "UPDATE Game SET rect = :rect,  oval = :oval, trap = :trap, hexa = :hexa, work_time = :work_time, exp_date = :exp_date
 			WHERE problem_id = :problem_id AND iid = :iid AND dex = :dex ";
 				$stmt = $pdo->prepare($sql);
 				$stmt -> execute(array(
@@ -138,7 +140,7 @@ if (isset($_POST['activate_flag'])){
 				':iid' => $iid,
 				':dex' => $dex,
 				':work_time' => $work_time,
-				':time_delete' => $time_delete,
+				':exp_date' => $exp_date,
 				':rect' => $rect,
 				':oval' => $oval,
 				':trap' => $trap,
@@ -158,7 +160,7 @@ if (isset($_POST['activate_flag'])){
 		}	
 		
 		$game_id = $row['game_id'];
-		$resp_arr = array('game_id' => $game_id);
+		$resp_arr = array('game_id' => $game_id, 'exp_date' => $exp_date);
 	 echo json_encode($resp_arr);
 	}
 	

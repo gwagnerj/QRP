@@ -82,7 +82,7 @@ if ( isset($_SESSION['success']) ) {
 ?>
 
 <h1>  <span id = "game_num">  </span></h1>
-<h3>  <span id = "exp_time">  </span></h3>
+<h3>  <span id = "exp_date">  </span></h3>
 <div id = "substitute_me">
 
 <p><font color=#003399>Problem Number: </font> <?php echo($problem_id);?> &nbsp; &nbsp;
@@ -106,7 +106,7 @@ if ( isset($_SESSION['success']) ) {
 	 <p><font color=#003399> </font><input type="hidden" name="iid" id="iid" size=3 value=<?php echo($iid);?> > 
 	<div id ="dex_input"><p><font color=#003399>Index of Dataset - must print off each version since the number of vars > selected shapes </font><input type="number" name="dex" id="dex" size=3 required min = "2" max = "199" ></p></div>
 	<p><font color=#003399>Time in Minutes for Students to Work Problem </font><input type="number" name="work_time" id="work_time" value = 15 size=3 required min = "1" max = "199" ></p>
-	<p><font color=#003399>How long in days to keep this Game Problem Active </font><input type="number" name="time_delete" value = 30 id="time_delete" size=3 required min = "1" ></p>
+	<p><font color=#003399>How long in days to keep this Game Problem Active </font><input type="number" name="days_till_delete" value = 30 id="days_till_delete" size=3 required min = "1" ></p>
 	
 	
 	
@@ -303,11 +303,11 @@ $(document).ready(function(){
 					} */
 				console.log ('dex1',dex);
 				//	console.log (OneIsChecked);
-				if (((dex >= 2 && dex<=200)||dex==-1) && $('input#work_time').val() >= 2 && $('input#work_time').val()<=200 && $('input#time_delete').val()>=1){	
+				if (((dex >= 2 && dex<=200)||dex==-1) && $('input#work_time').val() >= 2 && $('input#work_time').val()<=200 && $('input#days_till_delete').val()>=1){	
 				 
 				 
 				var work_time = $('input#work_time').val();
-				var time_delete = $('input#time_delete').val();
+				var days_till_delete = $('input#days_till_delete').val();
 				// get the values of the ones that are checked
 				 rect_vnum = $('input[name = "rect"]:checked').val();
 				 oval_vnum = $('input[name = "oval"]:checked').val();
@@ -397,12 +397,13 @@ $(document).ready(function(){
 					console.log('dex',dex); // temp
 				
 				
-					console.log ('time_delete',time_delete);
+					console.log ('days_till_delete',days_till_delete);
 				
 					// from https://stackoverflow.com/questions/563406/add-days-to-javascript-date
 					
 					// Date.prototype.addDays=function(d){return new Date(this.valueOf()+864E5*d);}; 
-					var timestamp_inc = time_delete;
+				/* 	
+					var timestamp_inc = days_till_delete;
 					var exp_time = new Date();
 					exp_time.setDate(exp_time.getDate()+ timestamp_inc);
 					var dd = exp_time.getDate();
@@ -410,17 +411,17 @@ $(document).ready(function(){
 					var y = exp_time.getFullYear();
 
 					var exp_date = dd + '/'+ mm + '/'+ y;
+					 */
+				
 					
-					// exp_time.setDate(exp_time.getDate() + time_delete); 
 					
-					
-					console.log ('exp_date',exp_date);
+				
 					console.log ('work_time',work_time);
 					console.log ('activate_flag',activate_flag);
 				
-					// now write these values to a php file that will the Game table along with the problem_id and the instructor_id and get the game_id
+					// now write these values to a php file that will the Game table along with the problem_id and the instructor_id and get the game_id also computes the exp_date
 					if (activate_flag == 1) {
-						 $.post('GameRW.php', {problem_id : problem, iid : iid, dex : dex, activate_flag : activate_flag, rect : rect, oval : oval, trap : trap, hexa : hexa, work_time : work_time, time_delete : time_delete }, function(data){
+						 $.post('GameRW.php', {problem_id : problem, iid : iid, dex : dex, activate_flag : activate_flag, rect : rect, oval : oval, trap : trap, hexa : hexa, work_time : work_time, days_till_delete : days_till_delete }, function(data){
 									
 							try{
 								var arrGame = JSON.parse(data);
@@ -430,6 +431,9 @@ $(document).ready(function(){
 							}
 					
 							var	game_id = arrGame.game_id;
+							var exp_date = arrGame.exp_date;
+							console.log ('exp_date',exp_date);
+							
 							console.log('game_id first',game_id);
 								console.log('problem first',problem);
 							console.log('dex first',dex);
@@ -691,9 +695,19 @@ $(document).ready(function(){
 												
 													});
 												});
-										
+												
+											//	var exp_date = exp_date.replace(/:/g,"-");
+												var yy = exp_date.substring(0,2);
+												var mm 	= exp_date.substring(3,5);
+												var dd 	= exp_date.substring(6,8);	
+												var exp_date2 = mm +"/"+dd+"/20"+yy;	
+												
+											//	var msec = Date.parse(exp_date);
+											//	var exp_date2 = new Date(msec);
+												
+											//	exp_date2 = new Date(exp_date);
 												$("#game_num").html("Game Number: "+ game_id);
-												$("#exp_time").html("Expires: "+ exp_time);
+												$("#exp_date").html("Expires: "+ exp_date2);
 												
 												
 																		
