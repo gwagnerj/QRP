@@ -28,6 +28,34 @@ session_start();
 		return;
 	}
 
+
+
+	if (isset($_POST['rect_vnum'])){
+		$rect_vnum = $_POST['rect_vnum'];
+	} else {
+		$rect_vnum = 'null';
+	}
+
+	if (isset($_POST['oval_vnum'])){
+		$oval_vnum = $_POST['oval_vnum'];
+	} else {
+		$oval_vnum = 'null';
+	}
+
+	if (isset($_POST['trap_vnum'])){
+		$trap_vnum = $_POST['trap_vnum'];
+	} else {
+		$trap_vnum = 'null';
+	}
+
+	if (isset($_POST['hexa_vnum'])){
+		$hexa_vnum = $_POST['hexa_vnum'];
+	} else {
+		$hexa_vnum = 'null';
+	}
+	
+	
+	
 	if (isset($_POST['rect'])){
 		$rect = $_POST['rect'];
 	} else {
@@ -48,8 +76,6 @@ session_start();
 
 	if (isset($_POST['hexa'])){
 		$hexa = $_POST['hexa'];
-		
-		
 	} else {
 		$hexa = 'null';
 	}
@@ -105,6 +131,10 @@ session_start();
 	 $work_time = 20;
 	 $post_time = 1;
 	 $prep_time = 2;
+	  $rect_vnum = "v_1";
+	 $oval_vnum = "v_2";
+	 $trap_vnum = "v_3";
+	 $hexa_vnum = "v_4";
 	  */
 	  
 	  
@@ -131,8 +161,8 @@ session_start();
 		if ( $game_row === false ) {
 			
 			
-			$sql = 'INSERT INTO `Game` (problem_id, iid, prep_time, work_time, post_time, exp_date, dex, rect, oval, trap,hexa)	
-						VALUES (:problem_id,  :iid, :prep_time, :work_time, :post_time, :exp_date, :dex, :rect, :oval, :trap,:hexa)';
+			$sql = 'INSERT INTO `Game` (problem_id, iid, prep_time, work_time, post_time, exp_date, dex, rect, oval, trap,hexa,rect_vnum, oval_vnum, trap_vnum,hexa_vnum)	
+						VALUES (:problem_id,  :iid, :prep_time, :work_time, :post_time, :exp_date, :dex, :rect, :oval, :trap,:hexa,:rect_vnum, :oval_vnum, :trap_vnum,:hexa_vnum)';
 				$stmt = $pdo->prepare($sql);
 				$stmt -> execute(array(
 				':problem_id' => $problem_id,
@@ -146,6 +176,10 @@ session_start();
 				':oval' => $oval,
 				':trap' => $trap,
 				':hexa' => $hexa,
+				':rect_vnum' => $rect_vnum,
+				':oval_vnum' => $oval_vnum,
+				':trap_vnum' => $trap_vnum,
+				':hexa_vnum' => $hexa_vnum,
 				
 				));
 			
@@ -157,7 +191,9 @@ session_start();
 			
 			
 			
-			$sql = "UPDATE Game SET rect = :rect,  oval = :oval, trap = :trap, hexa = :hexa, prep_time = :prep_time, work_time = :work_time, post_time = :post_time, exp_date = :exp_date
+			$sql = "UPDATE Game SET rect = :rect,  oval = :oval, trap = :trap, hexa = :hexa, 
+			 rect_vnum = :rect_vnum,  oval_vnum = :oval_vnum, trap_vnum = :trap_vnum, hexa_vnum = :hexa_vnum ,prep_time = :prep_time,
+			 work_time = :work_time, post_time = :post_time, exp_date = :exp_date
 			WHERE problem_id = :problem_id AND iid = :iid AND dex = :dex ";
 				$stmt = $pdo->prepare($sql);
 				$stmt -> execute(array(
@@ -172,6 +208,10 @@ session_start();
 				':oval' => $oval,
 				':trap' => $trap,
 				':hexa' => $hexa,
+				':rect_vnum' => $rect_vnum,
+				':oval_vnum' => $oval_vnum,
+				':trap_vnum' => $trap_vnum,
+				':hexa_vnum' => $hexa_vnum,
 				));
 				
 			

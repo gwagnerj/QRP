@@ -876,6 +876,10 @@ ALTER TABLE Problem	ADD unpubl_auth varchar(128);
 	`oval` varchar(30),
 	`trap` varchar(30),
 	`hexa` varchar(30),
+	`rect_vnum` varchar(5),
+	`oval_vnum` varchar(5),
+	`trap_vnum` varchar(5),
+	`hexa_vnum` varchar(5),
 	`rect_length` int, -- length of characters of the 
 	`oval_length` int,
 	`trap_length` int,

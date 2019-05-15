@@ -408,9 +408,17 @@ $(document).ready(function(){
 						console.log('work_time',work_time); // temp
 							console.log('post_time',post_time); // temp
 				
+						console.log('rect_vnum ',rect_vnum);
+						console.log('oval_vnum ',oval_vnum);
+						console.log('trap_vnum ',trap_vnum);
+						console.log('hexa_vnum ',hexa_vnum);
+				
+				
+				
 					// now write these values to a php file that will the Game table along with the problem_id and the instructor_id and get the game_id also computes the exp_date
 					if (activate_flag == 1) {
-						 $.post('GameRW.php', {problem_id : problem, iid : iid, dex : dex, activate_flag : activate_flag, rect : rect, oval : oval, trap : trap, hexa : hexa, prep_time :prep_time, work_time : work_time, post_time : post_time, days_till_delete : days_till_delete }, function(data){
+						 $.post('GameRW.php', {problem_id : problem, iid : iid, dex : dex, activate_flag : activate_flag, rect : rect, oval : oval, trap : trap, hexa : hexa,
+						 rect_vnum : rect_vnum, oval_vnum : oval_vnum, trap_vnum : trap_vnum, hexa_vnum : hexa_vnum ,prep_time :prep_time, work_time : work_time, post_time : post_time, days_till_delete : days_till_delete }, function(data){
 									
 							try{
 								var arrGame = JSON.parse(data);
@@ -426,10 +434,7 @@ $(document).ready(function(){
 							console.log('game_id ',game_id);
 								console.log('problem ',problem);
 							console.log('dex ',dex);
-							console.log('rect_vnum ',rect_vnum);
-							console.log('oval_vnum ',oval_vnum);
-							console.log('trap_vnum ',trap_vnum);
-							console.log('hexa_vnum ',hexa_vnum);
+						
 				
 							// now get the maximum length of each input varaible so we know how long to make the input boxes also write these values to the Game table so that game setup on the other end knows how big to make them
 							 $.post('GameVlength.php', {problem_id : problem, game_id : game_id, dex : dex, rect_vnum : rect_vnum, oval_vnum : oval_vnum, trap_vnum : trap_vnum, hexa_vnum : hexa_vnum }, function(data){

@@ -53,13 +53,13 @@ if ( isset($_SESSION['success']) ) {
     unset($_SESSION['success']);
 }
 
-$p_num = "";
+$g_num = "";
 $index = "";
 $gs_num = "";
 ?>
 
 <form action = "QRGameGetIn.php" method = "GET" autocomplete="off">
-	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p>
+	<p><font color=#003399>Game Number: </font><input type="text" name="game_id" size=3 value="<?php echo (htmlentities($g_num))?>"  ></p>
 	
 
 	<p><input type = "submit" value="Submit" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>

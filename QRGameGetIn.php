@@ -3,47 +3,45 @@ require_once "pdo.php";
 session_start();
 
 // first do some error checking on the input.  If it is not OK set the session failure and send them back to QRGameIndex.
-if ( ! isset($_GET['problem_id']) ) {
-  $_SESSION['error'] = "Missing problem number";
+if ( ! isset($_GET['game_id']) ) {
+  $_SESSION['error'] = "Missing game number";
   header('Location: getGamePblmNum.php');
   return;
 }
-if ($_GET['problem_id']<1 or $_GET['problem_id']>1000000)  {
+if ($_GET['game_id']<1 or $_GET['game_id']>1000000)  {
   $_SESSION['error'] = "problem number out of range";
   header('Location: getGamePblmNum.php');
   return;
 }
-
-$_SESSION['problem_id'] = $_GET['problem_id'];
+$game_id = $_GET['game_id'];
+// echo ($game_id);
+$_SESSION['game_id'] = $_GET['game_id'];
 $_SESSION['count']=0;
 $_SESSION['startTime'] = time();
 
-	$stmt = $pdo->prepare("SELECT * FROM Problem where problem_id = :problem_id");
-	$stmt->execute(array(":problem_id" => $_SESSION['problem_id']));
+	$stmt = $pdo->prepare("SELECT * FROM Game WHERE game_id = :game_id");
+	$stmt->execute(array(":game_id" => $game_id));
 	//$row = $stmt->fetch(PDO::FETCH_ASSOC);
 	$row = $stmt -> fetch();
 	if ( $row === false ) {
-		$_SESSION['error'] = 'Bad value for problem_id';
+		$_SESSION['error'] = 'Bad value for game_id or game_id not active';
 		header( 'Location: getGamePblmNum.php' ) ;
 		return;
 	}
-	$probData=$row;	
+	$gameData=$row;	
 	//echo $probData['tol_a'];
 	
-	$gameOnFlag=$probData['game_prob_flag'];	
-	if($gameOnFlag==0){
-			$_SESSION['error']="Not a game problem";
-			header('Location: getGamePblmNum.php');
-			return;
-	}
+	$problem_id = $gameData['problem_id'];
+	$dex = $gameData['dex'];
+	if($dex == -1) {$dex = 22;} // temp will change to random number 
 //echo $_SESSION['problem_id'];
 //echo '<br>';
 //echo $_SESSION['index'];
 //echo '<br>';
 //die();
 
-	$stmt = $pdo->prepare("SELECT * FROM Qa where problem_id = :problem_id AND dex = :dex");
-	$stmt->execute(array(":problem_id" => $_SESSION['problem_id'], ":dex" => $_SESSION['index']));
+	$stmt = $pdo->prepare("SELECT * FROM `Input` where problem_id = :problem_id AND dex = :dex");
+	$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
 	//$row = $stmt -> fetch();
 		if ( $row === false ) {
@@ -51,15 +49,29 @@ $_SESSION['startTime'] = time();
 			header('Location: getGamePblmNum.php');
 			return;
 		}	
-	$_SESSION['g1']=$row['g1'];
+	
+	
+	$rect_val = $row[$gameData['rect_vnum']];
+	$oval_val = $row[$gameData['oval_vnum']];
+	$trap_val = $row[$gameData['trap_vnum']];
+	$hexa_val = $row[$gameData['hexa_vnum']];
+	
+/* 	echo ('$rect_val');
+	echo ($rect_val);
+	die(); */
+	
+	
+	
+	
+	/* $_SESSION['g1']=$row['g1'];
 	$_SESSION['g2']=$row['g2'];
 	$_SESSION['g3']=$row['g3'];
 
 	if ($_SESSION['g1']=="" or $_SESSION['g1']=="NULL"){
 			$_SESSION['error']="Game variable 1 is empty for this problem";
 			header('Location: getGamePblmNum.php');
-			return;
-	}
+			return; 
+	}*/
 ?>
 
 <!DOCTYPE html>
@@ -94,21 +106,21 @@ if ( isset($_SESSION['success']) ) {
 
 <svg  width="500" height="100" >
   <rect  fill="white" stroke="blue" stroke-width="5" width="400" height = "75" x="15"/>
-  <text x="200" y="50" text-anchor="middle" fill="black" font-size="25"> <?php echo ($_SESSION['g1']);?></text>
+  <text x="200" y="50" text-anchor="middle" fill="black" font-size="25"> <?php echo ($rect_val);?></text>
 </svg>
 
 
 <svg height="140" width="500">
   <ellipse cx="200" cy="70" rx="200" ry="40"
   style="fill:white ;stroke:red;stroke-width:4" />
-   <text x="200" y="80" text-anchor="middle" fill="black" font-size="25"> <?php echo ($_SESSION['g2']);?></text>
+   <text x="200" y="80" text-anchor="middle" fill="black" font-size="25"> <?php echo ($oval_val);?></text>
 </svg>
 
 
 
 <svg  width="500" height="100" >
   <polygon  fill="white" stroke="green" stroke-width="4" points="60,10 450,10 480,60 30,60"/>
-  <text x="250" y="50" text-anchor="middle" fill="black" font-size="25"> <?php echo ($_SESSION['g3']);?></text>
+  <text x="250" y="50" text-anchor="middle" fill="black" font-size="25"> <?php echo ($trap_val);?></text>
 </svg>
 
 
