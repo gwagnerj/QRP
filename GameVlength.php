@@ -126,111 +126,23 @@ session_start();
 		$hexa_length = strlen((string)$hexa_val);
 		
 		
-		/* echo ('rect_val '); // temp
-		echo ($rect_val);
-		echo ('rect_length ');
-		echo ($rect_length);
 		
-		echo ('oval_val '); // temp
-		echo ($oval_val);
-		echo ('oval_length ');
-		echo ($oval_length);
-		
-		echo ('trap_val '); // temp
-		echo ($trap_val);
-		echo ('trap_length ');
-		echo ($trap_length);
-		
-		echo ('hexa_val '); // temp
-		echo ($hexa_val);
-		echo ('hexa_length ');
-		echo ($hexa_length); */
 		
 		// write the values to the `Game` table
 		
-		
+			$sql = "UPDATE Game SET rect_length = :rect_length,  oval_length = :oval_length, trap_length = :trap_length, hexa_length = :hexa_length 
+			WHERE game_id = :game_id ";
+				$stmt = $pdo->prepare($sql);
+				$stmt -> execute(array(
+				':game_id' => $game_id,
+				':rect_length' => $rect_length,
+				':oval_length' => $oval_length,
+				':trap_length' => $trap_length,
+				':hexa_length' => $hexa_length,
+				));
 		
 		
 		// return them to the calling program
-		
-		
-		
-	
-	
-	
-	
-	
-		
-	
-		//  we need to write the info to the Game table unless it is already there then we should update it. 
-		
-		
-		/* $sql = "SELECT * FROM Game WHERE iid=:iid AND problem_id=:problem_id AND dex = :dex" ;
-		$stmt = $pdo->prepare($sql);
-		$stmt -> execute(array(
-		':iid'=>$iid,
-		':dex'=>$dex,
-		':problem_id' => $problem_id
-		));
-		$game_row =$stmt ->fetch();
-		if ( $game_row === false ) {
-			
-			
-			$sql = 'INSERT INTO `Game` (problem_id, iid, work_time, time_delete, dex, rect, oval, trap,hexa)	
-						VALUES (:problem_id,  :iid, :work_time, :time_delete, :dex, :rect, :oval, :trap,:hexa)';
-				$stmt = $pdo->prepare($sql);
-				$stmt -> execute(array(
-				':problem_id' => $problem_id,
-				':iid' => $iid,
-				':dex' => $dex,
-				':work_time' => $work_time,
-				':time_delete' => $time_delete,
-				':rect' => $rect,
-				':oval' => $oval,
-				':trap' => $trap,
-				':hexa' => $hexa,
-				
-				));
-			
-			// we need to create the entry	
-				// stopped here delete me //temp
-				
-		}	else {
-			
-			
-			
-			
-			$sql = "UPDATE Game SET rect = :rect,  oval = :oval, trap = :trap, hexa = :hexa, work_time = :work_time, time_delete = :time_delete
-			WHERE problem_id = :problem_id AND iid = :iid AND dex = :dex ";
-				$stmt = $pdo->prepare($sql);
-				$stmt -> execute(array(
-				':problem_id' => $problem_id,
-				':iid' => $iid,
-				':dex' => $dex,
-				':work_time' => $work_time,
-				':time_delete' => $time_delete,
-				':rect' => $rect,
-				':oval' => $oval,
-				':trap' => $trap,
-				':hexa' => $hexa,
-				));
-				
-			
-		}
-		
-		$stmt = $pdo->prepare("SELECT `game_id` FROM `Game` where problem_id = :problem_id AND dex = :dex AND iid = :iid");
-		 $stmt->execute(array(":problem_id" => $problem_id,":dex" => $dex, ":iid" => $iid ));
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-	
-		if ( $row === false ) {
-			$_SESSION['error'] = 'could not read game_id from Game table';
-	
-		}	
-		
-		$game_id = $row['game_id'];
-		
-		
-		 */
 		
 		
 		
