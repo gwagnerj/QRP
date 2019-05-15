@@ -112,7 +112,14 @@ session_start();
 	}	
 		
 		
-		// the values that we need 
+		// try this next bit to handle html codes as input to the table so it counts subscripts as just one character etc.
+		$rect_val = html_entity_decode($rect_val );
+		$oval_val = html_entity_decode($oval_val );
+		$trap_val = html_entity_decode($trap_val );
+		$hexa_val = html_entity_decode($hexa_val );
+		
+		
+		
 		$rect_length = strlen((string)$rect_val);
 		$oval_length = strlen((string)$oval_val);
 		$trap_length = strlen((string)$trap_val);

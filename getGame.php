@@ -82,6 +82,7 @@ if ( isset($_SESSION['success']) ) {
 ?>
 
 <h1>  <span id = "game_num">  </span></h1>
+<h3>  <span id = "exp_time">  </span></h3>
 <div id = "substitute_me">
 
 <p><font color=#003399>Problem Number: </font> <?php echo($problem_id);?> &nbsp; &nbsp;
@@ -314,40 +315,11 @@ $(document).ready(function(){
 				hexa_vnum = $('input[name = "hexa"]:checked').val();
 				
 				
-				/* var rect_width = 50;
-				var oval_width = 50;
-				var trap_width = 50;
-				var hexa_width = 50;
-				
-				var rect_svg = rect_width+6;
-				var oval_svg = oval_width+6;
-				var trap_svg = oval_width+6;
-				
-				var trapx_pt2 = trap_width-6;
-				
-				var hexa_svg = oval_width+6;
-				var hexax_pt2 = trap_width-6;
-				
-				
-				var rect_shape = ' <svg width = '+rect_svg+' height = "20"  > <rect width = '+rect_width+' x="5" y="3" height = "15" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
-				var oval_shape = ' <svg width = '+oval_svg+' height = "20"  > <rect width = '+oval_width+' x="5" y="3" height = "15" rx = "10" ry = "10" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
-				var trap_shape = '<svg  width = '+trap_svg+' height="15" >  <polygon  fill="white" stroke="green" stroke-width="3" points="6,0 '+trapx_pt2+',0 '+trap_width+',15 0,15"/> </svg>';
-				var hexa_shape = '<svg  width = '+hexa_svg+' height="16" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="6,0 '+hexax_pt2+',0 '+hexa_width+',8 '+hexax_pt2+',16 6,16 0,8"/> </svg>'; */
-				
-				// var trap_shape = '<svg  width="46" height="15" >  <polygon  fill="white" stroke="green" stroke-width="3" points="6,0 35,0 41,15 0,15"/> </svg>';
-				// var hexa_shape = '<svg  width="46" height="16" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="6,0 35,0 41,8 35,16 6,16 0,8"/> </svg>';
-				
-				/* rect_shape = "rect";
-				oval_shape = "oval";
-				trap_shape = "trap";
-				hexa_shape = "hexa"; 
-				
-				console.log ('rect_shape',rect_shape);
-				*/
+			
 				// this is disgraceful but here goes - got tired of trying more sophisticated stuff
 				// in the future will have to put the sessionStorage stuff below after we know what the length of the shapes are
 				
-				if(rect_vnum == "v_1") {rect = arrn.nv_1; num_checked++; }
+				if(rect_vnum == "v_1") {rect = arrn.nv_1; num_checked++;}
 				if(rect_vnum == "v_2") {rect = arrn.nv_2; num_checked++;}
 				if(rect_vnum == "v_3") {rect = arrn.nv_3; num_checked++;}
 				if(rect_vnum == "v_4") {rect = arrn.nv_4; num_checked++;}
@@ -408,65 +380,7 @@ $(document).ready(function(){
 				if(hexa_vnum == "v_14") {hexa = arrn.nv_14;num_checked++;}
 				
 				
-				/* if(rect_vnum == "v_1") {rect = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,rect_shape);num_checked++; }
-				if(rect_vnum == "v_2") {rect = arrn.nv_2; sessionStorage.setItem(arrn.nv_2,rect_shape);num_checked++;}
-				if(rect_vnum == "v_3") {rect = arrn.nv_3; sessionStorage.setItem(arrn.nv_3,rect_shape);num_checked++;}
-				if(rect_vnum == "v_4") {rect = arrn.nv_4; sessionStorage.setItem(arrn.nv_4,rect_shape);num_checked++;}
-				if(rect_vnum == "v_5") {rect = arrn.nv_5; sessionStorage.setItem(arrn.nv_5,rect_shape);num_checked++;}
-				if(rect_vnum == "v_6") {rect = arrn.nv_6; sessionStorage.setItem(arrn.nv_6,rect_shape);num_checked++;}
-				if(rect_vnum == "v_7") {rect = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,rect_shape);num_checked++;}
-				if(rect_vnum == "v_8") {rect = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,rect_shape);num_checked++;}
-				if(rect_vnum == "v_9") {rect = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,rect_shape);num_checked++;}
-				if(rect_vnum == "v_10") {rect = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,rect_shape);num_checked++;}
-				if(rect_vnum == "v_11") {rect = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,rect_shape);num_checked++;}
-				if(rect_vnum == "v_12") {rect = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,rect_shape);num_checked++;}
-				if(rect_vnum == "v_13") {rect = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,rect_shape);num_checked++;}
-				if(rect_vnum == "v_14") {rect = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,rect_shape);num_checked++;}
-				
-				if(oval_vnum == "v_1") {oval = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,oval_shape);num_checked++;}
-				if(oval_vnum == "v_2") {oval = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,oval_shape);num_checked++;}
-				if(oval_vnum == "v_3") {oval = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,oval_shape);num_checked++;}
-				if(oval_vnum == "v_4") {oval = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,oval_shape);num_checked++;}
-				if(oval_vnum == "v_5") {oval = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,oval_shape);num_checked++;}
-				if(oval_vnum == "v_6") {oval = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,oval_shape);num_checked++;}
-				if(oval_vnum == "v_7") {oval = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,oval_shape);num_checked++;}
-				if(oval_vnum == "v_8") {oval = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,oval_shape);num_checked++;}
-				if(oval_vnum == "v_9") {oval = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,oval_shape);num_checked++;}
-				if(oval_vnum == "v_10") {oval = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,oval_shape);num_checked++;}
-				if(oval_vnum == "v_11") {oval = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,oval_shape);num_checked++;}
-				if(oval_vnum == "v_12") {oval = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,oval_shape);num_checked++;}
-				if(oval_vnum == "v_13") {oval = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,oval_shape);num_checked++;}
-				if(oval_vnum == "v_14") {oval = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,oval_shape);num_checked++;}
-				
-				if(trap_vnum == "v_1") {trap = arrn.nv_1; sessionStorage.setItem(arrn.nv_1,trap_shape);num_checked++;}
-				if(trap_vnum == "v_2") {trap = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,trap_shape);num_checked++;}
-				if(trap_vnum == "v_3") {trap = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,trap_shape);num_checked++;}
-				if(trap_vnum == "v_4") {trap = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,trap_shape);num_checked++;}
-				if(trap_vnum == "v_5") {trap = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,trap_shape);num_checked++;}
-				if(trap_vnum == "v_6") {trap = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,trap_shape);num_checked++;}
-				if(trap_vnum == "v_7") {trap = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,trap_shape);num_checked++;}
-				if(trap_vnum == "v_8") {trap = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,trap_shape);num_checked++;}
-				if(trap_vnum == "v_9") {trap = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,trap_shape);num_checked++;}
-				if(trap_vnum == "v_10") {trap = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,trap_shape);num_checked++;}
-				if(trap_vnum == "v_11") {trap = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,trap_shape);num_checked++;}
-				if(trap_vnum == "v_12") {trap = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,trap_shape);num_checked++;}
-				if(trap_vnum == "v_13") {trap = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,trap_shape);num_checked++;}
-				if(trap_vnum == "v_14") {trap = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,trap_shape);num_checked++;}
-				
-				if(hexa_vnum == "v_1") {hexa = arrn.nv_1;sessionStorage.setItem(arrn.nv_1,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_2") {hexa = arrn.nv_2;sessionStorage.setItem(arrn.nv_2,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_3") {hexa = arrn.nv_3;sessionStorage.setItem(arrn.nv_3,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_4") {hexa = arrn.nv_4;sessionStorage.setItem(arrn.nv_4,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_5") {hexa = arrn.nv_5;sessionStorage.setItem(arrn.nv_5,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_6") {hexa = arrn.nv_6;sessionStorage.setItem(arrn.nv_6,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_7") {hexa = arrn.nv_7;sessionStorage.setItem(arrn.nv_7,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_8") {hexa = arrn.nv_8;sessionStorage.setItem(arrn.nv_8,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_9") {hexa = arrn.nv_9;sessionStorage.setItem(arrn.nv_9,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_10") {hexa = arrn.nv_10;sessionStorage.setItem(arrn.nv_10,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_11") {hexa = arrn.nv_11;sessionStorage.setItem(arrn.nv_11,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_12") {hexa = arrn.nv_12;sessionStorage.setItem(arrn.nv_12,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_13") {hexa = arrn.nv_13;sessionStorage.setItem(arrn.nv_13,hexa_shape);num_checked++;}
-				if(hexa_vnum == "v_14") {hexa = arrn.nv_14;sessionStorage.setItem(arrn.nv_14,hexa_shape);num_checked++;} */
+			
 				
 				console.log ('num_checked',num_checked);
 				console.log ('num_tot_vars',num_tot_vars); 
@@ -487,11 +401,20 @@ $(document).ready(function(){
 				
 					// from https://stackoverflow.com/questions/563406/add-days-to-javascript-date
 					
-					 Date.prototype.addDays=function(d){return new Date(this.valueOf()+864E5*d);}; 
-					var now = new Date();
-					time_delete = now.addDays(now,time_delete);
+					// Date.prototype.addDays=function(d){return new Date(this.valueOf()+864E5*d);}; 
+					var timestamp_inc = time_delete;
+					var exp_time = new Date();
+					exp_time.setDate(exp_time.getDate()+ timestamp_inc);
+					var dd = exp_time.getDate();
+					var mm = exp_time.getMonth() + 1;
+					var y = exp_time.getFullYear();
+
+					var exp_date = dd + '/'+ mm + '/'+ y;
 					
-					console.log ('time_delete2',time_delete);
+					// exp_time.setDate(exp_time.getDate() + time_delete); 
+					
+					
+					console.log ('exp_date',exp_date);
 					console.log ('work_time',work_time);
 					console.log ('activate_flag',activate_flag);
 				
@@ -770,6 +693,32 @@ $(document).ready(function(){
 												});
 										
 												$("#game_num").html("Game Number: "+ game_id);
+												$("#exp_time").html("Expires: "+ exp_time);
+												
+												
+																		
+																			 $( "p" ).each(function( index ) {
+																			   var current_content =  $(this).text();
+																			   // put in a div element at the start of the markup
+																			  if( current_content.indexOf("##") !=-1) {
+																				alert ('did not substitute in all variables');
+
+																				// $(this).closest('p').before('<div id="box1-start">');
+																			  } else {
+																				  console.log ('did substitute in all variables');
+																				  
+																			  }
+																			
+																			});
+												
+														
+												
+												
+												
+												
+												
+												
+												
 										
 											} else {
 									

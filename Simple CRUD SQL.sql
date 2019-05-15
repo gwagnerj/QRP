@@ -876,8 +876,14 @@ ALTER TABLE Problem	ADD unpubl_auth varchar(128);
 	`oval` varchar(30),
 	`trap` varchar(30),
 	`hexa` varchar(30),
-	`work_time` int,
-	`time_delete` int,
+	`len_rect` int, -- length of characters of the 
+	`len_oval` int,
+	`len_trap` int,
+	`len_hexa` int,
+	`prep_time` int, -- time in minutes that students can discuss the problem without being shown their numbers 
+	`work_time` int, -- default number of minutes students have to work on the problem before auto submit
+	`post_time` int, -- time in minutes for - post problem numerical problem analysis
+	`exp_date` date, -- date the problem will be removed from the active game table
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`game_id`),
@@ -886,3 +892,19 @@ ALTER TABLE Problem	ADD unpubl_auth varchar(128);
 
 
 
+-- use this code for template to get rid of problems past their expiration date also
+
+		CREATE EVENT IF NOT EXISTS `wagnerj_qrp`.`delete_old`  -- the database name
+		ON SCHEDULE
+		EVERY 1 DAY -- or 1 HOUR
+		COMMENT 'gets rid of all game entries past the expiration date'
+		DO
+		BEGIN
+
+		DELETE FROM `wagnerj_qrp`.`Game` WHERE `exp_date` < NOW();
+
+		END
+
+		-- NOTE that MySQL Event Scheduler need to be enabled on your server:
+
+		SET GLOBAL event_scheduler = ON;
