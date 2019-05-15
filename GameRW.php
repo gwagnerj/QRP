@@ -53,11 +53,27 @@ session_start();
 	} else {
 		$hexa = 'null';
 	}
+	
+	if (isset($_POST['prep_time'])){
+		$prep_time = $_POST['prep_time'];
+	} else {
+		$prep_time = 1;  // 15 minutes
+	}
+	
 	if (isset($_POST['work_time'])){
 		$work_time = $_POST['work_time'];
 	} else {
 		$work_time = 15;  // 15 minutes
 	}
+	
+	if (isset($_POST['post_time'])){
+		$post_time = $_POST['post_time'];
+	} else {
+		$post_time = 1;  // 15 minutes
+	}
+	
+	
+	
 	if (isset($_POST['days_till_delete'])){
 		$days_till_delete = $_POST['days_till_delete'];
 	} else {
@@ -72,6 +88,9 @@ session_start();
 		header("Location: getGame.php");
 		return;
 	}
+
+
+
 		
  /* 
 	 $problem_id = 222;
@@ -84,7 +103,11 @@ session_start();
 	 $activate_flag = 1;
 	 $days_till_delete = 15;
 	 $work_time = 20;
+	 $post_time = 1;
+	 $prep_time = 2;
 	  */
+	  
+	  
 	 // get the expiration date
 	 $exp_date=Date('y:m:d', strtotime("+".$days_till_delete." days"));
 
@@ -108,14 +131,16 @@ session_start();
 		if ( $game_row === false ) {
 			
 			
-			$sql = 'INSERT INTO `Game` (problem_id, iid, work_time, exp_date, dex, rect, oval, trap,hexa)	
-						VALUES (:problem_id,  :iid, :work_time, :exp_date, :dex, :rect, :oval, :trap,:hexa)';
+			$sql = 'INSERT INTO `Game` (problem_id, iid, prep_time, work_time, post_time, exp_date, dex, rect, oval, trap,hexa)	
+						VALUES (:problem_id,  :iid, :prep_time, :work_time, :post_time, :exp_date, :dex, :rect, :oval, :trap,:hexa)';
 				$stmt = $pdo->prepare($sql);
 				$stmt -> execute(array(
 				':problem_id' => $problem_id,
 				':iid' => $iid,
 				':dex' => $dex,
+				':prep_time' => $prep_time,
 				':work_time' => $work_time,
+				':post_time' => $post_time,
 				':exp_date' => $exp_date,
 				':rect' => $rect,
 				':oval' => $oval,
@@ -132,14 +157,16 @@ session_start();
 			
 			
 			
-			$sql = "UPDATE Game SET rect = :rect,  oval = :oval, trap = :trap, hexa = :hexa, work_time = :work_time, exp_date = :exp_date
+			$sql = "UPDATE Game SET rect = :rect,  oval = :oval, trap = :trap, hexa = :hexa, prep_time = :prep_time, work_time = :work_time, post_time = :post_time, exp_date = :exp_date
 			WHERE problem_id = :problem_id AND iid = :iid AND dex = :dex ";
 				$stmt = $pdo->prepare($sql);
 				$stmt -> execute(array(
 				':problem_id' => $problem_id,
 				':iid' => $iid,
 				':dex' => $dex,
+				':prep_time' => $prep_time,
 				':work_time' => $work_time,
+				':post_time' => $post_time,
 				':exp_date' => $exp_date,
 				':rect' => $rect,
 				':oval' => $oval,

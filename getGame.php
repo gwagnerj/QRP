@@ -307,8 +307,9 @@ $(document).ready(function(){
 				//	console.log (OneIsChecked);
 				if (((dex >= 2 && dex<=200)||dex==-1) && $('input#work_time').val() >= 2 && $('input#work_time').val()<=200 && $('input#days_till_delete').val()>=1){	
 				 
-				 
+				var prep_time = $('input#prep_time').val();
 				var work_time = $('input#work_time').val();
+				var post_time = $('input#post_time').val();
 				var days_till_delete = $('input#days_till_delete').val();
 				// get the values of the ones that are checked
 				 rect_vnum = $('input[name = "rect"]:checked').val();
@@ -402,10 +403,14 @@ $(document).ready(function(){
 					console.log ('days_till_delete',days_till_delete);
 					console.log ('work_time',work_time);
 					console.log ('activate_flag',activate_flag);
+					
+						console.log('prep_time',prep_time); // temp
+						console.log('work_time',work_time); // temp
+							console.log('post_time',post_time); // temp
 				
 					// now write these values to a php file that will the Game table along with the problem_id and the instructor_id and get the game_id also computes the exp_date
 					if (activate_flag == 1) {
-						 $.post('GameRW.php', {problem_id : problem, iid : iid, dex : dex, activate_flag : activate_flag, rect : rect, oval : oval, trap : trap, hexa : hexa, work_time : work_time, days_till_delete : days_till_delete }, function(data){
+						 $.post('GameRW.php', {problem_id : problem, iid : iid, dex : dex, activate_flag : activate_flag, rect : rect, oval : oval, trap : trap, hexa : hexa, prep_time :prep_time, work_time : work_time, post_time : post_time, days_till_delete : days_till_delete }, function(data){
 									
 							try{
 								var arrGame = JSON.parse(data);
