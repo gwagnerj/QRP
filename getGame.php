@@ -104,8 +104,10 @@ if ( isset($_SESSION['success']) ) {
 	
 	<p><font color=#003399> </font><input type="hidden" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> >
 	 <p><font color=#003399> </font><input type="hidden" name="iid" id="iid" size=3 value=<?php echo($iid);?> > 
-	<div id ="dex_input"><p><font color=#003399>Index of Dataset - must print off each version since the number of vars > selected shapes </font><input type="number" name="dex" id="dex" size=3 required min = "2" max = "199" ></p></div>
-	<p><font color=#003399>Time in Minutes for Students to Work Problem </font><input type="number" name="work_time" id="work_time" value = 15 size=3 required min = "1" max = "199" ></p>
+	<div id ="dex_input"><p><font color="red">Index of Dataset - must print off each version since the number of vars > selected shapes </font><input type="number" name="dex" id="dex" size=3 required min = "2" max = "199" ></p></div>
+	<p><font color=#003399>Prep Time in Minutes for Discussion on How to  Work Problem</font><input type="number" name="prep_time" id="prep_time" value = 1 size=3 required min = "1" max = "15" ></p>
+	<p><font color=#003399>Work Time in Minutes for Students to Work Problem </font><input type="number" name="work_time" id="work_time" value = 15 size=3 required min = "1" max = "199" ></p>
+	<p><font color=#003399>Post Time in Minutes for Post Problem Analysis </font><input type="number" name="post_time" id="post_time" value = 1 size=3 required min = "1" max = "15" ></p>
 	<p><font color=#003399>How long in days to keep this Game Problem Active </font><input type="number" name="days_till_delete" value = 30 id="days_till_delete" size=3 required min = "1" ></p>
 	
 	
@@ -398,24 +400,6 @@ $(document).ready(function(){
 				
 				
 					console.log ('days_till_delete',days_till_delete);
-				
-					// from https://stackoverflow.com/questions/563406/add-days-to-javascript-date
-					
-					// Date.prototype.addDays=function(d){return new Date(this.valueOf()+864E5*d);}; 
-				/* 	
-					var timestamp_inc = days_till_delete;
-					var exp_time = new Date();
-					exp_time.setDate(exp_time.getDate()+ timestamp_inc);
-					var dd = exp_time.getDate();
-					var mm = exp_time.getMonth() + 1;
-					var y = exp_time.getFullYear();
-
-					var exp_date = dd + '/'+ mm + '/'+ y;
-					 */
-				
-					
-					
-				
 					console.log ('work_time',work_time);
 					console.log ('activate_flag',activate_flag);
 				
@@ -434,13 +418,13 @@ $(document).ready(function(){
 							var exp_date = arrGame.exp_date;
 							console.log ('exp_date',exp_date);
 							
-							console.log('game_id first',game_id);
-								console.log('problem first',problem);
-							console.log('dex first',dex);
-							console.log('rect_vnum first',rect_vnum);
-							console.log('oval_vnum first',oval_vnum);
-							console.log('trap_vnum first',trap_vnum);
-							console.log('hexa_vnum first',hexa_vnum);
+							console.log('game_id ',game_id);
+								console.log('problem ',problem);
+							console.log('dex ',dex);
+							console.log('rect_vnum ',rect_vnum);
+							console.log('oval_vnum ',oval_vnum);
+							console.log('trap_vnum ',trap_vnum);
+							console.log('hexa_vnum ',hexa_vnum);
 				
 							// now get the maximum length of each input varaible so we know how long to make the input boxes also write these values to the Game table so that game setup on the other end knows how big to make them
 							 $.post('GameVlength.php', {problem_id : problem, game_id : game_id, dex : dex, rect_vnum : rect_vnum, oval_vnum : oval_vnum, trap_vnum : trap_vnum, hexa_vnum : hexa_vnum }, function(data){
@@ -457,10 +441,10 @@ $(document).ready(function(){
 									var trap_length = arrLength.trap_length;
 									var hexa_length = arrLength.hexa_length;
 									
-									console.log('rect_length',rect_length); //temp
+								/* 	console.log('rect_length',rect_length); //temp
 									console.log('oval_length',oval_length);
 									console.log('trap_length',trap_length);
-									console.log('hexa_length',hexa_length);
+									console.log('hexa_length',hexa_length); */
 									
 									
 									// now adjust the length of the shapes
@@ -479,7 +463,7 @@ $(document).ready(function(){
 									var hexa_svg = hexa_width+12;
 									var hexax_pt2 = hexa_width-6;
 									
-									console.log('rect_width',rect_width);
+								/* 	console.log('rect_width',rect_width);
 									console.log('oval_width',oval_width);
 									console.log('trap_width',trap_width);
 									console.log('hexa_width',hexa_width);
@@ -487,14 +471,18 @@ $(document).ready(function(){
 									console.log('rect_svg',rect_svg);
 									console.log('oval_svg',oval_svg);
 									console.log('trap_svg',trap_svg);
-									console.log('hexa_svg',hexa_svg);
+									console.log('hexa_svg',hexa_svg); */
 									
 									
 									var rect_shape = ' <svg width = '+rect_svg+' height = "26"  > <rect width = '+rect_width+' x="5" y="2" height = "22" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
 									var oval_shape = ' <svg width = '+oval_svg+' height = "26"  > <rect width = '+oval_width+' x="5" y="3" height = "22" rx = "12" ry = "12" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
 									var trap_shape = '<svg  width = '+trap_svg+' height="26" >  <polygon  fill="white" stroke="green" stroke-width="3" points="7,1 '+trapx_pt2+',1 '+trap_width+',25 1,25"/> </svg>';
 									var hexa_shape = '<svg  width = '+hexa_svg+' height="26" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="7,1 '+hexax_pt2+',1 '+hexa_width+',12 '+hexax_pt2+',24 7,24 1,12"/> </svg>';
-														
+										
+
+									
+
+										
 									if(rect_vnum == "v_1") {sessionStorage.setItem(arrn.nv_1,rect_shape);}
 									if(rect_vnum == "v_2") {sessionStorage.setItem(arrn.nv_2,rect_shape);}
 									if(rect_vnum == "v_3") {sessionStorage.setItem(arrn.nv_3,rect_shape);}
@@ -754,7 +742,7 @@ $(document).ready(function(){
 						}); // Put selected varaibles into the Game table
 				
 					} // activate flag is set
-				} else {$("#dex_input").show(); num_checked = 0; alert ("must select more variables or fill in a the index set for each version of the game problem" );
+				} else {$("#dex_input").show(); num_checked = 0; // alert ("must select more variables or fill in a the index set for each version of the game problem" );
 				}
 				
 			} else {alert ("invalid input - index must have a value between 2 and 200 and both time values must have values");

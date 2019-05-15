@@ -3,7 +3,8 @@ require_once "pdo.php";
 session_start();
 
 // THis is called by getGame.php to write length of the varibles to the Game table and to return the lenth of those variables to the getGame program.  If dex is -1 it will get the longest one int he data set whereas if dex has a value between 1 and 200 it will return that particular value
- 	if (isset($_POST['problem_id'])){
+ 
+ if (isset($_POST['problem_id'])){
 		$problem_id = $_POST['problem_id'];
 	} else {
 		$_SESSION['error'] = 'problem_id not set';
@@ -30,37 +31,38 @@ session_start();
 	if (isset($_POST['rect_vnum'])){
 		$rect_vnum = $_POST['rect_vnum'];
 	} else {
-		$rect_vnum = 'null';
+		$rect_vnum = 'v_14';
 	}
 
 	if (isset($_POST['oval_vnum'])){
 		$oval_vnum = $_POST['oval_vnum'];
 	} else {
-		$oval_vnum = 'null';
+		$oval_vnum = 'v_14';
 	}
 
 	if (isset($_POST['trap_vnum'])){
 		$trap_vnum = $_POST['trap_vnum'];
 	} else {
-		$trap_vnum = 'null';
+		$trap_vnum = 'v_14';
 	}
 
 	if (isset($_POST['hexa_vnum'])){
 		$hexa_vnum = $_POST['hexa_vnum'];
 	} else {
-		$hexa_vnum = 'null';
+		$hexa_vnum = 'v_14';
 	} 
 
 	
  
- 
-	/* $problem_id = 293;  //temp
-	 $dex=-1;
+ /* 
+	$problem_id = 293;  //temp
+	$game_id = 12;
+	 $dex=12;
 	 $rect_vnum = 'v_1';
 	 $oval_vnum = 'v_2';
 	 $trap_vnum = 'v_3';
-	 $hexa_vnum = 'v_4'; */
-	
+	 $hexa_vnum = 'v_14';
+	 */
 	 
 	if ($dex !=-1){
 		
@@ -72,10 +74,18 @@ session_start();
 			));
 		$input_row =$stmt ->fetch();	
 		
+		
+		if ($input_row[$rect_vnum]){$rect_val = $input_row[$rect_vnum];} else{$rect_val = "";}
+		if ($input_row[$oval_vnum]){$oval_val = $input_row[$oval_vnum];} else{$oval_val = "";}
+		if ($input_row[$trap_vnum]){$trap_val = $input_row[$trap_vnum];} else{$trap_val = "";}
+		if ($input_row[$hexa_vnum]){$hexa_val = $input_row[$hexa_vnum];} else{$hexa_val = "";}
+		
+		/* 
 		$rect_val = $input_row[$rect_vnum];
 		$oval_val = $input_row[$oval_vnum];
 		$trap_val = $input_row[$trap_vnum];
 		$hexa_val = $input_row[$hexa_vnum];
+		 */
 	}	else {
 		
 		$sql = "SELECT ".$rect_vnum." FROM `Input` WHERE  problem_id=:problem_id ORDER BY CHAR_LENGTH (".$rect_vnum.") desc" ;
@@ -149,7 +159,7 @@ session_start();
 		$resp_arr = array('rect_length' => $rect_length, 'oval_length' => $oval_length, 'trap_length' => $trap_length, 'hexa_length' => $hexa_length, );
 	 echo json_encode($resp_arr);
 	
-	die();
+die();
 	
 	
 	
