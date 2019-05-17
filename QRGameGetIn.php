@@ -162,7 +162,10 @@
 ?>
 
 
-	<svg  width=<?php echo($rect_svg) ?> height="100" >
+
+<h3> Game number: <?php echo($game_id);?> </h3>
+
+	<svg  width=<?php echo($rect_svg); ?> height="100" >
 	  <rect  fill="white" stroke="blue" stroke-width="4" width="<?php echo($rect_width);?>" height = "50" x="15" y = "5"/>
 	  <text x="<?php echo($rect_width/2+12);?>" y="40" text-anchor="middle" fill="black" font-size="30"> <?php echo ($rect_val);?></text>
 	</svg>
@@ -187,6 +190,7 @@
 
 	<form action = "QRGameCheck.php" method = "POST" >
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
+		<p><font color=#003399> </font><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 		<p><b><input type = "submit" value="Go to Checker" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>

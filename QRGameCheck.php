@@ -11,6 +11,7 @@
 
 if ( isset($_POST['dex']) ) {
 		$dex = $_POST['dex'];
+	
 	} elseif (isset($_SESSION['dex'])){
 		$dex = $_SESSION['dex'];
 	} else {
@@ -27,6 +28,16 @@ if ( isset($_POST['problem_id']) ) {
 	  header('Location: getGamePblmNum.php');
 	  return;
 	}
+	
+if ( isset($_POST['game_id']) ) {
+		$game_id = $_POST['game_id'];
+	} elseif (isset($_SESSION['dex'])){
+		$game_id = $_SESSION['game_id'];
+	} else {
+	  $_SESSION['error'] = "Missing game_id";
+	  header('Location: getGamePblmNum.php');
+	  return;
+	}	
 	
 Require_once "pdo.php";
 
@@ -411,10 +422,11 @@ if(isset($_POST['dex_num']) && $index<=200 && $index>0 && $dispAnsflag)
 <h1>QRGame Checker</h1>
 </header>
 <main>
-
-
-<p> Problem Number: <?php echo ($problem_id) ?> </p>
+<h3>  Game Number: <?php echo ($game_id) ?> </h3>
 <p> Bonus Value: <?php echo ($_SESSION['bonus']) ?> </p>
+
+<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
+
 
 
 <form autocomplete="off" method="POST" >
@@ -464,6 +476,7 @@ $_SESSION['time']=time();
 <p><input type = "submit" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy">Score:  <?php echo (round($PScore)) ?>%</font></b></p>
 		<p><font color=#003399> </font><input type="hidden" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
+		<p><font color=#003399> </font><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 
 </form>
 
