@@ -33,6 +33,15 @@ $_SESSION['startTime'] = time();
 	
 	$problem_id = $gameData['problem_id'];
 	$dex = $gameData['dex'];
+	$rect_length = $gameData['rect_length'];
+	$oval_length = $gameData['oval_length'];
+	$trap_length = $gameData['trap_length'];
+	$hexa_length = $gameData['hexa_length'];
+	$prep_time = $gameData['prep_time'];
+	$work_time = $gameData['work_time'];
+	$post_time = $gameData['post_time'];
+	
+	
 	if($dex == -1) {$dex = 22;} // temp will change to random number 
 //echo $_SESSION['problem_id'];
 //echo '<br>';
@@ -51,11 +60,35 @@ $_SESSION['startTime'] = time();
 		}	
 	
 	
-	$rect_val = $row[$gameData['rect_vnum']];
-	$oval_val = $row[$gameData['oval_vnum']];
-	$trap_val = $row[$gameData['trap_vnum']];
-	$hexa_val = $row[$gameData['hexa_vnum']];
+		$rect_val = $row[$gameData['rect_vnum']];
+		$oval_val = $row[$gameData['oval_vnum']];
+		$trap_val = $row[$gameData['trap_vnum']];
+		$hexa_val = $row[$gameData['hexa_vnum']];
+		
+		$char_to_width = 22;
+		$rect_width = $rect_length * $char_to_width+5;
+		$oval_width = $oval_length * $char_to_width+5;
+		$trap_width = $trap_length * $char_to_width +10;
+		$hexa_width = $hexa_length * $char_to_width+10;
+		
+		$rect_svg = $rect_width+32;
+		$oval_svg = $oval_width+32;
+		$trap_svg = $trap_width+32;
+		
+		$trapx_pt2 = $trap_width-25;
+		
+		$hexa_svg = $hexa_width+32;
+		$hexax_pt2 = $hexa_width-25;
+											
+				
+											
+
+											
+
+
 	
+
+
 /* 	echo ('$rect_val');
 	echo ($rect_val);
 	die(); */
@@ -100,30 +133,38 @@ if ( isset($_SESSION['success']) ) {
     unset($_SESSION['success']);
 }
 
+/* 
+	var rect_shape = ' <svg width = '+rect_svg+' height = "26"  > <rect width = '+rect_width+' x="5" y="2" height = "22" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
+	var oval_shape = ' <svg width = '+oval_svg+' height = "26"  > <rect width = '+oval_width+' x="5" y="3" height = "22" rx = "12" ry = "12" fill = "transparent" stroke-width = "3" stroke = "red"/> </svg> ';
+	var trap_shape = '<svg  width = '+trap_svg+' height="26" >  <polygon  fill="white" stroke="green" stroke-width="3" points="7,1 '+trapx_pt2+',1 '+trap_width+',25 1,25"/> </svg>';
+	var hexa_shape = '<svg  width = '+hexa_svg+' height="26" >  <polygon  fill="white" stroke="orange" stroke-width="3" points="7,1 '+hexax_pt2+',1 '+hexa_width+',12 '+hexax_pt2+',24 7,24 1,12"/> </svg>';
+		 */										
+
 
 ?>
 
 
-<svg  width="500" height="100" >
-  <rect  fill="white" stroke="blue" stroke-width="5" width="400" height = "75" x="15"/>
-  <text x="200" y="50" text-anchor="middle" fill="black" font-size="25"> <?php echo ($rect_val);?></text>
+<svg  width=<?php echo($rect_svg) ?> height="100" >
+  <rect  fill="white" stroke="blue" stroke-width="4" width="<?php echo($rect_width)?>" height = "50" x="15" y = "5"/>
+  <text x="50" y="40" text-anchor="middle" fill="black" font-size="30"> <?php echo ($rect_val);?></text>
+</svg>
+
+<svg  width=<?php echo($oval_svg) ?> height="100" >
+  <rect  fill="white" stroke="red" stroke-width="4" width="<?php echo($oval_width)?>" rx = "25"  ry = "25" height = "50" x="15" y = "5"/>
+  <text x="50" y="40" text-anchor="middle" fill="black" font-size="30"> <?php echo ($oval_val);?></text>
 </svg>
 
 
-<svg height="140" width="500">
-  <ellipse cx="200" cy="70" rx="200" ry="40"
-  style="fill:white ;stroke:red;stroke-width:4" />
-   <text x="200" y="80" text-anchor="middle" fill="black" font-size="25"> <?php echo ($oval_val);?></text>
+
+<svg  width=<?php echo($trap_svg) ?> height="100" >
+  <polygon  fill="white" stroke="green" stroke-width="4" points="30,5 <?php echo($trapx_pt2);?>,5 <?php echo($trap_width);?>,50 5,50"/>
+  <text x="62" y="40" text-anchor="middle" fill="black" font-size="30"> <?php echo ($trap_val);?></text>
 </svg>
 
-
-
-<svg  width="500" height="100" >
-  <polygon  fill="white" stroke="green" stroke-width="4" points="60,10 450,10 480,60 30,60"/>
-  <text x="250" y="50" text-anchor="middle" fill="black" font-size="25"> <?php echo ($trap_val);?></text>
+<svg  width=<?php echo($hexa_svg) ?> height="100" >
+  <polygon  fill="white" stroke="orange" stroke-width="4" points="30,5 <?php echo($hexax_pt2);?>,5 <?php echo($hexa_width);?>,30 <?php echo($hexax_pt2);?>,50 30,50 5,30"/>
+  <text x="53" y="40" text-anchor="middle" fill="black" font-size="30"> <?php echo ($hexa_val);?></text>
 </svg>
-
-
 
 
 <form action = "QRGameCheck.php" method = "GET" >
@@ -131,6 +172,8 @@ if ( isset($_SESSION['success']) ) {
 	
 	<p><b><input type = "submit" value="Go to Checker" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
 	</form>
+
+
 
 </body>
 </html>

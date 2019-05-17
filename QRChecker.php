@@ -102,11 +102,11 @@ if ( $row === false ) {
     header( 'Location: QRPindex.php' ) ;
     return;
 }	
-		$soln = array_slice($row,6); // this would mean the database table Qa would have the dame structure
+		$soln = array_slice($row,6,20); // this would mean the database table Qa would have the dame structure
 	
 
 	for ($i = 0;$i<=9; $i++){  
-		if ($soln[$i]==1.2345e43) {
+		if ($soln[$i]==1.2345e43 || $soln[$i]==1.23e43) {
 			$partsFlag[$i]=false;
 		} else {
 			$probParts = $probParts+1;

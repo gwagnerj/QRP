@@ -35,7 +35,8 @@ if ( isset($_SESSION['success']) ) {
 ?>
 
 <form action = "getGamePblmNum.php" method = "GET" autocomplete="off">
-	<p><font color=#003399>Total Number of Players on Your Team (including yourself): </font><input type="text" name="numPlayers" size=3 value="<?php echo (htmlentities($player_num))?>"  ></p>
+		<!-- <p><font color=#003399>Total Number of Players on Your Team (including yourself): </font><input type="text" name="numPlayers" size=3 value="<?php echo (htmlentities($player_num))?>"  ></p> -->
+	<p><font color=#003399>Total Number of Players on Your Team (including yourself): </font><input type="text" name="numPlayers" size=3   ></p>
 
 	<p><input type = "submit" value="Submit" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>
