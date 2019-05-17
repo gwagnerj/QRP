@@ -24,7 +24,8 @@ if ( isset($_SESSION['numPlayers'])){
 		}
 		$_SESSION['numPlayers'] = $_GET['numPlayers'];
 }
-$_SESSION['index'] = rand(2,200);
+$_SESSION['alt_dex'] = rand(2,200);
+$alt_dex = rand(2,200);
 ?>
 
 <!DOCTYPE html>
@@ -58,9 +59,9 @@ $index = "";
 $gs_num = "";
 ?>
 
-<form action = "QRGameGetIn.php" method = "GET" autocomplete="off">
+<form action = "QRGameGetIn.php" method = "POST" autocomplete="off">
 	<p><font color=#003399>Game Number: </font><input type="text" name="game_id" size=3 value="<?php echo (htmlentities($g_num))?>"  ></p>
-	
+	<p><font color=#003399> </font><input type="hidden" name="alt_dex" size=3 value="<?php echo (htmlentities($alt_dex))?>"  ></p>
 
 	<p><input type = "submit" value="Submit" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>

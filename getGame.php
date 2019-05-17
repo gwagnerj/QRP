@@ -80,8 +80,8 @@ if ( isset($_SESSION['success']) ) {
 // $problem_id = 238; // temp
 // $index = 101; // temp  should just have them put one in
 ?>
-
-<h1>  <span id = "game_num">  </span></h1>
+<h3>  <span id = "QRtoGame">  </span></h3>
+<h2> <font color=#003399> <span id = "game_num">  </span> </font> </h2>
 <h3>  <span id = "exp_date">  </span></h3>
 <div id = "substitute_me">
 
@@ -214,8 +214,9 @@ if ( isset($_SESSION['success']) ) {
 	  
 	  <?php
 		if($activate_flag== 1){
-				echo ('<p> &nbsp; </p><hr>');
+				echo ('<div id = "cancel_id"><p> &nbsp; </p><hr>');
 				echo ('<p><a href="QRPRepo.php">Cancel</a></p>');
+				echo ('</div>');
 		}
 		
 		?>
@@ -459,10 +460,10 @@ $(document).ready(function(){
 									
 									// now adjust the length of the shapes
 									var char_to_width = 18;
-									var rect_width = rect_length * char_to_width;
-									var oval_width = oval_length * char_to_width;
-									var trap_width = trap_length * char_to_width;
-									var hexa_width = hexa_length * char_to_width;
+									var rect_width = rect_length * char_to_width+2;
+									var oval_width = oval_length * char_to_width+4;
+									var trap_width = trap_length * char_to_width+4;
+									var hexa_width = hexa_length * char_to_width+4;
 									
 									var rect_svg = rect_width+6;
 									var oval_svg = oval_width+6;
@@ -704,10 +705,11 @@ $(document).ready(function(){
 											//	var exp_date2 = new Date(msec);
 												
 											//	exp_date2 = new Date(exp_date);
-												$("#game_num").html("Game Number: "+ game_id);
+												$("#game_num").html('Game Number: '+ game_id+' \xa0\xa0 Please check your responses with qrgames.org or scan the QR code.\xa0\xa0\xa0\xa0  <img border=0 width=50 height=50 id="qr_game" src="qr_game.svg">');
 												$("#exp_date").html("Expires: "+ exp_date2);
-												
-												
+												$("#cancel_id").hide();
+											
+											//	$("#QRtoGame").html('Please check your responses with qrgames.org or scan the QR code.  <img border=0 width=50 height=50 id="qr_game" src="qr_game.svg">');
 																		
 																			 $( "p" ).each(function( index ) {
 																			   var current_content =  $(this).text();

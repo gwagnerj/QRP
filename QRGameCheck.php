@@ -8,6 +8,25 @@
   return; 
  }
 	//$_SESSION['count'] = 0;
+
+if ( isset($_POST['dex']) ) {
+		$dex = $_POST['dex'];
+	} elseif (isset($_SESSION['dex'])){
+		$dex = $_SESSION['dex'];
+	} else {
+	  $_SESSION['error'] = "Missing dex";
+	  header('Location: getGamePblmNum.php');
+	  return;
+	}
+if ( isset($_POST['problem_id']) ) {
+		$problem_id = $_POST['problem_id'];
+	} elseif (isset($_SESSION['dex'])){
+		$problem_id = $_SESSION['problem_id'];
+	} else {
+	  $_SESSION['error'] = "Missing problem_id";
+	  header('Location: getGamePblmNum.php');
+	  return;
+	}
 	
 Require_once "pdo.php";
 
@@ -47,19 +66,19 @@ Require_once "pdo.php";
 	// Next check the Qa table and see which values have non null values - for those 
 
 $stmt = $pdo->prepare("SELECT * FROM Qa where problem_id = :problem_id AND dex = :dex");
-$stmt->execute(array(":problem_id" => $_SESSION['problem_id'], ":dex" => $_SESSION['index']));
+$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
 //$row = $stmt->fetch(PDO::FETCH_ASSOC);
 $row = $stmt -> fetch();
 if ( $row === false ) {
-    $_SESSION['error'] = ('Bad value for problem_id' . $_SESSION["index"] .'and' .$_SESSION["problem_id"]);
+    $_SESSION['error'] = ('Bad value for problem_id' . $dex .'and' .$problem_id);
     header( 'Location: index.php' ) ;
     return;
 }	
-		$soln = array_slice($row,6); // this would mean the database table Qa would have the dame structure
+		$soln = array_slice($row,6,20); // this would mean the database table Qa would have the dame structure
 	
 
 	for ($i = 0;$i<=9; $i++){  
-		if ($soln[$i]==1.2345e43) {
+		if ($soln[$i]==1.2345e43 || $soln[$i]==1.23e43 ) {
 			$partsFlag[$i]=false;
 		} else {
 			$probParts = $probParts+1;
@@ -68,7 +87,7 @@ if ( $row === false ) {
 	}
 	//get the tolerance for each part - only really need to do this once on the get request - change if it is slow
 	$stmt = $pdo->prepare("SELECT * FROM Problem where problem_id = :problem_id");
-	$stmt->execute(array(":problem_id" => $_SESSION['problem_id']));
+	$stmt->execute(array(":problem_id" => $problem_id));
 	//$row = $stmt->fetch(PDO::FETCH_ASSOC);
 	$row = $stmt -> fetch();
 	if ( $row === false ) {
@@ -394,7 +413,7 @@ if(isset($_POST['dex_num']) && $index<=200 && $index>0 && $dispAnsflag)
 <main>
 
 
-<p> Problem Number: <?php echo ($_SESSION['problem_id']) ?> </p>
+<p> Problem Number: <?php echo ($problem_id) ?> </p>
 <p> Bonus Value: <?php echo ($_SESSION['bonus']) ?> </p>
 
 
@@ -443,7 +462,8 @@ $_SESSION['time']=time();
 
 <!--<p>Grading Scheme: <input type="text" name="grade_scheme" ></p> -->
 <p><input type = "submit" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy">Score:  <?php echo (round($PScore)) ?>%</font></b></p>
-
+		<p><font color=#003399> </font><input type="hidden" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
+		<p><font color=#003399> </font><input type="hidden" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 
 </form>
 
