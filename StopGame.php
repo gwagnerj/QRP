@@ -69,15 +69,15 @@ $highNum = $numSides-1;
 <b><font size=4><p>Number of Tries:<font color = "blue"> <?php echo ($_SESSION['count'])?></font></font></b>
 <p><br></p>
 <span class = 'push_luck'> You can keep your points by Selecting a New Problem</span></br>
-<a href="getGamePblmNum.php"><b><font size = 6> New Problem </font></b></a>
-</br></br></br><span class = 'push_luck'> or you can </span></br>
+<a href="getGamePblmNum.php"><b><font size = 5> New Problem </font></b></a>
+</br></br><hr></br><span class = 'push_luck'> or you can </span></br>
 
 <p><font color=#003399> </font><input type="hidden" id = "points" name="points" size=3 value="<?php echo (htmlentities($_SESSION['points']))?>"  ></p>
 
 <?php 
 if($_SESSION['points']>=1){
 	
-	echo '<a href="roll dice.php"><b><font size = 6> Push Your Luck </br> and </br>Roll '.$numDice. ' Dice Having values 0 to '.$highNum.' </font></b></a>'; 
+	echo '<a href="roll dice.php"><b><font size = 5> Push Your Luck </br> and </br>Roll '.$numDice. ' Dice Having values 0 to '.$highNum.' </font></b></a>'; 
 }
 ?>
 

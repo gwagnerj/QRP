@@ -552,10 +552,10 @@ $_SESSION['time']=time();
 		//$('#highlightCountdown').countdown({until: 0, 
 		//	onTick: highlightLast5}); 
 		function highlightLast(periods) { 
-			if ($.countdown.periodsToSeconds(periods) === 10) { 
+			if ($.countdown.periodsToSeconds(periods) === 20) { 
 				$(this).css('color', 'red','font-weight', 'Bold' ); 
 			} 
-			if ($.countdown.periodsToSeconds(periods) <= 30) { 
+			if ($.countdown.periodsToSeconds(periods) <= 60) { 
 				$(this).css('background-color', 'yellow'); 
 			} 
 		
