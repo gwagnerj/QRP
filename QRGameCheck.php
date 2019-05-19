@@ -423,9 +423,7 @@ if(isset($_POST['dex_num']) && $index<=200 && $index>0 && $dispAnsflag)
 <link rel="icon" type="image/png" href="McKetta.png" />  
 <meta Charset = "utf-8">
 <title>QRGameCheck</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" /> 
-<meta name="viewport" content="width=device-width, initial-scale=1" /> 
-
+	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 	<link rel="stylesheet" type="text/css" href="jquery.countdown.css"> 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="jquery.plugin.js"></script> 
@@ -542,7 +540,19 @@ $_SESSION['time']=time();
 			console.log ('diff_time_ms = ',diff_time_ms);
 				*/
 		
-			$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}'}); 
+			//	$('#defaultCountdown').countdown({until: "10s", expiryUrl: 'http://jquery.com', 
+			//		description: 'To go to jQuery'}); 
+					 
+				/* $('#newPageStart').click(function() { 
+					shortly = new Date(); 
+					shortly.setSeconds(shortly.getSeconds() + 5.5); 
+					$('#newPage').countdown('option', {until: shortly}); 
+				}); */
+		
+		
+		
+		
+			$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',expiryUrl: 'stopgame.php'}); 
 			
 			
 		});		
