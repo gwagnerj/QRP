@@ -179,7 +179,7 @@
 <h3> Game number: <?php echo($game_id);?> </h3>
 
 				
-		<div id="defaultCountdown"> 3</div>
+		
 
 
 
@@ -208,23 +208,62 @@
 
 	<form action = "QRGameCheck.php" method = "POST" >
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
-		<p><font color=#003399> </font><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-		<p><font color=#003399> </font><input type="hidden" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
-		<p><font color=#003399> </font><input type="hidden" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
+		<p><font color=#003399> </font><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+		<p><font color=#003399> </font><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
+		<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
+		<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="3"  ></p>
+		
+		<div id="defaultCountdown"> </div>
 		<p><b><input type = "submit" id = "submit_id" value="Go to Checker" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
 		</form>
 
 		<script>
 			
 			$(document).ready( function () {
-				var newYear = new Date(); 
-					newYear = new Date(newYear.getFullYear() + 1, 1 - 1, 1); 
-					$('#defaultCountdown').countdown({until: '15m +15s', format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}'}); 
-					
-					$('input#submit_id').on('click',function(event){
-						event.preventDefault();
-					});
-					
+				// get the how long the students have to solve the problem
+				var game_id = $("#game_id").val();
+				console.log ('game_id = ',game_id);
+				
+				$.post('fetchWorkTime.php', {game_id : game_id, }, function(data){
+				
+				try{
+					var arrn = JSON.parse(data);
+				}
+				catch(err) {
+					alert ('game data unavailable Data not found');
+					alert (err);
+				}
+
+				function AddMinutesToDate(date, minutes) {
+					return new Date(date.getTime() + minutes*60000);
+				}
+				function DateFormat(date){
+				  var days=date.getDate();
+				  var year=date.getFullYear();
+				  var month=(date.getMonth()+1);
+				  var hours = date.getHours();
+				  var minutes = date.getMinutes();
+				  minutes = minutes < 10 ? '0'+ minutes : minutes;
+				  var strTime =days+'/'+month+'/'+year+'/ '+hours + ':' + minutes;
+				  return strTime;
+				}
+				
+				var now = new Date();
+				var work_time = arrn.work_time;
+				var stop_time = AddMinutesToDate (now,work_time);
+				var prep_time = arrn.prep_time;
+				
+				$("#stop_time").val(stop_time);
+				
+				console.log ('now = ',now);
+				console.log ('work_time = ',work_time);
+				console.log ('prep_time = ',prep_time);
+				console.log ('stop_time = ',stop_time);
+				
+		
+					$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}'}); 
+						
+				});		
 			});
 		
 		</script>

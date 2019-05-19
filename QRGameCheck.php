@@ -38,6 +38,15 @@ if ( isset($_POST['game_id']) ) {
 	  header('Location: getGamePblmNum.php');
 	  return;
 	}	
+	if ( isset($_POST['stop_time']) ) {
+		$stop_time = $_POST['stop_time'];
+	} elseif (isset($_SESSION['stop_time'])){
+		$stop_time = $_SESSION['stop_time'];
+	} else {
+		$_SESSION['error'] = "Missing stop_time";
+		  header('Location: getGamePblmNum.php');
+		  return;
+	}	
 	
 Require_once "pdo.php";
 
@@ -415,6 +424,17 @@ if(isset($_POST['dex_num']) && $index<=200 && $index>0 && $dispAnsflag)
 <meta Charset = "utf-8">
 <title>QRGameCheck</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
+<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+
+	<link rel="stylesheet" type="text/css" href="jquery.countdown.css"> 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript" src="jquery.plugin.js"></script> 
+	<script type="text/javascript" src="jquery.countdown.js"></script>
+	
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+	
 </head>
 
 <body>
@@ -474,14 +494,16 @@ $_SESSION['time']=time();
 
 <!--<p>Grading Scheme: <input type="text" name="grade_scheme" ></p> -->
 <p><input type = "submit" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy">Score:  <?php echo (round($PScore)) ?>%</font></b></p>
-		<p><font color=#003399> </font><input type="hidden" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
-		<p><font color=#003399> </font><input type="hidden" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
-		<p><font color=#003399> </font><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+		<p><font color=#003399> </font><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
+		<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
+		<p><font color=#003399> </font><input type="hidden" id = "game_id" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+		<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="<?php echo (htmlentities($stop_time))?>"  ></p>
+		
 
 </form>
 
 
-
+	<div id="defaultCountdown"> </div>
 
 <p> Count: <?php echo ($count) ?> </p>
 
@@ -503,6 +525,17 @@ $_SESSION['time']=time();
 <p><input type = "submit" value="Get Base-Case Answers" name = "show_base" size="10" style = "width: 30%; background-color: green; color: white"/> &nbsp &nbsp <b> <font size="4" color="Green"></font></b></p>
 </form> -->
 
+<script>
+	$(document).ready( function () {
+		
+			var stop_time = $("#stop_time").val();
+			// var stop_time = '22m';
+			console.log ('stop_time = ',stop_time);
+			$.countdown.resync();
+		
+			$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}'}); 
+		});		
+</script>
 
 <?php
 /* 
