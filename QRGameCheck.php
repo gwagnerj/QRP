@@ -549,10 +549,19 @@ $_SESSION['time']=time();
 					$('#newPage').countdown('option', {until: shortly}); 
 				}); */
 		
+		//$('#highlightCountdown').countdown({until: 0, 
+		//	onTick: highlightLast5}); 
+		function highlightLast(periods) { 
+			if ($.countdown.periodsToSeconds(periods) === 10) { 
+				$(this).css('color', 'red','font-weight', 'Bold' ); 
+			} 
+			if ($.countdown.periodsToSeconds(periods) <= 30) { 
+				$(this).css('background-color', 'yellow'); 
+			} 
 		
+		};
 		
-		
-			$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',expiryUrl: 'stopgame.php'}); 
+			$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',expiryUrl: 'stopgame.php',onTick: highlightLast}); 
 			
 			
 		});		
