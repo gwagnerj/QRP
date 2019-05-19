@@ -527,13 +527,24 @@ $_SESSION['time']=time();
 
 <script>
 	$(document).ready( function () {
-		
 			var stop_time = $("#stop_time").val();
-			// var stop_time = '22m';
-			console.log ('stop_time = ',stop_time);
+			var stop_time = new Date(stop_time);
+			
+/* 			
 			$.countdown.resync();
+			var now = new Date();
+			now_ms = Math.abs(now);
+			stop_time_ms = Math.abs(stop_time);
+			
+			console.log ('now_ms = ',now_ms);
+			console.log ('stop_time_ms = ',stop_time_ms);
+			var diff_time_ms = Math.floor(stop_time_ms-now_ms); 
+			console.log ('diff_time_ms = ',diff_time_ms);
+				*/
 		
 			$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}'}); 
+			
+			
 		});		
 </script>
 
