@@ -139,6 +139,19 @@
 	<meta Charset = "utf-8">
 	<title>QRPGames</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+	<link rel="stylesheet" type="text/css" href="jquery.countdown.css"> 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript" src="jquery.plugin.js"></script> 
+	<script type="text/javascript" src="jquery.countdown.js"></script>
+	
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+	
+	
+	
+	
 	</head>
 
 	<body>
@@ -164,6 +177,11 @@
 
 
 <h3> Game number: <?php echo($game_id);?> </h3>
+
+				
+		<div id="defaultCountdown"> 3</div>
+
+
 
 	<svg  width=<?php echo($rect_svg); ?> height="100" >
 	  <rect  fill="white" stroke="blue" stroke-width="4" width="<?php echo($rect_width);?>" height = "50" x="15" y = "5"/>
@@ -193,10 +211,23 @@
 		<p><font color=#003399> </font><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
-		<p><b><input type = "submit" value="Go to Checker" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
+		<p><b><input type = "submit" id = "submit_id" value="Go to Checker" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
 		</form>
 
-
+		<script>
+			
+			$(document).ready( function () {
+				var newYear = new Date(); 
+					newYear = new Date(newYear.getFullYear() + 1, 1 - 1, 1); 
+					$('#defaultCountdown').countdown({until: '15m +15s', format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}'}); 
+					
+					$('input#submit_id').on('click',function(event){
+						event.preventDefault();
+					});
+					
+			});
+		
+		</script>
 
 	</body>
 	</html>
