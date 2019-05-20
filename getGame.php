@@ -568,10 +568,63 @@ $(document).ready(function(){
 											var contrib_university = arr.university;
 											//	var newPath = "uploads/"+openup+ " 'document'";
 											
+											
+	// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 	
+	// for the question - I want to call a js function e.g. loadedContent(); once the above script adds dynamic html.
+								
+												function loadScript( url, callback ) {
+													  var script = document.createElement( "script" )
+													  script.type = "text/javascript";
+													  if(script.readyState) {  // only required for IE <9
+														script.onreadystatechange = function() {
+														  if ( script.readyState === "loaded" || script.readyState === "complete" ) {
+															script.onreadystatechange = null;
+															callback();
+														  }
+														};
+													  } else {  //Others
+														script.onload = function() {		``
+														  callback();
+														};
+													  }
+
+													  script.src = "Substvars.js";
+													  document.getElementsByTagName( "head" )[0].appendChild( script );
+												}
+
+// use the Substvars script to substitute in the varabiles after the QRproblem document has been loaded
+// substitute any images that the QRproblem Document has in it
+
+												
 	// load the html document of the QRproblem										
-											$('#substitute_me').load("uploads/"+openup, 'document').html();
+											$('#substitute_me').load("uploads/"+openup, 'document', function () {
+												// call the function...
+												loadScript("Substvars.js", function() {
+													//  alert('script ready!'); 
+													var imgPath = '';
+													var indexQRP = '';
+													var addPath = "uploads/";
+													//	alert(addPath);
+													
+													// for each image in the document slip in the qrp subdirectory designation into the path to get the correct path to the image
+													$('img').each(function(){
+														
+														imgPath = $(this).prop('src');
+															console.log('imagepath before',imgPath);
+														//		alert (imgPath);
+															//referrer.toLowerCase().indexOf
+														indexQRP = imgPath.toLowerCase().indexOf('/qrp/')+5;
+														console.log('indexofQRP',indexQRP);
+														imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
+														console.log('imagepath',imgPath);
+														
+														$(this).prop('src', imgPath);
+												
+													});
+												});
+											}).html();
 							
-							
+											
 											var static_f = true;
 										
 											// dump all of the input parameters into the sessionStorage variables
@@ -630,56 +683,6 @@ $(document).ready(function(){
 												sessionStorage.setItem('MC_flag','false');
 										
 										
-	// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 	
-	// for the question - I want to call a js function e.g. loadedContent(); once the above script adds dynamic html.
-								
-												function loadScript( url, callback ) {
-													  var script = document.createElement( "script" )
-													  script.type = "text/javascript";
-													  if(script.readyState) {  // only required for IE <9
-														script.onreadystatechange = function() {
-														  if ( script.readyState === "loaded" || script.readyState === "complete" ) {
-															script.onreadystatechange = null;
-															callback();
-														  }
-														};
-													  } else {  //Others
-														script.onload = function() {		``
-														  callback();
-														};
-													  }
-
-													  script.src = "Substvars.js";
-													  document.getElementsByTagName( "head" )[0].appendChild( script );
-												}
-
-// use the Substvars script to substitute in the varabiles after the QRproblem document has been loaded
-// substitute any images that the QRproblem Document has in it
-
-												// call the function...
-												loadScript("Substvars.js", function() {
-													//  alert('script ready!'); 
-													var imgPath = '';
-													var indexQRP = '';
-													var addPath = "uploads/";
-													//	alert(addPath);
-													
-													// for each image in the document slip in the qrp subdirectory designation into the path to get the correct path to the image
-													$('img').each(function(){
-														
-														imgPath = $(this).prop('src');
-															console.log('imagepath before',imgPath);
-														//		alert (imgPath);
-															//referrer.toLowerCase().indexOf
-														indexQRP = imgPath.toLowerCase().indexOf('/qrp/')+5;
-														console.log('indexofQRP',indexQRP);
-														imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
-														console.log('imagepath',imgPath);
-														
-														$(this).prop('src', imgPath);
-												
-													});
-												});
 												
 												//	var exp_date = exp_date.replace(/:/g,"-");
 												var yy = exp_date.substring(0,2);
