@@ -194,8 +194,6 @@ var bc_var14 = sessionStorage.getItem(x);
 
 // This is the Multiple choice stuff called from numericToMC.php for making questions you can print outerHTML
 
-						
-
 var MC_flag = sessionStorage.getItem('MC_flag');
 if (MC_flag != null ){
 	var key_1 = sessionStorage.getItem('key_1');
@@ -1224,16 +1222,6 @@ $(document).ready(function(){
 			$('#connect_box').on('input propertychange keyup change', function(){ this.rows = this.value.match(/\n/g).length + 1 });
 			$('#society_box').on('input propertychange keyup change', function(){ this.rows = this.value.match(/\n/g).length + 1 });
 			
-	
-
-
-
-
-
-
-
-
-
 
 // if we are sent a 0 or 1 for the PIN we should display just the base-case without directions headers or 
 	
