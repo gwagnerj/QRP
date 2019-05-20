@@ -2,11 +2,9 @@
 require_once "pdo.php";
 session_start();
 
-// this is a project to get game questions from the nummeic problems in the repository
+// this is a project to get game questions from the nummeic problems in the repository and is run from QRPRepo.php
 // The file should get the values of the non null variables have the instructor / game master select which vars to be substituted and write the name varaibles to rect oval trap and hex fields 
-// along with the instuctor_ID (aka users_id) and problem-id to a game table 
-
-
+// along with the instuctor_ID (aka users_id) and problem-id to a game table and display the problem for the user to print.
 
 
 
@@ -452,11 +450,6 @@ $(document).ready(function(){
 									var trap_length = arrLength.trap_length;
 									var hexa_length = arrLength.hexa_length;
 									
-								/* 	console.log('rect_length',rect_length); //temp
-									console.log('oval_length',oval_length);
-									console.log('trap_length',trap_length);
-									console.log('hexa_length',hexa_length); */
-									
 									
 									// now adjust the length of the shapes
 									var char_to_width = 18;
@@ -474,15 +467,6 @@ $(document).ready(function(){
 									var hexa_svg = hexa_width+12;
 									var hexax_pt2 = hexa_width-6;
 									
-								/* 	console.log('rect_width',rect_width);
-									console.log('oval_width',oval_width);
-									console.log('trap_width',trap_width);
-									console.log('hexa_width',hexa_width);
-									
-									console.log('rect_svg',rect_svg);
-									console.log('oval_svg',oval_svg);
-									console.log('trap_svg',trap_svg);
-									console.log('hexa_svg',hexa_svg); */
 									
 									
 									var rect_shape = ' <svg width = '+rect_svg+' height = "26"  > <rect width = '+rect_width+' x="5" y="2" height = "22" fill = "transparent" stroke-width = "3" stroke = "blue"/> </svg> ';
@@ -492,7 +476,8 @@ $(document).ready(function(){
 										
 
 									
-
+									// write the variable shape to the coorect value of the session variable to substitute in
+									// this code needs rewritten in a loop
 										
 									if(rect_vnum == "v_1") {sessionStorage.setItem(arrn.nv_1,rect_shape);}
 									if(rect_vnum == "v_2") {sessionStorage.setItem(arrn.nv_2,rect_shape);}
@@ -582,11 +567,14 @@ $(document).ready(function(){
 											var contrib_last = arr.last;
 											var contrib_university = arr.university;
 											//	var newPath = "uploads/"+openup+ " 'document'";
+											
+	// load the html document of the QRproblem										
 											$('#substitute_me').load("uploads/"+openup, 'document').html();
 							
 							
 											var static_f = true;
 										
+											// dump all of the input parameters into the sessionStorage variables
 											
 											sessionStorage.setItem('contrib_first',contrib_first);
 											sessionStorage.setItem('contrib_last',contrib_last);
@@ -627,7 +615,7 @@ $(document).ready(function(){
 												if(sessionStorage.getItem(arrn.nv_13)==null){sessionStorage.setItem(arr.nv_13,arr.v_13);}
 												if(sessionStorage.getItem(arrn.nv_14)==null){sessionStorage.setItem(arr.nv_14,arr.v_14);}
 										
-												console.log ("WTF",sessionStorage.getItem(arr.nv_1)); // temp
+												console.log ("session storage name 1",sessionStorage.getItem(arr.nv_1)); // temp
 												console.log (sessionStorage.getItem(arr.nv_2));
 												console.log (sessionStorage.getItem(arr.nv_3));
 												console.log (sessionStorage.getItem(arr.nv_4));
@@ -641,15 +629,9 @@ $(document).ready(function(){
 												sessionStorage.setItem('static_flag',static_f);
 												sessionStorage.setItem('MC_flag','false');
 										
-
-
 										
-												// if the give answers box is checked send the answers to the page
-								
-										
-										
-										
-												// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 		
+	// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 	
+	// for the question - I want to call a js function e.g. loadedContent(); once the above script adds dynamic html.
 								
 												function loadScript( url, callback ) {
 													  var script = document.createElement( "script" )
@@ -671,6 +653,8 @@ $(document).ready(function(){
 													  document.getElementsByTagName( "head" )[0].appendChild( script );
 												}
 
+// use the Substvars script to substitute in the varabiles after the QRproblem document has been loaded
+// substitute any images that the QRproblem Document has in it
 
 												// call the function...
 												loadScript("Substvars.js", function() {
@@ -679,6 +663,8 @@ $(document).ready(function(){
 													var indexQRP = '';
 													var addPath = "uploads/";
 													//	alert(addPath);
+													
+													// for each image in the document slip in the qrp subdirectory designation into the path to get the correct path to the image
 													$('img').each(function(){
 														
 														imgPath = $(this).prop('src');
@@ -695,44 +681,32 @@ $(document).ready(function(){
 													});
 												});
 												
-											//	var exp_date = exp_date.replace(/:/g,"-");
+												//	var exp_date = exp_date.replace(/:/g,"-");
 												var yy = exp_date.substring(0,2);
 												var mm 	= exp_date.substring(3,5);
 												var dd 	= exp_date.substring(6,8);	
 												var exp_date2 = mm +"/"+dd+"/20"+yy;	
 												
-											//	var msec = Date.parse(exp_date);
-											//	var exp_date2 = new Date(msec);
-												
-											//	exp_date2 = new Date(exp_date);
+											
 												$("#game_num").html('Game Number: '+ game_id+' \xa0\xa0 Please check your responses with qrgames.org or scan the QR code.\xa0\xa0\xa0\xa0  <img border=0 width=50 height=50 id="qr_game" src="qr_game.svg">');
 												$("#exp_date").html("Expires: "+ exp_date2);
 												$("#cancel_id").hide();
 											
-											//	$("#QRtoGame").html('Please check your responses with qrgames.org or scan the QR code.  <img border=0 width=50 height=50 id="qr_game" src="qr_game.svg">');
-																		
-																			 $( "p" ).each(function( index ) {
-																			   var current_content =  $(this).text();
-																			   // put in a div element at the start of the markup
-																			  if( current_content.indexOf("##") !=-1) {
-																				alert ('did not substitute in all variables');
+					// my attempt to see if the varaibles have been sustituted for																							
+												 $( "p" ).each(function( index ) {
+													   var current_content =  $(this).text();
+													   // put in a div element at the start of the markup
+													  if( current_content.indexOf("##") !=-1) {
+														alert ('did not substitute in all variables');
 
-																				// $(this).closest('p').before('<div id="box1-start">');
-																			  } else {
-																				  console.log ('did substitute in all variables');
-																				  
-																			  }
-																			
-																			});
+														// $(this).closest('p').before('<div id="box1-start">');
+													  } else {
+														  console.log ('did substitute in all variables');
+													  }
 												
+												});
+					
 														
-												
-												
-												
-												
-												
-												
-												
 										
 											} else {
 									
