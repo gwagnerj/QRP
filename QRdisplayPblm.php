@@ -216,11 +216,7 @@ $(document).ready(function(){
 			// now change the source of the images so that they are loaded properly
 			//console.log('wtf');
 				
-				/*  $(document).ready(function(){
-					
-					
-			
-				});	 */
+				
 				
 				
 				
@@ -401,7 +397,42 @@ $(document).ready(function(){
 					  document.getElementsByTagName( "head" )[0].appendChild( script );
 					}
 
+					$('#substitute_me').load("uploads/"+openup, 'document', function () {
+												// call the function...
+												loadScript("Substvars.js", function() {
+													//  alert('script ready!'); 
+													var imgPath = '';
+													var indexQRP = '';
+													var addPath = "uploads/";
+													//	alert(addPath);
+													
+													// for each image in the document slip in the qrp subdirectory designation into the path to get the correct path to the image
+													$('img').each(function(){
+														
+														imgPath = $(this).prop('src');
+															console.log('imagepath before',imgPath);
+														//		alert (imgPath);
+															//referrer.toLowerCase().indexOf
+														indexQRP = imgPath.toLowerCase().indexOf('/qrp/')+5;
+														console.log('indexofQRP',indexQRP);
+														imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
+														console.log('imagepath',imgPath);
+														
+														$(this).prop('src', imgPath);
+												
+													});
+												});
+											}).html();
 
+
+
+
+
+
+
+
+
+/* 
 					// call the function...
 					loadScript("Substvars.js", function() {
 					//  alert('script ready!'); 
@@ -425,7 +456,7 @@ $(document).ready(function(){
 								});
 					});
 				
-				
+				 */
 				
 				
 				
