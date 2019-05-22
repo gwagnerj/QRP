@@ -648,7 +648,7 @@ $(document).ready(function(){
 												sessionStorage.setItem('nv_8',arr.nv_8);
 												sessionStorage.setItem('nv_9',arr.nv_9);
 												sessionStorage.setItem('nv_10',arr.nv_10);
-												sessionStorage.setItem('nv_10',arr.nv_11);
+												sessionStorage.setItem('nv_11',arr.nv_11);
 												sessionStorage.setItem('nv_12',arr.nv_12);
 												sessionStorage.setItem('nv_13',arr.nv_13);
 												sessionStorage.setItem('nv_14',arr.nv_14);
@@ -700,11 +700,11 @@ $(document).ready(function(){
 													   var current_content =  $(this).text();
 													   // put in a div element at the start of the markup
 													  if( current_content.indexOf("##") !=-1) {
-														alert ('did not substitute in all variables');
+													//	alert ('did not substitute in all variables');
 
 														// $(this).closest('p').before('<div id="box1-start">');
 													  } else {
-														  console.log ('did substitute in all variables');
+													//	  console.log ('did substitute in all variables');
 													  }
 												
 												});
