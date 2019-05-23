@@ -113,10 +113,10 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			$assign_t_created = time();
 			$university = $Users_data['university'];
 			$prob_num = $_GET['problem_id'];
-			if(isset($_POST['q_on_q'])){
+			if(isset($_POST['guess'])){
 				$pp_flag1 = 1;
 			}
-			if(isset($_POST['guess'])){
+			if(isset($_POST['q_on_q'])){
 				$pp_flag2 = 1;
 			}
 			if(isset($_POST['Prelim_MC'])){
