@@ -397,6 +397,37 @@ $(document).ready(function(){
 					  document.getElementsByTagName( "head" )[0].appendChild( script );
 					}
 
+					
+					
+		
+					// call the function...
+					loadScript("Substvars.js", function() {
+					//  alert('script ready!'); 
+					  	var imgPath = '';
+						var indexQRP = '';
+						var addPath = "uploads/";
+					//	alert(addPath);
+								$('img').each(function(){
+									
+									imgPath = $(this).prop('src');
+										console.log('imagepath before',imgPath);
+								//		alert (imgPath);
+										//referrer.toLowerCase().indexOf
+									indexQRP = imgPath.toLowerCase().indexOf('/qrp/')+5;
+									console.log('indexofQRP',indexQRP);
+									imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
+									console.log('imagepath',imgPath);
+									
+									$(this).prop('src', imgPath);
+								
+								});
+					});
+				
+							
+					
+						// in this case we are using the php to load the function so we do not need to replace the substitute me with the JQ
+					
+			/* 		
 					$('#substitute_me').load("uploads/"+openup, 'document', function () {
 												// call the function...
 												loadScript("Substvars.js", function() {
@@ -424,7 +455,7 @@ $(document).ready(function(){
 												});
 											}).html();
 
-		
+		 */
 				
 				
 				// window.location.href="uploads/"+openup;
