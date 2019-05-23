@@ -2,6 +2,9 @@
 	require_once "pdo.php";
 	session_start();
 	
+	// this is the normal place to start for students checking their homework and goes the the QRcontroller.  Can also come from the rtnCode.php or the back button on QRdisplay.php
+	
+	
 	$_SESSION['progress']=0;
 	$_SESSION['checker']=0;  // tells where the getiid where to come back to here or the checker
 	$stu_name = '';
