@@ -209,14 +209,14 @@ if(isset($_POST['Activate']) && $Assign_data==false){
    }
    
 		if(isset($_POST['q_on_q'])){
-			$pp_flag1 = 1;
-		} else {
-			$pp_flag1 = 0;
-		}
-		if(isset($_POST['guess'])){
 			$pp_flag2 = 1;
 		} else {
 			$pp_flag2 = 0;
+		}
+		if(isset($_POST['guess'])){
+			$pp_flag1 = 1;
+		} else {
+			$pp_flag1 = 0;
 		}
 		if(isset($_POST['Prelim_MC'])){
 			$pp_flag3 = 1;
