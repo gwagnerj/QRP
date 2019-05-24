@@ -317,13 +317,7 @@
 			$_SESSION['respon_j']= $resp['j'];
 			$count=1;
 			
-			// used to see if the user is updating the value 
-			/* for ($j=0;$j<9;$j++){
-				$_SESSION['$respon'[$j]]= 0;
-				// $_SESSION['$changed'[$j]]= false;
-				$_SESSION['$respon'[$j]]=$resp[$j];
-				$changed[$j] = false;
-			 }  */
+			
 			
 		}else{
 			$count = $_SESSION['count'] + 1;
@@ -566,7 +560,7 @@
 		
 			
 			echo "<tr><td>";
-			echo ($_SESSION['index']);
+			echo ($dex);
 			echo ("</td><td>");
 			echo ($soln['ans_a']);
 			echo ("</td><td>");
@@ -630,7 +624,7 @@
 	<main>
 
 
-	<p> Problem Number: <?php echo ($_SESSION['problem_id']) ?> </p>
+	<p> Problem Number: <?php echo ($problem_id) ?> </p>
 
 
 	<form autocomplete="off" method="POST" >
