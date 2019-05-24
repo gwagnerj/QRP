@@ -207,7 +207,8 @@
 			$count = 0;
 			$rand1= rand(100000,999999);  // sets up the rtn code on other page
 			$rand2=rand(0,9);				// sets up the rtn code on the other page
-
+			$_SESSION['rand'] = $rand1;   // temp  until I can get rtnCode.php reading from table
+			 $_SESSION['rand2'] - $rand2;
 			
 			$_SESSION['score'] = "0"; // temp needed for the old session based system
 			
@@ -890,7 +891,7 @@
 	 <hr>
 	<p><b><font Color="red">When Finished:</font></b></p>
 	  <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
-	  <?php // $_SESSION['score'] = $PScore; $_SESSION['index'] = $index; $_SESSION['count'] = $count;?> 
+	  <?php  $_SESSION['score'] = $PScore; $_SESSION['index'] = $index; $_SESSION['count'] = $count;?> 
 	  
 	  <input type = "number" hidden name = "score"  value = <?php echo ($PScore); ?> > </input>
 	  <input type = "number" hidden name = "problem_id"  value = <?php echo ($problem_id); ?> > </input>
