@@ -867,32 +867,32 @@ ALTER TABLE Problem	ADD unpubl_auth varchar(128);
   ADD num_try int;
 	
 	
-	CREATE TABLE IF NOT EXISTS `Game` (
-  `game_id` int(11) NOT NULL AUTO_INCREMENT,
-   `problem_id` int(11) NOT NULL,
-  `iid` int(11) NOT NULL,
-  `dex` int not Null,
-	`rect` varchar(30),
-	`oval` varchar(30),
-	`trap` varchar(30),
-	`hexa` varchar(30),
-	`rect_vnum` varchar(5),
-	`oval_vnum` varchar(5),
-	`trap_vnum` varchar(5),
-	`hexa_vnum` varchar(5),
-	`rect_length` int, -- length of characters of the 
-	`oval_length` int,
-	`trap_length` int,
-	`hexa_length` int,
-	`prep_time` int, -- time in minutes that students can discuss the problem without being shown their numbers 
-	`work_time` int, -- default number of minutes students have to work on the problem before auto submit
-	`post_time` int, -- time in minutes for - post problem numerical problem analysis
-	`exp_date` date, -- date the problem will be removed from the active game table
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`game_id`),
-   CONSTRAINT FOREIGN KEY (`problem_id`) REFERENCES `Problem` (`problem_id`) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	CREATE TABLE IF NOT EXISTS `Gamep` (
+		`gamep_id` int(11) NOT NULL AUTO_INCREMENT,
+		`problem_id` int(11) NOT NULL,
+		`iid` int(11) NOT NULL,
+		`dex` int not Null,
+		`rect` varchar(30),
+		`oval` varchar(30),
+		`trap` varchar(30),
+		`hexa` varchar(30),
+		`rect_vnum` varchar(5),
+		`oval_vnum` varchar(5),
+		`trap_vnum` varchar(5),
+		`hexa_vnum` varchar(5),
+		`rect_length` int, -- length of characters of the 
+		`oval_length` int,
+		`trap_length` int,
+		`hexa_length` int,
+		`prep_time` int, -- time in minutes that students can discuss the problem without being shown their numbers 
+		`work_time` int, -- default number of minutes students have to work on the problem before auto submit
+		`post_time` int, -- time in minutes for - post problem numerical problem analysis
+		`exp_date` date, -- date the problem will be removed from the active game table
+		`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		PRIMARY KEY (`gamep_id`),
+		CONSTRAINT FOREIGN KEY (`problem_id`) REFERENCES `Problem` (`problem_id`) 
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -912,3 +912,36 @@ ALTER TABLE Problem	ADD unpubl_auth varchar(128);
 		-- NOTE that MySQL Event Scheduler need to be enabled on your server:
 
 		SET GLOBAL event_scheduler = ON;
+		
+		
+		
+	CREATE TABLE IF NOT EXISTS `Checker` (
+		`checker_id` int(11) NOT NULL AUTO_INCREMENT,
+		`problem_id` int(11) NOT NULL,
+		`iid` int(11) NOT NULL,
+		`dex` int not Null,
+		`resp_a` varchar(10),
+		`resp_b` varchar(10),
+		`resp_c` varchar(10),
+		`resp_d` varchar(10),
+		`resp_e` varchar(10),
+		`resp_f` varchar(10),
+		`resp_g` varchar(10),
+		`resp_h` varchar(10),
+		`resp_i` varchar(10),
+		`resp_j` varchar(10),
+		`counts` int,
+		`score` int,
+		`rand1` int,
+		`rand2` int,
+		`exp_date` date, -- date the problem will be removed from the active game table
+		`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		PRIMARY KEY (`checker_id`),
+		CONSTRAINT FOREIGN KEY (`problem_id`) REFERENCES `Problem` (`problem_id`) 
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	
+	
+	
+	
+
