@@ -1,6 +1,7 @@
-	<?php
+<?php
 	 session_start();
-	 Require_once "pdo.php";
+	 
+	require_once "pdo.php";
 		// this is comes in directly from QRPindex.php file that from the problem statement (will have get parameters if they press on the link here or directly from QRdisplaypblm.php via a link with get parameters
 		
 	
@@ -90,7 +91,7 @@
 					$changed[$j]=0;		// 1 if they changed their response ero otherwise
 					$addCount[$j]=0;  // this is zero if they get it right and 1 if they get it wrong
 			}	
-			$_SESSION['wrongC']=$wrongCount; // temp
+			//$_SESSION['wrongC']=$wrongCount; // temp
 			$_SESSION['pin'] = $pin;
 			$_SESSION['iid'] = $iid;
 			$_SESSION['problem_id'] = $problem_id;
