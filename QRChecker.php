@@ -645,8 +645,25 @@
 				
 				$_SESSION['wrote_try_flag'] = true;
 					
+					// update the problem data on the cummulative wrong counts
+					
+					$sql = "UPDATE Problem SET `cumm_wcount_a` = COALESCE(`cumm_wcount_a`+ $wrongCount[0],`cumm_wcount_a`+0,0)  
+												,`cumm_wcount_b` = COALESCE(`cumm_wcount_b`+ $wrongCount[1],`cumm_wcount_b`+0,0)  
+												,`cumm_wcount_c` = COALESCE(`cumm_wcount_c`+ $wrongCount[2],`cumm_wcount_c`+0,0)  
+												,`cumm_wcount_d` = COALESCE(`cumm_wcount_d`+ $wrongCount[3],`cumm_wcount_d`+0,0)
+												,`cumm_wcount_e` = COALESCE(`cumm_wcount_e`+ $wrongCount[4],`cumm_wcount_e`+0,0) 
+												,`cumm_wcount_f` = COALESCE(`cumm_wcount_f`+ $wrongCount[5],`cumm_wcount_f`+0,0)
+												,`cumm_wcount_g` = COALESCE(`cumm_wcount_g`+ $wrongCount[6],`cumm_wcount_g`+0,0)
+												,`cumm_wcount_h` = COALESCE(`cumm_wcount_h`+ $wrongCount[7],`cumm_wcount_h`+0,0)
+												,`cumm_wcount_i` = COALESCE(`cumm_wcount_i`+ $wrongCount[8],`cumm_wcount_i`+0,0) 
+												,`cumm_wcount_j` = COALESCE(`cumm_wcount_j`+ $wrongCount[9],`cumm_wcount_j`+0,0)
+						WHERE problem_id = :problem_id";
+						$stmt = $pdo->prepare($sql);
+						$stmt->execute(array(':problem_id' => $problem_id));
+					
+					
 				if ($count == 2){ 
-					$sql = "UPDATE Problem SET `num_try_1` = coalesce(`num_try_1`+1,1) WHERE problem_id = :problem_id";
+					$sql = "UPDATE Problem SET `num_try_1` = coalesce(`num_try_1`+1,1) WHERE problem_id = :problem_id";  // coalesce returns the first non-null value in the list
 						$stmt = $pdo->prepare($sql);
 						$stmt->execute(array(':problem_id' => $problem_id));		
 				}	
