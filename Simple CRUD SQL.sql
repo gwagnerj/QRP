@@ -953,5 +953,28 @@ ALTER TABLE Problem	ADD unpubl_auth varchar(128);
 	
 	
 	
-	
+	ALTER TABLE Problem 
+		  ADD cumm_wcount_a int,
+		  ADD cumm_wcount_b int,
+		  ADD cumm_wcount_c int,
+		  ADD cumm_wcount_d int,
+		  ADD cumm_wcount_e int,
+		  ADD cumm_wcount_f int,
+		  ADD cumm_wcount_g int,
+		  ADD cumm_wcount_h int,
+		  ADD cumm_wcount_i int,
+		  ADD cumm_wcount_j int;
+		  
+
+
+
+
+
+
+
+
+
+
+
+
 
