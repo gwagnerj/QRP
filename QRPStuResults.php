@@ -107,7 +107,10 @@ $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 	echo('t-spent');
     echo("</th><th>");
 
-	 echo('Tries to get 100 <br> All Time');
+	 echo('Tries to get 100% <br> All Time');
+	 
+	  echo("</th><th>");
+	  echo('Wrong counts each part <br> All Time');
 	 echo("</th>");
 	
 	 echo("</thead>");
@@ -152,7 +155,7 @@ $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 					if($max_cat == $t_b4due_7+$t_b4due_np_7){echo(" >1wk");}
 			 
 					 echo('<span class="inlinebar2">'.$t_b4due_7.": ".$t_b4due_np_7." ,".$t_b4due_6.": ".$t_b4due_np_6." ,".$t_b4due_5.": ".$t_b4due_np_5.", ".$t_b4due_4.": ".$t_b4due_np_4." , ".$t_b4due_3.": ".$t_b4due_np_3.", ".$t_b4due_2.": ".$t_b4due_np_2." ,".$t_b4due_1.": ".$t_b4due_np_1.'</span>');
-					echo('<br><font size="1"> &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; early &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; late'."</font>");
+					echo('<br><font size="1"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; early &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; late'."</font>");
 					echo('<br><font size="1"> &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t_b4due'."</font>");
 					echo('</font>');
 				}
@@ -193,7 +196,7 @@ $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 					if($max_cat == $t_take1_6+$t_take1_np_6){echo(" >3h");}
 			 
 					 echo('<span class="inlinebar2">'.$t_take1_1.": ".$t_take1_np_1." ,".$t_take1_2.": ".$t_take1_np_2.", ".$t_take1_3.": ".$t_take1_np_3." , ".$t_take1_4.": ".$t_take1_np_4.", ".$t_take1_5.": ".$t_take1_np_5." ,".$t_take1_6.": ".$t_take1_np_6.'</span>');
-					echo('<br><font size="1">&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<5min &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;>3h'."</font>");
+					echo('<br><font size="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<5min &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;>3h'."</font>");
 					echo('<br><font size="1"> &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t spent'."</font>");
 					echo('</font>');
 				}
@@ -223,12 +226,45 @@ $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 					if($max_cat == $num_try_6){echo("over 41");}
 			 
 					 echo('<span class="inlinebar2">'.$num_try_1." ,".$num_try_2.", ".$num_try_3." , ".$num_try_4.", ".$num_try_5." ,".$num_try_6.'</span>');
-					echo('<br><font size="1">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1 &nbsp;&nbsp;&nbsp; 2-4 &nbsp;&nbsp;5-10&nbsp;11-20&nbsp;21-40&nbsp;&nbsp; >41  '."</font>");
-					echo('<br><font size="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; numer of tries'."</font>");
+					echo('<br><font size="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1 &nbsp;&nbsp;&nbsp; 2-4 &nbsp;&nbsp;5-10&nbsp;11-20&nbsp;21-40&nbsp;&nbsp; >41  '."</font>");
+					echo('<br><font size="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; number of tries'."</font>");
 					echo('</font>');
 				}
-	
-	
+	echo("</td><td>");
+				
+				if(!isset($row2["cumm_wcount_a"])){$cumm_wcount[0] = 0;} else {$cumm_wcount[0] = $row2["cumm_wcount_a"];}
+				if(!isset($row2["cumm_wcount_b"])){$cumm_wcount[1] = 0;} else {$cumm_wcount[1] = $row2["cumm_wcount_b"];}
+				if(!isset($row2["cumm_wcount_c"])){$cumm_wcount[2] = 0;} else {$cumm_wcount[2] = $row2["cumm_wcount_c"];}
+				if(!isset($row2["cumm_wcount_d"])){$cumm_wcount[3] = 0;} else {$cumm_wcount[3] = $row2["cumm_wcount_d"];}
+				if(!isset($row2["cumm_wcount_e"])){$cumm_wcount[4] = 0;} else {$cumm_wcount[4] = $row2["cumm_wcount_e"];}
+				if(!isset($row2["cumm_wcount_f"])){$cumm_wcount[5] = 0;} else {$cumm_wcount[5] = $row2["cumm_wcount_f"];}
+				if(!isset($row2["cumm_wcount_g"])){$cumm_wcount[6] = 0;} else {$cumm_wcount[6] = $row2["cumm_wcount_g"];}
+				if(!isset($row2["cumm_wcount_h"])){$cumm_wcount[7] = 0;} else {$cumm_wcount[7] = $row2["cumm_wcount_h"];}
+				if(!isset($row2["cumm_wcount_i"])){$cumm_wcount[8] = 0;} else {$cumm_wcount[8] = $row2["cumm_wcount_i"];}
+				if(!isset($row2["cumm_wcount_j"])){$cumm_wcount[9] = 0;} else {$cumm_wcount[9] = $row2["cumm_wcount_j"];}
+				
+			
+			 
+				$num_wrong_tot = array_sum($cumm_wcount);
+			 
+				if ($num_wrong_tot ==0){
+					
+					echo(' ');	
+				} else {
+					
+					$max_cat=max($cumm_wcount);
+					
+					for ($j=0; $j<=9; $j++){
+						$per_wrong[$j] = $cumm_wcount[$j]/$num_wrong_tot*100;
+						// if ($per_wrong[$j] == 0){$per_wrong[$j] = "";}
+					}
+					
+			 
+					 echo('<span class="inlinebar2">'.$per_wrong[0]." ,".$per_wrong[1].", ".$per_wrong[2]." , ".$per_wrong[3].", ".$per_wrong[4]." ,".$per_wrong[5]." ,".$per_wrong[6]." ,".$per_wrong[7]." ,".$per_wrong[8]." ,".$per_wrong[9].'</span>');
+					echo('<br><font size="1">&nbsp; a &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; f  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; g &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; h &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; j'."</font>");
+					echo('<br><font size="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tries each part'."</font>");
+					echo('</font>');
+				}
 	
 	
 	echo("</td>");
