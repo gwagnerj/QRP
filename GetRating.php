@@ -24,16 +24,7 @@
 	$_SESSION['error'] = 'problem_id not set';
 }
  
- if (isset($_POST['dex'])){
-	$dex = $_POST['dex'];
-}elseif(isset($_GET['dex'])){
-	$dex = $_GET['dex'];
-} elseif(isset($_SESSION['dex'])){
-	$dex = $_SESSION['dex'];
-} else {
-	
-	$_SESSION['error'] = 'dex not set';
-}
+
  
  if (isset($_POST['pin'])){
 	$pin = $_POST['pin'];
@@ -74,8 +65,6 @@
  echo($score);
  echo (' problem_id is');
  echo($problem_id);
- echo (' dex');
- echo($dex);
  echo (' iid is');
  echo($iid);
  die(); */
@@ -89,7 +78,7 @@
 	 
  }
 
-
+$move_on = false;
 
  if (isset($_SESSION['problem_id']))
   { // get the correct value for the problem number parameter
@@ -225,7 +214,16 @@
 
 // add the problem comments if they have been added
 
-			$prefix = '   name - '.$_SESSION['stu_name'].' PIN - '.$dex.' score - '.$score.' Comment--';
+			 $stmt = $pdo->prepare("SELECT * FROM `Activity` WHERE problem_id = :problem_id AND pin = :pin AND iid = :iid");
+			$stmt->execute(array(":problem_id" => $problem_id, ":pin" => $pin, ":iid" => $iid));
+			$row = $stmt -> fetch();
+			if ( $row === false ) {
+				$prefix = '   name - no_name  PIN - '.$pin.' score - '.$score.' Comment--';
+			} else {
+				
+			$prefix = '   name - '.$row['stu_name'].' PIN - '.$pin.' score - '.$score.' Comment--';
+			}
+
 
 			if (isset($_POST['prob_comments']) )
 			{
@@ -293,16 +291,21 @@
 	
 	
 	
-	// change the headers to the rtnCode.php
+	// change the headers to the rtnCode.php  instead of doing this I will post all the information to the rtn code
+		$move_on = true;
 
-			header( 'Location: rtnCode.php' ) ;
-			return;		
+	//echo ('<script> document.getElementById("move_on").submit() </script>');
+	
+
+
+//			header( 'Location: rtnCode.php' ) ;
+//			return;		
 				
 
 
 		 } else {
-		 
-			print ('All check box type catagories must be entered');
+			
+			print ('<p><b><font Color="red">All check box type catagories must be entered</font></b></p>');
 		 
 		 
 		 }
@@ -518,6 +521,43 @@ If I had to do it all over again I would have:  <br>
 	</div>		
  -->
 </form>
+
+
+
+
+
+		<form action="rtnCode.php" id = "move_on" method="POST">
+			
+			  <input type = "number" hidden name = "score"  value = <?php echo ($score); ?> > </input>
+			  <input type = "number" hidden name = "problem_id"  value = <?php echo ($problem_id); ?> > </input>
+			  <input type = "number" hidden name = "iid"  value = <?php echo ($iid); ?> > </input>
+				<input type = "number" hidden name = "pin"  value = <?php echo ($pin); ?> > </input>
+				 <input type = "number" hidden name = "count"  value = <?php echo ($count); ?> > </input>
+			
+			<b><input id "move_on_submit" hidden type="submit" ></b>
+			
+			</form>
+
+
+
+
+
+
+<?php
+
+if ($move_on){
+	
+	
+	echo ('<script> document.getElementById("move_on").submit() </script>');
+	
+}
+
+
+?>
+
+
+
+
 <script>
 
 
@@ -526,6 +566,8 @@ If I had to do it all over again I would have:  <br>
 
 
 $(document).ready(function(){
+	
+//	$('#move_on_submit').hide();
 	
 	var score = $('input#score').val();
 	

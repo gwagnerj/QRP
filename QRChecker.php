@@ -86,7 +86,7 @@
 		
 		// initialize a few variables
 			$count = 0;
-			for ($j=0;$j<9;$j++){
+			for ($j=0;$j<=9;$j++){
 					$wrongCount[$j]=0;		// accumulates how many times they missed a part
 					$changed[$j]=0;		// 1 if they changed their response ero otherwise
 					$addCount[$j]=0;  // this is zero if they get it right and 1 if they get it wrong
@@ -208,7 +208,7 @@
 			$rand1= rand(100000,999999);  // sets up the rtn code on other page
 			$rand2=rand(0,9);				// sets up the rtn code on the other page
 			$_SESSION['rand'] = $rand1;   // temp  until I can get rtnCode.php reading from table
-			 $_SESSION['rand2'] - $rand2;
+			 $_SESSION['rand2'] = $rand2;
 			
 			$_SESSION['score'] = "0"; // temp needed for the old session based system
 			
@@ -243,9 +243,6 @@
 			
 			
 			$checker_data = $row;
-			
-			// $count = $checker_data['counts'] +1; 
-			// $_SESSION['count'] = $count;		  //temp
 			$checker_id = $checker_data['checker_id'];
 			
 			
@@ -411,228 +408,6 @@
 		
 
 
-// not sure I need this if I am always initializing wrongcount anyway above //temp
-/* 
-	if ( isset($_GET['problem_id']) and  isset($_GET['pin'])) {
-		
-			// $wrongcount and $_SESSION['wrongC'[$j]] are both an array of which problems are wrong - this iniializes that if we are comming through with a GET 
-		
-		
-		if (!isset($_POST['pin'])){
-			for ($j=0;$j<=9;$j++){
-				$wrongCount[$j]=0;
-				$_SESSION['wrongC'[$j]]=$wrongCount[$j]; 
-			}
-		}		
-			
-		
-	}
-		 */
-		
-		
-		
-
-	//echo "the number of parts for this problem is ". $probParts;	
-
-	
-
-		
-	
-/* 		
-		
-	//print_r( $tol);
-	//echo '<br>';
-// this is what I will change tomorrow to write to a table in my SQL - this will be nice for students to keep track of their responses
-	// keep track of the number of tries the student makes
-		if(!($_SESSION['count'])){
-			$_SESSION['count'] = 1;
-			$changed_a = false;
-			$_SESSION['respon_a']= $resp['a'];
-				$changed_b = false;
-			$_SESSION['respon_b']= $resp['b'];
-				$changed_c = false;
-			$_SESSION['respon_c']= $resp['c'];
-				$changed_d = false;
-			$_SESSION['respon_d']= $resp['d'];
-				$changed_e = false;
-			$_SESSION['respon_e']= $resp['e'];
-				$changed_f = false;
-			$_SESSION['respon_f']= $resp['f'];
-				$changed_g = false;
-			$_SESSION['respon_g']= $resp['g'];
-				$changed_h = false;
-			$_SESSION['respon_h']= $resp['h'];
-				$changed_i = false;
-			$_SESSION['respon_i']= $resp['i'];
-				$changed_j = false;
-			$_SESSION['respon_j']= $resp['j'];
-			$count=1;
-			
-			
-			
-		}else{
-			$count = $_SESSION['count'] + 1;
-			$_SESSION['count'] = $count;
-			
-			if ($_SESSION['respon_a']== $resp['a']){
-				$changed_a = false;
-			} else  {
-			
-				$changed_a = true;
-				$_SESSION['respon_a']= $resp['a'];
-			}
-			
-			if ($_SESSION['respon_b']== $resp['b']){
-				$changed_b = false;
-			} else  {
-			
-				$changed_b = true;
-				$_SESSION['respon_b']= $resp['b'];
-			}
-			
-			if ($_SESSION['respon_c']== $resp['c']){
-				$changed_c = false;
-			} else  {
-			
-				$changed_c = true;
-				$_SESSION['respon_c']= $resp['c'];
-			}
-			
-			if ($_SESSION['respon_d']== $resp['d']){
-				$changed_d = false;
-			} else  {
-			
-				$changed_d = true;
-				$_SESSION['respon_d']= $resp['d'];
-			}
-			
-			if ($_SESSION['respon_e']== $resp['e']){
-				$changed_e = false;
-			} else  {
-			
-				$changed_e = true;
-				$_SESSION['respon_e']= $resp['e'];
-			}
-			
-			if ($_SESSION['respon_f']== $resp['f']){
-				$changed_f = false;
-			} else  {
-			
-				$changed_f = true;
-				$_SESSION['respon_f']= $resp['f'];
-			}
-			
-			if ($_SESSION['respon_g']== $resp['g']){
-				$changed_g = false;
-			} else  {
-			
-				$changed_g = true;
-				$_SESSION['respon_g']= $resp['g'];
-			}
-			
-			if ($_SESSION['respon_h']== $resp['h']){
-				$changed_h = false;
-			} else  {
-			
-				$changed_h = true;
-				$_SESSION['respon_h']= $resp['h'];
-			}
-			
-			if ($_SESSION['respon_i']== $resp['i']){
-				$changed_i = false;
-			} else  {
-			
-				$changed_i = true;
-				$_SESSION['respon_i']= $resp['i'];
-			}
-			
-			if ($_SESSION['respon_j']== $resp['j']){
-				$changed_j = false;
-			} else  {
-			
-				$changed_j = true;
-				$_SESSION['respon_j']= $resp['j'];
-			}
-			 */
-			/* for ($j=0;$j<9;$j++){
-					if($_SESSION['$respon'[$j]] == $resp[$j]){
-						$changed[$j] = false;
-					} else {
-						$changed[$j] = true;
-					}
-				$_SESSION['$respon'[$j]] = $resp[$j];	
-			} 
-
-		}*/
-
-
-
-
-
-	// check to see if they got it within tolerance
-
-	//}	 
-/* 		For ($j=0; $j<=9; $j++) {
-			if($partsFlag[$j]) {
-								
-					if($soln[$j]==0){  // take care of the zero solution case - this does not really work need to figure out why
-						$sol=1;
-					} else {
-						$sol=$soln[$j];
-					}	
-					
-					if(	abs(($soln[$j]-$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]]) {
-										//echo ($tol[$tol_key[$j]]);
-										$corr[$corr_key[$j]]='Correct';
-										$score=$score+1;
-										$_SESSION['$wrongC'[$j]] = 0;
-										$wrongCount[$j]=0;
-												
-								}
-					Else  // got it wrong or did not attempt
-					{
-							
-								if(!(isset($_SESSION['wrongC'[$j]])))  // needs initialized
-								{
-									
-									$_SESSION['$wrongC'[$j]] = 0;
-									$wrongCount[$j]=0;
-									echo 'im here';
-									//echo $_SESSION['wrongC'[$j]];
-								
-									
-								}
-								elseif ($resp[$resp_key[$j]]==0)  // got it wrong and did not attempted it
-								{
-									
-									$wrongCount[$j] = ($_SESSION['wrongC'[$j]]);
-									//$_SESSION['wrongC'[$j]] = $wrongCount[$j];
-									$corr[$corr_key[$j]]='';
-								//	echo ($wrongCount[$j]);
-								}
-								else  // not correct (better to use POST value I suppose - fix later
-								{
-									$wrongCount[$j] = ($_SESSION['wrongC'[$j]])+1;
-									$_SESSION['wrongC'[$j]] = $wrongCount[$j];
-										$corr[$corr_key[$j]]='Not Correct';
-									//	echo ($wrongCount[$j]);	
-								}
-					}		
-			}
-		} */
-
-		// time to delay before accepting any more input
-		// So after 4 tries on a part the system will delay for 2 seconds before another input is selected (if $time_sleep1_trip is 5 and $time_sleep1 is 2
-	
-		
-	
-		
-		  // we are coming through the first time
-		
-		
-		
-		
-		
 
 	// If $PScore gets to 100, write the number of tries to the problem in the proper bin num_try_1 is first try, num_try_2 is 2 - 3 tries ...
 	// doing it here instead of the GetRating.php allows to keep track of external people solving the problem by bruit force guessing we can write the tries to the activity table in that module 
@@ -749,26 +524,13 @@
 		
 	}
 		
-		
-		
-		
-		
-		
-		
-		
-	//	print_r ($_SESSION['wrongC']);
-	//		print_r ($wrongCount);
-		//print_r ($corr);
+	
 
 	echo '</table>'	;
 	
 	if(isset($_POST['show_base']) and $dispBase){
 		
-		//$resp['a']= 22.2;
-		
 	}
-		
-		
 		
 		?>
 
@@ -912,7 +674,6 @@
 	  
 	  <input type = "number" hidden name = "score"  value = <?php echo ($PScore); ?> > </input>
 	  <input type = "number" hidden name = "problem_id"  value = <?php echo ($problem_id); ?> > </input>
-	  <input type = "number" hidden name = "dex"  value = <?php echo ($dex); ?> > </input>
 	   <input type = "number" hidden name = "iid"  value = <?php echo ($iid); ?> > </input>
 		<input type = "number" hidden name = "pin"  value = <?php echo ($pin); ?> > </input>
 		 <input type = "number" hidden name = "count"  value = <?php echo ($count); ?> > </input>
