@@ -422,7 +422,15 @@ $(document).ready(function(){
 								
 								});
 					});
-				
+					
+					
+					// comes from https://stackoverflow.com/questions/6985507/one-time-page-refresh-after-first-page-load on reloading the page to get rid of the sometimes error of varaibles not being substituted in
+					window.onload = function() {
+						if(!window.location.hash) {
+							window.location = window.location + '#loaded';
+							window.location.reload();
+						}
+					}
 							
 					
 						// in this case we are using the php to load the function so we do not need to replace the substitute me with the JQ
