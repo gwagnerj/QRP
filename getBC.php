@@ -219,11 +219,11 @@ if ( isset($_SESSION['success']) ) {
 				
 			//	var openup = arr.htmlfilenm;
 			
-			var openup = arr2.htmlfilenm;		
+			var openup2 = arr2.htmlfilenm;		
 			//	alert(openup);
 			
 		//	alert (openup);
-			if (openup == null){
+			if (openup2 == null){
 				
 			alert('problem not present');
 			return;
@@ -299,9 +299,9 @@ if ( isset($_SESSION['success']) ) {
 					  document.getElementsByTagName( "head" )[0].appendChild( script );
 					}
 
+ //console.log ('openupfilename2',openup);
 
-
-					$('#substitute_me').load("uploads/"+openup, 'document', function () {
+					$('#substitute_me').load("uploads/"+openup, "document", function () {
 												// call the function...
 												loadScript("Substvars.js", function() {
 													//  alert('script ready!'); 
