@@ -563,7 +563,7 @@
 			
 			};
 			
-				$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',expiryUrl: 'stopgame.php',onTick: highlightLast}); 
+				$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',expiryUrl: 'StopGame.php',onTick: highlightLast}); 
 				
 				
 			});		
