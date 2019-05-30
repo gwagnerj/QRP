@@ -1,7 +1,8 @@
 <?php
-	require_once "pdo.php";
 	session_start();
-
+	require_once "pdo.php";
+	
+// This is the program that gives them the values for the input parameters and is called by GetgampblmNum.php  script calles fetchworktime.php to start the timer
 	// first do some error checking on the input.  If it is not OK set the session failure and send them back to QRGameIndex.
 	if ( ! isset($_POST['game_id']) ) {
 	  $_SESSION['error'] = "Missing game number";
