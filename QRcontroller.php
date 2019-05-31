@@ -202,20 +202,6 @@ if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 						);
 						return;
 
- 
-
-
-
-
-
-
-
-
-
-
-
-					
-					
 				}
 				
 			// this problem has pre-problem assigned
@@ -231,17 +217,7 @@ if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 		
 	}
 	
-	
-	
-	
-	
 }
-
-
-
-
-
-
 
 
 ?>
