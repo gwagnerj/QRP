@@ -973,7 +973,12 @@ SET GLOBAL event_scheduler = ON;
 
 -- dropping rows from a table after a certain time
 
-
+CREATE EVENT clean_game
+ON SCHEDULE EVERY 1 DAY
+STARTS CURRENT_TIMESTAMP
+-- ON COMPLETION PRESERVE
+DO 
+DELETE LOW_PRIORITY FROM wagnerj_qrp.game WHERE `exp_date` < CURRENT_TIMESTAMP;
 
 
 
