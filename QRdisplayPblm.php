@@ -423,7 +423,7 @@ $(document).ready(function(){
 								});
 					});
 					
-					
+				/* 	// try this as a separate script below
 					// comes from https://stackoverflow.com/questions/6985507/one-time-page-refresh-after-first-page-load on reloading the page to get rid of the sometimes error of varaibles not being substituted in
 					window.onload = function() {
 						if(!window.location.hash) {
@@ -431,7 +431,7 @@ $(document).ready(function(){
 							window.location.reload();
 						}
 					}
-							
+						 */	
 					
 						// in this case we are using the php to load the function so we do not need to replace the substitute me with the JQ
 					
@@ -500,7 +500,22 @@ $(document).ready(function(){
 });
 
 </script>
+<script>
 
+	$(document).ready(function(){
+		
+		
+		// comes from https://stackoverflow.com/questions/6985507/one-time-page-refresh-after-first-page-load on reloading the page to get rid of the sometimes error of varaibles not being substituted in
+					window.onload = function() {
+						if(!window.location.hash) {
+							window.location = window.location + '#loaded';
+							window.location.reload();
+						}
+					} 
+
+
+	 });
+</script>
 
  
 </body>
