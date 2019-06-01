@@ -966,10 +966,12 @@ ALTER TABLE Problem	ADD unpubl_auth varchar(128);
 		  ADD cumm_wcount_j int;
 		  
 
+-- need to set the event scheduler
+
+SET GLOBAL event_scheduler = ON;
 
 
-
-
+-- dropping rows from a table after a certain time
 
 
 
