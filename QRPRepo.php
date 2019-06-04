@@ -1,265 +1,240 @@
 <?php
-require_once "pdo.php";
-session_start();
+	require_once "pdo.php";
+	session_start();
 ?>
- <!DOCTYPE html>
-<html lang = "en">
-<head>
-<link rel="icon" type="image/png" href="McKetta.png" />  
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<meta Charset = "utf-8">
-<title>QRP Repo</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" /> 
-<style>
-div {
-    /*background-color: #eee;*/
-    width: 100%;
-    height: 100%;
-    border: 1px dotted black;
-    overflow: auto;
-}
-</style>
-<style type="text/css">
-
-
-
-body {
-   margin: 0;
-   overflow: hidden;
-}
-
-#request_prob{
-	text-align: right;
-	 color: blue;
-    width: 100%;
-    height: 100%;
-    border: none;
-    overflow: auto;
-	padding:0px;
-	margin:0px;
-	font-size:70%;
-	
-}
-
-
-#iframediv{
-	position:relative;
-	overflow:hidden;
-	padding-top: 60%
-}
-#iframe1 {
-    position:absolute;
-	align:bottom;
-    left: 0px;
-    width: 100%;
-    top: 0px;
-    height: 100%;
-}
-table.a {
-    table-layout: fixed;
-    width: 100%;    
+	 <!DOCTYPE html>
+	<html lang = "en">
+	<head>
+	<link rel="icon" type="image/png" href="McKetta.png" />  
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<meta Charset = "utf-8">
+	<title>QRP Repo</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+	<style>
+	div {
+		/*background-color: #eee;*/
+		width: 100%;
+		height: 100%;
+		border: 1px dotted black;
+		overflow: auto;
 	}
-	 .widget-1 { width:100px; } 
-	  .widget-2 { width:150px; } 
-	  .widget-3 { width:150px; } 
-	  .widget-4 { width:150px; } 
-	  .widget-5 { width:100px; } 
-	  .widget-6 { width:150px; } 
-	  .widget-7 { width:150px; } 
-	  .widget-8 { width:150px; } 
-	  .widget-9 { width:150px; } 
-	  .widget-10 { width:150px; } 
-	  .widget-11 { width:150px; } 
-	  .widget-12 { width:150px; } 
-	   .widget-13 { width:150px; } 
-	    .widget-0 { width:150px; } 
-	 
-	 
-	 
-.column-filter-widget { float:left; padding: 20px; border : none; width:200px;}
-.column-filter-widget select { display: block; }
-.column-filter-widgets a.filter-term { display: block; text-decoration: none; padding-left: 10px; font-size: 90%; }
-.column-filter-widgets a.filter-term:hover { text-decoration: line-through !important; }
-.column-filter-widget-selected-terms { clear:left; }
-	
-	
-	
-</style>
-						
-	
-	
-						<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-				<!--		<script src="ddtf.js"></script> -->
-						
-						
-						<link rel="stylesheet" type="text/css" href="DataTables-1.10.18/css/jquery.dataTables.css"/> 
-						<script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
-						
-				<!--		<link rel="stylesheet" type="text/css" href="DataTables-1.10.18/extras/css/ColumnFilterWidgets.css"/> 
-				-->
-						
-						<script type="text/javascript" charset="utf-8" src="DataTables-1.10.18/extras/js/ColumnFilterWidgets.js"></script>
-						
-						
-		<!-- THis is from DataTable jquery plugin 	 		
-						
-						<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
-  
-						<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-		 -->		
-	
-			<!-- THis is from sparklines jquery plugin   -->	
+	</style>
+	<style type="text/css">
 
-			<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.js"></script>
-	
-					<!--	<script src="sparklines.js"></script>   -->
-	
-	
-</head>
+	body {
+	   margin: 0;
+	   overflow: hidden;
+	}
 
-<body>
-<header>
-<h2>Quick Response Problems</h2>
- <font size = '1' color = 'Blue'>(Try "ctrl +" or "ctrl -" to resize)</font>
-</header>
+	#request_prob{
+		text-align: right;
+		 color: blue;
+		width: 100%;
+		height: 100%;
+		border: none;
+		overflow: auto;
+		padding:0px;
+		margin:0px;
+		font-size:70%;
+		
+	}
 
 
-  
+	#iframediv{
+		position:relative;
+		overflow:hidden;
+		padding-top: 60%
+	}
+	#iframe1 {
+		position:absolute;
+		align:bottom;
+		left: 0px;
+		width: 100%;
+		top: 0px;
+		height: 100%;
+	}
+	table.a {
+		table-layout: fixed;
+		width: 100%;    
+		}
+		 .widget-1 { width:100px; } 
+		  .widget-2 { width:150px; } 
+		  .widget-3 { width:150px; } 
+		  .widget-4 { width:150px; } 
+		  .widget-5 { width:100px; } 
+		  .widget-6 { width:150px; } 
+		  .widget-7 { width:150px; } 
+		  .widget-8 { width:150px; } 
+		  .widget-9 { width:150px; } 
+		  .widget-10 { width:150px; } 
+		  .widget-11 { width:150px; } 
+		  .widget-12 { width:150px; } 
+		   .widget-13 { width:150px; } 
+			.widget-0 { width:150px; } 
+		 
+		 
+		 
+	.column-filter-widget { float:left; padding: 20px; border : none; width:200px;}
+	.column-filter-widget select { display: block; }
+	.column-filter-widgets a.filter-term { display: block; text-decoration: none; padding-left: 10px; font-size: 90%; }
+	.column-filter-widgets a.filter-term:hover { text-decoration: line-through !important; }
+	.column-filter-widget-selected-terms { clear:left; }
+		
+	.half-line {
+		line-height: 0.5em;
+	}	
+		
+	</style>
+							
+		
+		
+							<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+							<link rel="stylesheet" type="text/css" href="DataTables-1.10.18/css/jquery.dataTables.css"/> 
+							<script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
+							<script type="text/javascript" charset="utf-8" src="DataTables-1.10.18/extras/js/ColumnFilterWidgets.js"></script>
+		
+		
+				<!-- THis is from sparklines jquery plugin   -->	
+
+				<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.js"></script>
+		
+	</head>
+
+	<body>
+	<header>
+	<h2>Quick Response Problems</h2>
+	 <font size = '1' color = 'Blue'>(Try "ctrl +" or "ctrl -" to resize)</font>
+	</header>
+
+
+	  
 <?php
-if ( isset($_SESSION['error']) ) {
-    echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
-    unset($_SESSION['error']);
-}
-if ( isset($_SESSION['success']) ) {
-    echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
-    unset($_SESSION['success']);
-}
+	if ( isset($_SESSION['error']) ) {
+		echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
+		unset($_SESSION['error']);
+	}
+	if ( isset($_SESSION['success']) ) {
+		echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
+		unset($_SESSION['success']);
+	}
 
-$preview="Null";
-//if they request the file then set the $preview variable to the name of the file
+	$preview="Null";
+	//if they request the file then set the $preview variable to the name of the file
 	if (isset($_POST['preview']) ){
 		$preview='uploads/'.htmlentities($_POST['preview']);
 	}
 	if (isset($_POST['soln_preview']) ){
 			$preview='uploads/'.htmlentities($_POST['soln_preview']);
-		}
+	}
 
-		//find out what kind of security level they have if they are logged in 
-		if(isset($_SESSION['username'])){
-			$username=$_SESSION['username'];
-		$sql = " SELECT * FROM Users where username = :username";
-				$stmt = $pdo->prepare($sql);
-				$stmt->execute(array(
-				':username' => $username));
-				$row = $stmt->fetch(PDO::FETCH_ASSOC);
-				$security = $row['security'];
-				$users_id=$row['users_id'];
-				$_SESSION['iid']=$users_id;
-		}
+	//find out what kind of security level they have if they are logged in 
+	if(isset($_SESSION['username'])){
+		$username=$_SESSION['username'];
+	$sql = " SELECT * FROM Users where username = :username";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+			':username' => $username));
+			$row = $stmt->fetch(PDO::FETCH_ASSOC);
+			$security = $row['security'];
+			$users_id=$row['users_id'];
+			$_SESSION['iid']=$users_id;
+	}
 
 
-if (isset($_SESSION['username'])){
-	echo '<div id = "request_prob">';
-	echo '<b>Contributing a New Problem? </br>';
-	echo '<a href="requestPblmNum.php">Request Problem Number</b></a>';
-	
-	
-	echo '</div>';
-	//echo '<br>';
-	echo '<hr>';
-	echo '<a href="login.php"><b>logout</b></a>';
-	echo ' <p> </p> ';
-	echo ' <b> Filter Criteria: </b>';
-} else {
+	if (isset($_SESSION['username'])){
+		echo '<div id = "request_prob">';
+		echo '<b>Contributing a New Problem? </br>';
+		echo '<a href="requestPblmNum.php">Request Problem Number</b></a>';
+		
+		
+		echo '</div>';
+		//echo '<br>';
+		echo '<hr>';
+		echo '<a href="login.php"><b>logout</b></a>';
+		echo ' <p> </p> ';
+		echo ' <b> Filter Criteria: </b>';
+	} else {
 	   echo '<hr>';
 	   echo '<p><h4>log in to contribute, edit, or delete problems <a href="login.php">Login here</a>.</h4></p>';
 	   echo '<br>';
-}
-	
+	}
 
 
+	echo ('<table id="table_format" class = "a" border="1" >'."\n");
+		
+		 echo("<thead>");
 
-echo ('<table id="table_format" class = "a" border="1" >'."\n");
-	
+		echo("</td><th>");
+		echo('Num');
+		echo("</th><th>");
+		echo('eff');
+		echo("</th><th>");
+		echo('diff');
+		 echo("</th><th>");
+		
+		echo('Stu Res');
+		echo("</th><th>");
+		echo('Contrib');
+		 echo("</th><th>");
+		echo('Enhanc');
+		echo("</th><th>");
+		echo('Ref');
+		echo("</th><th>");
+		echo('Discip');
+		 echo("</th><th>");
+		 echo('Course');
+		echo("</th><th>");
+		echo('Concept');
+		echo("</th><th>");
+		echo('Compute');
+		echo("</th><th>");
+		echo('Title');
+		echo("</th><th>");
+		echo('Status');
+		echo("</th><th>");
+		echo('Author');
+		echo("</th><th>");
+		 echo('Func');
+		   echo("</th><th>");
+		 echo('Display');
+		//echo("</th><th>");
+		// echo('Soln');
+		echo("</th></tr>\n");
+		 echo("</thead>");
+		 
+		  echo("<tbody>");
+		//
+		
+		
+		
+		// add the effectiveness and rating stuff here so I can either display it or compute the average and display that along with the total ratings
+		
+	$qstmnt=("SELECT Problem.problem_id AS problem_id,Users.username AS username, Users.first AS name,Problem.subject as subject,Problem.course as course,Problem.primary_concept as p_concept,Users.users_id as users_id,
+	Problem.secondary_concept as s_concept,Problem.title as title,Problem.specif_ref as ref,Problem.status as status, Problem.soln_pblm as soln_pblm,Problem.game_prob_flag as game_prob_flag, 
+	Problem.nm_author as nm_author,Problem.docxfilenm as docxfilenm,Problem.infilenm as infilenm,Problem.pdffilenm as pdffilenm,
+	Problem.eff_stu_1 as eff_stu_1,Problem.eff_stu_2 as eff_stu_2,Problem.eff_stu_3 as eff_stu_3,Problem.eff_stu_4 as eff_stu_4,Problem.eff_stu_5 as eff_stu_5,
+	Problem.diff_stu_1 as diff_stu_1,Problem.diff_stu_2 as diff_stu_2,Problem.diff_stu_3 as diff_stu_3,Problem.diff_stu_4 as diff_stu_4,Problem.diff_stu_5 as diff_stu_5,
+	Problem.t_take1_1 as t_take1_1,Problem.t_take1_2 as t_take1_2,Problem.t_take1_3 as t_take1_3,Problem.t_take1_4 as t_take1_4,Problem.t_take1_5 as t_take1_5,Problem.t_take1_6 as t_take1_6,Problem.t_take1_7 as t_take1_7,
+	Problem.t_take1_np_1 as t_take1_np_1,Problem.t_take1_np_2 as t_take1_np_2,Problem.t_take1_np_3 as t_take1_np_3,Problem.t_take1_np_4 as t_take1_np_4,Problem.t_take1_np_5 as t_take1_np_5, Problem.t_take1_np_6 as t_take1_np_6,Problem.t_take1_np_7 as t_take1_np_7,
+	Problem.t_take2_1 as t_take2_1,Problem.t_take2_2 as t_take2_2,Problem.t_take2_3 as t_take2_3,Problem.t_take2_4 as t_take2_4,Problem.t_take2_5 as t_take2_5,Problem.t_take2_6 as t_take2_6,Problem.t_take2_7 as t_take2_7,
+	Problem.t_b4due_1 as t_b4due_1,Problem.t_b4due_2 as t_b4due_2,Problem.t_b4due_3 as t_b4due_3,Problem.t_b4due_4 as t_b4due_4,Problem.t_b4due_5 as t_b4due_5,Problem.t_b4due_6 as t_b4due_6,Problem.t_b4due_7 as t_b4due_7,
+	Problem.t_b4due_np_1 as t_b4due_np_1,Problem.t_b4due_np_2 as t_b4due_np_2,Problem.t_b4due_np_3 as t_b4due_np_3,Problem.t_b4due_np_4 as t_b4due_np_4,Problem.t_b4due_np_5 as t_b4due_np_5, Problem.t_b4due_np_6 as t_b4due_np_6, Problem.t_b4due_np_7 as t_b4due_np_7,
+	Problem.confidence_1 as confidence_1,Problem.confidence_2 as confidence_2,Problem.confidence_3 as confidence_3,Problem.confidence_4 as confidence_4,Problem.confidence_5 as confidence_5,
+	Problem.confidence_np_1 as confidence_np_1,Problem.confidence_np_2 as confidence_np_2,Problem.confidence_np_3 as confidence_np_3,Problem.confidence_np_4 as confidence_np_4,Problem.confidence_np_5 as confidence_np_5,
+	 Users.university as s_name, Problem.preprob_3 as mc_prelim, Problem.preprob_4 as misc_prelim, Problem.hint_a as hint_a, Problem.hint_b as hint_b, Problem.hint_c as hint_c, Problem.hint_d as hint_d, Problem.hint_e as hint_e,
+	 Problem.hint_f as hint_f,Problem.hint_g as hint_g,Problem.hint_h as hint_h, Problem.hint_i as hint_i, Problem.hint_j as hint_j, Problem.video_clip as video_clip, Problem.simulation as simulation, Problem.demonstration_directions as demo_directions,
+	 Problem.activity_directions as activity_directions, Problem.computation_name as computation_name
 
-	
-	 echo("<thead>");
-
-	echo("</td><th>");
-	echo('Num');
-	echo("</th><th>");
-	echo('eff');
-    echo("</th><th>");
-	echo('diff');
-	 echo("</th><th>");
-	
-	echo('Stu Res');
-    echo("</th><th>");
-	echo('Contrib');
-	 echo("</th><th>");
-	echo('Enhanc');
-    echo("</th><th>");
-	echo('Ref');
-    echo("</th><th>");
-    echo('Discip');
-	 echo("</th><th>");
-	 echo('Course');
-    echo("</th><th>");
-	echo('Concept');
-    echo("</th><th>");
-    echo('Compute');
-    echo("</th><th>");
-    echo('Title');
-    echo("</th><th>");
-	echo('Status');
-    echo("</th><th>");
-	echo('Author');
-    echo("</th><th>");
-	 echo('Func');
-	   echo("</th><th>");
-	 echo('Display');
-    //echo("</th><th>");
-	// echo('Soln');
-	echo("</th></tr>\n");
-	 echo("</thead>");
-	 
-	  echo("<tbody>");
-	//
-	
-	
-	
-	// add the effectiveness and rating stuff here so I can either display it or compute the average and display that along with the total ratings
-	
-$qstmnt=("SELECT Problem.problem_id AS problem_id,Users.username AS username, Users.first AS name,Problem.subject as subject,Problem.course as course,Problem.primary_concept as p_concept,Users.users_id as users_id,
-Problem.secondary_concept as s_concept,Problem.title as title,Problem.specif_ref as ref,Problem.status as status, Problem.soln_pblm as soln_pblm,Problem.game_prob_flag as game_prob_flag, 
-Problem.nm_author as nm_author,Problem.docxfilenm as docxfilenm,Problem.infilenm as infilenm,Problem.pdffilenm as pdffilenm,
-Problem.eff_stu_1 as eff_stu_1,Problem.eff_stu_2 as eff_stu_2,Problem.eff_stu_3 as eff_stu_3,Problem.eff_stu_4 as eff_stu_4,Problem.eff_stu_5 as eff_stu_5,
-Problem.diff_stu_1 as diff_stu_1,Problem.diff_stu_2 as diff_stu_2,Problem.diff_stu_3 as diff_stu_3,Problem.diff_stu_4 as diff_stu_4,Problem.diff_stu_5 as diff_stu_5,
-Problem.t_take1_1 as t_take1_1,Problem.t_take1_2 as t_take1_2,Problem.t_take1_3 as t_take1_3,Problem.t_take1_4 as t_take1_4,Problem.t_take1_5 as t_take1_5,Problem.t_take1_6 as t_take1_6,Problem.t_take1_7 as t_take1_7,
-Problem.t_take1_np_1 as t_take1_np_1,Problem.t_take1_np_2 as t_take1_np_2,Problem.t_take1_np_3 as t_take1_np_3,Problem.t_take1_np_4 as t_take1_np_4,Problem.t_take1_np_5 as t_take1_np_5, Problem.t_take1_np_6 as t_take1_np_6,Problem.t_take1_np_7 as t_take1_np_7,
-Problem.t_take2_1 as t_take2_1,Problem.t_take2_2 as t_take2_2,Problem.t_take2_3 as t_take2_3,Problem.t_take2_4 as t_take2_4,Problem.t_take2_5 as t_take2_5,Problem.t_take2_6 as t_take2_6,Problem.t_take2_7 as t_take2_7,
-Problem.t_b4due_1 as t_b4due_1,Problem.t_b4due_2 as t_b4due_2,Problem.t_b4due_3 as t_b4due_3,Problem.t_b4due_4 as t_b4due_4,Problem.t_b4due_5 as t_b4due_5,Problem.t_b4due_6 as t_b4due_6,Problem.t_b4due_7 as t_b4due_7,
-Problem.t_b4due_np_1 as t_b4due_np_1,Problem.t_b4due_np_2 as t_b4due_np_2,Problem.t_b4due_np_3 as t_b4due_np_3,Problem.t_b4due_np_4 as t_b4due_np_4,Problem.t_b4due_np_5 as t_b4due_np_5, Problem.t_b4due_np_6 as t_b4due_np_6, Problem.t_b4due_np_7 as t_b4due_np_7,
-Problem.confidence_1 as confidence_1,Problem.confidence_2 as confidence_2,Problem.confidence_3 as confidence_3,Problem.confidence_4 as confidence_4,Problem.confidence_5 as confidence_5,
-Problem.confidence_np_1 as confidence_np_1,Problem.confidence_np_2 as confidence_np_2,Problem.confidence_np_3 as confidence_np_3,Problem.confidence_np_4 as confidence_np_4,Problem.confidence_np_5 as confidence_np_5,
- Users.university as s_name, Problem.preprob_3 as mc_prelim, Problem.preprob_4 as misc_prelim, Problem.hint_a as hint_a, Problem.hint_b as hint_b, Problem.hint_c as hint_c, Problem.hint_d as hint_d, Problem.hint_e as hint_e,
- Problem.hint_f as hint_f,Problem.hint_g as hint_g,Problem.hint_h as hint_h, Problem.hint_i as hint_i, Problem.hint_j as hint_j, Problem.video_clip as video_clip, Problem.simulation as simulation, Problem.demonstration_directions as demo_directions,
- Problem.activity_directions as activity_directions, Problem.computation_name as computation_name
-
-FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id ;");
+	FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id ;");
 
 
-
-//echo (FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id;";);    SELECT  Assign.prob_num as active_prob_num , FROM Assign ");
-$stmt = $pdo->query($qstmnt);
-while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-   if($row['game_prob_flag']!= 1) {
+	$stmt = $pdo->query($qstmnt);
+	while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+	   if($row['game_prob_flag']!= 1) {
 			 echo "<tr><td>";
 			
-			// echo ('<div class = "probnum">');
 			
 			echo(htmlentities($row['problem_id']));
-			// echo ('</div>');
 			
 			echo("</td><td>");	
 			
@@ -417,7 +392,6 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 							echo("<br><font size=1>".$row5['instr_last_nm']);
 						}
 					
-					
 			
 			echo("</td><td>");
 
@@ -425,16 +399,23 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			
 			echo("</td><td>");
 			if($row['username']==$username or $security=='admin'){
-				echo('<a href="editpblm.php?problem_id='.$row['problem_id'].'">Edit</a> / ');
-				echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
-				echo('<a href="suspendpblm.php?problem_id='.$row['problem_id'].'">Susp-unSus</a> / ');
-			}
-				//echo('<a href="numericToMC.php?problem_id='.$row['problem_id'].'"target = "_blank">make M/C </a>');
-			//	echo ('</br>');
-				echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$users_id.'">Act-deAct</a>');
+				echo('<form action = "editpblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Edit"></form>');
 				
-			//echo('<a href="downloadpblm.php?problem_id='.$row['problem_id'].'">Download</a>');
-			  echo("</td><td>");
+				echo("<p class='half-line'>");
+			//	echo('<a href="editpblm.php?problem_id='.$row['problem_id'].'">Edit</a> / ');
+				echo('<form action = "deletepblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Del"></form>');
+				echo("<p class='half-line'>");
+				echo('<form action = "suspendpblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="susp/uns"></form>');
+				echo("<p class='half-line'>");
+			
+//				echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
+			//	echo('<a href="suspendpblm.php?problem_id='.$row['problem_id'].'">Susp-unSus</a> / ');
+			}
+			echo('<form action = "QRactivatePblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "users_id" value = "'.$users_id.'"><input type = "submit" value ="Activate"></form>');
+
+		//	echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$users_id.'">Act-deAct</a>');
+				
+			echo("</td><td>");
 			
 			
 			if($row['status']!='num issued') {
@@ -444,63 +425,61 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 				echo("&nbsp; ");
 				echo('<form action = "numericToMC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Make MC"></form>');
 				
-				//echo('<a href="numericToMC.php?problem_id='.$row['problem_id'].'"target = "_blank">make M/C </a>');
-				// echo('<a href="numericToMC.php?problem_id='.$row['problem_id'].'"target = "_blank">make M/C </a>');
 			}
 		
-		   echo("</td></tr>\n");
-   }
-}
+			echo("</td></tr>\n");
+	   }
+	}
 
-	echo("</tbody>");
-	 echo("</table>");
-	echo ('</div>');	
+		echo("</tbody>");
+		 echo("</table>");
+		echo ('</div>');	
 
 
 
-//echo ('"'.$preview.'"');
+	//echo ('"'.$preview.'"');
 ?>
 
-<script>
-	
-	$(".inlinebar1").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
-	$(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
-	
-	localStorage.setItem('MC_flag','false');  // initialize multiple choice flag to false
-	
-	
-	
-	$(document).ready( function () {
-    $('#table_format').DataTable({"sDom": 'W<"clear">lfrtip',
-		"order": [[ 0, 'dsc' ] ],
-		 "lengthMenu": [ 50, 100, 200 ],
-		"oColumnFilterWidgets": {
-		"aiExclude": [ 0,1,2,3,6,9,11,14,15 ] }});
-	
+	<script>
+		
+		$(".inlinebar1").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
+		$(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
+		
+		localStorage.setItem('MC_flag','false');  // initialize multiple choice flag to false
+		
+		
+		
+		$(document).ready( function () {
+		$('#table_format').DataTable({"sDom": 'W<"clear">lfrtip',
+			"order": [[ 0, 'dsc' ] ],
+			 "lengthMenu": [ 50, 100, 200 ],
+			"oColumnFilterWidgets": {
+			"aiExclude": [ 0,1,2,3,6,9,11,14,15 ] }});
+		
 
-	// jQuery('#table_format').ddTableFilter();
-	} );
-	
-	
-</script>
+		// jQuery('#table_format').ddTableFilter();
+		} );
+		
+		
+	</script>
 
-</table>
-<p></p>
-<!-- <p><a href="add.php">Add New Manual</a></P> -->
-<!--<a href="addPblm.php">Add Data and Pblm Files</a> -->
-<p></p>
+	</table>
+	<p></p>
+	<!-- <p><a href="add.php">Add New Manual</a></P> -->
+	<!--<a href="addPblm.php">Add Data and Pblm Files</a> -->
+	<p></p>
 
 
-<!-- <object data=<?php// echo('"'.$preveiw.'"'); ?> 
-type= "application/pdf" width="100%" Height="50%"> -->
+	<!-- <object data=<?php// echo('"'.$preveiw.'"'); ?> 
+	type= "application/pdf" width="100%" Height="50%"> -->
 
-<?php 
+	<?php 
 
-if($preview !== "uploads/" and $preview !== "Null") {
-	echo ('<div id ="iframediv"><iframe id = "iframe1" src="'.$preview.'"'.'></iframe></div>');
+	if($preview !== "uploads/" and $preview !== "Null") {
+		echo ('<div id ="iframediv"><iframe id = "iframe1" src="'.$preview.'"'.'></iframe></div>');
 
-}
-?>
-<!-- </object> -->
-</body>
-</html>
+	}
+	?>
+	<!-- </object> -->
+	</body>
+	</html>

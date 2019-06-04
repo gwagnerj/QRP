@@ -980,7 +980,7 @@ STARTS CURRENT_TIMESTAMP
 DO 
 DELETE LOW_PRIORITY FROM wagnerj_qrp.game WHERE `exp_date` < CURRENT_TIMESTAMP;
 
-
+-- the above doen 
 
 
 
