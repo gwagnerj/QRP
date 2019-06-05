@@ -245,13 +245,9 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
 		
 		<option required  disabled = "" value = ""> Select Computation </option>
 			<?php
-				// $stmt = "SELECT * FROM `Computation`";
-				// $stmt = $pdo->query($stmt);
+			
 				$stmt = $pdo->query("SELECT * FROM Computation ORDER BY Computation.computation_order");
 				$computations = $stmt->fetchALL(PDO::FETCH_ASSOC);
-				// require 'dccData.php';
-				// $disciplines = loadDiscipline();
-				// echo $disciplines;
 					 foreach ($computations as $computation) {
 							echo "<option id='".$computation['computation_id']."' value='".$computation['computation_name']."'>".$computation['computation_name']."</option>";
 					 }

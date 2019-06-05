@@ -1014,7 +1014,7 @@
 	<p>hint_j file: <input type='file' accept='.html' name='hint_jFile'/></p>
 	<p><hr></p>
 	</form>
-	<form action = "editAll.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$problem_id.'"><input type = "submit" value ="edit all"></form>
+	<form action = "editMeta.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "<?php echo($problem_id)?>"><input type = "submit" value ="Edit Meta Data"></form>
 
 	
 	</body>
