@@ -123,6 +123,23 @@
 							':problem_id' => $problem_id));
 		}
 		
+		if ( isset($_POST['sug_hints']))  {
+			$sql = "UPDATE Problem SET sug_hints = :sug_hints WHERE problem_id = :problem_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(
+							':sug_hints' => htmlentities($_POST['sug_hints']),
+							':problem_id' => $problem_id));
+		}
+		
+		if ( isset($_POST['prob_comments']))  {
+			$sql = "UPDATE Problem SET prob_comments = :prob_comments WHERE problem_id = :problem_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(
+							':prob_comments' => htmlentities($_POST['prob_comments']),
+							':problem_id' => $problem_id));
+		}
+		
+		
 		$units_titles = array("units_a","units_b","units_c","units_d","units_e","units_f","units_g","units_h","units_i","units_j");
 		for ($j=0;$j<=9;$j++){
 			$unit=$units_titles[$j];
@@ -135,7 +152,7 @@
 			}
 		}
 		
-			$tol_titles = array("tol_a","tol_b","tol_c","tol_d","tol_e","tol_f","tol_g","tol_h","tol_i","tol_j");
+		$tol_titles = array("tol_a","tol_b","tol_c","tol_d","tol_e","tol_f","tol_g","tol_h","tol_i","tol_j");
 		for ($j=0;$j<=9;$j++){
 			$tol=$tol_titles[$j];
 			if ( isset($_POST[$tol]))  {
@@ -207,18 +224,19 @@
 	<form action="" method="post" enctype="multipart/form-data">
 
 		<p>Problem Title <input type="text" name="title" id = "title" class = "long" value="<?php echo( $row['title']); ?>"></p>
-		<p>Discipline<input type="text" name="discipline" id = "discipline" value="<?php echo($row['subject']); ?>"></p>
-		<p>Problem Course <input type="text" name="course" id = "course" value="<?php echo( $row['course']); ?>"></p>
-		<p>Primary Concept <input type="primary_concept" name="primary_concept" id = "primary_concept" class = "long" value="<?php echo( $row['primary_concept']); ?>"></p>
+		<p>Discipline <font color = "red"> (Caution) </font> <input type="text" name="discipline" id = "discipline" value="<?php echo($row['subject']); ?>"></p>
+		<p>Course (Caution)<input type="text" name="course" id = "course" value="<?php echo( $row['course']); ?>"></p>
+		<p>Primary Concept <font color = "red"> (Caution) </font>  <input type="primary_concept" name="primary_concept" id = "primary_concept" class = "long" value="<?php echo( $row['primary_concept']); ?>"></p>
 		<p>Secondary Concept <input type="secondary_concept" name="secondary_concept" id = "secondary_concept" class = "long" value="<?php echo( $row['secondary_concept']); ?>"></p>
 		<p>Other Descriptors <input type="tertiary_concept" name="tertiary_concept" id = "tertiary_concept" class = "long" value="<?php echo( $row['tertiary_concept']); ?>"></p>
-		<p>Computational Method <input type="text" name="computation_name" id = "computation_name" value="<?php echo( $row['computation_name']); ?>"></p>
-		<p>Author of Published Problem <input type="text" name="nm_author" id = "nm_author" value="<?php echo( $row['nm_author']); ?>"></p>
+		<p>Computational Method <font color = "red"> (Caution) </font>  <input type="text" name="computation_name" id = "computation_name" value="<?php echo( $row['computation_name']); ?>"></p>
+		<p>Author of Published Problem <font color = "red"> (Caution) </font>  <input type="text" name="nm_author" id = "nm_author" value="<?php echo( $row['nm_author']); ?>"></p>
 		<p>Author of Unpublished Problem <input type="text" name="unpubl_auth" id = "unpubl_auth" value="<?php echo( $row['unpubl_auth']); ?>"></p>
 		<p>Specific Reference <input type="text" name="specif_ref" id = "specif_ref" value="<?php echo( $row['specif_ref']); ?>"></p>
 		<p>Link to Web for Full Base-case solution <input type="text" name="link_to_web_full" id = "link_to_web_full" class = "long" value="<?php echo( $row['link_to_web_full']); ?>"></p>
 		<p>Time Estimate by Contributor <input type="text" name="time_est_contrib" id = "time_est_contrib" value="<?php echo( $row['time_est_contrib']); ?>"></p>
-
+		<p>Suggested Hints by Students <input type="text" class = "long" name="sug_hints" id = "sug_hints" value="<?php echo( $row['sug_hints']); ?>"></p>
+		<p>Student Comments on Problem <input type="text" class = "long" name="prob_comments" id = "prob_comments" value="<?php echo( $row['prob_comments']); ?>"></p>
 
 		<table id="units_table" class = "unitsTab" border="1" >
 			<caption><font size = "+1"> Units for Each Part: </font> </caption>
@@ -281,12 +299,17 @@
 		<p><hr></p>
 		<input type="hidden" name="problem_id" value="<?= $problem_id ?>">
 		<p><input type="submit" value="Update" id="Update_btn"/>
-		<a href="QRPRepo.php">Cancel</a></p>
+		
+	<!--	<a href="editpblm.php">Cancel</a></p>  -->
 		<style>#Update_btn{background-color: lightyellow }</style>
-		<p><hr></p>
+		
+		
 		
 	</form>
-
+	<?php
+		echo('<form action = "editpblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$problem_id.'"><input type = "submit" value ="Cancel/Finished"></form>');
+		?>
 	
+	<p><hr></p>
 	</body>
 	</html>
