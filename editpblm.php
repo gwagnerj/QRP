@@ -888,15 +888,18 @@
 	$gf = htmlentities($row['game_prob_flag']);
 	//print_r($gf);
 	$in = htmlentities($row['infilenm']);
-
+	$pf = htmlentities($row['soln_pblm']);
 	$df = htmlentities($row['docxfilenm']);
 	$sb = htmlentities($row['soln_book']);
+	$hf = htmlentities($row['htmlfilenm']);
 	 
 	$problem_id = $row['problem_id'];
 
 		$file_pathdocx='uploads/'.$df;
 		$file_pathsb='uploads/'.$sb;
-
+		$file_pathpdf='uploads/'.$pf;
+		$file_pathhtml='uploads/'.$hf;
+		$file_pathin='uploads/'.$in;
 		
 
 	?>
@@ -916,16 +919,37 @@
 
 	<?php	
 		if(strlen($sb)>2) {
-			
-				echo 'Current solution workbook to this problem - click to download';
-				echo "<br>";
-				echo "<br>";
+				echo 'Current Solution Workbook to this Problem - click to download ';
 				echo "<a href='".$file_pathsb."'>".$sb."</a>";
+				echo "<br>";
+		}
+		
+		if(strlen($df)>2) {
+				echo 'Current Document File for this Problem - click to download ';
+				echo "<a href='".$file_pathdocx."'>".$df."</a>";
+				echo "<br>";
+		}
+		if(strlen($pf)>2) {
+				echo 'PDF Solution to Base-Case - click to open - right click to open in new tab ';
+				echo "<a href='".$file_pathpdf."'>".$pf."</a>";
+				echo "<br>";
+		}
+		if(strlen($hf)>2) {
+				echo 'Html File for this Problem - click to open - right click to open in new tab ';
+				echo "<a href='".$file_pathhtml."'>".$hf."</a>";
+				echo "<br>";
+		}
+		
+		if(strlen($in)>2) {
+				echo 'Input file for this Problem - click to download ';
+				echo "<a href='".$file_pathin."'>".$in."</a>";
 				echo "<br>";
 				echo "<hr>";
 		}
+		
+		
+		
 		?>
-
 
 	<p><b>Edit Problem Data for Problem <?php echo($problem_id); ?></b></p>
 	<form action="" method="post" enctype="multipart/form-data">
@@ -1001,6 +1025,10 @@
 	<p><input type="submit" value="Update" id="Update_btn"/>
 	<a href="QRPRepo.php">Cancel</a></p>
 	<style>#Update_btn{background-color: lightyellow }</style>
+	</form>
+		<form action = "editMeta.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "<?php echo($problem_id)?>"><input type = "submit" value ="Edit Meta Data"></form>
+
+	<form action="" method="post" enctype="multipart/form-data">
 	<p><hr></p>
 	<p>hint_a file: <input type='file' accept='.html' name='hint_aFile'/></p>
 	<p>hint_b file: <input type='file' accept='.html' name='hint_bFile'/></p>
@@ -1014,7 +1042,6 @@
 	<p>hint_j file: <input type='file' accept='.html' name='hint_jFile'/></p>
 	<p><hr></p>
 	</form>
-	<form action = "editMeta.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "<?php echo($problem_id)?>"><input type = "submit" value ="Edit Meta Data"></form>
 
 	
 	</body>
