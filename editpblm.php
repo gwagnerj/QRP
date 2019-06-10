@@ -49,7 +49,7 @@
 							$stmt = $pdo->prepare($sql);
 							$stmt->execute(array(':docxfilenm'=> $docxname,	':problem_id' => $_POST['problem_id']));
 					
-					
+				/* 	// not sure why I need to add stuff to the file names - this is legacy stuff that adds complication
 					if (fnmatch("P*_d_*",$docxname,FNM_CASEFOLD ) ){ // ignore the case when matching
 							$newDocxNm = $docxname;
 					}
@@ -64,9 +64,9 @@
 					$stmt->execute(array(
 						':newDocxNm' => $newDocxNm,
 						':pblm_num' => $_POST['problem_id']));
-					
+					 */
 				// now upload docx, input and pdf files
-					$pathName = 'uploads/'.$newDocxNm;
+					$pathName = 'uploads/'.$tmp_name;
 					if (move_uploaded_file($_FILES['docxfile']['tmp_name'], $pathName)){
 						$_SESSION['success'] = $_SESSION['success'].'DocxFile upload successful';
 					}

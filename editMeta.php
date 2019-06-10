@@ -235,7 +235,7 @@
 		<p>Specific Reference <input type="text" name="specif_ref" id = "specif_ref" value="<?php echo( $row['specif_ref']); ?>"></p>
 		<p>Link to Web for Full Base-case solution <input type="text" name="link_to_web_full" id = "link_to_web_full" class = "long" value="<?php echo( $row['link_to_web_full']); ?>"></p>
 		<p>Time Estimate by Contributor <input type="text" name="time_est_contrib" id = "time_est_contrib" value="<?php echo( $row['time_est_contrib']); ?>"></p>
-		<p>Suggested Hints by Students <input type="text" class = "long" name="sug_hints" id = "sug_hints" value="<?php echo( $row['sug_hints']); ?>"></p>
+		<p>Suggested Hints by Students <input type="textarea" class = "long" name="sug_hints" id = "sug_hints" value="<?php echo( $row['sug_hints']); ?>"></p>
 		<p>Student Comments on Problem <input type="text" class = "long" name="prob_comments" id = "prob_comments" value="<?php echo( $row['prob_comments']); ?>"></p>
 
 		<table id="units_table" class = "unitsTab" border="1" >

@@ -141,15 +141,7 @@ if(isset($_POST['title'])){
 }
 
 
-/* // Get the school names from the database so we can use them in drop down selection box
-$sql="SELECT DISTINCT s_name from School ORDER BY s_name";
-$stmt = $pdo->query($sql);
-// I'm pretty sure this is not the best way but I/m just going to read it into an array variable 
-$i=0;
-while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
-	$s_name[$i]=htmlentities($row['s_name']);
-	$i=$i+1;
-} */
+
 
 ?>
 <!DOCTYPE html>
