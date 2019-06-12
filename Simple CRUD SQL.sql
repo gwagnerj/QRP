@@ -537,7 +537,7 @@ INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Dynamics');
 INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Circuits');
 INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Solid Mechanics');
 INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Dynamics & Control');
-
+INSERT IGNORE INTO `Course` (`course_name`) VALUES ('Particle Technology');
 
 
 
