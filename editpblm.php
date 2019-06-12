@@ -900,8 +900,14 @@
 		$file_pathpdf='uploads/'.$pf;
 		$file_pathhtml='uploads/'.$hf;
 		$file_pathin='uploads/'.$in;
-		
-
+	// now strip out the extra charcters that were added by the system so the download file has the same name as the original uploaded file	
+	
+	$soln_book_strip = substr($sb,strpos($sb,'_x_')+3);
+	$docxfilenm_strip = substr($df,strpos($df,'_d_')+3);
+	$soln_pblm_strip = substr($pf,strpos($pf,'_s_')+3);
+	$htmlfilenm_strip = substr($hf,strpos($hf,'_ht_')+4);
+	$infilenm_strip = substr($in,strpos($in,'_i_')+3);
+	
 	?>
 	<!DOCTYPE html>
 	<html lang = "en">
@@ -920,29 +926,30 @@
 	<?php	
 		if(strlen($sb)>2) {
 				echo 'Current Solution Workbook to this Problem - click to download ';
-				echo "<a href='".$file_pathsb."'>".$sb."</a>";
+				echo "<a href='".$file_pathsb."' download = '".$soln_book_strip."'>".$soln_book_strip."</a>";
 				echo "<br>";
 		}
 		
 		if(strlen($df)>2) {
-				echo 'Current Document File for this Problem - click to download ';
-				echo "<a href='".$file_pathdocx."'>".$df."</a>";
+				echo 'Current Document File for this Problem - click to download ';				
+				echo "<a href='".$file_pathdocx."' download = '".$docxfilenm_strip."'>".$docxfilenm_strip."</a>";
 				echo "<br>";
 		}
 		if(strlen($pf)>2) {
 				echo 'PDF Solution to Base-Case - click to open - right click to open in new tab ';
-				echo "<a href='".$file_pathpdf."'>".$pf."</a>";
+				echo "<a href='".$file_pathpdf."' download = '".$soln_pblm_strip."'>".$soln_pblm_strip."</a>";
 				echo "<br>";
 		}
 		if(strlen($hf)>2) {
 				echo 'Html File for this Problem - click to open - right click to open in new tab ';
-				echo "<a href='".$file_pathhtml."'>".$hf."</a>";
+				echo "<a href='".$file_pathhtml."' download = '".$htmlfilenm_strip."'>".$htmlfilenm_strip."</a>";
 				echo "<br>";
 		}
 		
 		if(strlen($in)>2) {
 				echo 'Input file for this Problem - click to download ';
-				echo "<a href='".$file_pathin."'>".$in."</a>";
+					echo "<a href='".$file_pathin."' download = '".$infilenm_strip."'>".$infilenm_strip."</a>";
+				
 				echo "<br>";
 				echo "<hr>";
 		}
