@@ -221,11 +221,12 @@
 
 
 	<p><b>Edit Problem Data for Problem <?php echo($problem_id); ?></b></p>
+	
 	<form action="" method="post" enctype="multipart/form-data">
-
+		<font color = "red"> (Caution) </font> -  indicates fields that were obtained from defined pulldown lists to avoid synonyms or one of a kind entries.
 		<p>Problem Title <input type="text" name="title" id = "title" class = "long" value="<?php echo( $row['title']); ?>"></p>
 		<p>Discipline <font color = "red"> (Caution) </font> <input type="text" name="discipline" id = "discipline" value="<?php echo($row['subject']); ?>"></p>
-		<p>Course (Caution)<input type="text" name="course" id = "course" value="<?php echo( $row['course']); ?>"></p>
+		<p>Course <font color = "red"> (Caution) </font><input type="text" name="course" id = "course" value="<?php echo( $row['course']); ?>"></p>
 		<p>Primary Concept <font color = "red"> (Caution) </font>  <input type="primary_concept" name="primary_concept" id = "primary_concept" class = "long" value="<?php echo( $row['primary_concept']); ?>"></p>
 		<p>Secondary Concept <input type="secondary_concept" name="secondary_concept" id = "secondary_concept" class = "long" value="<?php echo( $row['secondary_concept']); ?>"></p>
 		<p>Other Descriptors <input type="tertiary_concept" name="tertiary_concept" id = "tertiary_concept" class = "long" value="<?php echo( $row['tertiary_concept']); ?>"></p>
