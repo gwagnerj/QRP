@@ -980,6 +980,9 @@ STARTS CURRENT_TIMESTAMP
 DO 
 DELETE LOW_PRIORITY FROM wagnerj_qrp.game WHERE `exp_date` < CURRENT_TIMESTAMP;
 
+ALter TABLE `Assign`
+	ADD exp_date date;  -- the time the activation of the problem ends
+
 -- the above doen 
 
 

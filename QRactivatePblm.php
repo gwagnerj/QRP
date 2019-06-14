@@ -102,7 +102,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 
 
 
-// we dont have a file and we are trying to activate - create an new entry 
+// we dont have an entry and we are trying to activate - create an new entry 
 if(isset($_POST['Activate']) && $Assign_data==false){
 	$activate_flag = 1;
 			// Set parameters
@@ -146,10 +146,13 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			if(isset($_POST['postprob3'])){
 				$postp_flag3 = 1;
 			}
+			if(isset($_POST['exp_date'])){
+			$exp_date=$_POST['exp_date'];
+		} 
  
  // Prepare an insert statement
-        $sql = "INSERT INTO Assign (instr_last, iid, university, assign_t_created, assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3)
-		VALUES (:instr_last, :iid,:university, :assign_t_created, :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3)";
+        $sql = "INSERT INTO Assign (instr_last, iid, university, assign_t_created, assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3,exp_date)
+		VALUES (:instr_last, :iid,:university, :assign_t_created, :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3,:exp_date)";
          
        
 			$stmt = $pdo->prepare($sql);
@@ -170,7 +173,8 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				':reflect_flag' => $reflect_flag,
 				':explore_flag' => $explore_flag,
 				':connect_flag' => $connect_flag,
-				':society_flag' => $society_flag	
+				':society_flag' => $society_flag,
+				':exp_date' => $exp_date
 				));
 
 				header( 'Location: QRPRepo.php' ) ;
@@ -268,12 +272,19 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 		} else {
 			$postp_flag3 = 0;
 		}
+		
+		if(isset($_POST['exp_date'])){
+			$exp_date=$_POST['exp_date'];
+		} 
+		
+		
+		
   // echo ('IM here');
  //  die();
    
    	$sql = "UPDATE Assign SET  assign_t_created = :assign_t_created, assign_num = :assign_num, pp_flag1 = :pp_flag1, pp_flag2= :pp_flag2,
 			pp_flag3 = :pp_flag3, pp_flag4 = :pp_flag4, reflect_flag = :reflect_flag, explore_flag = :explore_flag, connect_flag = :connect_flag,
-			society_flag = :society_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3, ref_choice = :choice
+			society_flag = :society_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3, ref_choice = :choice, exp_date = :exp_date
 					WHERE assign_id = :assign_id";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
@@ -291,7 +302,8 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			'choice' => $choice,
 			'postp_flag1' => $postp_flag1,
 			'postp_flag2' => $postp_flag2,
-			'postp_flag3' => $postp_flag3
+			'postp_flag3' => $postp_flag3,
+			'exp_date' => $_POST['exp_date'],
 			));
 			 $_SESSION['sucess'] = 'the problem was edited and remains active';
 			header( 'Location: QRPRepo.php' ) ;
@@ -303,6 +315,8 @@ if(isset($_POST['Activate']) && $Assign_data==false){
     // Close connection
   //  unset($pdo);
 
+
+// set the suggested date
 
 	
 
@@ -359,7 +373,8 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				}
 				
 			?>
-			
+				<p><font color=#003399>When Should This Activation Expire (max is 6 months from now) </font><input type="date" name="exp_date" value = "2019-05-13"  min="2019-05-13" max='2000-01-10' id="exp_date" ></p>
+				
 			
 			<p><input type="checkbox" name="guess" <?php if($pp_flag1 =='1'){echo ('checked');  }?> > Preliminary Estimates </p>
 			<p><input type="checkbox" name="q_on_q" <?php if($pp_flag2 =='1'){echo ('checked');  }?>> Planning Questions </p>
@@ -407,8 +422,42 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				if ($(this).is(':checked')){
 					$('input[type="radio"]').prop('checked', false);
 				}
-	});
-
+			});
+			
+			
+			// suggest a date as the end of the semester for the expiration date
+		
+		var m = 0;
+		var d = new Date();   // current date
+		var minDate = d.toISOString(true).slice(0,10);
+		document.getElementById("exp_date").setAttribute("min", minDate);
+		
+		max_months = 6;
+		var max_date = new Date();
+		max_date.setMonth(max_date.getMonth() + max_months);
+		//console.log("Date after " + max_months + " months:", maxDate);
+		var maxDate = max_date.toISOString(true).slice(0,10);
+		document.getElementById("exp_date").setAttribute("max", maxDate);
+		
+		var n = d.getMonth(); // current Month
+		var y = d.getFullYear();
+		if (n==11){
+			m = 4;
+			yr = y+1;
+		} else if (n <=3) {
+			m=4;
+			yr = y;
+		} else if (n >= 7) {
+			m=11;
+			yr = y;
+		}	else {
+			m=7;
+			yr = y;
+		}
+		
+		d.setFullYear(yr, m, 15);  // change d to the end of the semester
+		var expDate = d.toISOString(true).slice(0,10);
+		document.getElementById("exp_date").value = expDate;
 	
 	} );
 	
