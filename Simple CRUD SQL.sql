@@ -985,6 +985,7 @@ ALter TABLE `Assign`
 
 -- the above doen 
 
+	-- next fileds are added for the password recovery system - I changed a filed I had called forgoten password to token
 
-
-
+ALTER TABLE `Users` CHANGE `forgot_pswd` `token` CHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `Users` ADD `selector` CHAR(16) NOT NULL AFTER `token`, ADD `token_exp` BIGINT(20) NOT NULL AFTER `selector`;
