@@ -985,7 +985,28 @@ ALter TABLE `Assign`
 
 -- the above doen 
 
+
+
+
+
+
+
+
 	-- next fileds are added for the password recovery system - I changed a filed I had called forgoten password to token
+
+
+
+
 
 ALTER TABLE `Users` CHANGE `forgot_pswd` `token` CHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 ALTER TABLE `Users` ADD `selector` CHAR(16) NOT NULL AFTER `token`, ADD `token_exp` BIGINT(20) NOT NULL AFTER `selector`;
+
+
+CREATE TABLE IF NOT EXISTS `Pswdreset` (
+		`pswdreset_id` int(11) NOT NULL AUTO_INCREMENT,
+		`email` VARCHAR(64) NOT NULL,
+		`selector` VARCHAR(32) NOT NULL,
+		`token` VARCHAR(64) NOT NULL,
+		`token_exp` BIGINT(20) NOT NULL,
+		PRIMARY KEY (`pswdreset_id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;

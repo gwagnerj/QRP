@@ -4,7 +4,9 @@
 require_once 'pdo.php';
 session_start();
 session_unset();
- 
+ if ($_GET['newpswd']=='pswdupdated'){
+	 echo '<p class="resetsucess"> Your Password has been Reset</p> ';
+ }
  
 // Define variables and initialize with empty values
 $username = $password = "";
@@ -107,7 +109,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             <div class="form-group">
                 <input type="submit" class="btn btn-primary" value="Login">
             </div>
-            <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
+              <p>Forgot your Password? <a href="pswdRecovForm.php">Click Here</a>.</p> </br>
+			<p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
 			<br/>
 	<!--		 <p><h3>Proceed without login? </h3></p>
 			 <p>(you will not be able to contribute or edit)</p>
