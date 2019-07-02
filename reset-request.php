@@ -3,23 +3,24 @@ require_once 'pdo.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';// Load Composer's autoloader
+require_once "random_compat-2.0.18/lib/random.php"; // needed this for the random_bytes function did not work on the online version
 session_start();
 // this all comes from a tutorial by mmtuts at https://www.youtube.com/watch?v=wUkKCMEYj9M
 $mail = new PHPMailer(true);
 if (isset($_POST["reset-request-submit"])){
-
+	
 	// Create tokens
 	$selector = bin2hex(random_bytes(8));
 	$token = random_bytes(32);
 
-	$url = "www.qrproblems.org/create-new-password.php?selector=".$selector."&validator=".bin2hex($token);
+	$url = "www.qrproblems.org/QRP/create-new-password.php?selector=".$selector."&validator=".bin2hex($token);
 	/* 
 	$token_exp = new DateTime('NOW');
 	$token_exp->add(new DateInterval('PT01H')); // 1 hour
 	 */
 	
 	$token_exp = date('U')+1800;
-	$email = $_POST['email'];
+	// Get email from database
 	
 	
 	// delete any previous tokens 
@@ -68,16 +69,16 @@ if (isset($_POST["reset-request-submit"])){
 	
 	$mail->send();
 	   // echo 'Message has been sent';
-		$response = "Email is Sent";
+		$response = "Email is Sent - Please check your email for a link to reset your password";
 		echo ($response);
 	
 		echo '</br></br>';
-		echo '<a href = "emailForm.php" >back to email form</a>';
+		// echo '<a href = "emailForm.php" >back to email form</a>';
 
 
 	} catch (Exception $e) {
 		echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-		echo '<a href = "emailForm.php" >back to email form</a>';
+		// echo '<a href = "emailForm.php" >back to email form</a>';
 	}	
 				
 				

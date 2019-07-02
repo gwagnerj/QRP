@@ -7,31 +7,39 @@ require_once 'pdo.php';
 			$validator = $_POST['validator'];
 			$password = $_POST['pswd'];
 			$passwordRepeat = $_POST['pswd-repeat'];
-			if (empty($password)||empty($password-repeat)){
-					header('location: create-new-password.php?selector=".$selector."&validator=".bin2hex($validator)."&newpswd = empty"')
+			if (empty($password)||empty($passwordRepeat)){
+					header('location: create-new-password.php?selector=".$selector."&validator=".bin2hex($validator)."&newpswd = empty"');
 					exit();
 			} elseif ($password!=$passwordRepeat) {
-					header('location: create-new-password.php?selector=".$selector."&validator=".bin2hex($validator)."&newpswd = pswdnotsame"')
+					header('location: create-new-password.php?selector=".$selector."&validator=".bin2hex($validator)."&newpswd = pswdnotsame"');
 					exit();
 			}
 			$currentDate = date("U");
-			$sql = 'SELECT * FROM Pswdreset WHERE selector = :selector AND token_exp < $currentDate';
+			$sql = 'SELECT * FROM Pswdreset WHERE selector = :selector';
+			//	$sql = 'SELECT * FROM Pswdreset WHERE selector = :selector AND `token_exp` < :currentDate';
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
 			':selector' => $selector
+			// ':currentDate' => $currentDate
 			));
 			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			
+			//echo 'WTF';
+			//echo $row['selector'];
+			echo '</br>';
 			$tokenEmail = $row['email'];  // the email from the password reset table
+			//echo $tokenEmail;
 			$tokenBin = hex2bin($validator);
 			$tokenCheck = password_verify($tokenBin,$row['token']);
 			if($tokenCheck == false) {
-				echo 'token did not match';
+				echo 'token did not match </br>';
+				// echo $tokenBin;
+				echo '</br>';
+				echo $row['token'];
 				die();
 			} elseif($tokenCheck==true) {
 			// change the password	
 				
-			$sql = 'SELECT * FROM `Users` WHERE email = ":email"';
+			$sql = 'SELECT * FROM `Users` WHERE email = :email';
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
 			':email' => $tokenEmail
@@ -39,6 +47,7 @@ require_once 'pdo.php';
 			
 			$row2 = $stmt->fetch(PDO::FETCH_ASSOC);
 			$usersEmail=$row2['email'];
+			
 				if($usersEmail != $tokenEmail){
 					echo 'email does not match what is in system';
 					die();
@@ -59,6 +68,7 @@ require_once 'pdo.php';
 					$stmt->execute(array(
 					':email' => $tokenEmail
 					));
+					
 					header("Location: login.php?newpswd=pswdupdated");
 				}
 				
@@ -67,10 +77,10 @@ require_once 'pdo.php';
 			
 
 				
-			}
+			
 	
 	} else {
-		header('location: login.php')	
+		header('location: login.php');	
 	}
 
-<?
+?>

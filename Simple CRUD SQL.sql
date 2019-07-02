@@ -998,8 +998,7 @@ ALter TABLE `Assign`
 
 
 
-ALTER TABLE `Users` CHANGE `forgot_pswd` `token` CHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
-ALTER TABLE `Users` ADD `selector` CHAR(16) NOT NULL AFTER `token`, ADD `token_exp` BIGINT(20) NOT NULL AFTER `selector`;
+
 
 
 CREATE TABLE IF NOT EXISTS `Pswdreset` (
