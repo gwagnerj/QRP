@@ -5,22 +5,36 @@ use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';// Load Composer's autoloader
 require_once "random_compat-2.0.18/lib/random.php"; // needed this for the random_bytes function did not work on the online version
 session_start();
+
+
 // this all comes from a tutorial by mmtuts at https://www.youtube.com/watch?v=wUkKCMEYj9M
 $mail = new PHPMailer(true);
 if (isset($_POST["reset-request-submit"])){
+	// See if email they input is in system
+	$email = $_POST['email'];
+	// see if this email is in the Users table
+	$sql = 'SELECT * FROM `Users` WHERE email = :email';
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+			':email' => $email
+			));
+			
+			$row = $stmt->fetch(PDO::FETCH_ASSOC);
+			if ($row == false){
+				$_SESSION['failure'] = 'email address that was input does not match any in the system';
+				header("Location: pswdRecovForm.php");
+				exit();	
+			} 
 	
 	// Create tokens
 	$selector = bin2hex(random_bytes(8));
 	$token = random_bytes(32);
 
 	$url = "www.qrproblems.org/QRP/create-new-password.php?selector=".$selector."&validator=".bin2hex($token);
-	/* 
-	$token_exp = new DateTime('NOW');
-	$token_exp->add(new DateInterval('PT01H')); // 1 hour
-	 */
+	
 	
 	$token_exp = date('U')+1800;
-	// Get email from database
+	
 	
 	
 	// delete any previous tokens 

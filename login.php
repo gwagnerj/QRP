@@ -111,13 +111,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <input type="submit" class="btn btn-primary" value="Login">
             </div>
 		</form>
+		
 		 </p> </br>
+			<p>Forgot your Password? <a href="pswdRecovForm.php">Click Here</a>.</p> </br>
 			<p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
 			<br/>
 		</br>
-		 <form action="reset-request.php" method="post">
-			 <input type="submit" class="submit"  name = "reset-request-submit" value="Forgot Password"> - email reset password link
-		</form>
+		  
 			 
 			 
              

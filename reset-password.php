@@ -69,7 +69,9 @@ require_once 'pdo.php';
 					':email' => $tokenEmail
 					));
 					
-					header("Location: login.php?newpswd=pswdupdated");
+					
+					echo '<p>Password reset - return to login <a href="login.php">click here</a></p>';
+					//header("Location: login.php?newpswd=pswdupdated");
 				}
 				
 			}
