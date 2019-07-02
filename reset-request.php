@@ -25,7 +25,7 @@ if (isset($_POST["reset-request-submit"])){
 				header("Location: pswdRecovForm.php");
 				exit();	
 			} 
-	
+			$username = $row['username'];
 	// Create tokens
 	$selector = bin2hex(random_bytes(8));
 	$token = random_bytes(32);
@@ -55,8 +55,8 @@ if (isset($_POST["reset-request-submit"])){
 
 // now send email
 	$subject = 'QRProblems - Change your Password';
-	$body = '<p>QRProblems has recieved a password change request<p> 
-			<p> Your password change link is:</br> <a href ="'.$url.'">'.$url.'</a></p>';
+	$body = '<p>QRProblems has recieved a password change request for username '.$username.' at email '.$email.' <p> 
+			<p> If you need to reset your password  the link to reset is:</br> <a href ="'.$url.'">'.$url.'</a></p>';
 				
 	try {
     //Server settings
@@ -73,7 +73,8 @@ if (isset($_POST["reset-request-submit"])){
 	//$mail -> setFrom($email);
     $mail->setFrom('wagnerj@excelproblempedia.org', 'John');
     $mail->addAddress($email);     // Add a recipient
-    $mail->addAddress('gwagnerj@gmail.com');               // Name is optional			
+    $mail->addAddress('gwagnerj@gmail.com');               // Name is optional	
+	$mail->addAddress('wagnerj@trine.edu');               // Name is optional			
 	
 	$mail->isHTML(true);  	
 	$mail -> Subject = $subject;

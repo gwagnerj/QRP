@@ -113,7 +113,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		</form>
 		
 		 </p> </br>
-			<p>Forgot your Password? <a href="pswdRecovForm.php">Click Here</a>.</p> </br>
+			<p>Forgot your Password or Usename? <a href="pswdRecovForm.php">Click Here</a>.</p> </br>
 			<p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
 			<br/>
 		</br>
