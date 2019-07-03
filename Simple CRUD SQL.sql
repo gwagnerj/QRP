@@ -1009,3 +1009,14 @@ CREATE TABLE IF NOT EXISTS `Pswdreset` (
 		`token_exp` BIGINT(20) NOT NULL,
 		PRIMARY KEY (`pswdreset_id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `problem` 
+	ADD `allow_clone` INT NOT NULL AFTER `cumm_wcount_j`, 
+	ADD `allow_edit` INT NOT NULL AFTER `allow_clone`;
+		 
+ALTER TABLE `users` 
+	ADD `grade_level` VARCHAR(16) NOT NULL AFTER `security`, 
+	ADD `allow_clone_default` INT NOT NULL AFTER `grade_level`, 
+	ADD `allow_edit_default` INT NOT NULL AFTER `allow_clone_default`, 
+	ADD `sponsor_id` INT NOT NULL AFTER `allow_edit_default`;
+
