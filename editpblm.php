@@ -1022,6 +1022,26 @@
 		&nbsp &nbsp <input type="checkbox" name="activity" value = 1 id = "activ" size= 20  >&nbsp &nbsp Problem has instructions for an associated activity for instructors - these do nothing yet<br>
 
 	</div>
+	
+	<p>Avalability of Problem to Other Contributors:</p>
+
+
+	<div id = "allow_clone"> 
+		
+		<?php
+				if ($row['allow_clone']==0) {
+					$allow_clone = '';
+				} elseif($row['allow_edit']==1){
+					$allow_clone = 'checked';
+				}	else {
+					$allow_clone = 'checked';  // this should be checked from the default values in the Users table
+				}
+			echo('&nbsp &nbsp <input type="checkbox" name="allow_clone" value = 1 id = "allow_clone" '.$allow_clone.' size= 20  >&nbsp &nbsp Allow other contributors to clone problem, modify and resubmit as new problem <br>');
+		?>
+	</div>
+	
+	
+	
 	<p> link to Base Case web solution (if available):
 	<input type="text" name="web_ref" ></p>
 
