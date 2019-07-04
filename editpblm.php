@@ -399,8 +399,41 @@
 					':pblm_num' => $_POST['problem_id']));	
 			}	
 				
-				
-				
+			// allow clones
+			if($_POST['allow_clone']==1)	{
+				$sql = "UPDATE Problem SET allow_clone = :allow_clone WHERE problem_id = :pblm_num";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':allow_clone' => 1,
+					':pblm_num' => $_POST['problem_id']));	
+			} else 	{
+				$sql = "UPDATE Problem SET allow_clone = :allow_clone WHERE problem_id = :pblm_num";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':allow_clone' => 0,
+					':pblm_num' => $_POST['problem_id']));	
+			}	
+			
+			// allow edits
+			if($_POST['allow_edit']==0)	{
+				$sql = "UPDATE Problem SET allow_edit = :allow_edit WHERE problem_id = :pblm_num";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':allow_edit' => 1,
+					':pblm_num' => $_POST['problem_id']));	
+			} elseif($_POST['allow_edit']==0)	{
+				$sql = "UPDATE Problem SET allow_edit = :allow_edit WHERE problem_id = :pblm_num";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':allow_edit' => 0,
+					':pblm_num' => $_POST['problem_id']));	
+			} else {	
+				$sql = "UPDATE Problem SET allow_edit = :allow_edit WHERE problem_id = :pblm_num";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':allow_edit' => 2,
+					':pblm_num' => $_POST['problem_id']));	
+				}
 			 
 	// hint_a file
 			if($_FILES['hint_aFile']['name']) {
@@ -909,6 +942,15 @@
 	$htmlfilenm_strip = substr($hf,strpos($hf,'_ht_')+4);
 	$infilenm_strip = substr($in,strpos($in,'_i_')+3);
 	
+	// get information on contributors default preferences from the Users table
+	$sql = " SELECT * FROM Users where username = :username";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+			':username' => $username));
+			$users_row = $stmt->fetch(PDO::FETCH_ASSOC);
+	
+	
+	
 	?>
 	<!DOCTYPE html>
 	<html lang = "en">
@@ -1026,21 +1068,47 @@
 	<p>Avalability of Problem to Other Contributors:</p>
 
 
-	<div id = "allow_clone"> 
+	<div id = "allow_clones"> 
+	&nbsp Clones: </br>
 		
 		<?php
-				if ($row['allow_clone']==0) {
+				if ($row['allow_clone']===0) {
 					$allow_clone = '';
-				} elseif($row['allow_edit']==1){
+				} elseif($row['allow_clone']==1){
 					$allow_clone = 'checked';
-				}	else {
-					$allow_clone = 'checked';  // this should be checked from the default values in the Users table
+				}	elseif ($users_row['allow_clone_default']===0){
+					$allow_clone = '';  
+				} else {
+					$allow_clone = 'checked';
 				}
-			echo('&nbsp &nbsp <input type="checkbox" name="allow_clone" value = 1 id = "allow_clone" '.$allow_clone.' size= 20  >&nbsp &nbsp Allow other contributors to clone problem, modify and resubmit as new problem <br>');
+			echo('&nbsp &nbsp <input type="checkbox" name="allow_clone" value = 1 id = "allow_clone" '.$allow_clone.' size= 20  >&nbsp &nbsp Allow other contributors to <b> clone problem </b>, modify and resubmit as new problem <br>');
 		?>
 	</div>
+	<?php
+				if ($row['allow_edit']===0) {
+					$allow_edit = 0;
+				} elseif($row['allow_edit']==1){
+					$allow_edit = 1;
+				} elseif($row['allow_edit']==2){	
+					$allow_edit = 2;
+				}	elseif ($users_row['allow_edit_default']===0){
+					$allow_edit = 0;  
+				}	elseif ($users_row['allow_edit_default']===1){
+					$allow_edit = 1;  	
+					
+				} else {
+					$allow_edit = 2;
+				}
+		?>
 	
 	
+	<div id = allow_edits>
+		</br>
+		&nbsp Edits: </br>
+		&nbsp &nbsp <input type="radio" name="allow_edit" value=0 <?php if($allow_edit == 0){ echo 'checked';} ?>> Allow only edits from yourself<br>
+		&nbsp &nbsp <input type="radio" name="allow_edit" value=1 <?php if($allow_edit == 1){ echo 'checked';} ?>> Allow suggested edits from other contributors to be incorporated on your approval<br>
+		&nbsp &nbsp <input type="radio" name="allow_edit" value=2 <?php if($allow_edit == 2){ echo 'checked';} ?>> Allow other contributors to make edits freely <br>
+	</div>
 	
 	<p> link to Base Case web solution (if available):
 	<input type="text" name="web_ref" ></p>
