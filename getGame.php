@@ -113,7 +113,7 @@ if ( isset($_SESSION['success']) ) {
 	<table   class = "onePerColumn">
 		<thead>
 			<tr>
-				<th><h4> <font color = "blue" size =5 >Varaible Name </font> </th>
+				<th><h4> <font color = "blue" size =5 >Variable Name </font> </th>
 				<th>	<span class = "nv_1" id = "nv_1" > nv_1 </span> </th>
 				<th>	<span class = "nv_2" id = "nv_2" > nv_2 </span> </th>
 				<th>	<span class = "nv_3" id = "nv_3" > nv_3 </span> </th>
