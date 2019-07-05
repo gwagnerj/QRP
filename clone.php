@@ -29,7 +29,7 @@
 		$user_id = $user_row['users_id'];
 	
 	// Request a problem number duplicating all of the information from the current problem
-	 echo $problem_id;
+	// echo $problem_id;
 	// get the data from the problem
 	/* 
 			UPDATE tmptable_1 SET problem_id = NULL; 
@@ -81,6 +81,88 @@
 						':problem_id'=> $pblm_num,
 						':dex' => $i));
 			}
+	// get everything from the current row to modify the file names
+		$sql = 'SELECT * FROM Problem WHERE problem_id = :problem_id';
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(
+		':problem_id' => $pblm_num
+		));
+		$p_row = $stmt->fetch(PDO::FETCH_ASSOC);
+		$docxfilenm = $p_row['docxfilenm'];
+		$infilenm = $p_row['infilenm'];
+		$soln_pblm = $p_row['soln_pblm'];
+		$soln_book = $p_row['soln_book'];
+		$htmlfilenm = $p_row['htmlfilenm'];
+		
+		// make new file names by replacing the numbers
+		
+		$docxfilenm_n = str_replace($problem_id,$pblm_num,$docxfilenm);
+		$infilenm_n = str_replace($problem_id,$pblm_num,$infilenm);
+		$soln_pblm_n = str_replace($problem_id,$pblm_num,$soln_pblm);
+		$soln_book_n = str_replace($problem_id,$pblm_num,$soln_book);
+		$htmlfilenm_n = str_replace($problem_id,$pblm_num,$htmlfilenm);
+		// copy and rename the files
+		
+		if (!copy('uploads/'.$docxfilenm,'uploads/'.$docxfilenm_n)){ $_SESSION['error'] = 'did not copy '.$docxfilenm;}	
+		if (!copy('uploads/'.$infilenm,'uploads/'.$infilenm_n)){ $_SESSION['error'] = 'did not copy '.$infilenm;}
+		if (!copy('uploads/'.$soln_pblm,'uploads/'.$soln_pblm_n)){ $_SESSION['error'] = 'did not copy '.$soln_pblm;}
+		if (!copy('uploads/'.$soln_book,'uploads/'.$soln_book_n)){  $_SESSION['error'] = 'did not copy '.$soln_book;}
+		if (!copy('uploads/'.$htmlfilenm,'uploads/'.$htmlfilenm_n)){ $_SESSION['error'] = 'did not copy '.$htmlfilenm;}
+	
+	// update the problem table for the new problem with the new values for the filenames
+	$sql = 'UPDATE problem SET docxfilenm = :docxfilenm, infilenm = :infilenm, soln_pblm = :soln_pblm, soln_book = :soln_book, htmlfilenm = :htmlfilenm WHERE problem_id = :problem_id';
+	$stmt = $pdo->prepare($sql);
+	$stmt->execute(array(
+		':problem_id' => $pblm_num,
+		':docxfilenm' => $docxfilenm_n,
+		':infilenm' => $infilenm_n,
+		':soln_pblm' => $soln_pblm_n,
+		':soln_book' => $soln_book_n,
+		':htmlfilenm' => $htmlfilenm_n,
+		));
+	
+	// copy the directory that may contain the image files
+	$dirnm = str_replace(".htm","_files",$htmlfilenm);
+		$regex = '/p[0-9]*_ht_p/';
+		$preg ='p';
+					
+		$dirnm = 'uploads/'.preg_replace($regex,$preg,$dirnm);
+		//echo $dirnm;
+		//echo '</br>';
+		$dirnm_n = str_replace(".htm","_files",$htmlfilenm_n);
+							
+		$dirnm_n = 'uploads/'.preg_replace($regex,$preg,$dirnm_n);
+		//echo $dirnm_n;
+					
+		mkdir($dirnm_n);
+		// copy all the files out of the old directory to the new			
+		
+	 // this function comes from https://stackoverflow.com/questions/2050859/copy-entire-contents-of-a-directory-to-another-using-php
+		function recurse_copy($src,$dst) { 
+			$dir = opendir($src); 
+			@mkdir($dst); 
+			while(false !== ( $file = readdir($dir)) ) { 
+				if (( $file != '.' ) && ( $file != '..' )) { 
+					if ( is_dir($src . '/' . $file) ) { 
+						recurse_copy($src . '/' . $file,$dst . '/' . $file); 
+					} 
+					else { 
+						copy($src . '/' . $file,$dst . '/' . $file); 
+					} 
+				} 
+			} 
+			closedir($dir); 
+		} 
+	
+		recurse_copy($dirnm,$dirnm_n);
+		$_SESSION['success'] = 'problem '.$problem_id.' was cloned to problem '.$pblm_num;
+		header('Location: QRPRepo.php');
+		return;
+		
+	// for windows server
+		// exec('xcopy $dirnm $dirnm_n /e/i ');
+	
+	
 	
 	
 	/* 
