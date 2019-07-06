@@ -1020,3 +1020,8 @@ ALTER TABLE `users`
 	ADD `allow_edit_default` INT NOT NULL AFTER `allow_clone_default`, 
 	ADD `sponsor_id` INT NOT NULL AFTER `allow_edit_default`;
 
+ALTER TABLE `Problem` 
+	ADD `parent` INT NOT NULL AFTER `allow_edit`, 
+	ADD `children` VARCHAR(256) NOT NULL AFTER `parent`,
+	ADD `orig_contr_id` INT AFTER `children`;
+	

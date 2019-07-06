@@ -29,13 +29,7 @@
 		$user_id = $user_row['users_id'];
 	
 	// Request a problem number duplicating all of the information from the current problem
-	// echo $problem_id;
-	// get the data from the problem
-	/* 
-			UPDATE tmptable_1 SET problem_id = NULL; 
-			INSERT INTO Problem SELECT * FROM tmptable_1; 
-			DROP TEMPORARY TABLE IF EXISTS tmptable_1;';
-	 */
+	
 	// just duplicate the entire row this is modified  from https://stackoverflow.com/questions/4039748/in-mysql-can-i-copy-one-row-to-insert-into-the-same-table
 	
 	
@@ -62,25 +56,7 @@
 		$pblm_num=$row2['LAST_INSERT_ID()'];
 		
 	
-		// reserve the values in Qa table for the problem so all subsequent edits will be updates the other values will initialize to null in sql
-			for ($i = 1; $i <= 200; $i++) {
-					$sql = "INSERT INTO Qa (problem_id, dex)	
-						VALUES (:problem_id, :dex)";
-					$stmt = $pdo->prepare($sql);
-					$stmt->execute(array(
-						':problem_id'=> $pblm_num,
-						':dex' => $i));
-			}
-	
-			// reserve the values in Input table for the problem so all subsequent edits will be updates the other values will initialize to null in sql
-			for ($i = 1; $i <= 200; $i++) {
-					$sql = "INSERT INTO Input (problem_id, dex)	
-						VALUES (:problem_id, :dex)";
-					$stmt = $pdo->prepare($sql);
-					$stmt->execute(array(
-						':problem_id'=> $pblm_num,
-						':dex' => $i));
-			}
+			
 	// get everything from the current row to modify the file names
 		$sql = 'SELECT * FROM Problem WHERE problem_id = :problem_id';
 		$stmt = $pdo->prepare($sql);
@@ -93,6 +69,11 @@
 		$soln_pblm = $p_row['soln_pblm'];
 		$soln_book = $p_row['soln_book'];
 		$htmlfilenm = $p_row['htmlfilenm'];
+		if ($p_row['orig_contr_id']== null) {
+			$orig_contr_id = $p_row['users_id'];
+		} else {
+			$orig_contr_id = $p_row['orig_contr_id'];	
+		}
 		
 		// make new file names by replacing the numbers
 		
@@ -103,14 +84,14 @@
 		$htmlfilenm_n = str_replace($problem_id,$pblm_num,$htmlfilenm);
 		// copy and rename the files
 		
-		if (!copy('uploads/'.$docxfilenm,'uploads/'.$docxfilenm_n)){ $_SESSION['error'] = 'did not copy '.$docxfilenm;}	
-		if (!copy('uploads/'.$infilenm,'uploads/'.$infilenm_n)){ $_SESSION['error'] = 'did not copy '.$infilenm;}
-		if (!copy('uploads/'.$soln_pblm,'uploads/'.$soln_pblm_n)){ $_SESSION['error'] = 'did not copy '.$soln_pblm;}
-		if (!copy('uploads/'.$soln_book,'uploads/'.$soln_book_n)){  $_SESSION['error'] = 'did not copy '.$soln_book;}
-		if (!copy('uploads/'.$htmlfilenm,'uploads/'.$htmlfilenm_n)){ $_SESSION['error'] = 'did not copy '.$htmlfilenm;}
+		if (!copy('uploads/'.$docxfilenm,'uploads/'.$docxfilenm_n)){ $_SESSION['error'] = 'did not copy docx '.$docxfilenm;}	
+		if (!copy('uploads/'.$infilenm,'uploads/'.$infilenm_n)){ $_SESSION['error'] = 'did not copy inputfile '.$infilenm;}
+		if (!copy('uploads/'.$soln_pblm,'uploads/'.$soln_pblm_n)){ $_SESSION['error'] = 'did not copy soln pdf'.$soln_pblm;}
+		if (!copy('uploads/'.$soln_book,'uploads/'.$soln_book_n)){  $_SESSION['error'] = 'did not copy Excel file'.$soln_book;}
+		if (!copy('uploads/'.$htmlfilenm,'uploads/'.$htmlfilenm_n)){ $_SESSION['error'] = 'did not copy html file'.$htmlfilenm;}
 	
-	// update the problem table for the new problem with the new values for the filenames
-	$sql = 'UPDATE problem SET docxfilenm = :docxfilenm, infilenm = :infilenm, soln_pblm = :soln_pblm, soln_book = :soln_book, htmlfilenm = :htmlfilenm WHERE problem_id = :problem_id';
+	// update the problem table for the new problem with the new values for the filenames 
+	$sql = 'UPDATE Problem SET docxfilenm = :docxfilenm, infilenm = :infilenm, soln_pblm = :soln_pblm, soln_book = :soln_book, htmlfilenm = :htmlfilenm, parent = :parent, users_id = :users_id, orig_contr_id = :orig_contr_id WHERE problem_id = :problem_id';
 	$stmt = $pdo->prepare($sql);
 	$stmt->execute(array(
 		':problem_id' => $pblm_num,
@@ -119,6 +100,9 @@
 		':soln_pblm' => $soln_pblm_n,
 		':soln_book' => $soln_book_n,
 		':htmlfilenm' => $htmlfilenm_n,
+		':parent' => $problem_id,
+		':users_id' => $user_id,
+		':orig_contr_id' => $orig_contr_id
 		));
 	
 	// copy the directory that may contain the image files
@@ -155,25 +139,62 @@
 		} 
 	
 		recurse_copy($dirnm,$dirnm_n);
+		
+		
+		// copy the answers to the qa table and the input to the input table  will just input them from the file by the same code as in editpblm.php
+		
+			$sql = 'CREATE TEMPORARY TABLE tmptable_1 SELECT * FROM Qa WHERE problem_id = :problem_id;
+				UPDATE tmptable_1 SET qa_id = NULL, problem_id = :pblm_num; 
+				INSERT INTO Qa SELECT * FROM tmptable_1; 
+				DROP TEMPORARY TABLE IF EXISTS tmptable_1;
+			'; 
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+				':problem_id' => $problem_id,
+				':pblm_num' => $pblm_num
+				));
+		
+		
+			$sql = 'CREATE TEMPORARY TABLE tmptable_1 SELECT * FROM Input WHERE problem_id = :problem_id ;
+				UPDATE tmptable_1 SET input_id = NULL, problem_id = :pblm_num; 
+				INSERT INTO Input SELECT * FROM tmptable_1; 
+				DROP TEMPORARY TABLE IF EXISTS tmptable_1;
+			'; 
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+				':problem_id' => $problem_id,
+				':pblm_num' => $pblm_num
+				));
+		
+		
+		//  append the pblm_num to the children field of the old problem record
+		$sql = 'UPDATE Problem SET children = CONCAT(children,:child) WHERE problem_id = :problem_id';
+		$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+				':problem_id' => $problem_id,
+				':child' => $pblm_num.", "
+				));
+		
+		
+		
+		
+		
+		
 		$_SESSION['success'] = 'problem '.$problem_id.' was cloned to problem '.$pblm_num;
 		header('Location: QRPRepo.php');
 		return;
 		
-	// for windows server
-		// exec('xcopy $dirnm $dirnm_n /e/i ');
+	
+	
+	
+	
+	
+	
 	
 	
 	
 	
 	/* 
-	$sql = "SELECT * FROM Problem JOIN Qa ON ( Qa.problem_id=Problem.problem_id AND Problem.problem_id=:problem_id )";
-		$stmt = $pdo->prepare($sql);
-		$stmt->execute(array(
-		':problem_id' => $problem_id
-		
-		));
-		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-	
 	
 	
 		// insert this into the data into the Problem table
@@ -212,7 +233,9 @@
 	<header>
 	<h2>Clone a Problem</h2>
 	</header>
-	<h3> Clone Problem - duplicates problem <?php echo ($problem_id) ?> giving it a new problem number under your name. </br> You will then be able to edit this new problem.</h3>
+	<h3> Clone Problem - duplicates problem <?php echo ($problem_id) ?> giving it a new problem number under your name. </br> You will then be able to edit this new problem.
+	  Please only clone a problem if you intend to edit it.</h3>
+	<h4> <font color = "orange" > Note - the statistics for the clone will be removed when edited. </font></h4>
 	<form action = "clone.php" method = "post">
 	<p><input  type="submit" name = "submit" value="Clone Problem"/>
 	<input  type="hidden" value=<?php echo ($problem_id) ?> name = "problem_id"/>

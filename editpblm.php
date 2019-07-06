@@ -9,7 +9,14 @@
 		header('Location: QRPRepo.php');
 		return;
 	}
-
+// get the users_id
+		$sql = 'SELECT * FROM Users WHERE username = :username';
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(
+		':username' => $username
+		));
+		$user_row = $stmt->fetch(PDO::FETCH_ASSOC);
+		$user_id = $user_row['users_id'];
 
 
 	if ( isset($_POST['name']) or isset($_POST['email'])
@@ -398,7 +405,36 @@
 					':simulation' => 0,
 					':pblm_num' => $_POST['problem_id']));	
 			}	
-				
+			// kill Stats 
+			
+			if ($_POST['reset_hist']==1){
+			$sql = 'UPDATE Problem SET 
+			diff_stu_1 = null, diff_stu_2 =null, diff_stu_3 =null, diff_stu_4 =null, diff_stu_5 =null,
+			eff_stu_1 = null, eff_stu_2 =null, eff_stu_3 =null, eff_stu_4 =null, eff_stu_5 =null,
+			diff_inst_1 = null, diff_inst_2 =null, diff_inst_3 =null, diff_inst_4 =null, diff_inst_5 =null,
+			eff_inst_1 = null, eff_inst_2 =null, eff_inst_3 =null, eff_inst_4 =null, eff_inst_5 =null,
+			not_perfect_1=null, not_perfect_2=null, not_perfect_3=null, not_perfect_4=null, not_perfect_5=null, 
+			not_perfect_6=null, not_perfect_7=null, not_perfect_8=null, not_perfect_9=null,
+			t_take1_1=null, t_take1_2=null, t_take1_3=null, t_take1_4=null, t_take1_5=null, t_take1_6=null, t_take1_7=null, 
+			t_take1_np_1=null, t_take1_np_2=null, t_take1_np_3=null, t_take1_np_4=null, t_take1_np_5=null, t_take1_np_6=null, t_take1_np_7=null, 
+			t_take2_1=null, t_take2_2=null, t_take2_3=null, t_take2_4=null, t_take2_5=null, t_take2_6=null, t_take2_7=null, 
+			t_b4due_1=null, t_b4due_2=null, t_b4due_3=null, t_b4due_4=null, t_b4due_5=null, t_b4due_6=null, t_b4due_7=null, 
+			t_b4due_np_1=null, t_b4due_np_2=null, t_b4due_np_3=null, t_b4due_np_4=null, t_b4due_np_5=null, t_b4due_np_6=null, t_b4due_np_7=null, 
+			confidence_1=null, confidence_2=null, confidence_3=null, confidence_4=null, confidence_5=null, 
+			confidence_np_1=null, confidence_np_2=null, confidence_np_3=null, confidence_np_4=null, confidence_np_5=null,  
+			too_long_1 = null, too_long_2 = null, too_long_3 = null, too_long_4 = null, too_long_5 = null, too_long_6 = null, too_long_7 = null, too_long_8 = null, too_long_9 = null, 
+			prob_comments = null, sug_hints = null, qr_comments = null,
+			num_try_1 = null, num_try_2 = null, num_try_3 = null, num_try_4 = null, num_try_5 = null, num_try_6 = null, num_try_7 = null, 
+			cumm_wcount_a = null, cumm_wcount_b = null, cumm_wcount_c = null, cumm_wcount_d = null, cumm_wcount_e = null, cumm_wcount_f = null, cumm_wcount_g = null, cumm_wcount_h = null, cumm_wcount_i = null, cumm_wcount_j = null
+			WHERE problem_id = :problem_id';
+			$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':problem_id' => $_POST['problem_id']
+					));	
+			}
+
+
+			
 			// allow clones
 			if($_POST['allow_clone']==1)	{
 				$sql = "UPDATE Problem SET allow_clone = :allow_clone WHERE problem_id = :pblm_num";
@@ -1065,6 +1101,31 @@
 
 	</div>
 	
+	<p>Problem Statistics:</p>
+
+
+	<div id = "stats"> 
+	&nbsp Will your edits significantly change the problem statistics? </br>
+		
+		<?php
+				if ($row['status']=== 'New Compl') {
+					$reset_hist = 'checked';
+				} else {
+					$reset_hist = ' ';
+				}
+				if ($row['users_id']==$user_id){
+					$locked = '';
+				} else {
+					$locked = ' disabled ';	
+				}
+				
+			echo('&nbsp &nbsp <input type="checkbox" name="reset_hist" value = 1 id = "reset_hist" '.' '.$reset_hist.' '.$locked.' size= 20  >&nbsp &nbsp Yes - Reset Statistics <br>');
+		?>
+	</div>
+	
+	
+	
+	
 	<p>Avalability of Problem to Other Contributors:</p>
 
 
@@ -1106,7 +1167,7 @@
 		</br>
 		&nbsp Edits: </br>
 		&nbsp &nbsp <input type="radio" name="allow_edit" value=0 <?php if($allow_edit == 0){ echo 'checked';} ?>> Allow only edits from yourself<br>
-		&nbsp &nbsp <input type="radio" name="allow_edit" value=1 <?php if($allow_edit == 1){ echo 'checked';} ?>> Allow suggested edits from other contributors to be incorporated on your approval<br>
+		&nbsp &nbsp <input type="radio" name="allow_edit" value=1 <?php if($allow_edit == 1){ echo 'checked';} ?>> Allow suggested edits from other contributors to be incorporated on your approval (has not been coded yet)<br>
 		&nbsp &nbsp <input type="radio" name="allow_edit" value=2 <?php if($allow_edit == 2){ echo 'checked';} ?>> Allow other contributors to make edits freely <br>
 	</div>
 	
