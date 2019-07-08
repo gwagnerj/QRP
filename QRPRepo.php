@@ -223,8 +223,8 @@
 	Problem.confidence_np_1 as confidence_np_1,Problem.confidence_np_2 as confidence_np_2,Problem.confidence_np_3 as confidence_np_3,Problem.confidence_np_4 as confidence_np_4,Problem.confidence_np_5 as confidence_np_5,
 	 Users.university as s_name, Problem.preprob_3 as mc_prelim, Problem.preprob_4 as misc_prelim, Problem.hint_a as hint_a, Problem.hint_b as hint_b, Problem.hint_c as hint_c, Problem.hint_d as hint_d, Problem.hint_e as hint_e,
 	 Problem.hint_f as hint_f,Problem.hint_g as hint_g,Problem.hint_h as hint_h, Problem.hint_i as hint_i, Problem.hint_j as hint_j, Problem.video_clip as video_clip, Problem.simulation as simulation, Problem.demonstration_directions as demo_directions,
-	 Problem.activity_directions as activity_directions, Problem.computation_name as computation_name, Problem.allow_clone as allow_clone, Problem.allow_edit as allow_edit, Problem.parent as parent, Problem.children as children, Problem.orig_contr_id as orig_contr_id
-
+	 Problem.activity_directions as activity_directions, Problem.computation_name as computation_name, Problem.allow_clone as allow_clone, Problem.allow_edit as allow_edit, Problem.parent as parent, Problem.children as children, Problem.orig_contr_id as orig_contr_id,
+	Problem.edit_id1 as edit_id1, Problem.edit_id2 as edit_id2, Problem.edit_id3 as edit_id3
 	FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id;");
 
 
