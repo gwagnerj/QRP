@@ -1140,15 +1140,14 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 				
 			echo('&nbsp &nbsp <input type="checkbox" name="reset_hist" value = 1 id = "reset_hist" '.' '.$reset_hist.' '.$locked.' size= 20  >&nbsp &nbsp Yes - Reset Statistics <br>');
 		?>
+	
+	<input type ="hidden" id = "problem_owner" value = "<?php if ($user_id == $row['users_id']){echo '1';} else {echo'0';}?>">
 	</div>
 	
 	
 	
-	
-	<p>Avalability of Problem to Other Contributors:</p>
-
-
 	<div id = "allow_clones"> 
+	<p>Avalability of Problem to Other Contributors:</p>
 	&nbsp Clones: </br>
 		
 		<?php
@@ -1167,13 +1166,13 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	<?php
 				if ($row['allow_edit']==0 && $row['allow_edit']!=null) {
 					$allow_edit = 0;
-					echo 'zero';
+					//echo 'zero';
 				} elseif($row['allow_edit']==1){
 					$allow_edit = 1;
-					echo 'one';
+					//echo 'one';
 				} elseif($row['allow_edit']==2){	
 					$allow_edit = 2;
-					echo 'three';
+				//	echo 'three';
 				}	elseif ($users_row['allow_edit_default']===0){
 					$allow_edit = 0;  
 				}	elseif ($users_row['allow_edit_default']===1){
@@ -1185,7 +1184,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 		?>
 	
 	
-	<div id = allow_edits>
+	<div id = "allow_edits">
 		</br>
 		&nbsp Edits: </br>
 		&nbsp &nbsp <input type="radio" name="allow_edit" value=0 <?php if($allow_edit == 0){ echo 'checked';} ?>> Only allow me to edit this problem<br>
@@ -1230,7 +1229,12 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 document.getElementById("allow_edit1").addEventListener('change', function(){
     document.getElementById("edit_id1").required = this.checked ;
 })
-
+var problem_owner = $("#problem_owner").val();
+//  console.log(problem_owner);
+if (problem_owner == "0"){
+		$("#allow_clones").hide();
+		$("#allow_edits").hide();
+}
 
 </script>
 

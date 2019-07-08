@@ -1028,4 +1028,4 @@ ALTER TABLE `Problem`
 ALTER TABLE `Problem` 
 	ADD `edit_id1` INT  AFTER `orig_contr_id`, 
 	ADD `edit_id2` INT  AFTER `edit_id1`, 
-	ADD `edit_id3` INT  AFTER `edit_id1`;
+	ADD `edit_id3` INT  AFTER `edit_id2`;
