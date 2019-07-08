@@ -77,7 +77,7 @@ table.a {
     echo("</th><th>");
 	echo('University');
 	 echo("</th><th>");
-	echo('Instructor ID');
+	echo('ID');
 	echo("</th></tr>\n");
 	 echo("</thead>");
 	
@@ -103,7 +103,8 @@ table.a {
 
 		echo ('<p></p>');
 		echo ('<p></p>');
-		if($_SESSION['checker']!=1){
+		if($_SESSION['checker']==2){
+		} elseif($_SESSION['checker']!=1){
 				echo ('<font color=#003399 >  &nbsp; &nbsp; &nbsp;  <a href="QRhomework.php"><b>Return</b></a></font></p>');
 		} else {
 				echo ('<font color=#003399 >  &nbsp; &nbsp; &nbsp;  <a href="QRPindex.php"><b>Return</b></a></font></p>');	

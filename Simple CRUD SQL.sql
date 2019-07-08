@@ -1010,11 +1010,11 @@ CREATE TABLE IF NOT EXISTS `Pswdreset` (
 		PRIMARY KEY (`pswdreset_id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `problem` 
+ALTER TABLE `Problem` 
 	ADD `allow_clone` INT NOT NULL AFTER `cumm_wcount_j`, 
 	ADD `allow_edit` INT NOT NULL AFTER `allow_clone`;
 		 
-ALTER TABLE `users` 
+ALTER TABLE `Users` 
 	ADD `grade_level` VARCHAR(16) NOT NULL AFTER `security`, 
 	ADD `allow_clone_default` INT NOT NULL AFTER `grade_level`, 
 	ADD `allow_edit_default` INT NOT NULL AFTER `allow_clone_default`, 
@@ -1025,3 +1025,7 @@ ALTER TABLE `Problem`
 	ADD `children` VARCHAR(256) NOT NULL AFTER `parent`,
 	ADD `orig_contr_id` INT AFTER `children`;
 	
+ALTER TABLE `Problem` 
+	ADD `edit_id1` INT  AFTER `orig_contr_id`, 
+	ADD `edit_id2` INT  AFTER `edit_id1`, 
+	ADD `edit_id3` INT  AFTER `edit_id1`;

@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	require_once "pdo.php";
-
+$_SESSION['checker']=2;  // tells where the getiid where to come to
 	if (isset($_SESSION['username'])) {
 		$username=$_SESSION['username'];
 	} else {
@@ -451,20 +451,38 @@
 			}	
 			
 			// allow edits
-			if($_POST['allow_edit']==0)	{
-				$sql = "UPDATE Problem SET allow_edit = :allow_edit WHERE problem_id = :pblm_num";
+			if($_POST['allow_edit']==1)	{
+				if(isset($_POST['edit_id1'])) {
+				$edit_id1 = htmlentities($_POST['edit_id1']);	
+				} else {
+				$edit_id1 = null;	
+				}
+				if(isset($_POST['edit_id2'])) {
+				$edit_id2 = htmlentities($_POST['edit_id2']);	
+				} else {
+				$edit_id2 = null;	
+				}
+				if(isset($_POST['edit_id3'])) {
+				$edit_id3 = htmlentities($_POST['edit_id3']);	
+				} else {
+				$edit_id3 = null;	
+				}
+				$sql = "UPDATE Problem SET allow_edit = :allow_edit, edit_id1 = :edit_id1, edit_id2 = :edit_id2, edit_id3 = :edit_id3 WHERE problem_id = :pblm_num";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':allow_edit' => 1,
+					':edit_id1' => $edit_id1,
+					':edit_id2' => $edit_id2,
+					':edit_id3' => $edit_id3,
 					':pblm_num' => $_POST['problem_id']));	
 			} elseif($_POST['allow_edit']==0)	{
-				$sql = "UPDATE Problem SET allow_edit = :allow_edit WHERE problem_id = :pblm_num";
+				$sql = "UPDATE Problem SET allow_edit = :allow_edit, edit_id1 = null, edit_id2 = null, edit_id3 = null WHERE problem_id = :pblm_num";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':allow_edit' => 0,
 					':pblm_num' => $_POST['problem_id']));	
 			} else {	
-				$sql = "UPDATE Problem SET allow_edit = :allow_edit WHERE problem_id = :pblm_num";
+				$sql = "UPDATE Problem SET allow_edit = :allow_edit, edit_id1 = null, edit_id2 = null, edit_id3 = null WHERE problem_id = :pblm_num";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':allow_edit' => 2,
@@ -995,6 +1013,7 @@
 	<meta Charset = "utf-8">
 	<title>QRProblems</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	</head>
 
 	<body>
@@ -1105,7 +1124,7 @@
 
 
 	<div id = "stats"> 
-	&nbsp Will your edits significantly change the problem statistics? </br>
+	&nbsp Will your edits significantly change student performance? </br>
 		
 		<?php
 				if ($row['status']=== 'New Compl') {
@@ -1146,12 +1165,15 @@
 		?>
 	</div>
 	<?php
-				if ($row['allow_edit']===0) {
+				if ($row['allow_edit']==0 && $row['allow_edit']!=null) {
 					$allow_edit = 0;
+					echo 'zero';
 				} elseif($row['allow_edit']==1){
 					$allow_edit = 1;
+					echo 'one';
 				} elseif($row['allow_edit']==2){	
 					$allow_edit = 2;
+					echo 'three';
 				}	elseif ($users_row['allow_edit_default']===0){
 					$allow_edit = 0;  
 				}	elseif ($users_row['allow_edit_default']===1){
@@ -1166,9 +1188,13 @@
 	<div id = allow_edits>
 		</br>
 		&nbsp Edits: </br>
-		&nbsp &nbsp <input type="radio" name="allow_edit" value=0 <?php if($allow_edit == 0){ echo 'checked';} ?>> Allow only edits from yourself<br>
-		&nbsp &nbsp <input type="radio" name="allow_edit" value=1 <?php if($allow_edit == 1){ echo 'checked';} ?>> Allow suggested edits from other contributors to be incorporated on your approval (has not been coded yet)<br>
-		&nbsp &nbsp <input type="radio" name="allow_edit" value=2 <?php if($allow_edit == 2){ echo 'checked';} ?>> Allow other contributors to make edits freely <br>
+		&nbsp &nbsp <input type="radio" name="allow_edit" value=0 <?php if($allow_edit == 0){ echo 'checked';} ?>> Only allow me to edit this problem<br>
+		&nbsp &nbsp <input type="radio" name="allow_edit" value=1 id = "allow_edit1" <?php if($allow_edit == 1){ echo 'checked';} ?>> Allow myself and Users with the following IDs to edit:
+		<input type = "number" name = "edit_id1" id = "edit_id1" min = "0" max = "10000" value = "<?php if ($row['edit_id1'] !=null){echo $row['edit_id1'];} else{echo'';}?>">
+		<input type = "number" name = "edit_id2" id = "edit_id2" min = "0" max = "10000" value = "<?php if ($row['edit_id2'] !=null){echo $row['edit_id2'];}?>">
+		<input type = "number" name = "edit_id3" id = "edit_id3" min = "0" max = "10000" value = "<?php if ($row['edit_id3'] !=null){echo $row['edit_id3'];} else{echo'';}?>">
+		&nbsp; &nbsp; &nbsp;  for a listing of ID's: <a href="getiid.php" target = "_blank"><b>Click Here</b></a></font></br>
+		&nbsp &nbsp <input type="radio" name="allow_edit" value=2 <?php if($allow_edit == 2){ echo 'checked';} ?>> Allow any other full contributors to make edits freely <br>
 	</div>
 	
 	<p> link to Base Case web solution (if available):
@@ -1199,6 +1225,14 @@
 	<p>hint_j file: <input type='file' accept='.html' name='hint_jFile'/></p>
 	<p><hr></p>
 	</form>
+<script>
+
+document.getElementById("allow_edit1").addEventListener('change', function(){
+    document.getElementById("edit_id1").required = this.checked ;
+})
+
+
+</script>
 
 	
 	</body>
