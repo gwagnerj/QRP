@@ -204,7 +204,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 				
 					$subject = 'QRProblems - Registering a user';
 					$body = '<p>QRProblems has recieved a registration request for  '.$first.' '.$last.'at email '.$email.' <p> 
-							<p> welcome to the system';
+							<p> Welcome to the QRproblems! Please help to keep the educational value of this system intact.';
 								
 					try {
 					//Server settings
