@@ -1,12 +1,18 @@
 <?php
 // Include config file
 require_once 'pdo.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+require 'vendor/autoload.php';// Load Composer's autoloader
+require_once "random_compat-2.0.18/lib/random.php"; // needed this for the random_bytes function did not work on the online version
+
 session_start();
 session_unset();
- 
+$mail = new PHPMailer(true);
 // Define variables and initialize with empty values
 $username = $password = $confirm_password = $university = "";
-$username_err = $password_err = $confirm_password_err = $university_err = "";
+$username_err = $email = $email_err = $password_err = $confirm_password_err = $university_err = "";
+$first_err = $last_err = $first = $last = $new_univ = $security_err = $sponsor_err = $university_err = "";
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -61,13 +67,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
 	
 	// Validate university
-    if(empty(trim($_POST['university']))){
-        $password_err = "Please enter a school or organization.";     
-    } elseif(strlen(trim($_POST['university'])) < 2){
+    if(empty(trim($_POST['university'])) && empty(trim($_POST['new_univ']))){
+        $university_err = "Please enter a school or organization.";     
+    } elseif(empty(trim($_POST['university'])) && strlen(trim($_POST['new_univ'])) < 2){
         $university_err = "School or organization name must have at least 2 characters.";
-    } else{
-        $university = htmlentities(trim($_POST['university']));
-    }
+    } elseif( empty(trim($_POST['university']))){ // we should add the new_univ to the University table
+        $university = htmlentities(trim($_POST['new_univ']));
+		$sql = 'INSERT INTO University (university_name) VALUES (:university_name)';
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+				':university_name' => $university
+				));			
+		
+	}	else {
+			
+		  $university = htmlentities(trim($_POST['university']));	
+			
+	}
+		
+		
+		
+    
 	// Validate email
     if(empty(trim($_POST['email']))){
         $email_err = "Please enter a valid email address that you check regularly.";     
@@ -93,13 +113,60 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $last = htmlentities(trim($_POST['last']));
     }
 	
+	// validate security level
+	 if(empty(trim($_POST['security']))){
+        $security_err = "Please enter a valid type of account.";     
     
+    } else{
+        $security = $_POST['security'];
+    }
+	
+	// Validate Sponsor
+	 if(empty(trim($_POST['sponsor']))){
+        $sponsor_err = "Please enter a valid sponsor.";     
+    
+    } else{
+       
+		//check the security level of the sponsor
+			$sql = 'SELECT * FROM `Users` WHERE users_id = :users_id';
+					$stmt = $pdo->prepare($sql);
+					$stmt -> execute(array(
+					':users_id' => $_POST['sponsor']
+					));
+				
+					$s_row = $stmt->fetch(PDO::FETCH_ASSOC);
+					$security_spon = $s_row['security'];
+					$email_spon = $s_row['email'];
+				if (empty(trim($security_spon))){		
+					 $sponsor_err = "Could not find sponsor security level in Users table.";  
+				} elseif ($security_spon == 'stu_contrib' || $security_spon == 'TA'){
+					 $sponsor_err = "Sponsor must be a contributor or instructor.";  
+				} else {
+
+		   $sponsor_id = htmlentities(trim($_POST['sponsor']));
+		}
+    }
+	$allow_clone_default = $_POST['allow_clone_default'];
+	$allow_edit_default = $_POST['allow_edit_default'];
+	$grade_level = $_POST['grade_level'];
+	$default_subject = $_POST['subject'];
+	
     // Check input errors before inserting in database
-    if(empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($university_err) && empty($email_err) && empty($first_err) && empty($last_err)){
+    if(empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($university_err) && 
+	empty($email_err) && empty($first_err) && empty($last_err) && empty($security_err) && empty($sponsor_err) && 
+	empty($university_err)){
         
         // Prepare an insert statement
-        $sql = "INSERT INTO Users (username, password, university, security, email, first, last) VALUES (:username, :password, :university, :security,:email, :first, :last)";
-         
+		
+        $sql = "INSERT INTO `Users` (`username`, `password`, `university`, `security`, `email`, first, `last`, `sponsor_id`, `grade_level`, `allow_clone_default`, `allow_edit_default`)
+		VALUES (:username, :password, :university, :security, :email, :first, :last, :sponsor_id, :grade_level, :allow_clone_default, :allow_edit_default)";
+     /*    
+        $sql = "INSERT INTO `Users` (`username`, `password`, `university`, `security`, `email`, first, `last`)
+		VALUES (:username, :password, :university, :security, :email, :first, :last)";
+ */
+
+
+		
         if($stmt = $pdo->prepare($sql)){
             // Bind variables to the prepared statement as parameters
             $stmt->bindParam(':username', $param_username, PDO::PARAM_STR);
@@ -109,19 +176,81 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		    $stmt->bindParam(':email', $param_email, PDO::PARAM_STR);
 		    $stmt->bindParam(':first', $param_first, PDO::PARAM_STR);
 			$stmt->bindParam(':last', $param_last, PDO::PARAM_STR);
-			
+			$stmt->bindParam(':sponsor_id', $param_sponsor_id, PDO::PARAM_STR);
+			$stmt->bindParam(':grade_level', $param_grade_level, PDO::PARAM_STR);
+			$stmt->bindParam(':allow_clone_default', $param_allow_clone_default, PDO::PARAM_STR);
+			$stmt->bindParam(':allow_edit_default', $param_allow_edit_default, PDO::PARAM_STR);
 			
             // Set parameters
             $param_username = $username;
             $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
             $param_university = $university;
-			 $param_security = 'contrib';  //its either contrib or admin
+			 $param_security = $security;  //its either contrib or admin
 			 $param_email = $email;
 		     $param_first = $first; 
 		     $param_last = $last;
+			 $param_sponsor_id = $sponsor_id;
+			 $param_grade_level = $grade_level;
+			 $param_allow_clone_default = $allow_clone_default;
+			 $param_allow_edit_default = $allow_edit_default;
+					 
             // Attempt to execute the prepared statement
             if($stmt->execute()){
+				
+				
+				// now send email
+				
+				// get the email of the sponsor
+				
+					$subject = 'QRProblems - Registering a user';
+					$body = '<p>QRProblems has recieved a registration request for  '.$first.' '.$last.'at email '.$email.' <p> 
+							<p> welcome to the system';
+								
+					try {
+					//Server settings
+					$mail->SMTPDebug = 0;                                       // Enable verbose debug output 0 is off and 4 is everything
+					$mail->isSMTP();                                            // Set mailer to use SMTP
+					$mail->Host       = 'ns8363.hostgator.com;ns8364.hostgator.com';  // Specify main and backup SMTP servers
+					$mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+					$mail->Username   = 'wagnerj@excelproblempedia.org';                     // SMTP username
+					$mail->Password   = 'Iron26Men&FeMarines';                               // SMTP password
+					$mail->SMTPSecure = 'tls';                                  // Enable TLS encryption, `ssl` also accepted
+					$mail->Port       = 587;                                    // TCP port to connect to try new port if using ssl
+
+					//Recipients
+					//$mail -> setFrom($email);
+					$mail->setFrom('wagnerj@excelproblempedia.org', 'John');
+					$mail->addAddress($email);     // Add a recipient
+					$mail->addAddress($email_spon);     // Add a recipient
+					$mail->addAddress('gwagnerj@gmail.com');               // Name is optional	
+					$mail->addAddress('wagnerj@trine.edu');               // Name is optional			
+					
+					$mail->isHTML(true);  	
+					$mail -> Subject = $subject;
+					$mail -> Body = $body;
+					$mail->Body    = $body;
+					$mail->AltBody = strip_tags($body);			
+					
+					$mail->send();
+					   // echo 'Message has been sent';
+					//	$response = "Email is Sent - to system administrator and sponsor";
+					//	echo ($response);
+					
+					//	echo '</br></br>';
+						// echo '<a href = "emailForm.php" >back to email form</a>';
+
+
+					} catch (Exception $e) {
+						$_SESSION['failure'] = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+						// echo '<a href = "emailForm.php" >back to email form</a>';
+					}	
+				
+				// send an email to sponsor and admin
+				
+				// send an email to the new user welcoming them
+				
                 // Redirect to login page
+				$_SESSION['sucess'] = 'Registration was successful. Email notification has been sent to your sponsor  - Please log in';
                 header("location: login.php");
             } else{
                 echo "Something went wrong. Please try again later.";
@@ -129,12 +258,41 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         }
          
         // Close statement
-        unset($stmt);
-    }
-    
-    // Close connection
-    unset($pdo);
+       unset($stmt);
+		
+		/* 
+		$sql = 'SELECT * FROM University';	 
+		$stmt = $conn->prepare($sql);
+		$stmt->execute();
+		$results = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+		 */
+		
+    } else {
+		
+		echo 'there is an error in one of the parameters';
+		echo '</br>';
+		echo $username_err;
+		echo '</br>';
+		echo $password_err;
+			echo '</br>';
+		echo $university_err;
+			echo '</br>';
+		echo $sponsor_err;
+			echo '</br>';
+		echo $security_spon;
+			echo '</br>';
+			echo $security;
+			echo '</br>';
+		echo $security_err;
+		
+		
+	
+		
+	}
+	
+   
 }
+$_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 ?>
  
 <!DOCTYPE html>
@@ -142,17 +300,26 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
+	<link rel="icon" type="image/png" href="McKetta.png" />  
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
     <style type="text/css">
         body{ font: 14px sans-serif; }
-        .wrapper{ width: 350px; padding: 20px; }
+        .wrapper{ width: 50%; padding: 20px; }
     </style>
 </head>
 <body>
     <div class="wrapper">
         <h2>Sign Up</h2>
         <p>Please fill this form to create an account.</p>
+		
+		
+		
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+		
+		
+		
+		
             <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
                 <label>Username</label>
                 <input type="text" name="username"class="form-control" value="<?php echo $username; ?>">
@@ -168,15 +335,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">
                 <span class="help-block"><?php echo $confirm_password_err; ?></span>
             </div>
-			 <div class="form-group <?php echo (!empty($university_err)) ? 'has-error' : ''; ?>">
-                <label>School or Organization</label>
-                <input type="text" name="university"class="form-control" value="<?php echo $university; ?>">
-                <span class="help-block"><?php echo $university_err; ?></span>
-				 </div>     <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
+			
+			
+			
+			
+			<div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
                 <label>email you check regularly</label>
-                <input type="text" name="email"class="form-control" value="<?php echo $email; ?>">
+                <input type="text" name="email" class="form-control" value="<?php echo $email; ?>">
                 <span class="help-block"><?php echo $email_err; ?></span>
-            </div>    
+            </div>		
              <div class="form-group <?php echo (!empty($first_err)) ? 'has-error' : ''; ?>">
                 <label>First Name</label>
                 <input type="text" name="first"class="form-control" value="<?php echo $first; ?>">
@@ -186,13 +353,127 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <label>Last Name</label>
                 <input type="text" name="last"class="form-control" value="<?php echo $last; ?>">
                 <span class="help-block"><?php echo $last_err; ?></span>
-            </div>    
+            </div> 
+
+			<div class="form-group <?php  echo (!empty($university_err)) ? 'has-error' : ''; ?>">
+                <label>School or Organization</label></br>
+				
+				<div id ="univ_drop_down">	
+				<select name = "university" id = "university">
+				<?php
+					$sql = 'SELECT `university_name` FROM `University` ';
+					$stmt = $pdo->prepare($sql);
+					$stmt -> execute();
+					while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
+						{ ?>
+						<option value="<?php echo $row['university_name']; ?>"<?php //  if($row['university_name']=='Trine University'){echo 'selected';}?> ><?php echo $row['university_name']; ?> </option>
+						<?php
+ 							}
+						?>
+				</select>
+				</div>
+				<div id = "new_univ">
+					 <input type="text" name="new_univ" value="<?php echo $new_univ; ?>"> Please Be careful with spelling and capitalization - this will go in the data base
+				</div>
+				</br> If your School or Organization is not shown -  <span id = "addUniv"><button id = "addUniv_button" name = "addUniv_button"><b>Click Here</b></button></span></br>
+					
+				
+				<span class="help-block"><?php echo $university_err; ?></span>
+			 </div>    
+
+
+			
+			<div id = "sponsor_block">
+			 <label>Sponsor ID</label> </br>
+				<input type = "number" name = "sponsor" value = "<?php echo $sponsor_id; ?>" required> ID of person that can vouch for you.
+					&nbsp;   To open a listing of ID's in a separate tab: <a href="getiid.php" target = "_blank"><b>Click Here</b></a></font></br>
+			<span class="help-block"><?php echo $sponsor_err; ?></span>
+			</div>
+			</br>
+			<div id = "security_block">
+			<label> Type of account you would like? </label> </br>
+               &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "contrib" checked >  Contributor - Can contribute and use all problems</br>
+               &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "instruct">  Instructor - Can use all problems</br>
+		       &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "stu_contrib">  Student Contributor - Can contribute problems and edit/clone problems if given permission</br>
+		       &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "TA">  Teaching Assistant - Can use the problems designated by your sponsoring instructor</br>
+			<span class="help-block"><?php echo $security_err; ?></span>
+           </div>
+			</br>
+			<div id = "cloning">
+			<label> Initial default value for allowing <font color = "green">Cloning</font> of problems you contribute: </label> </br>
+               &nbsp; &nbsp; &nbsp; <input type="radio" name="allow_clone_default" value = 1 checked>  Allow Clones</br>
+               &nbsp; &nbsp; &nbsp; <input type="radio" name="allow_clone_default" value = 0>  Do Not Allow Clones</br>
+           
+			</br>
+			</div>
+			<div id = "editing"> 
+			<label> Initial default value for allowing <font color = "green">Editing</font> of problems you contribute: </label> </br>
+               &nbsp; &nbsp; &nbsp; <input type="radio" name="allow_edit_default" value = 2 checked>  Allow all to edit</br>
+               &nbsp; &nbsp; &nbsp; <input type="radio" name="allow_edit_default" value = 0> Select who can edit</br>
+			    &nbsp; &nbsp; &nbsp; <input type="radio" name="allow_edit_default" value = 0>  Only I can edit</br>
+            </div> 
+			</br>
+			<div id = "Grade Level">
+			 <label>School Level of problems you are interested in?</label> </br>
+			&nbsp; &nbsp; &nbsp; &nbsp; <select name = "grade_level">
+				 <option value = '1'> Elementary</option>
+				 <option value = '2'> Middle</option>
+				 <option value = '3'> High</option>
+				 <option selected = "selected" value = '4'> College or Post Graduate</option> 
+			</select>
+			</div> 
+			</br>
+			<div id = "subject">
+			 <label>Default Quantitative Subject?</label> </br>
+			&nbsp; &nbsp; &nbsp; &nbsp; <select name = "subject">
+				 <option value = '1'> Math</option>
+				 <option value = '2'> Chemistry</option>
+				 <option value = '3'> Biology</option>
+				 <option value = '4'> Medicine</option>
+				 <option value = '5'> Other Science</option>
+				 <option value = '6'> Business / Economics</option>
+				 <option selected = "selected" value = '7'> Chemical Engineering</option> 
+				 <option value = '8'> Civil Engineering</option>
+				 <option value = '9'> Mechanical Engineering</option>
+				 <option value = '10'> Electrical Engineering</option>
+				 <option value = '11'> Biomedical Engineering</option>
+				 <option value = '12'> Other Engineering</option>
+				 <option value = '13'> Other - Not Listed</option>
+				 
+			</select>
+			</div>
+			</br>
             <div class="form-group">
                 <input type="submit" class="btn btn-primary" value="Submit">
                 <input type="reset" class="btn btn-default" value="Reset">
             </div>
+			</br>
             <p>Already have an account? <a href="login.php">Login here</a>.</p>
         </form>
     </div>    
 </body>
+
+<script>
+	$("#security_block").on('change',function(){
+		var security = $("input[name = security]:checked","#security_block").val();
+		// console.log (security);
+		if (security != "contrib" ){
+			$("#cloning").hide();
+			$("#editing").hide();
+			
+		} else {
+			$("#cloning").show();
+			$("#editing").show();
+		}
+	});
+	$("#new_univ").hide();
+	
+	$("#addUniv_button").on('click',function(){
+		$("#new_univ").show();
+		$("#univ_drop_down").hide();
+		$("#university").val("");
+		 
+	});
+	 
+</script>
 </html>

@@ -3,6 +3,15 @@
 // Include config file
 require_once 'pdo.php';
 session_start();
+if (isset($_SESSION['sucess'])){
+	echo $_SESSION['sucess'];	
+}
+if (isset($_SESSION['failure'])){
+	echo $_SESSION['failure'];	
+}
+
+
+
 session_unset();
  /* 
  if ($_GET['newpswd']=='pswdupdated'){
@@ -96,6 +105,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	
         <h2>Quick Response Problems Login</h2>
         <p>Please fill in your credentials to login.</p>
+		
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
                 <label>Username</label>

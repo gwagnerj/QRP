@@ -78,6 +78,8 @@ table.a {
 	echo('University');
 	 echo("</th><th>");
 	echo('ID');
+	 echo("</th><th>");
+	echo('Acct Type');
 	echo("</th></tr>\n");
 	 echo("</thead>");
 	
@@ -94,6 +96,8 @@ table.a {
 		echo(htmlentities($row['university']));
 		echo("</td><td>");	
 		echo(htmlentities($row['users_id']));
+		echo("</td><td>");	
+		echo(htmlentities($row['security']));
 		  echo("</td></tr>\n");
 		  
 	}
