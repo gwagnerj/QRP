@@ -375,7 +375,9 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 						  }
 						}
 					
-				}		
+				}	
+
+				
 			// video clip asset	
 			if($_POST['video_clip']==1)	{
 				$sql = "UPDATE Problem SET video_clip = :video_clip WHERE problem_id = :pblm_num";
@@ -405,6 +407,18 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 					':simulation' => 0,
 					':pblm_num' => $_POST['problem_id']));	
 			}	
+			
+			if (isset($_POST['grade_level'])){
+				$sql = "UPDATE Problem SET grade = :grade WHERE problem_id = :pblm_num";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':grade' => $_POST['grade_level'],
+					':pblm_num' => $_POST['problem_id']));	
+			}
+			
+			
+			
+			
 			// kill Stats 
 			
 			if ($_POST['reset_hist']==1){
@@ -1119,6 +1133,16 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 		&nbsp &nbsp <input type="checkbox" name="activity" value = 1 id = "activ" size= 20  >&nbsp &nbsp Problem has instructions for an associated activity for instructors - these do nothing yet<br>
 
 	</div>
+	</br>
+	<div id = "Grade Level">
+			 <label>Level of problem?</label> </br>
+			&nbsp; &nbsp; &nbsp; &nbsp; <select name = "grade_level">
+				 <option value = '1'> Elementary</option>
+				 <option value = '2'> Middle</option>
+				 <option value = '3'> High</option>
+				 <option selected = "selected" value = '4'> College or Post Graduate</option> 
+			</select>
+			</div> 
 	
 	<p>Problem Statistics:</p>
 
