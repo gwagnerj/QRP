@@ -146,10 +146,15 @@
 
 
 	if (isset($_SESSION['username'])){
+		if ($security =='admin'){
+			
+			echo '<a href="threat_change.php">Change Threat Level for Repository</b></a>';
+			echo '<br>';
+		}
+		
 		echo '<div id = "request_prob">';
 		echo '<b>Contributing a New Problem? </br>';
 		echo '<a href="requestPblmNum.php">Request Problem Number</b></a>';
-		
 		
 		echo '</div>';
 		//echo '<br>';
