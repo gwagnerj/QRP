@@ -136,6 +136,10 @@
 			':username' => $username));
 			$row = $stmt->fetch(PDO::FETCH_ASSOC);
 			$security = $row['security'];
+			$user_sponsor_id = $row['sponsor_id'];
+			$user_grade_level = $row['grade_level'];
+			$user_university = $row['university'];
+			
 			$users_id=$row['users_id'];
 			$_SESSION['iid']=$users_id;
 	}
@@ -230,7 +234,7 @@
 
 	$stmt = $pdo->query($qstmnt);
 	while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-	   if($row['game_prob_flag']!= 1) {
+	   if($row['game_prob_flag']!= 1 ||($security =='stu_contrib' && $user_sponsor_id != $row['users_id'])) {
 			 echo "<tr><td>";
 			
 			

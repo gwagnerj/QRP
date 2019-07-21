@@ -1029,3 +1029,24 @@ ALTER TABLE `Problem`
 	ADD `edit_id1` INT  AFTER `orig_contr_id`, 
 	ADD `edit_id2` INT  AFTER `edit_id1`, 
 	ADD `edit_id3` INT  AFTER `edit_id2`;
+	
+	
+ALTER TABLE `Users` 
+	ADD `TA_course_1` VARCHAR(64) AFTER `sponsor_id`, 
+	ADD `TA_course_2` VARCHAR(64) AFTER `TA_course_1`, 
+	ADD `TA_course_3` VARCHAR(64) AFTER `TA_course_2`, 
+	ADD `TA_course_4` VARCHAR(64) AFTER `TA_course_3`, 
+	ADD `exp_date` DATETIME AFTER `created_at`,
+	ADD `suspended` BOOLEAN NOT NULL AFTER `exp_date`;
+	
+	
+	ALTER TABLE `Problem` 
+	ADD `grade` INT  AFTER `edit_id3`; 
+	
+CREATE TABLE IF NOT EXISTS `Threat` (
+		`threat_id` int(11) NOT NULL AUTO_INCREMENT,
+		`threat_level` int(11) NOT NULL,
+		`users_id` int(11) NOT NULL,
+		`threat_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		PRIMARY KEY (`threat_id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;	

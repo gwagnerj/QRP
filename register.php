@@ -12,7 +12,7 @@ $mail = new PHPMailer(true);
 // Define variables and initialize with empty values
 $username = $password = $confirm_password = $university = "";
 $username_err = $email = $email_err = $password_err = $confirm_password_err = $university_err = "";
-$first_err = $last_err = $first = $last = $new_univ = $security_err = $sponsor_err = $university_err = "";
+$first_err = $last_err = $first = $last = $new_univ = $security_err = $sponsor_err = $university_err = $exp_date = "";
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -85,8 +85,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			
 	}
 		
-		
-		
     
 	// Validate email
     if(empty(trim($_POST['email']))){
@@ -121,6 +119,28 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $security = $_POST['security'];
     }
 	
+	// if the security level is TA then check for that at least one course is selected
+	if ($security == 'TA'){
+			if(empty($_POST['course_name'])){
+				$course_name_error = 'you need to check at least one course';
+			
+			} else {
+				$course_name_error ='';
+				//print_r ($_POST['course_name'][0]);
+				//die();
+				if (!empty($_POST['course_name'][0])){$TA_course_1=  $_POST['course_name'][0];}
+				if (!empty($_POST['course_name'][1])){$TA_course_2=  $_POST['course_name'][1];}
+				if (!empty($_POST['course_name'][2])){$TA_course_3=  $_POST['course_name'][2];}
+				if (!empty($_POST['course_name'][3])){$TA_course_4=  $_POST['course_name'][3];}
+				$exp_date = date("Y-m-d", strtotime("+6 month"));
+			}
+		
+	}
+	// if the security level is grader then set the expiration date	
+	if ($security == 'grader'){
+		$exp_date = date("Y-m-d", strtotime("+6 month"));
+	}
+	
 	// Validate Sponsor
 	 if(empty(trim($_POST['sponsor']))){
         $sponsor_err = "Please enter a valid sponsor.";     
@@ -139,8 +159,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					$email_spon = $s_row['email'];
 				if (empty(trim($security_spon))){		
 					 $sponsor_err = "Could not find sponsor security level in Users table.";  
-				} elseif ($security_spon == 'stu_contrib' || $security_spon == 'TA'){
+				} elseif ($security_spon == 'stu_contrib' || $security_spon == 'TA' || $security_spon == 'grader'){
 					 $sponsor_err = "Sponsor must be a contributor or instructor.";  
+				} elseif ($security == 'contrib' && $security_spon == 'instruct' ){
+					 $sponsor_err = "Sponsor must be a contributor .";  
+				}  elseif ($security == 'contrib' && $security_spon == 'contrib' ){
+					 $sponsor_err = " For contributors - Sponsor must be an administrator.";  // may delte this later or add more administrators
 				} else {
 
 		   $sponsor_id = htmlentities(trim($_POST['sponsor']));
@@ -154,18 +178,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Check input errors before inserting in database
     if(empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($university_err) && 
 	empty($email_err) && empty($first_err) && empty($last_err) && empty($security_err) && empty($sponsor_err) && 
-	empty($university_err)){
+	empty($university_err)  && empty($course_name_error)){
         
         // Prepare an insert statement
 		
-        $sql = "INSERT INTO `Users` (`username`, `password`, `university`, `security`, `email`, first, `last`, `sponsor_id`, `grade_level`, `allow_clone_default`, `allow_edit_default`)
-		VALUES (:username, :password, :university, :security, :email, :first, :last, :sponsor_id, :grade_level, :allow_clone_default, :allow_edit_default)";
-     /*    
-        $sql = "INSERT INTO `Users` (`username`, `password`, `university`, `security`, `email`, first, `last`)
-		VALUES (:username, :password, :university, :security, :email, :first, :last)";
- */
-
-
+        $sql = "INSERT INTO `Users` (`username`, `password`, `university`, `security`, `email`, first, `last`, `sponsor_id`, `grade_level`, `allow_clone_default`, `allow_edit_default`, `TA_course_1`, `TA_course_2`, `TA_course_3`, `TA_course_4`, `exp_date`)
+		VALUES (:username, :password, :university, :security, :email, :first, :last, :sponsor_id, :grade_level, :allow_clone_default, :allow_edit_default, :TA_course_1, :TA_course_2, :TA_course_3, :TA_course_4, :exp_date)";
+  
 		
         if($stmt = $pdo->prepare($sql)){
             // Bind variables to the prepared statement as parameters
@@ -180,12 +199,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			$stmt->bindParam(':grade_level', $param_grade_level, PDO::PARAM_STR);
 			$stmt->bindParam(':allow_clone_default', $param_allow_clone_default, PDO::PARAM_STR);
 			$stmt->bindParam(':allow_edit_default', $param_allow_edit_default, PDO::PARAM_STR);
+			$stmt->bindParam(':TA_course_1', $param_TA_course_1, PDO::PARAM_STR);
+			$stmt->bindParam(':TA_course_2', $param_TA_course_2, PDO::PARAM_STR);
+			$stmt->bindParam(':TA_course_3', $param_TA_course_3, PDO::PARAM_STR);
+			$stmt->bindParam(':TA_course_4', $param_TA_course_4, PDO::PARAM_STR);
+			$stmt->bindParam(':exp_date', $param_exp_date, PDO::PARAM_STR);
 			
             // Set parameters
             $param_username = $username;
             $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
             $param_university = $university;
-			 $param_security = $security;  //its either contrib or admin
+			 $param_security = $security;  
 			 $param_email = $email;
 		     $param_first = $first; 
 		     $param_last = $last;
@@ -193,6 +217,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			 $param_grade_level = $grade_level;
 			 $param_allow_clone_default = $allow_clone_default;
 			 $param_allow_edit_default = $allow_edit_default;
+			 $param_TA_course_1 = $TA_course_1;
+			 $param_TA_course_2 = $TA_course_2;
+			 $param_TA_course_3 = $TA_course_3;
+			 $param_TA_course_4 = $TA_course_4;
+			 $param_exp_date = $exp_date;
+
 					 
             // Attempt to execute the prepared statement
             if($stmt->execute()){
@@ -203,7 +233,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 				// get the email of the sponsor
 				
 					$subject = 'QRProblems - Registering a user';
-					$body = '<p>QRProblems has recieved a registration request for  '.$first.' '.$last.'at email '.$email.' <p> 
+					$body = '<p>QRProblems has recieved a registration request for  '.$first.' '.$last.' at email '.$email.' <p> 
 							<p> Welcome to the QRproblems! Please help to keep the educational value of this system intact.';
 								
 					try {
@@ -260,36 +290,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         // Close statement
        unset($stmt);
 		
-		/* 
-		$sql = 'SELECT * FROM University';	 
-		$stmt = $conn->prepare($sql);
-		$stmt->execute();
-		$results = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
-		 */
 		
     } else {
 		
-		echo 'there is an error in one of the parameters';
+		echo ' There is an error in one of the parameters';
 		echo '</br>';
-		echo $username_err;
-		echo '</br>';
-		echo $password_err;
-			echo '</br>';
-		echo $university_err;
-			echo '</br>';
-		echo $sponsor_err;
-			echo '</br>';
-		echo $security_spon;
-			echo '</br>';
-			echo $security;
-			echo '</br>';
-		echo $security_err;
-		
-		
-	
+		if (!empty($username_err)){echo $username_err; echo '</br>';}
+		if (!empty($password_err)){echo $password_err; echo '</br>';}
+		if (!empty($university_err)){echo $university_err; echo '</br>';}
+		if (!empty($sponsor_err)){echo $sponsor_err; echo '</br>';}
+		if (!empty($security_err)){echo $security_err; echo '</br>';}
 		
 	}
-	
    
 }
 $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
@@ -305,7 +317,7 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
     <style type="text/css">
         body{ font: 14px sans-serif; }
-        .wrapper{ width: 50%; padding: 20px; }
+        .wrapper{ width: 70%; padding: 20px; }
     </style>
 </head>
 <body>
@@ -335,8 +347,6 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
                 <input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">
                 <span class="help-block"><?php echo $confirm_password_err; ?></span>
             </div>
-			
-			
 			
 			
 			<div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
@@ -392,12 +402,28 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 			</br>
 			<div id = "security_block">
 			<label> Type of account you would like? </label> </br>
-               &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "contrib" checked >  Contributor - Can contribute and use all problems</br>
-               &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "instruct">  Instructor - Can use all problems</br>
-		       &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "stu_contrib">  Student Contributor - Can contribute problems and edit/clone problems if given permission</br>
-		       &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "TA">  Teaching Assistant - Can use the problems designated by your sponsoring instructor</br>
-			<span class="help-block"><?php echo $security_err; ?></span>
+               &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "contrib" checked >  Contributor - Can contribute and use all problems </br>
+               &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "instruct">  Instructor - Can use all problems </br>
+		       &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "stu_contrib">  Student Contributor - Can contribute problems and also edit/clone those problems specified by any Contributor</br>
+		       &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "TA">  Teaching Assistant - Similar to Instructor but restricted to problems for selected courses of instructor sponsor - also has Grader priviledges</br>
+		       &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "grader">  Grader - Can see the problems and student results of problems activated by Instructor sponsor
            </div>
+			</br>
+			<div id ="course_checkbox">	
+				<label> Select up to three courses that you will be a TA for the sponsoring instructor: </label> </br>
+				<?php
+					$sql = 'SELECT * FROM `Course` ';
+					$stmt = $pdo->prepare($sql);
+					$stmt -> execute();
+					while ( $row3 = $stmt->fetch(PDO::FETCH_ASSOC)) 
+							
+						{ ?>
+						 &nbsp; &nbsp; &nbsp; <input type = "checkbox" class = "course" value="<?php echo $row3['course_name']; ?>" name = "course_name[]" > <?php echo $row3['course_name']; ?>  </br>
+						<?php
+ 							}  // need to be able to select multiple of make check boxes
+						?>
+				</div>
+			
 			</br>
 			<div id = "cloning">
 			<label> Initial default value for allowing <font color = "green">Cloning</font> of problems you contribute: </label> </br>
@@ -409,7 +435,7 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 			<div id = "editing"> 
 			<label> Initial default value for allowing <font color = "green">Editing</font> of problems you contribute: </label> </br>
                &nbsp; &nbsp; &nbsp; <input type="radio" name="allow_edit_default" value = 2 checked>  Allow all to edit</br>
-               &nbsp; &nbsp; &nbsp; <input type="radio" name="allow_edit_default" value = 0> Select who can edit</br>
+               &nbsp; &nbsp; &nbsp; <input type="radio" name="allow_edit_default" value = 1> Select who can edit</br>
 			    &nbsp; &nbsp; &nbsp; <input type="radio" name="allow_edit_default" value = 0>  Only I can edit</br>
             </div> 
 			</br>
@@ -454,6 +480,8 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 </body>
 
 <script>
+	var checklimit = 3;
+	$("#course_checkbox").hide();
 	$("#security_block").on('change',function(){
 		var security = $("input[name = security]:checked","#security_block").val();
 		// console.log (security);
@@ -465,8 +493,22 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 			$("#cloning").show();
 			$("#editing").show();
 		}
+		if (security == "TA" ){
+			$("#course_checkbox").show();
+			// check the number of boxes is less than checklimit
+			$(".course").on("change",function(evt){
+				if($(this).siblings(":checked").length>= checklimit){
+					this.checked=false;
+				}
+			});
+			
+			
+		} else {
+			$("#course_checkbox").hide();
+		}
 	});
 	$("#new_univ").hide();
+	
 	
 	$("#addUniv_button").on('click',function(){
 		$("#new_univ").show();
@@ -474,6 +516,10 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 		$("#university").val("");
 		 
 	});
+	
+	// show this list of courses if they select TA
+	
+	
 	 
 </script>
 </html>
