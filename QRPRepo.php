@@ -142,8 +142,28 @@
 			
 			$users_id=$row['users_id'];
 			$_SESSION['iid']=$users_id;
+			$suspended = $row['suspended'];
+			$TA_course_1 = $row['TA_course_1'];
+			$TA_course_2 = $row['TA_course_2'];
+			$TA_course_3 = $row['TA_course_3'];
+			$TA_course_4 = $row['TA_course_4'];
 	}
-
+	
+	if ($suspended == 1){
+		 $_SESSION['failure'] = 'Please Check with Administrator - Account has been Suspended';
+		 header("location: login.php");
+		 die();
+	}
+	
+// find out what kind of threat Level is currently active
+	$sql = 'SELECT * FROM `Threat` ORDER BY `threat_id` DESC LIMIT 1';
+					$stmt = $pdo->prepare($sql);
+					$stmt -> execute(array(
+					));
+				
+					$t_row = $stmt->fetch(PDO::FETCH_ASSOC);
+					$threat_level = $t_row['threat_level'];
+					
 
 	if (isset($_SESSION['username'])){
 		if ($security =='admin'){
@@ -151,12 +171,13 @@
 			echo '<a href="threat_change.php">Change Threat Level for Repository</b></a>';
 			echo '<br>';
 		}
-		
+		if (($security == 'admin' || $security == 'contrib' || $security == 'stu_contrib') && $threat_level <= 3){
 		echo '<div id = "request_prob">';
 		echo '<b>Contributing a New Problem? </br>';
 		echo '<a href="requestPblmNum.php">Request Problem Number</b></a>';
-		
 		echo '</div>';
+		
+	}
 		//echo '<br>';
 		echo '<hr>';
 		echo '<a href="login.php"><b>logout</b></a>';
@@ -164,7 +185,7 @@
 		echo ' <b> Filter Criteria: </b>';
 	} else {
 	   echo '<hr>';
-	   echo '<p><h4>log in to contribute, edit, or delete problems <a href="login.php">Login here</a>.</h4></p>';
+	   echo '<p><h4>log in to use repository <a href="login.php">Login here</a>.</h4></p>';
 	   echo '<br>';
 	}
 
@@ -239,7 +260,30 @@
 
 	$stmt = $pdo->query($qstmnt);
 	while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-	   if($row['game_prob_flag']!= 1 ||($security =='stu_contrib' && $user_sponsor_id != $row['users_id'])) {
+		
+		// needed to put this in for the grader criteria - copied from furthrer down on active
+		$asstmnt = "SELECT Assign.assign_num AS assign_ass_num 
+					FROM Assign 
+					WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid=".$user_sponsor_id.");";
+						
+					$stmt2 = $pdo->query($asstmnt);
+					 $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+		
+		
+		
+	   if($row['game_prob_flag']== 0 && 
+		   (
+				   ($security =='stu_contrib' && $user_sponsor_id == $row['users_id']) ||
+				   ($security == 'grader' && $row2 !=false)||
+				   ($security == 'admin')||
+				   ($security == 'contrib')||
+				   ($security == 'instruct') ||
+				   ($security == 'TA' && ($row['course'] == $TA_course_1 || $row['course'] == $TA_course_2 || $row['course'] == $TA_course_3 || $row['course'] == $TA_course_4))
+		   )
+	   )
+
+
+	   {
 			 echo "<tr><td>";
 			
 			
@@ -403,7 +447,7 @@
 					} else {
 						echo('Asn '.$row2["assign_ass_num"].'<br> <span style = "color: red;" > Active </span>');
 					}
-					// test to see if it is being used by other people and display inuse
+					// test to see if it is being used by other people and display in use
 					$usestmnt = "SELECT Assign.instr_last AS instr_last_nm 
 					FROM Assign 
 					WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid <>".$users_id.");";
