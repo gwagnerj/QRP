@@ -150,7 +150,7 @@
 	}
 	
 	if ($suspended == 1){
-		 $_SESSION['failure'] = 'Please Check with Administrator - Account has been Suspended';
+		 $_SESSION['failure'] = 'Please Check with Administrator wagnerj@trine.edu - Account has been Suspended';
 		 header("location: login.php");
 		 die();
 	}
@@ -171,6 +171,9 @@
 			echo '<a href="threat_change.php">Change Threat Level for Repository</b></a>';
 			echo '<br>';
 		}
+		echo '<a href="suspend_user.php">Suspend one of users you sponsored</b></a>';
+			echo '<br>';
+		
 		if (($security == 'admin' || $security == 'contrib' || $security == 'stu_contrib') && $threat_level <= 3){
 		echo '<div id = "request_prob">';
 		echo '<b>Contributing a New Problem? </br>';
