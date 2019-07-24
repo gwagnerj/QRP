@@ -72,6 +72,9 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 		$connect_flag = $Assign_data['connect_flag'];
 		$society_flag = $Assign_data['society_flag'];
 		$choice = $Assign_data['ref_choice'];
+		$grader_id1 = $Assign_data['grader_id1'];
+		$grader_id2 = $Assign_data['grader_id2'];
+		$grader_id3 = $Assign_data['grader_id3'];
 		$activate_flag = 0;
 	} else {
 		
@@ -81,7 +84,8 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 		$instr_last =  $assign_num =  "";
 		$pp_flag1 = $pp_flag2 = $pp_flag3 =$pp_flag4 = $reflect_flag = $explore_flag= $choice =  "";
 		$assign_id = $connect_flag = $society_flag = $postp_flag1 =$postp_flag2 = $postp_flag3 =  "";
-		$assign_t_created = time();
+		$grader_id1 = $grader_id2 = $grader_id3 = "";
+		
 		
 	}
 
@@ -148,11 +152,21 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			}
 			if(isset($_POST['exp_date'])){
 			$exp_date=$_POST['exp_date'];
-		} 
+			} 
+				if(isset($_POST['grader_id1'])){
+			$grader_id1=$_POST['grader_id1'];
+			} 
+			if(isset($_POST['grader_id2'])){
+				$grader_id2=$_POST['grader_id2'];
+			} 
+			if(isset($_POST['grader_id3'])){
+				$grader_id3=$_POST['grader_id3'];
+			} 
+		
  
  // Prepare an insert statement
-        $sql = "INSERT INTO Assign (instr_last, iid, university, assign_t_created, assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3,exp_date)
-		VALUES (:instr_last, :iid,:university, :assign_t_created, :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3,:exp_date)";
+        $sql = "INSERT INTO Assign (instr_last, iid, university,  assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3,exp_date,grader_id1,grader_id2,grader_id3)
+		VALUES (:instr_last, :iid,:university,  :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3,:exp_date,:grader_id1,:grader_id2,:grader_id3)";
          
        
 			$stmt = $pdo->prepare($sql);
@@ -160,7 +174,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				':instr_last' => $instr_last,
 				':iid' => $iid,
 				':university' => $university,				
-				':assign_t_created' => $assign_t_created,
+			
 				':assign_num' => $assign_num,
 				':prob_num' => $prob_num,
 				':pp_flag1' => $pp_flag1,
@@ -174,7 +188,10 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				':explore_flag' => $explore_flag,
 				':connect_flag' => $connect_flag,
 				':society_flag' => $society_flag,
-				':exp_date' => $exp_date
+				':exp_date' => $exp_date,
+				':grader_id1' => $grader_id1,
+				':grader_id2' => $grader_id2,
+				':grader_id3' => $grader_id3
 				));
 
 				header( 'Location: QRPRepo.php' ) ;
@@ -209,7 +226,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
   // changing assignment number so need a new time 
    if($assign_num != $_POST['Assig_num'] ) {
 	$assign_num = $_POST['Assig_num'];
-	$assign_t_created = time();  	
+	
    }
    
 		if(isset($_POST['q_on_q'])){
@@ -277,33 +294,45 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			$exp_date=$_POST['exp_date'];
 		} 
 		// check the grader_id1 
-
+		if(isset($_POST['grader_id1'])){
+			$grader_id1=$_POST['grader_id1'];
+		} 
+		if(isset($_POST['grader_id2'])){
+			$grader_id2=$_POST['grader_id2'];
+		} 
+		if(isset($_POST['grader_id3'])){
+			$grader_id3=$_POST['grader_id3'];
+		} 
 		
   // echo ('IM here');
  //  die();
    
    	$sql = "UPDATE Assign SET  assign_t_created = :assign_t_created, assign_num = :assign_num, pp_flag1 = :pp_flag1, pp_flag2= :pp_flag2,
 			pp_flag3 = :pp_flag3, pp_flag4 = :pp_flag4, reflect_flag = :reflect_flag, explore_flag = :explore_flag, connect_flag = :connect_flag,
-			society_flag = :society_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3, ref_choice = :choice, exp_date = :exp_date
+			society_flag = :society_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3, ref_choice = :choice, exp_date = :exp_date,
+			grader_id1 = :grader_id1, grader_id2 = :grader_id2, grader_id3 = :grader_id3
 					WHERE assign_id = :assign_id";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
-			'assign_id' => $assign_id,
-			'assign_t_created' => $assign_t_created,
-			'assign_num' => $assign_num,
-			'pp_flag1' => $pp_flag1,
-			'pp_flag2' => $pp_flag2,
-			'pp_flag3' => $pp_flag3,
-			'pp_flag4' => $pp_flag4,
-			'reflect_flag' => $reflect_flag,
-			'explore_flag' => $explore_flag,
-			'connect_flag' => $connect_flag,
-			'society_flag' => $society_flag,
-			'choice' => $choice,
-			'postp_flag1' => $postp_flag1,
-			'postp_flag2' => $postp_flag2,
-			'postp_flag3' => $postp_flag3,
-			'exp_date' => $_POST['exp_date'],
+			':assign_id' => $assign_id,
+			':assign_t_created' => $assign_t_created,
+			':assign_num' => $assign_num,
+			':pp_flag1' => $pp_flag1,
+			':pp_flag2' => $pp_flag2,
+			':pp_flag3' => $pp_flag3,
+			':pp_flag4' => $pp_flag4,
+			':reflect_flag' => $reflect_flag,
+			':explore_flag' => $explore_flag,
+			':connect_flag' => $connect_flag,
+			':society_flag' => $society_flag,
+			':choice' => $choice,
+			':postp_flag1' => $postp_flag1,
+			':postp_flag2' => $postp_flag2,
+			':postp_flag3' => $postp_flag3,
+			':exp_date' => $_POST['exp_date'],
+			':grader_id1' => $grader_id1,
+			':grader_id2' => $grader_id2,
+			':grader_id3' => $grader_id3
 			));
 			 $_SESSION['sucess'] = 'the problem was edited and remains active';
 			header( 'Location: QRPRepo.php' ) ;
@@ -393,10 +422,10 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				</br>
 				&nbsp Who can see individual student results for this problem: </br>
 				&nbsp &nbsp <input type="radio" name="allow_grade" value=0 checked> Only me <br>
-				&nbsp &nbsp <input type="radio" name="allow_grade" value=1 id = "allow_edit1" > Allow myself and Users with the following IDs:
-				<input type = "number" name = "grader_id1" id = "grader_id1" min = "0" max = "10000" value = "<?php if ($row['grader_id1'] !=null){echo $row['grader_id1'];} else{echo'';}?>">
-				<input type = "number" name = "grader_id2" id = "grader_id2" min = "0" max = "10000" value = "<?php if ($row['grader_id2'] !=null){echo $row['grader_id2'];} else{echo'';}?>">
-				<input type = "number" name = "grader_id3" id = "grader_id3" min = "0" max = "10000" value = "<?php if ($row['grader_id3'] !=null){echo $row['grader_id3'];} else{echo'';}?>">
+				&nbsp &nbsp <input type="radio" name="allow_grade" value=1 id = "allow_grade" > Allow myself and Users with the following IDs:
+				<input type = "number" name = "grader_id1" id = "grader_id1" min = "0" max = "10000" value = "<?php if ($Assign_data['grader_id1'] !=null){echo $Assign_data['grader_id1'];} else{echo'';}?>">
+				<input type = "number" name = "grader_id2" id = "grader_id2" min = "0" max = "10000" value = "<?php if ($Assign_data['grader_id2'] !=null){echo $Assign_data['grader_id2'];} else{echo'';}?>">
+				<input type = "number" name = "grader_id3" id = "grader_id3" min = "0" max = "10000" value = "<?php if ($Assign_data['grader_id3'] !=null){echo $Assign_data['grader_id3'];} else{echo'';}?>">
 				&nbsp; &nbsp; &nbsp;  for a listing of ID's: <a href="getiid.php" target = "_blank"><b>Click Here</b></a></font></br>
 			</div>
 			

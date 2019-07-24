@@ -86,17 +86,10 @@ $preview="Null";
 	$stmt2->execute(array(
 		':problem_id' => $problem_id
 	));
-	
-	
-
 
 $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 
-
-
 	echo ('<table id="table_format2" class = "a" border="1" >'."\n");
-	
-
 	
 	 echo("<thead>");
 
@@ -277,14 +270,11 @@ echo ('<br>');
 
 echo ('<table id="table_format3" class = "a" border="1" >'."\n");
 	
-
-	
 	 echo("<thead>");
 
 	echo("</td><th>");
 	echo('asn');
 	echo("</th><th>");
-	
 	echo('stu_name');
     echo("</th><th>");
 	echo('PIN');
@@ -310,22 +300,37 @@ echo ('<table id="table_format3" class = "a" border="1" >'."\n");
 	echo('concepts');
 	echo("</th></tr>\n");
 	 echo("</thead>");
-	 
+	 // OR (problem_id = :problem_id AND grader_id1 =:iid)
+	//	OR (problem_id = :problem_id AND grader_id2 =:iid)
+	//	OR (problem_id = :problem_id AND grader_id3 =:iid)
 	  echo("<tbody>");
 	//
 	
-	$sql="SELECT * FROM Activity WHERE (problem_id = :problem_id AND iid =:iid) OR (problem_id = :problem_id AND iid =:iid)";
-	$stmt = $pdo->prepare($sql);
-	$stmt->execute(array(
+	$sql="SELECT * FROM Assign WHERE ((prob_num = :problem_id AND iid =:iid)
+		OR (prob_num = :problem_id AND grader_id1 =:iid)
+		OR (prob_num = :problem_id AND grader_id2 =:iid)
+		OR (prob_num = :problem_id AND grader_id3 =:iid)
+	)";
+	$stmt2 = $pdo->prepare($sql);
+	$stmt2->execute(array(
 		':problem_id' => $problem_id,
 		':iid' => $iid
 	));
+	$row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 	
+	
+	$sql="SELECT * FROM Activity WHERE (problem_id = :problem_id )";
+	
+	$stmt = $pdo->prepare($sql);
+	$stmt->execute(array(
+		':problem_id' => $problem_id,
+		
+	));
 	
 
 //$stmt = $pdo->query($qstmnt);
 while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-  
+	if ($row2 != false) {
 			 echo "<tr><td>";
 			echo(htmlentities($row['assign_id']));
 			echo("</td><td>");	
@@ -353,7 +358,7 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			echo("</td><td>");
 			if ($row['time_pp4']!=0){echo(htmlentities($row['est_what_concepts']));} else {echo('');	}
 		   echo("</td></tr>\n");
-   
+	}
 }
 
 	echo("</tbody>");

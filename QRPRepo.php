@@ -496,12 +496,14 @@
 //				echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
 			//	echo('<a href="suspendpblm.php?problem_id='.$row['problem_id'].'">Susp-unSus</a> / ');
 			}
+			
+			if ($security != 'grader'){
 			echo('<form action = "QRactivatePblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "users_id" value = "'.$users_id.'"><input type = "submit" value ="Activate"></form>');
 
 		//	echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$users_id.'">Act-deAct</a>');
 				
 			echo("</td><td>");
-			
+			}
 			
 			if($row['status']!='num issued') {
 				echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="Base-case"></form>');
