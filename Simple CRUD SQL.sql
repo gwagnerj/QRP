@@ -1050,3 +1050,9 @@ CREATE TABLE IF NOT EXISTS `Threat` (
 		`threat_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		PRIMARY KEY (`threat_id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;	
+	
+	
+	ALTER TABLE `Assign` 
+	ADD `grader_id1` INT  AFTER `postp_flag3`, 
+	ADD `grader_id2` INT  AFTER `grader_id1`, 
+	ADD `grader_id3` INT  AFTER `grader_id2`;

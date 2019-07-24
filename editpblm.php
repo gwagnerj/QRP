@@ -1214,7 +1214,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 		&nbsp &nbsp <input type="radio" name="allow_edit" value=0 <?php if($allow_edit == 0){ echo 'checked';} ?>> Only allow me to edit this problem<br>
 		&nbsp &nbsp <input type="radio" name="allow_edit" value=1 id = "allow_edit1" <?php if($allow_edit == 1){ echo 'checked';} ?>> Allow myself and Users with the following IDs to edit:
 		<input type = "number" name = "edit_id1" id = "edit_id1" min = "0" max = "10000" value = "<?php if ($row['edit_id1'] !=null){echo $row['edit_id1'];} else{echo'';}?>">
-		<input type = "number" name = "edit_id2" id = "edit_id2" min = "0" max = "10000" value = "<?php if ($row['edit_id2'] !=null){echo $row['edit_id2'];}?>">
+		<input type = "number" name = "edit_id2" id = "edit_id2" min = "0" max = "10000" value = "<?php if ($row['edit_id2'] !=null){echo $row['edit_id2'];} else{echo'';}?>">
 		<input type = "number" name = "edit_id3" id = "edit_id3" min = "0" max = "10000" value = "<?php if ($row['edit_id3'] !=null){echo $row['edit_id3'];} else{echo'';}?>">
 		&nbsp; &nbsp; &nbsp;  for a listing of ID's: <a href="getiid.php" target = "_blank"><b>Click Here</b></a></font></br>
 		&nbsp &nbsp <input type="radio" name="allow_edit" value=2 <?php if($allow_edit == 2){ echo 'checked';} ?>> Allow any other full contributors to make edits freely <br>

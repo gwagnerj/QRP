@@ -36,7 +36,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 if($stmt->rowCount() == 1){
                     $username_err = "This username is already taken.";
                 } else{
-                    $username = trim($_POST["username"]);
+                    $username = trim(htmlentities($_POST["username"]));
                 }
             } else{
                 echo "Oops! Something went wrong. Please try again later.";
@@ -53,7 +53,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     } elseif(strlen(trim($_POST['password'])) < 6){
         $password_err = "Password must have at least 6 characters.";
     } else{
-        $password = trim($_POST['password']);
+        $password = trim(htmlentities($_POST['password']));
     }
     
     // Validate confirm password
@@ -393,13 +393,7 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 
 
 			
-			<div id = "sponsor_block">
-			 <label>Sponsor ID</label> </br>
-				<input type = "number" name = "sponsor" value = "<?php echo $sponsor_id; ?>" required> ID of person that can vouch for you.
-					&nbsp;   To open a listing of ID's in a separate tab: <a href="getiid.php" target = "_blank"><b>Click Here</b></a></font></br>
-			<span class="help-block"><?php echo $sponsor_err; ?></span>
-			</div>
-			</br>
+			
 			<div id = "security_block">
 			<label> Type of account you would like? </label> </br>
                &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "contrib" checked >  Contributor - Can contribute and use all problems </br>
@@ -408,6 +402,13 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 		       &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "TA">  Teaching Assistant - Similar to Instructor but restricted to problems for selected courses of instructor sponsor - also has Grader priviledges</br>
 		       &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "grader">  Grader - Can see the problems and student results of problems activated by Instructor sponsor
            </div>
+			</br>
+			<div id = "sponsor_block">
+			 <label>Sponsor ID</label> </br>
+				<input type = "number" name = "sponsor" value = "<?php echo $sponsor_id; ?>" required> ID of person that can vouch for you.
+					&nbsp;   To open a listing of ID's in a separate tab: <a href="getiid.php" target = "_blank"><b>Click Here</b></a></font></br>
+			<span class="help-block"><?php echo $sponsor_err; ?></span>
+			</div>
 			</br>
 			<div id ="course_checkbox">	
 				<label> Select up to three courses that you will be a TA for the sponsoring instructor: </label> </br>

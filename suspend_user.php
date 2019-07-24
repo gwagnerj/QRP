@@ -26,7 +26,7 @@ $threat_err = $user_id_err = "";
  
 
  
- //check the security level of the user to see if they have admin security
+ //Get information for the current user
  $sql = 'SELECT * FROM `Users` WHERE username = :username';
 					$stmt = $pdo->prepare($sql);
 					$stmt -> execute(array(
@@ -35,6 +35,7 @@ $threat_err = $user_id_err = "";
 				
 					$s_row = $stmt->fetch(PDO::FETCH_ASSOC);
 					$security = $s_row['security'];
+					$_SESSION['security'] = $security;
 					$email = $s_row['email'];
 					$sponsor_id = $s_row['users_id'];
 					$_SESSION['sponsor_id'] = $sponsor_id;
@@ -81,7 +82,7 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 					$stmt -> execute(array(
 					':sponsor_id' => $sponsor_id
 					));
-				
+		
 				// $stmt = $pdo->query($stmt);
 	while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		
@@ -139,8 +140,8 @@ echo ('<table id="table_format" class = "a" border="1" >'."\n");
 			':sponsor_id' => $_SESSION['sponsor_id']
 			));
 		// go back to QRPRepo
-		
-		$_SESSION['sucess'] = 'The user suspension was toggled';
+		if ($suspended == 1){$sus_status = 'suspended';} else {$sus_status = 'un-suspended';}
+		$_SESSION['success'] = 'The user with users_id '.$users_id.' suspension status is now '.$sus_status;
 		header("location: QRPRepo.php"); 
 		
 		 die();

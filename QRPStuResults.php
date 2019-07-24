@@ -314,7 +314,7 @@ echo ('<table id="table_format3" class = "a" border="1" >'."\n");
 	  echo("<tbody>");
 	//
 	
-	$sql="SELECT * FROM Activity WHERE problem_id = :problem_id AND iid =:iid";
+	$sql="SELECT * FROM Activity WHERE (problem_id = :problem_id AND iid =:iid) OR (problem_id = :problem_id AND iid =:iid)";
 	$stmt = $pdo->prepare($sql);
 	$stmt->execute(array(
 		':problem_id' => $problem_id,

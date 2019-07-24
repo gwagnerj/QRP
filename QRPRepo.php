@@ -171,9 +171,18 @@
 			echo '<a href="threat_change.php">Change Threat Level for Repository</b></a>';
 			echo '<br>';
 		}
-		echo '<a href="suspend_user.php">Suspend one of users you sponsored</b></a>';
-			echo '<br>';
 		
+		// check to see if the current user has sponsored anyone - if yes then allow them to suspend the them
+		$sql = 'SELECT * FROM `Users` WHERE `sponsor_id` = :users_id';
+					$stmt = $pdo->prepare($sql);
+					$stmt -> execute(array(
+					':users_id' => $users_id
+					));
+		if ($row = $stmt->fetch(PDO::FETCH_ASSOC)!= false) {
+		
+		echo '<a href="suspend_user.php">Suspend / unsuspend one of users you sponsored</b></a>';
+			echo '<br>';
+		}
 		if (($security == 'admin' || $security == 'contrib' || $security == 'stu_contrib') && $threat_level <= 3){
 		echo '<div id = "request_prob">';
 		echo '<b>Contributing a New Problem? </br>';
@@ -276,7 +285,9 @@
 		
 	   if($row['game_prob_flag']== 0 && 
 		   (
+				    ( $users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3'] )||
 				   ($security =='stu_contrib' && $user_sponsor_id == $row['users_id']) ||
+				    ($security =='stu_contrib' && $users_id == $row['users_id']) ||
 				   ($security == 'grader' && $row2 !=false)||
 				   ($security == 'admin')||
 				   ($security == 'contrib')||

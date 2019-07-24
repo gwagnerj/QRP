@@ -9,7 +9,7 @@ session_start();
 <link rel="icon" type="image/png" href="McKetta.png" />  
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <meta Charset = "utf-8">
-<title>Find Instructor ID</title>
+<title>Find Users ID</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 
 <style>

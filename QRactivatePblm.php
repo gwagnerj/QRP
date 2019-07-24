@@ -276,8 +276,8 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 		if(isset($_POST['exp_date'])){
 			$exp_date=$_POST['exp_date'];
 		} 
-		
-		
+		// check the grader_id1 
+
 		
   // echo ('IM here');
  //  die();
@@ -388,6 +388,20 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" value = 1 <?php if($choice ==1){echo ('checked');  }?> > Any One  <br>
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" value = 2 <?php if($choice ==2){echo ('checked');  }?> > Any Two  <br>
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" value = 3 <?php if($choice ==3){echo ('checked');  }?> > Any Three  <br>
+			
+			<div id = "allow_grade">
+				</br>
+				&nbsp Who can see individual student results for this problem: </br>
+				&nbsp &nbsp <input type="radio" name="allow_grade" value=0 checked> Only me <br>
+				&nbsp &nbsp <input type="radio" name="allow_grade" value=1 id = "allow_edit1" > Allow myself and Users with the following IDs:
+				<input type = "number" name = "grader_id1" id = "grader_id1" min = "0" max = "10000" value = "<?php if ($row['grader_id1'] !=null){echo $row['grader_id1'];} else{echo'';}?>">
+				<input type = "number" name = "grader_id2" id = "grader_id2" min = "0" max = "10000" value = "<?php if ($row['grader_id2'] !=null){echo $row['grader_id2'];} else{echo'';}?>">
+				<input type = "number" name = "grader_id3" id = "grader_id3" min = "0" max = "10000" value = "<?php if ($row['grader_id3'] !=null){echo $row['grader_id3'];} else{echo'';}?>">
+				&nbsp; &nbsp; &nbsp;  for a listing of ID's: <a href="getiid.php" target = "_blank"><b>Click Here</b></a></font></br>
+			</div>
+			
+			
+			
 			
 			<input type="hidden" name="Submitted" value="name" />
 			<p><input type = "submit"></p>
