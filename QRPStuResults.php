@@ -300,9 +300,7 @@ echo ('<table id="table_format3" class = "a" border="1" >'."\n");
 	echo('concepts');
 	echo("</th></tr>\n");
 	 echo("</thead>");
-	 // OR (problem_id = :problem_id AND grader_id1 =:iid)
-	//	OR (problem_id = :problem_id AND grader_id2 =:iid)
-	//	OR (problem_id = :problem_id AND grader_id3 =:iid)
+	
 	  echo("<tbody>");
 	//
 	

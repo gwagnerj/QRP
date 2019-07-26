@@ -147,6 +147,8 @@
 			$TA_course_2 = $row['TA_course_2'];
 			$TA_course_3 = $row['TA_course_3'];
 			$TA_course_4 = $row['TA_course_4'];
+			$user_signon_date = $row['created_at'];
+			$users_exp_date = $row['exp_date'];
 	}
 	
 	if ($suspended == 1){
@@ -154,6 +156,16 @@
 		 header("location: login.php");
 		 die();
 	}
+	
+	// check to see if the user is past the exp date
+		$now = time();
+		$exp_date = strtotime($users_exp_date);
+		$diff = $now - $exp_date;
+		if ( strtolower($exp_date) != 'null' && $exp_date != 0 && $diff > 0 ) {
+			 $_SESSION['failure'] = 'Please Check with Administrator wagnerj@trine.edu - Account is past the expiration date';
+			 header("location: login.php");
+			 die();
+		}
 	
 // find out what kind of threat Level is currently active
 	$sql = 'SELECT * FROM `Threat` ORDER BY `threat_id` DESC LIMIT 1';
@@ -164,6 +176,25 @@
 					$t_row = $stmt->fetch(PDO::FETCH_ASSOC);
 					$threat_level = $t_row['threat_level'];
 					
+					
+	// check to see if the userhas signed up in the last three months and the threat level is high				
+
+	$signon_date = strtotime($user_signon_date);
+			$diff = $now - $signon_date; 
+			$crit = 3*30*24*3600; // 3 months in secounds
+			
+			if ( $diff < $crit && $threat_level >=3 ) {  // not allowing new users in when the threat level is high
+				 $_SESSION['failure'] = 'Please Check with Administrator wagnerj@trine.edu - Threat level is too high and your account will be restored as soon as possible';
+				 header("location: login.php");
+				 die();
+			}
+			if ($threat_level == 4 && $security != 'admin'){  // locks everyone out except the administrators when the threat level gets to 4
+				 $_SESSION['failure'] = 'Please Check with Administrator wagnerj@trine.edu - Threat level is too high system has been locked down - your account will be restored as soon as possible';
+				 header("location: login.php");
+				 die();
+			}
+				
+
 
 	if (isset($_SESSION['username'])){
 		if ($security =='admin'){
