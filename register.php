@@ -251,13 +251,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					//$mail -> setFrom($email);
 					$mail->setFrom('wagnerj@excelproblempedia.org', 'John');
 					$mail->addAddress($email);     // Add a recipient
-					$mail->addAddress($email_spon);     // Add a recipient
+					$mail->addAddress('wagnerj@trine.edu');               // Name is optional	
 					$mail->addAddress('gwagnerj@gmail.com');               // Name is optional	
-					$mail->addAddress('wagnerj@trine.edu');               // Name is optional			
+							
 					
 					$mail->isHTML(true);  	
 					$mail -> Subject = $subject;
-					$mail -> Body = $body;
+					
 					$mail->Body    = $body;
 					$mail->AltBody = strip_tags($body);			
 					
@@ -274,13 +274,57 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 						$_SESSION['failure'] = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 						// echo '<a href = "emailForm.php" >back to email form</a>';
 					}	
+				$_SESSION['sucess'] = 'registration sucessful';
 				
+				$mail2 = new PHPMailer(true);  // trying a new instance to mail a secound email
 				// send an email to sponsor and admin
+				// get the email of the sponsor
 				
+					$subject = 'QRProblems - Registering a user - using you as a sponsor - if you do not know them suspend them';
+					$body = '<p>QRProblems has recieved a registration request for  '.$first.' '.$last.' at email '.$email.' <p> 
+							<p> They are using you as a sponsor.  If you do not know and/or trust this person please log onto QRproblems.org/login and suspend their account ';
+								
+					try {
+					//Server settings
+					$mail2->SMTPDebug = 0;                                       // Enable verbose debug output 0 is off and 4 is everything
+					$mail2->isSMTP();                                            // Set mailer to use SMTP
+					$mail2->Host       = 'ns8363.hostgator.com;ns8364.hostgator.com';  // Specify main and backup SMTP servers
+					$mail2->SMTPAuth   = true;                                   // Enable SMTP authentication
+					$mail2->Username   = 'wagnerj@excelproblempedia.org';                     // SMTP username
+					$mail2->Password   = 'Iron26Men&FeMarines';                               // SMTP password
+					$mail2->SMTPSecure = 'tls';                                  // Enable TLS encryption, `ssl` also accepted
+					$mail2->Port       = 587;                                    // TCP port to connect to try new port if using ssl
+
+					//Recipients
+					//$mail -> setFrom($email);
+					$mail2->setFrom('wagnerj@excelproblempedia.org', 'John');
+					$mail2->addAddress($email_spon);     // Add a recipient
+					$mail2->addAddress('gwagnerj@gmail.com');               // Name is optional	
+					$mail2->addAddress('wagnerj@trine.edu');               // Name is optional			
+					
+					$mail2->isHTML(true);  	
+					$mail2 -> Subject = $subject;
+					$mail2 -> Body = $body;
+				
+					$mail2->AltBody = strip_tags($body);			
+					
+					$mail2->send();
+					   // echo 'Message has been sent';
+					//	$response = "Email is Sent - to system administrator and sponsor";
+					//	echo ($response);
+					
+					//	echo '</br></br>';
+						// echo '<a href = "emailForm.php" >back to email form</a>';
+
+
+					} catch (Exception $e) {
+						$_SESSION['failure'] = "Message could not be sent. Mailer Error: {$mail2->ErrorInfo}";
+						// echo '<a href = "emailForm.php" >back to email form</a>';
+					}	
 				// send an email to the new user welcoming them
 				
                 // Redirect to login page
-				$_SESSION['sucess'] = 'Registration was successful. Email notification has been sent to your sponsor  - Please log in';
+				$_SESSION['sucess'] = $_SESSION['sucess'].' Email notification has also been sent to your sponsor  - Please log in';
                 header("location: login.php");
             } else{
                 echo "Something went wrong. Please try again later.";
