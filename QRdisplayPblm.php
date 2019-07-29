@@ -51,13 +51,32 @@ session_start();
 			header("Location: QRhomework.php");
 			return;
 	} 
-
+	/* 
+	if(isset($_GET['assign_num'])) {
+			$assign_num = htmlentities($_GET['assign_num']);
+		}else if(isset($_SESSION['assign_num'])) {
+			$assign_num = htmlentities($_SESSION['assign_num']);
+		} else {
+			$_SESSION['error'] = 'assign_num is not being read into the diplay error 33';
+			header("Location: QRhomework.php");
+			return;
+	} 
+	if(isset($_GET['alias_num'])) {
+			$alias_num = htmlentities($_GET['alias_num']);
+		}else if(isset($_SESSION['alias_num'])) {
+			$alias_num = htmlentities($_SESSION['alias_num']);
+		} else {
+			$_SESSION['error'] = 'alias_num is not being read into the diplay error 34';
+			header("Location: QRhomework.php");
+			return;
+	} 
+ */
 	if(isset($_GET['iid'])) {
 			$iid = htmlentities($_GET['iid']);
 		}else if(isset($_SESSION['iid'])) {
 			$iid = htmlentities($_SESSION['iid']);
 		} else {
-			$_SESSION['error'] = 'iid is not being read into the diplay error 33';
+			$_SESSION['error'] = 'iid is not being read into the diplay error 35';
 			header("Location: QRhomework.php");
 			return;
 	} 
@@ -97,6 +116,8 @@ $pass = array(
     'stu_name' => $stu_name,
 	'pin' => $pin,
 	'iid' => $iid,
+	// 'assign_num' => $assign_num,
+	// 'alias_num' => $alias_num,
 	'reflect_flag' => $_GET['reflect_flag'],
 	'explore_flag' => $_GET['explore_flag'],  // these are set in 
 	'connect_flag' => $_GET['connect_flag'],
@@ -157,6 +178,8 @@ $(document).ready(function(){
 		var s_name = pass['stu_name'];
 		var pin = pass['pin'];
 		var iid = pass['iid'];
+		var assign_num = pass['assign_num'];
+		var alias_num = pass['alias_num'];
 		var reflect_flag = pass['reflect_flag'];
 		var explore_flag = pass['explore_flag'];
 		var connect_flag = pass['connect_flag'];

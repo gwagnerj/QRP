@@ -66,7 +66,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 		$postp_flag1 = $Assign_data['postp_flag1'];
 		$postp_flag1 = $Assign_data['postp_flag2'];
 		$postp_flag1 = $Assign_data['postp_flag3'];
-		
+		$alias_num = $Assign_data['alias_num'];
 		$reflect_flag = $Assign_data['reflect_flag'];
 		$explore_flag = $Assign_data['explore_flag'];
 		$connect_flag = $Assign_data['connect_flag'];
@@ -83,7 +83,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 		
 		$instr_last =  $assign_num =  "";
 		$pp_flag1 = $pp_flag2 = $pp_flag3 =$pp_flag4 = $reflect_flag = $explore_flag= $choice =  "";
-		$assign_id = $connect_flag = $society_flag = $postp_flag1 =$postp_flag2 = $postp_flag3 =  "";
+		$assign_id = $alias_num = $connect_flag = $society_flag = $postp_flag1 =$postp_flag2 = $postp_flag3 =  "";
 		$grader_id1 = $grader_id2 = $grader_id3 = "";
 		
 		
@@ -112,6 +112,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			// Set parameters
            
 		   $assign_num = htmlentities($_POST['Assig_num']);
+		     $alias_num = htmlentities($_POST['alias_num']);
 			$instr_last = $Users_data['last'];
 			$iid = $Users_data['users_id'];
 			$assign_t_created = time();
@@ -165,8 +166,8 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 		
  
  // Prepare an insert statement
-        $sql = "INSERT INTO Assign (instr_last, iid, university,  assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3,exp_date,grader_id1,grader_id2,grader_id3)
-		VALUES (:instr_last, :iid,:university,  :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3,:exp_date,:grader_id1,:grader_id2,:grader_id3)";
+        $sql = "INSERT INTO Assign (instr_last, iid, university,  assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3,exp_date,grader_id1,grader_id2,grader_id3,alias_num)
+		VALUES (:instr_last, :iid,:university,  :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3,:exp_date,:grader_id1,:grader_id2,:grader_id3,:alias_num)";
          
        
 			$stmt = $pdo->prepare($sql);
@@ -176,6 +177,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				':university' => $university,				
 			
 				':assign_num' => $assign_num,
+				':alias_num' => $alias_num,
 				':prob_num' => $prob_num,
 				':pp_flag1' => $pp_flag1,
 				':pp_flag2' => $pp_flag2,
@@ -226,6 +228,10 @@ if(isset($_POST['Activate']) && $Assign_data==false){
   // changing assignment number so need a new time 
    if($assign_num != $_POST['Assig_num'] ) {
 	$assign_num = $_POST['Assig_num'];
+	
+   }
+     if($alias_num != $_POST['alias_num'] ) {
+	$alias_num = $_POST['alias_num'];
 	
    }
    
@@ -310,13 +316,15 @@ if(isset($_POST['Activate']) && $Assign_data==false){
    	$sql = "UPDATE Assign SET  assign_t_created = :assign_t_created, assign_num = :assign_num, pp_flag1 = :pp_flag1, pp_flag2= :pp_flag2,
 			pp_flag3 = :pp_flag3, pp_flag4 = :pp_flag4, reflect_flag = :reflect_flag, explore_flag = :explore_flag, connect_flag = :connect_flag,
 			society_flag = :society_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3, ref_choice = :choice, exp_date = :exp_date,
-			grader_id1 = :grader_id1, grader_id2 = :grader_id2, grader_id3 = :grader_id3
+			grader_id1 = :grader_id1, grader_id2 = :grader_id2, grader_id3 = :grader_id3, alias_num = :alias_num
 					WHERE assign_id = :assign_id";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
 			':assign_id' => $assign_id,
+			
 			':assign_t_created' => $assign_t_created,
 			':assign_num' => $assign_num,
+			':alias_num' => $alias_num,
 			':pp_flag1' => $pp_flag1,
 			':pp_flag2' => $pp_flag2,
 			':pp_flag3' => $pp_flag3,
@@ -382,8 +390,9 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				
 				
 							
-			<input type= "text" Name="Assig_num" size="1" <?php if(strlen($assign_num) !== 0){echo ('value ='.$assign_num);  }?> required> Assignment Number <br>
-			
+			<input type= "text" Name="Assig_num" size="1" <?php if(strlen($assign_num) !== 0){echo ('value ='.$assign_num);  }?> required> Assignment Number <br> </br>
+			<input type= "text" Name="alias_num" size="1" <?php if(strlen($alias_num) !== 0){echo ('value ='.$alias_num);  }?> required> Problem Number Within Assignment <br>
+
            <?php 
 				if(! empty(trim($problem_data['preprob_3']))){
 					

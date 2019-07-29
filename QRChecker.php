@@ -16,11 +16,10 @@
 			$problem_id = $_GET['problem_id'];
 		} elseif (isset($_SESSION['problem_id'])){
 			$problem_id = $_SESSION['problem_id'];
-		} else {
-		  $_SESSION['error'] = "Missing problem_id";
-		  header('Location: QRPindex.php');
-		  return;
-		}
+		} 
+		
+		
+		
 	
 		if ( isset($_POST['iid']) ) {
 			$iid = $_POST['iid'];
@@ -32,6 +31,28 @@
 		  $_SESSION['error'] = "Missing iid";
 		  header('Location: QRPindex.php');
 		  return;
+		}
+		
+		if (isset($_GET['assign_num']) && isset($_GET['alias_num'])) {
+			$assign_num = $_GET['assign_num'];
+			$alias_num = $_GET['alias_num'];
+			// input these values manually will need to get the problem number
+			$sql = "SELECT * FROM `Assign` WHERE `iid` = :iid AND `assign_num` = :assign_num AND `alias_num` = :alias_num";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+			":iid" => $iid,
+			":assign_num" => $assign_num,
+			":alias_num" => $alias_num,
+			));
+			$row = $stmt -> fetch();
+			if ( $row === false ) {
+				$_SESSION['error'] = 'Could not find an assigned problem for the instructor, assignment and problem number given';
+				header( 'Location: QRPindex.php' ) ;
+				return;
+			} else {
+				$problem_id = $row['prob_num'];
+			}				
+			
 		}
 	
 		if ( isset($_POST['pin']) ) {
@@ -551,8 +572,8 @@
 	</header>
 	<main>
 
-
-	<p> Problem Number: <?php echo ($problem_id) ?> </p>
+	<p> Assignment Number: <?php echo ($assign_num) ?> </p>
+	<p> Problem Number: <?php echo ($alias_num) ?> </p>
 
 
 	<form autocomplete="off" method="POST" >

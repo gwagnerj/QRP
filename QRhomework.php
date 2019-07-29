@@ -1,9 +1,12 @@
 <?php
 	require_once "pdo.php";
 	session_start();
-	
+	if (isset($_SESSION['error'])){
+	echo $_SESSION['error']	;
+	unset($_SESSION['error']);
+	}
 	// this is the normal place to start for students checking their homework and goes the the QRcontroller.  Can also come from the rtnCode.php or the back button on QRdisplay.php
-	
+	$alias_num = $problem_id = $assign_num ='';
 	
 	$_SESSION['progress']=0;
 	$_SESSION['checker']=0;  // tells where the getiid where to come back to here or the checker
@@ -29,15 +32,22 @@
 	
 	if(isset($_GET['problem_id'])){
 		$problem_id = htmlentities($_GET['problem_id']);
-	} elseif (isset($_SESSION['problem_id'])){
+	} 
+	
+	/* elseif (isset($_SESSION['problem_id'])){
 		$problem_id = htmlentities($_SESSION['problem_id']);
-	}
+	} */
 	
 	if(isset($_GET['pin'])){
 		$pin = htmlentities($_GET['pin']);
 	} elseif (isset($_SESSION['pin'])){
 		$pin = htmlentities($_SESSION['pin']);
 	}
+	if(isset($_GET['assign_num'])){
+		$assign_num = htmlentities($_GET['assign_num']);
+	} elseif(isset($_SESSION['assign_num'])){
+		 	$assign_num = htmlentities($_SESSION['assign_num']);
+	} 
 	
 	if(isset($_GET['iid'])){
 		$iid = htmlentities($_GET['iid']);
@@ -50,14 +60,28 @@
 		$stu_name = htmlentities($_POST['stu_name']);
 		$_SESSION['stu_name']=$stu_name;
 	} 
-
-	if(isset($_POST['problem_id'])){
-		
-		$problem_id = htmlentities($_POST['problem_id']);
-			$_SESSION['problem_id']=$problem_id;
+// Go get the problem id from the Assignment table
+	if(isset($_POST['assign_num'])&& isset($_POST['alias_num'])&& isset($_POST['iid']) ){
+		$assign_num = htmlentities($_POST['assign_num']);
+		$alias_num = htmlentities($_POST['alias_num']);
+		$iid = htmlentities($_POST['iid']);
+		$_SESSION['assign_num'] = $assign_num;
+		//$_SESSION['alias_num'] = $alias_num;
+		$sql = " SELECT * FROM `Assign` WHERE iid = $iid AND assign_num = $assign_num AND alias_num = $alias_num" ;
+				$stmt = $pdo->query($sql);
+				$row = $stmt->fetch(PDO::FETCH_ASSOC);
+				if ( $row == false) {
+					$_SESSION['ERROR'] = 'No Problem found for these Input Values';
+				} else {
+					$problem_id = $row['prob_num'];
+					$_SESSION['problem_id']=$problem_id;
+				}
+	
+	//	$problem_id = htmlentities($_POST['problem_id']);
+	//		$_SESSION['problem_id']=$problem_id;
 	} else {
-	//	$_SESSION['error']='The Problem Number is Required';
 	}
+		$_SESSION['error']='The Assignment, Problem and instructor ID are all Required';
 
 	if(isset($_POST['pin'])){
 		$pin = htmlentities($_POST['pin']);
@@ -104,6 +128,8 @@
 										'stu_name' => $_SESSION['stu_name'],
 										'pin' => $_SESSION['pin'],
 										'iid' => $_SESSION['iid'],
+										'assign_num' => $_SESSION['assign_num'],
+										'alias_num' => $alias_num
 									);
 									// echo ($pass['society_flag']);
 									//die();
@@ -177,14 +203,15 @@
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
 <form autocomplete="off" method="POST">
 	
-	<p><font color=#003399>Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
+	<p><font color=#003399>Your Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
 	
-	<p><font color=#003399>PIN: </font><input type="number" min = "1" max = "10000" name="pin" id="pin_id" size=3 required value=<?php echo($pin);?> ></p>
+	<p><font color=#003399>Your PIN: </font><input type="number" min = "1" max = "10000" name="pin" id="pin_id" size=3 required value=<?php echo($pin);?> ></p>
 	<p><font color=#003399>Instructor ID: </font><input type="number"  min = 1 name="iid" id="iid" required size=5 value=<?php echo($iid.' ');?> >
 	<font color=#003399 >  &nbsp; &nbsp; &nbsp;  or if you don't know: <a href="getiid.php"><b>Click Here</b></a></font></p>
 <!--	<p><font color=#003399>script_flag: </font><input type="number" name="s_flag" id="script_flag" size=3 value=<?php echo($sc_flag);?> ></p>  -->
-	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" required size=3 value=<?php echo($problem_id);?> ></p>
-<!--		<p><font color=#003399>Assignment Number: </font><input type="number" name="assign_num" id="assign_num"  size=3 value=<?php // echo($Assign_num);?> ></p>  Could put the assignment in as an option if they don't know the problem num or if the instructor has multiple assignments for the same problem--> 
+<!--<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" required size=3 value=<?php echo($problem_id);?> ></p> -->
+		<p><font color=#003399>Assignment Number: </font><input type="number" name="assign_num" id="assign_num" required size=3 value=<?php  echo($assign_num);?> ></p> 
+		<p><font color=#003399>Problem Number: </font><input type="number" name="alias_num" id="alias_num" required size=3 value=<?php // echo($alias_num);?> ></p> 
 	<p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	</form>
 
@@ -216,12 +243,16 @@
 		var s_name = pass['stu_name'];
 		var pin = pass['pin'];
 		var iid = pass['iid'];
+		var assign_num = pass['assign_num'];
+		var alias_num = pass['alias_num'];
 	
 		sessionStorage.setItem('dex',dex);
 		sessionStorage.setItem('problem_id',problem);
 		sessionStorage.setItem('stu_name',s_name);
 		sessionStorage.setItem('pin',pin);
 		sessionStorage.setItem('iid',iid);
+		sessionStorage.setItem('assign_num',assign_num);
+		sessionStorage.setItem('alias_num',alias_num);
 		
 		
 	// this was the start of me doing the whole thing in JS and JQ - did it the other way - we will see	
@@ -234,7 +265,7 @@
 	
 	
 	var file = "QRcontroller.php";
-	 $.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid });
+	 $.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid, assign_num: assign_num, alias_num: alias_num });
 	
 	
 		

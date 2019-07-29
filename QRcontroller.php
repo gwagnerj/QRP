@@ -45,7 +45,25 @@ if (isset($_POST['pin'])){
 } else {
 	$_SESSION['error'] = 'pin not set';
 }
-
+if (isset($_POST['assign_num'])){
+	$assign_num = $_POST['assign_num'];
+}  elseif(isset($_GET['assign_num'])){
+	$assign_num = $_GET['assign_num'];
+} elseif(isset($_SESSION['assign_num'])){
+	$assign_num = $_SESSION['assign_num'];
+} else {
+	$_SESSION['error'] = 'assign_num not set';
+}
+if (isset($_POST['alias_num'])){
+	$alias_num = $_POST['alias_num'];
+}  elseif(isset($_GET['alias_num'])){
+	$alias_num = $_GET['alias_num'];
+} elseif(isset($_SESSION['alias_num'])){
+	$alias_num = $_SESSION['alias_num'];
+} else {
+	
+	$_SESSION['error'] = 'alias_num not set';
+}
 
 if(isset($_POST['stu_name'])) {
 	$stu_name = $_POST['stu_name'];
@@ -186,6 +204,8 @@ if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 						."&dex=".$dex
 						."&stu_name=".$stu_name
 						."&iid=".$iid
+						."&assign_num=".$assign_num
+						."&alias_num=".$alias_num
 						."&reflect_flag=".$assn_row['reflect_flag']
 						."&explore_flag=".$assn_row['explore_flag']
 						."&connect_flag=".$assn_row['connect_flag']

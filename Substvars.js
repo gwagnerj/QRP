@@ -36,25 +36,29 @@ var MC_flag = false;
 // console.log ('society_flag is ',society_flag);
 
 var iid = sessionStorage.getItem('iid');
+var assign_num = sessionStorage.getItem('assign_num');
+var alias_num = sessionStorage.getItem('alias_num');
 var title = sessionStorage.getItem('title');
 var static_flag = sessionStorage.getItem('static_flag');
 
 
 var contrib_last = sessionStorage.getItem('contrib_last');
-if (contrib_last == null) {contrib_last = " ";}
+if (contrib_last == null || contrib_last == "null") {contrib_last = " ";}
 // console.log('last',contrib_last);
 
 var contrib_first = sessionStorage.getItem('contrib_first');
-if (contrib_first == null){contrib_first = " ";}
+if (contrib_first == null || contrib_first == "null" ){contrib_first = " ";}
 
 //console.log(contrib_first);
 
 var contrib_university = sessionStorage.getItem('contrib_university');
-if (contrib_university == null){contrib_university = " ";}
+if (contrib_university == null ||contrib_university == "null" ){contrib_university = " ";}
 var nm_author = sessionStorage.getItem('nm_author');
-if (nm_author == null){nm_author = " ";}
+if (nm_author == null || nm_author == "null"){nm_author = " ";}
 var specif_ref = sessionStorage.getItem('specif_ref');
-if (specif_ref == null){specif_ref = " ";}
+console.log ("specif_ref ");
+console.log (specif_ref);
+if (specif_ref == null || specif_ref == "null"){specif_ref = " ";}
 
 
 var nvar1 = sessionStorage.getItem('nv_1'); 
@@ -230,15 +234,16 @@ $(document).ready(function(){
 	var reflections = "Required Reflections: "+(reflect_flag==1 ? ' reflect ' : "")+(explore_flag==1 ? ' explore ' : "")
 			+ (connect_flag==1 ? ' connect ' :"")+(society_flag==1 ? ' society ' :"");
 		
-	} else if (choice != 0 && choice != null && choice != "NULL" ) {
-		var reflections = "Reflections: Pick Any "+ choice ;
+	} else if (choice == 0 || choice == "null" || choice == "NULL" ) {
+		var reflections ="";
+		
 		
 	} else {
 		
-		var reflections ="";
+		var reflections = "Reflections: Pick Any "+ choice ;
 	}
 	
-	 var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Problem: "+problem_id+"\xa0\xa0"+"PIN: " + pin +"\xa0\xa0 - \xa0\xa0 "+ reflections);
+	 var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Assignment: "+assign_num+"\xa0\xa0"+"Problem: "+alias_num+"\xa0\xa0"+"PIN: " + pin +"\xa0\xa0 - \xa0\xa0 "+ reflections);
 	  
 	  var auth_field = (nm_author.length > 1 ? " by "+nm_author : "");
 	  var ref_field = (specif_ref.length > 1 ? " similar to\xa0"+specif_ref : "");
@@ -669,7 +674,7 @@ $(document).ready(function(){
 			// replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=dex
 //!!~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			//var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;                             
-			var newHref = '../QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;
+			var newHref = '../QRP/QRChecker.php'+'?assign_num='+assign_num+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid;
 			// console.log (newHref);
 			var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
 			//var oldHref = $('a').attr('href');
@@ -976,7 +981,7 @@ $(document).ready(function(){
 					// e.preventDefault();
 					 console.log("hello1");
 					//alert('do something');
-					window.location.replace('../QRP/QRhomework.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid+'&stu_name='+stu_name_back);
+					window.location.replace('../QRP/QRhomework.php'+'?assign_num='+assign_num+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid+'&stu_name='+stu_name_back);
 					
 				 });
 			

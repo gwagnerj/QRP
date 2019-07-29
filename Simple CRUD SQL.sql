@@ -1056,3 +1056,11 @@ CREATE TABLE IF NOT EXISTS `Threat` (
 	ADD `grader_id1` INT  AFTER `postp_flag3`, 
 	ADD `grader_id2` INT  AFTER `grader_id1`, 
 	ADD `grader_id3` INT  AFTER `grader_id2`;
+	
+	ALTER TABLE `Assign` 
+	ADD `alias_num` INT  AFTER `assign_num`;
+	
+	
+	
+	
+	

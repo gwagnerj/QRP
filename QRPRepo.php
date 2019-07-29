@@ -477,7 +477,7 @@
 			}
 			
 			// if it is active for this user print active for the status
-					$asstmnt = "SELECT Assign.assign_num AS assign_ass_num 
+					$asstmnt = "SELECT Assign.assign_num AS assign_ass_num, Assign.alias_num AS alias_num
 					FROM Assign 
 					WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid=".$users_id.");";
 						
@@ -490,7 +490,7 @@
 						echo($row['status']);
 						}
 					} else {
-						echo('Asn '.$row2["assign_ass_num"].'<br> <span style = "color: red;" > Active </span>');
+						echo('<span style = "color: red;" > Active </br> Asn '.$row2["assign_ass_num"].'</br> Pblm '.$row2["alias_num"] .'<br>  </span>');
 					}
 					// test to see if it is being used by other people and display in use
 					$usestmnt = "SELECT Assign.instr_last AS instr_last_nm 

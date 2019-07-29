@@ -23,7 +23,12 @@
 	
 	$_SESSION['error'] = 'problem_id not set';
 }
- 
+ if (isset($_SESSION['assign_num'])){
+	 $assign_num = $_SESSION['assign_num'];
+	 
+ } else {
+	 $assign_num = '';
+ }
 
  
  if (isset($_POST['pin'])){
@@ -163,7 +168,7 @@ $pin = (isset($pin) ? $pin : '');
 $stu_name = (isset($stu_name) ? $stu_name : '');
 
 
-	echo('<a href="QRhomework.php?problem_id='.$problem_id.'&pin='.$pin.'&iid='.$iid.'&stu_name='.$stu_name.'"><b> Return to Main Screen</b></a>');
+	echo('<a href="QRhomework.php?problem_id='.$problem_id.'&pin='.$pin.'&assign_num='.$assign_num.'&iid='.$iid.'&stu_name='.$stu_name.'"><b> Return to Main Screen</b></a>');
 	//QRhomework.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid+'&stu_name='+stu_name_back
 ?>
 </main>

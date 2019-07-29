@@ -39,12 +39,15 @@ if ( isset($_SESSION['success']) ) {
 $iid='';
 $p_num = "";
 $index = "";
+$assign_num = $alias_num = '';
 $gs_num = "";
 ?>
 
 <form action = "QRChecker.php" method = "GET" autocomplete="off">
-	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" required min = "1" size=3 value="<?php echo (htmlentities($p_num))?> "  ></p>
-	<p><font color=#003399>PIN: </font><input type="number"  name="pin" required min = "1" max = "10000" size=3 value="<?php echo (htmlentities($index))?> "  ></p>
+<!--	<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" required min = "1" size=3 value="<?php echo (htmlentities($p_num))?> "  ></p>-->
+	<p><font color=#003399>Assignment Number: </font><input type="number"  name="assign_num" required min = "1" max = "10000" size=3 value="<?php echo (htmlentities($assign_num))?> "  ></p>
+	<p><font color=#003399>Problem Number: </font><input type="number"  name="alias_num" required min = "1" max = "10000" size=3 value="<?php echo (htmlentities($alias_num))?> "  ></p>
+	<p><font color=#003399>Your PIN: </font><input type="number"  name="pin" required min = "1" max = "10000" size=3 value="<?php echo (htmlentities($index))?> "  ></p>
 	<p><font color=#003399>Instructor ID: </font><input type="number" name="iid" required min = "1" max="10000" id="iid" size=5 value=<?php echo($iid.' ');?> >
 	<font color=#003399 >  &nbsp; &nbsp; &nbsp;  or if you don't know: <a href="getiid.php"><b>Click Here</b></a></font></p>
 	
