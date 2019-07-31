@@ -202,6 +202,11 @@
 			echo '<a href="threat_change.php">Change Threat Level for Repository</b></a>';
 			echo '<br>';
 		}
+		if ($security =='admin' || $security =='contrib' || $security =='instruct'){
+			
+			echo '<a href="Current_Class.php">Add Different Classes Designations for Multiple Classes using System</b></a>';
+			echo '<br>';
+		}
 		
 		// check to see if the current user has sponsored anyone - if yes then allow them to suspend the them
 		$sql = 'SELECT * FROM `Users` WHERE `sponsor_id` = :users_id';

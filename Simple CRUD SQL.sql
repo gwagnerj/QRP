@@ -1061,6 +1061,19 @@ CREATE TABLE IF NOT EXISTS `Threat` (
 	ADD `alias_num` INT  AFTER `assign_num`;
 	
 	
-	
+	CREATE TABLE IF NOT EXISTS `CurrentClass` (
+		`currentclass_id` int(11) NOT NULL AUTO_INCREMENT,
+		`iid` int(11) NOT NULL,
+		`name` VARCHAR(64),
+		`sec_desig_1` VARCHAR(32),
+		`sec_desig_2` VARCHAR(32),
+		`sec_desig_3` VARCHAR(32),
+		`sec_desig_4` VARCHAR(32),
+		`sec_desig_5` VARCHAR(32),
+		`sec_desig_6` VARCHAR(32),
+		`exp_date` DATETIME,
+		`input_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		PRIMARY KEY (`currentclass_id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;	
 	
 	
