@@ -10,22 +10,22 @@ if(isset($_GET['currentclass_id'])){
 	$sql = "DELETE FROM CurrentClass WHERE currentclass_id = :currentclass_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':currentclass_id' => $currentclass_id));
-	$_SESSION['success'] = 'Problem was deleted';
+	$_SESSION['success'] = 'Class Name entry was deleted';
 	
 
-	header( 'Location: QRPRepo.php' ) ;
+	header( 'Location: Current_Class.php' ) ;
 	 
     return;
 
 
 } else {
 	
-	$_SESSION['error'] = 'Problem was NOT deleted';
+	$_SESSION['error'] = 'Something Went Wrong - Class name entry was NOT deleted';
 	/* 
 	echo 'wtf2';
 	 die();
 	 */
-	header( 'Location: QRPRepo.php' ) ;
+	header( 'Location: Current_Class.php' ) ;
     return;
 	
 }

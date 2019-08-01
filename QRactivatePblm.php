@@ -17,12 +17,30 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
   $_SESSION['error'] = "Missing problem_id";
   header('Location: QRPRepo.php');
   return;
+} else {
+
+	$prob_num=$_GET['problem_id'];	
+	$iid = $_GET['users_id'];
+
 }
+
 	// $choice = '';
     $sql = "SELECT * FROM Problem WHERE problem_id = :zip";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':zip' => $_GET['problem_id']));
 	$problem_data = $stmt -> fetch();
+
+	
+	// Check to see if this instructor has any currentclasses
+	 $sql = "SELECT * FROM CurrentClass WHERE iid = :iid";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(':iid' => $iid));
+	$current_class_data = $stmt -> fetch();
+	if ($current_class_data == false){
+		$_SESSION['error'] = 'There are no current classes for this Instructor - Please Add a Class that you are Teaching';
+		 header('Location: Current_Class.php');
+		return;
+	}
 	
 	
 	
@@ -47,10 +65,11 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 	$Assign_data = $stmt -> fetch();
 	
 		
-	$prob_num=$_GET['problem_id'];	
-	$iid = $_GET['users_id'];
+	
 	$university = $Users_data['university'];
 	$instr_last = $Users_data['last'];
+
+
 
 
 // if the assignment data is not equal to false then we already have an entry make the values of the variables equal to the values in the db
@@ -386,10 +405,62 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				}
 			
 			?>
-			
 				
 				
+				
+				<div id ="current_class_dd">	
+				Course: </br>
+				<select name = "currentclass_id" id = "currentclass_id">
+				<?php
+					$sql = 'SELECT * FROM `CurrentClass` WHERE `iid` = :iid';
+					$stmt = $pdo->prepare($sql);
+					$stmt -> execute(array(':iid' => $iid));
+					while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
+						{ ?>
+						<option value="<?php echo $row['currentclass_id']; ?>" ><?php echo $row['name']; ?> </option>
+						<?php
+ 							}
+						?>
+				</select>
+				</div>
+					</br>	
+				
+				<div id ="section_check">	
+				Section: </br>
+					<input type = "checkbox" name = "section" id = "section"> all</input>
+
+
+
+
+				</div>
+
+				
+				<!--		
+			<div id ="section_check">	
+			Section: </br>
+				<select name = "section" id = "section">
+				<option value = "all" >all or N/A</option>
+				<select required class = "form-control" id = "section" name = "section">
+				</select>
+				</div>
+					</br>	
+					 
+				
+				<div class = "row">	
+					<div class = "form-group">
+						<label for = "section">Section:</label></br>
+						<input class = "form-control" id = "section" name = "section" type = "checkbox">&nbsp &nbsp Section 1 </input>
+						
+						
+						<select required class = "form-control" id = "section" name = "section">	
+						<option selected = "" disabled = "" value = "" > Select Sections </option>
 							
+						</select>
+					</div>
+				</div>		-->
+				</br>		
+	
+					
 			<input type= "text" Name="Assig_num" size="1" <?php if(strlen($assign_num) !== 0){echo ('value ='.$assign_num);  }?> required> Assignment Number <br> </br>
 			<input type= "text" Name="alias_num" size="1" <?php if(strlen($alias_num) !== 0){echo ('value ='.$alias_num);  }?> required> Problem Number Within Assignment <br>
 
@@ -443,8 +514,9 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			
 			<input type="hidden" name="Submitted" value="name" />
 			<p><input type = "submit"></p>
-			
         </form>
+		
+		<a href="QRPRepo.php">Cancel - go back to Repository</a>
     </div>    
  
 	<?php
@@ -461,6 +533,68 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 	
 	
 	$(document).ready( function () {
+		
+			$("#currentclass_id").change(function(){
+			var currentclass_id = $("#currentclass_id").val();
+			console.log ('currentclass_id: '+currentclass_id);
+			
+			$.ajax({
+					url: 'getsections.php',
+					method: 'post',
+					data: 'currentclass_id=' + currentclass_id
+				}).done(function(section){
+					// console.log(section);
+					var L = section.indexOf("]");
+					//console.log("L: "+L);
+					
+					var section = section.substring(1, L);
+					// console.log(section);
+					section = JSON.parse(section);
+					 console.log(section.sec_desig_1);
+					 	 $('#section_check').empty();
+					 
+					 
+				/* 	
+					$.get("{{config('app.url') }}/hardware/models/"+catid+"/accesories",{_token: "{{ csrf_token() }}"},function (data) {
+						data = $.parseJSON(data);
+
+					data.forEach( function (obj){
+					$('#dynamic_div').append('<input name="accesories" type="checkbox" value="'+obj.id+'"/> '+obj.name +'<br/>');
+					});
+				});
+				 */	
+					var i;
+					for (i = 1; i < 6; i++) { 
+					 
+						var sec = "section.sec_desig_"+i;
+						console.log (eval(sec));
+						
+						 if (eval(sec).length>1){
+							// console.log ("WTH"+section.sec_desig_1);
+							$('#section_check').append('<input name="'+eval(sec)+'" type="checkbox" checked value="'+sec+'"/> '+eval(sec)+'<br/>') ;
+
+						
+						
+						
+						
+						/*  
+						 if (section.sec_desig_1.length>1){
+							 console.log ("WTH"+section.sec_desig_1);
+							$('#section_check').append('<input name="sec_desig_1" type="checkbox" value="'+section.sec_desig_1+'"/> '+section.sec_desig_1+'<br/>') 
+							 */
+						 }
+					
+					}			
+					
+				})
+			
+			
+			
+			});
+			
+			
+			
+			
 			$('input[type="radio"]').change(function() {
 				if ($(this).is(':checked')){ //radio is now checked
 					$(".reflection").prop('checked', false);
@@ -491,7 +625,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 		var maxDate = max_date.toISOString(true).slice(0,10);
 		document.getElementById("exp_date").setAttribute("max", maxDate);
 		
-		var n = d.getMonth(); // current Month
+		var n = d.getMonth()+1; // current Month
 		var y = d.getFullYear();
 		if (n==11){
 			m = 4;

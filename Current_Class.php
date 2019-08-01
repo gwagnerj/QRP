@@ -32,8 +32,8 @@ if (isset($_SESSION['iid'])) {
 				$name = htmlentities($_POST['name']);
 			} else {
 				$_SESSION['error'] = 'Course name must be provided';
-				header( 'Location: QRPRepo.php' ) ;
-				return; 
+			/* 	header( 'Location: QRPRepo.php' ) ;
+				return;  */
 			}
 			 
 				 if(isset($_POST['sec_desig_1'])){ $sec_desig_1 = htmlentities($_POST['sec_desig_1']);} else {$sec_desig_1 = '';}
@@ -63,13 +63,20 @@ if (isset($_SESSION['iid'])) {
 							':exp_date' => $exp_date
 							));
 							$_SESSION['success'] = 'Course has been added';
-
+/* 
 							header( 'Location: QRPRepo.php' ) ;
 							return; 
-
+ */
 		}
 
-	
+	if ( isset($_SESSION['error']) ) {
+		echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
+		unset($_SESSION['error']);
+	}
+	if ( isset($_SESSION['success']) ) {
+		echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
+		unset($_SESSION['success']);
+	}
 
 	
 ?>	
@@ -147,15 +154,19 @@ if (isset($_SESSION['iid'])) {
 			
 	<h2>Add A Course: </h2>			
 			<form method = "POST">				
-			Course Name (e.g. Fluid Mechanics I) <br> <input type= "text" Name="name" >  </br> </br>
-			 Optional Section 1 Designation (e.g. Sect 1 - T,TH 10:00 AM) <br><input type= "text" Name="sec_desig_1"  ></br>
-			Optional Section 2 Designation (e.g. Sect 2 - MWF 8:00 AM) <br> <input type= "text" Name="sec_desig_2" > </br> 
-			 Optional Section 3 Designation  </br> <input type= "text" Name="sec_desig_3"  > </br> 
-			Optional Section 4 Designation  </br> <input type= "text" Name="sec_desig_4"  > </br> 
-			Optional Section 5 Designation  </br> <input type= "text" Name="sec_desig_5"  > </br> 
-			Optional Section 6 Designation  </br> <input type= "text" Name="sec_desig_6"  > </br> 
+			Course Name (e.g. Fluid Mechanics I) <br> <input type= "text" Name="name" >  </br> 
+			<p>When Should This Activation Expire - A few days after the end of the semester is fine (max 1 yr from now)</br> <input type="date" name="exp_date" value = "2019-05-13"  min="2019-05-13" max='2000-01-10' id="exp_date" ></p></br>
 
-				<p><font color=#003399>When Should This Activation Expire (max is 12 months from now) </font><input type="date" name="exp_date" value = "2019-05-13"  min="2019-05-13" max='2000-01-10' id="exp_date" ></p>
+			
+			<h3><font color = "Blue"  > Only Add Sections if you are Teaching Multiple Sections of the Same Course </font> </h3>
+			<font size = "2"> 
+				Optional Section 1 Designation (e.g. Sect 1 - T,TH 10:00 AM) <br><input type= "text" Name="sec_desig_1"  ></br>
+				Optional Section 2 Designation (e.g. Sect 2 - MWF 8:00 AM) <br> <input type= "text" Name="sec_desig_2" > </br> 
+				 Optional Section 3 Designation  </br> <input type= "text" Name="sec_desig_3"  > </br> 
+				Optional Section 4 Designation  </br> <input type= "text" Name="sec_desig_4"  > </br> 
+				Optional Section 5 Designation  </br> <input type= "text" Name="sec_desig_5"  > </br> 
+				Optional Section 6 Designation  </br> <input type= "text" Name="sec_desig_6"  > </br> 
+			</font>
 				
 			
 			
@@ -163,7 +174,7 @@ if (isset($_SESSION['iid'])) {
 			
 			<input type="hidden" name="Submitted" value="name" />
 			<p><input type = "submit"></p>
-			<a href="QRPRepo.php">Cancel and go back to Repository</a>
+			<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
         </form>
     </div>    
  
@@ -182,7 +193,7 @@ if (isset($_SESSION['iid'])) {
 		var d = new Date();   // current date
 		var minDate = d.toISOString(true).slice(0,10);
 		document.getElementById("exp_date").setAttribute("min", minDate);
-		
+		// console.log (minDate);
 		max_months = 9;
 		var max_date = new Date();
 		max_date.setMonth(max_date.getMonth() + max_months);
@@ -190,8 +201,10 @@ if (isset($_SESSION['iid'])) {
 		var maxDate = max_date.toISOString(true).slice(0,10);
 		document.getElementById("exp_date").setAttribute("max", maxDate);
 		
-		var n = d.getMonth(); // current Month
+		var n = d.getMonth() +1; // current Month
+	//	console.log ("n: "+n);
 		var y = d.getFullYear();
+	//	console.log ("y: "+y);
 		if (n==11){
 			m = 4;
 			yr = y+1;
@@ -206,7 +219,7 @@ if (isset($_SESSION['iid'])) {
 			yr = y;
 		}
 		
-		d.setFullYear(yr, m, 15);  // change d to the end of the semester
+		d.setFullYear(yr, m, 25);  // change d to the end of the semester
 		var expDate = d.toISOString(true).slice(0,10);
 		document.getElementById("exp_date").value = expDate;
 	

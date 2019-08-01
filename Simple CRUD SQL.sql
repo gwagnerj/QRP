@@ -1077,3 +1077,17 @@ CREATE TABLE IF NOT EXISTS `Threat` (
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;	
 	
 	
+	-- should use a index and a connector table but do it simply for now --
+	ALTER TABLE `Assign` 
+	ADD `currentclass_name` VARCHAR(64) AFTER `prob_num`, 
+	ADD `sec_desig_1` VARCHAR(32)  AFTER `currentclass_name`, 
+	ADD `sec_desig_2` VARCHAR(32)  AFTER `sec_desig_1`, 
+	ADD `sec_desig_3` VARCHAR(32)  AFTER `sec_desig_2`, 
+	ADD `sec_desig_4` VARCHAR(32)  AFTER `sec_desig_3`, 
+	ADD `sec_desig_5` VARCHAR(32)  AFTER `sec_desig_4`, 
+	ADD `sec_desig_6` VARCHAR(32)  AFTER `sec_desig_5`;
+
+	
+	
+	
+	
