@@ -1079,7 +1079,7 @@ CREATE TABLE IF NOT EXISTS `Threat` (
 	
 	-- should use a index and a connector table but do it simply for now --
 	ALTER TABLE `Assign` 
-	ADD `currentclass_name` VARCHAR(64) AFTER `prob_num`, 
+	ADD `currentclass_id` int(11) AFTER `prob_num`, 
 	ADD `sec_desig_1` VARCHAR(32)  AFTER `currentclass_name`, 
 	ADD `sec_desig_2` VARCHAR(32)  AFTER `sec_desig_1`, 
 	ADD `sec_desig_3` VARCHAR(32)  AFTER `sec_desig_2`, 

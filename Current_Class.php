@@ -101,6 +101,7 @@ if (isset($_SESSION['iid'])) {
 			<thead>
 			</td>
 			<th> Function </th>
+			<th> Class Number </th>
 			<th> Course Name</th>
 			<th> Sect 1 name </th>
 			<th> Sect 2 name </th>
@@ -124,6 +125,9 @@ if (isset($_SESSION['iid'])) {
 					echo('<a href="deletecourse.php?currentclass_id='.$row['currentclass_id'].'"><b> Delete</b></a>');
 
 			//echo('<form action = "deletecourse.php" method = "POST"> <input type = "hidden" name = "currentclass_id" value = "'.$row['currentclass_id'].'"><input type = "submit" value ="Delete"></form>');
+				echo "</td><td>";
+				
+				echo(htmlentities($row['currentclass_id']));
 				echo "</td><td>";
 				
 				echo(htmlentities($row['name']));

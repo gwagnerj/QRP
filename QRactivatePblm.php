@@ -40,6 +40,17 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 		$_SESSION['error'] = 'There are no current classes for this Instructor - Please Add a Class that you are Teaching';
 		 header('Location: Current_Class.php');
 		return;
+	} else {
+		
+		/* $currentclass_id = $current_class_data['currentclass_id'];	
+		$sec_desig_1 = 	$current_class_data['sec_desig_1'];	
+		$sec_desig_2 = 	$current_class_data['sec_desig_2'];	
+		$sec_desig_3 = 	$current_class_data['sec_desig_3'];	
+		$sec_desig_4 = 	$current_class_data['sec_desig_4'];
+		$sec_desig_5 = 	$current_class_data['sec_desig_5'];	
+		$sec_desig_6 = 	$current_class_data['sec_desig_6'];
+		$class_exp_date = $current_class_data['exp_date'];
+		 */
 	}
 	
 	
@@ -77,6 +88,8 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 		$assign_id = $Assign_data['assign_id'];
 		// echo($assign_id);
 		$assign_num = $Assign_data['assign_num'];
+		$alias_num = $Assign_data['alias_num'];
+
 		$assign_t_created = $Assign_data['assign_t_created'];
 		$pp_flag1 = $Assign_data['pp_flag1'];
 		$pp_flag2 = $Assign_data['pp_flag2'];
@@ -104,8 +117,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 		$pp_flag1 = $pp_flag2 = $pp_flag3 =$pp_flag4 = $reflect_flag = $explore_flag= $choice =  "";
 		$assign_id = $alias_num = $connect_flag = $society_flag = $postp_flag1 =$postp_flag2 = $postp_flag3 =  "";
 		$grader_id1 = $grader_id2 = $grader_id3 = "";
-		
-		
+		$currentclass_id = '';
 	}
 
 // we have a file and are trying to deactivate it  
@@ -128,9 +140,30 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 // we dont have an entry and we are trying to activate - create an new entry 
 if(isset($_POST['Activate']) && $Assign_data==false){
 	$activate_flag = 1;
-			// Set parameters
+	
+	$currentclass_id =  htmlentities($_POST['currentclass_id']);
+	
+		if(isset($_POST['exp_date'])){
+			$exp_date=$_POST['exp_date'];
+			} 
+			
+		 $sql = "SELECT exp_date FROM CurrentClass WHERE currentclass_id = :currentclass_id";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(':currentclass_id' => $currentclass_id));
+		$class_exp_data = $stmt -> fetch();
+		$class_exp_date = $class_exp_data['exp_date'];
+
+	if($exp_date > $class_exp_date){
+	$_SESSION['error']	= 'Expiration date of Assignment cannot exceed the expiration date on the class';
+		
+		header( 'Location: QRPRepo.php' ) ;
+		return; 
+	}
+
+
+		// Set parameters
            
-		   $assign_num = htmlentities($_POST['Assig_num']);
+		   $assign_num = htmlentities($_POST['assign_num']);
 		     $alias_num = htmlentities($_POST['alias_num']);
 			$instr_last = $Users_data['last'];
 			$iid = $Users_data['users_id'];
@@ -170,9 +203,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			if(isset($_POST['postprob3'])){
 				$postp_flag3 = 1;
 			}
-			if(isset($_POST['exp_date'])){
-			$exp_date=$_POST['exp_date'];
-			} 
+			
 				if(isset($_POST['grader_id1'])){
 			$grader_id1=$_POST['grader_id1'];
 			} 
@@ -182,11 +213,30 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			if(isset($_POST['grader_id3'])){
 				$grader_id3=$_POST['grader_id3'];
 			} 
+		// check to make sure the problem number for that assignment and class is not already in the system
+		
+		$sql = "SELECT assign_id FROM Assign WHERE currentclass_id = :currentclass_id AND alias_num = :alias_num AND assign_num = :assign_num";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute(array(
+			':currentclass_id' => $currentclass_id,
+			':alias_num' => $alias_num,
+			':assign_num' => $assign_num
+		));
+		$check = $stmt -> fetch();
+		if ($check != false){
+			$_SESSION['error']	= 'Duplication error - problems must have distinct problem numbers for an assignment in a class';
+			header( 'Location: QRPRepo.php' ) ;
+			return; 
+		}
 		
  
  // Prepare an insert statement
-        $sql = "INSERT INTO Assign (instr_last, iid, university,  assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3,exp_date,grader_id1,grader_id2,grader_id3,alias_num)
-		VALUES (:instr_last, :iid,:university,  :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3,:exp_date,:grader_id1,:grader_id2,:grader_id3,:alias_num)";
+        $sql = "INSERT INTO Assign (instr_last, iid, university,  assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,
+		connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3,exp_date,grader_id1,grader_id2,grader_id3,alias_num,
+		currentclass_id,sec_desig_1,sec_desig_2,sec_desig_3,sec_desig_4,sec_desig_5,sec_desig_6)
+		VALUES (:instr_last, :iid,:university,  :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,
+		:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3,:exp_date,:grader_id1,:grader_id2,:grader_id3,:alias_num,
+		:currentclass_id,:sec_desig_1,:sec_desig_2,:sec_desig_3,:sec_desig_4,:sec_desig_5,:sec_desig_6)";
          
        
 			$stmt = $pdo->prepare($sql);
@@ -194,7 +244,6 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				':instr_last' => $instr_last,
 				':iid' => $iid,
 				':university' => $university,				
-			
 				':assign_num' => $assign_num,
 				':alias_num' => $alias_num,
 				':prob_num' => $prob_num,
@@ -212,37 +261,23 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				':exp_date' => $exp_date,
 				':grader_id1' => $grader_id1,
 				':grader_id2' => $grader_id2,
-				':grader_id3' => $grader_id3
+				':grader_id3' => $grader_id3,
+				':currentclass_id' => $currentclass_id,
+				':sec_desig_1' => $sec_desig_1,
+				':sec_desig_2' => $sec_desig_2,
+				':sec_desig_3' => $sec_desig_3,
+				':sec_desig_4' => $sec_desig_4,
+				':sec_desig_5' => $sec_desig_5,
+				':sec_desig_6' => $sec_desig_6
 				));
 
 				header( 'Location: QRPRepo.php' ) ;
 				return; 
-
-
-
-	  
-  // Close statement
-   //     unset($stmt);
-    }
-	
 	
 	
 	// We have a file and are trying to edit it- just update the entry
    if(isset($_POST['Submitted']) && $Assign_data !== false){ 
    
-	/* echo ($_POST['Assig_num']);
-	echo ('<br>');
-	echo ($assign_num);
-	echo ('<br>');
-	echo ($pp_flag1);
-	echo ('<br>');
-	echo ($assign_t_created);
-	echo ('<br>');
-	echo ($prob_num);
-	echo ('<br>');
-	echo ($assign_id);
-	echo ('<br>');
-	die(); */
 	
   // changing assignment number so need a new time 
    if($assign_num != $_POST['Assig_num'] ) {
@@ -329,8 +364,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			$grader_id3=$_POST['grader_id3'];
 		} 
 		
-  // echo ('IM here');
- //  die();
+ 
    
    	$sql = "UPDATE Assign SET  assign_t_created = :assign_t_created, assign_num = :assign_num, pp_flag1 = :pp_flag1, pp_flag2= :pp_flag2,
 			pp_flag3 = :pp_flag3, pp_flag4 = :pp_flag4, reflect_flag = :reflect_flag, explore_flag = :explore_flag, connect_flag = :connect_flag,
@@ -423,46 +457,22 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 						?>
 				</select>
 				</div>
-					</br>	
+				</br>	
 				
 				<div id ="section_check">	
-				Section: </br>
-					<input type = "checkbox" name = "section" id = "section"> all</input>
-
-
-
 
 				</div>
-
-				
-				<!--		
-			<div id ="section_check">	
-			Section: </br>
-				<select name = "section" id = "section">
-				<option value = "all" >all or N/A</option>
-				<select required class = "form-control" id = "section" name = "section">
-				</select>
-				</div>
-					</br>	
-					 
-				
-				<div class = "row">	
-					<div class = "form-group">
-						<label for = "section">Section:</label></br>
-						<input class = "form-control" id = "section" name = "section" type = "checkbox">&nbsp &nbsp Section 1 </input>
-						
-						
-						<select required class = "form-control" id = "section" name = "section">	
-						<option selected = "" disabled = "" value = "" > Select Sections </option>
-							
-						</select>
-					</div>
-				</div>		-->
 				</br>		
+			<div id = "active_assign">
+			
+			</div>
 	
-					
-			<input type= "text" Name="Assig_num" size="1" <?php if(strlen($assign_num) !== 0){echo ('value ='.$assign_num);  }?> required> Assignment Number <br> </br>
-			<input type= "text" Name="alias_num" size="1" <?php if(strlen($alias_num) !== 0){echo ('value ='.$alias_num);  }?> required> Problem Number Within Assignment <br>
+			</br> <input type= "text" Name="assign_num" id = "assign_num" size="1" <?php if(strlen($assign_num) !== 0){echo ('value ='.$assign_num);  }?> required> Assignment Number <br> </br>
+			</br>
+			<div id = "active_alias">
+			
+			</div>
+			</br> <input type= "text" Name="alias_num" id = "alias_num" size="1" <?php if(strlen($alias_num) !== 0){echo ('value ='.$alias_num);  }?> required> Problem Number Within Assignment <br>
 
            <?php 
 				if(! empty(trim($problem_data['preprob_3']))){
@@ -482,7 +492,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				}
 				
 			?>
-				<p><font color=#003399>When Should This Activation Expire (max is 6 months from now) </font><input type="date" name="exp_date" value = "2019-05-13"  min="2019-05-13" max='2000-01-10' id="exp_date" ></p>
+				<p><font >When Should This Activation Expire (max is 6 months from now) </font><input type="date" name="exp_date" value = "2019-05-13"  min="2019-05-13" max='2000-01-10' id="exp_date" ></p>
 				
 			
 			<p><input type="checkbox" name="guess" <?php if($pp_flag1 =='1'){echo ('checked');  }?> > Preliminary Estimates </p>
@@ -529,19 +539,22 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 		
 	<script>
 	
-	
+	// still need to take care of sections and put them in the database 
 	
 	
 	$(document).ready( function () {
+		var sec_tot = 0;
+		var currentclass_name = '';
 		
 			$("#currentclass_id").change(function(){
-			var currentclass_id = $("#currentclass_id").val();
-			console.log ('currentclass_id: '+currentclass_id);
+		var	 currentclass_id = $("#currentclass_id").val();
+		//	console.log ('currentclass_id: '+currentclass_id);
 			
 			$.ajax({
 					url: 'getsections.php',
 					method: 'post',
-					data: 'currentclass_id=' + currentclass_id
+						data: {currentclass_id:currentclass_id}
+				//	data: 'currentclass_id=' + currentclass_id
 				}).done(function(section){
 					// console.log(section);
 					var L = section.indexOf("]");
@@ -552,48 +565,98 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 					section = JSON.parse(section);
 					 console.log(section.sec_desig_1);
 					 	 $('#section_check').empty();
-					 
-					 
-				/* 	
-					$.get("{{config('app.url') }}/hardware/models/"+catid+"/accesories",{_token: "{{ csrf_token() }}"},function (data) {
-						data = $.parseJSON(data);
-
-					data.forEach( function (obj){
-					$('#dynamic_div').append('<input name="accesories" type="checkbox" value="'+obj.id+'"/> '+obj.name +'<br/>');
-					});
-				});
-				 */	
+						
+				
 					var i;
 					for (i = 1; i < 6; i++) { 
 					 
 						var sec = "section.sec_desig_"+i;
-						console.log (eval(sec));
+					//	console.log (eval(sec));
 						
 						 if (eval(sec).length>1){
 							// console.log ("WTH"+section.sec_desig_1);
-							$('#section_check').append('<input name="'+eval(sec)+'" type="checkbox" checked value="'+sec+'"/> '+eval(sec)+'<br/>') ;
-
-						
-						
-						
-						
-						/*  
-						 if (section.sec_desig_1.length>1){
-							 console.log ("WTH"+section.sec_desig_1);
-							$('#section_check').append('<input name="sec_desig_1" type="checkbox" value="'+section.sec_desig_1+'"/> '+section.sec_desig_1+'<br/>') 
-							 */
+							$('#section_check').append('<input class = "sel_checkbox" name="'+eval(sec)+'" id = "'+eval(sec)+'" type="checkbox" checked value="'+sec+'"/> '+eval(sec)+'<br/>') ;
+							sec_tot = sec_tot+1;
 						 }
-					
 					}			
-					
+					//console.log ("sec_tot: "+sec_tot);
 				})
-			
-			
 			
 			});
 			
-			
-			
+			$("#assign_num").click(function() {
+				
+			// console.log ("clicked assignment");
+			var num_checked_sec = $('.sel_checkbox:checked').length;
+			console.log ("num_checked_sec: "+num_checked_sec);
+			console.log ("sec_tot: "+sec_tot);
+			if (num_checked_sec == 0){ // we have no sections then just get the active problems from the Assig Table 
+				// need to give it 	
+				var currentclass_id = $("#currentclass_id").val();
+				 console.log("currentclass_id: "+currentclass_id);
+					$.ajax({
+						url: 'getactiveassignments.php',
+						method: 'post',
+					
+					data: {currentclass_id:currentclass_id}
+					}).done(function(activeass){
+						console.log("activeass: "+activeass);
+					 console.log(activeass);
+					 activeass = JSON.parse(activeass);
+					 	 $('#active_assign').empty();
+						var i = 0;
+						n = activeass.length;
+						console.log("n: "+n);
+						$('#active_assign').append("&nbsp;&nbsp;&nbsp;&nbsp;Current assignments in system for this course: ") ;	
+						for (i=0;i<n;i++){
+							console.log(activeass[i]);	
+							$('#active_assign').append(activeass[i]) ;	
+							
+							if (i != n-1){
+								$('#active_assign').append(', &nbsp;') ;	
+							}
+						}
+						
+					});	
+
+					
+					$("#alias_num").click(function() {
+					var currentclass_id = $("#currentclass_id").val();
+					var assign_num = $("#assign_num").val();
+					 console.log("currentclass_id: "+currentclass_id);
+					  console.log("assign_num: "+assign_num);
+					$.ajax({
+						url: 'getactivealias.php',
+						method: 'post',
+						data:{currentclass_id:currentclass_id, assign_num:assign_num }
+					}).done(function(activealias){
+						console.log("activealias: "+activealias);
+					
+					 activealias = JSON.parse(activealias);
+					 	 $('#active_alias').empty();
+						var i = 0;
+						n = activealias.length;
+						console.log("n_alias: "+n);
+						$('#active_alias').append("&nbsp;&nbsp;&nbsp;&nbsp;Current problems in system for this assignment: ") ;	
+						for (i=0;i<n;i++){
+							console.log(activealias[i]);	
+							$('#active_alias').append(activealias[i]) ;	
+							
+							if (i != n-1){
+								$('#active_alias').append(', &nbsp;') ;	
+							}
+						}
+						 
+					});					
+					
+				});			
+					
+			}
+				
+				
+				
+			});
+			 
 			
 			$('input[type="radio"]').change(function() {
 				if ($(this).is(':checked')){ //radio is now checked

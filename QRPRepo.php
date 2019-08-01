@@ -204,7 +204,7 @@
 		}
 		if ($security =='admin' || $security =='contrib' || $security =='instruct'){
 			
-			echo '<a href="Current_Class.php">Add Different Classes Designations for Multiple Classes using System</b></a>';
+			echo '<a href="Current_Class.php">Add / Delete Current Classes </b></a>';
 			echo '<br>';
 		}
 		
@@ -482,7 +482,7 @@
 			}
 			
 			// if it is active for this user print active for the status
-					$asstmnt = "SELECT Assign.assign_num AS assign_ass_num, Assign.alias_num AS alias_num
+					$asstmnt = "SELECT Assign.assign_num AS assign_ass_num, Assign.alias_num AS alias_num,Assign.currentclass_id as currentclass_id
 					FROM Assign 
 					WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid=".$users_id.");";
 						
@@ -495,7 +495,7 @@
 						echo($row['status']);
 						}
 					} else {
-						echo('<span style = "color: red;" > Active </br> Asn '.$row2["assign_ass_num"].'</br> Pblm '.$row2["alias_num"] .'<br>  </span>');
+						echo('<span style = "color: red;" > Active </br> Class# '.$row2["currentclass_id"].'</br> Asn '.$row2["assign_ass_num"].'</br> Pblm '.$row2["alias_num"] .'<br>  </span>');
 					}
 					// test to see if it is being used by other people and display in use
 					$usestmnt = "SELECT Assign.instr_last AS instr_last_nm 
