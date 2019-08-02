@@ -38,6 +38,8 @@ var MC_flag = false;
 var iid = sessionStorage.getItem('iid');
 var assign_num = sessionStorage.getItem('assign_num');
 var alias_num = sessionStorage.getItem('alias_num');
+var cclass_id = sessionStorage.getItem('cclass_id');
+var cclass_name = sessionStorage.getItem('cclass_name');
 var title = sessionStorage.getItem('title');
 var static_flag = sessionStorage.getItem('static_flag');
 
@@ -243,7 +245,7 @@ $(document).ready(function(){
 		var reflections = "Reflections: Pick Any "+ choice ;
 	}
 	
-	 var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Assignment: "+assign_num+"\xa0\xa0"+"Problem: "+alias_num+"\xa0\xa0"+"PIN: " + pin +"\xa0\xa0 - \xa0\xa0 "+ reflections);
+	 var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Course: "+cclass_name+"\xa0\xa0"+"Assignment: "+assign_num+"\xa0\xa0"+"Problem: "+alias_num+"\xa0\xa0"+"PIN: " + pin +"\xa0\xa0 - \xa0\xa0 "+ reflections);
 	  
 	  var auth_field = (nm_author.length > 1 ? " by "+nm_author : "");
 	  var ref_field = (specif_ref.length > 1 ? " similar to\xa0"+specif_ref : "");
@@ -674,7 +676,7 @@ $(document).ready(function(){
 			// replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=dex
 //!!~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			//var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;                             
-			var newHref = '../QRP/QRChecker.php'+'?assign_num='+assign_num+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid;
+			var newHref = '../QRP/QRChecker.php'+'?assign_num='+assign_num+'&cclass_id='+cclass_id+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid;
 			// console.log (newHref);
 			var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
 			//var oldHref = $('a').attr('href');
@@ -981,7 +983,7 @@ $(document).ready(function(){
 					// e.preventDefault();
 					 console.log("hello1");
 					//alert('do something');
-					window.location.replace('../QRP/QRhomework.php'+'?assign_num='+assign_num+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid+'&stu_name='+stu_name_back);
+					window.location.replace('../QRP/QRhomework.php'+'?assign_num='+assign_num+'&cclass_id='+cclass_id+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid+'&stu_name='+stu_name_back);
 					
 				 });
 			

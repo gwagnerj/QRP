@@ -33,16 +33,18 @@
 		  return;
 		}
 		
-		if (isset($_GET['assign_num']) && isset($_GET['alias_num'])) {
+		if (isset($_GET['assign_num']) && isset($_GET['alias_num'])&& isset($_GET['cclass_id'])) {
 			$assign_num = $_GET['assign_num'];
 			$alias_num = $_GET['alias_num'];
+			$cclass_id = $_GET['cclass_id'];
 			// input these values manually will need to get the problem number
-			$sql = "SELECT * FROM `Assign` WHERE `iid` = :iid AND `assign_num` = :assign_num AND `alias_num` = :alias_num";
+			$sql = "SELECT * FROM `Assign` WHERE `iid` = :iid AND `assign_num` = :assign_num AND `alias_num` = :alias_num AND `currentclass_id` = :cclass_id";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
 			":iid" => $iid,
 			":assign_num" => $assign_num,
 			":alias_num" => $alias_num,
+			":cclass_id" => $cclass_id
 			));
 			$row = $stmt -> fetch();
 			if ( $row === false ) {
@@ -51,8 +53,27 @@
 				return;
 			} else {
 				$problem_id = $row['prob_num'];
+				
+				// get the name of the current class from the CurrentClass table
+					$sql = "SELECT * FROM `CurrentClass` WHERE currentclass_id = $cclass_id";
+					$stmt = $pdo->query($sql);
+					$row = $stmt->fetch(PDO::FETCH_ASSOC);
+					if ( $row == false) {
+						$cclass_name = "";
+					} else {
+							$cclass_name = $row['name'];
+						
+					}
+				
+				
+				
+				
 			}				
 			
+		} else {
+			 $_SESSION['error'] = "values for input";
+			   header('Location: QRPindex.php');
+				return;
 		}
 	
 		if ( isset($_POST['pin']) ) {
@@ -208,7 +229,7 @@
 			
 
 			for ($i = 0;$i<=9; $i++){  
-				if ($soln[$i]>=1.2e43 && $soln[$i] < 1.3e43) {
+				if (($soln[$i]>=1.2e43 && $soln[$i] < 1.3e43) || $soln[$i]==null ) {
 					$partsFlag[$i]=false;
 				} else {
 					$probParts = $probParts+1;
@@ -338,7 +359,7 @@
 				}
 			}
 			
-			$PScore=round($score/$probParts*100);  // Pscore is the percent score
+			if ($probParts !=0 ){$PScore=round($score/$probParts*100);} else {$PScore = 0;}  // Pscore is the percent score
 			// talley the wrong counts
 			
 			$wrongCount[0] = $addCount[0] + $checker_data['wcount_a'];
@@ -571,15 +592,17 @@
 	<h1>QRProblem Checker</h1>
 	</header>
 	<main>
-
-	<p> Assignment Number: <?php echo ($assign_num) ?> </p>
-	<p> Problem Number: <?php echo ($alias_num) ?> </p>
-
+	<p> Course: <?php echo ($cclass_name); ?> </p>
+	<p> Assignment Number: <?php echo ($assign_num); ?> </p>
+	<p> Problem Number: <?php echo ($alias_num); ?> &nbsp;&nbsp;&nbsp;
+	 <font size = "1">- Pid: <?php echo ($problem_id); ?> </font></p>
+	
 
 	<form autocomplete="off" method="POST" >
 	<!-- <p>Problem Number: <input type="text" name="problem_number" ></p> -->
 	<!-- <p> Please put in your index number </p> -->
 	<p><font color=#003399>PIN: </font><input type="text" name="pin" size=3 value="<?php echo ($pin);?>"  ></p>
+		
 	<p> <strong> Fill in - then select "Check" </strong></p>
 
 

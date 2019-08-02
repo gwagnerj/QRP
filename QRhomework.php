@@ -6,7 +6,7 @@
 	unset($_SESSION['error']);
 	}
 	// this is the normal place to start for students checking their homework and goes the the QRcontroller.  Can also come from the rtnCode.php or the back button on QRdisplay.php
-	$alias_num = $problem_id = $assign_num ='';
+	$alias_num = $problem_id = $assign_num = $cclass_id ='';
 	
 	$_SESSION['progress']=0;
 	$_SESSION['checker']=0;  // tells where the getiid where to come back to here or the checker
@@ -61,13 +61,15 @@
 		$_SESSION['stu_name']=$stu_name;
 	} 
 // Go get the problem id from the Assignment table
-	if(isset($_POST['assign_num'])&& isset($_POST['alias_num'])&& isset($_POST['iid']) ){
+	if(isset($_POST['assign_num'])&& isset($_POST['alias_num'])&& isset($_POST['iid']) && isset($_POST['cclass_id']) ){
 		$assign_num = htmlentities($_POST['assign_num']);
 		$alias_num = htmlentities($_POST['alias_num']);
+		$cclass_id = htmlentities($_POST['cclass_id']);
 		$iid = htmlentities($_POST['iid']);
 		$_SESSION['assign_num'] = $assign_num;
+		$_SESSION['cclass_id'] = $cclass_id;
 		//$_SESSION['alias_num'] = $alias_num;
-		$sql = " SELECT * FROM `Assign` WHERE iid = $iid AND assign_num = $assign_num AND alias_num = $alias_num" ;
+		$sql = " SELECT * FROM `Assign` WHERE iid = $iid AND assign_num = $assign_num AND alias_num = $alias_num AND currentclass_id = $cclass_id"   ;
 				$stmt = $pdo->query($sql);
 				$row = $stmt->fetch(PDO::FETCH_ASSOC);
 				if ( $row == false) {
@@ -75,14 +77,24 @@
 				} else {
 					$problem_id = $row['prob_num'];
 					$_SESSION['problem_id']=$problem_id;
+					// get the name of the current class from the CurrentClass table
+					$sql = "SELECT * FROM `CurrentClass` WHERE currentclass_id = $cclass_id";
+					$stmt = $pdo->query($sql);
+					$row = $stmt->fetch(PDO::FETCH_ASSOC);
+					if ( $row == false) {
+						$cclass_name = "";
+					} else {
+							$cclass_name = $row['name'];
+						
+					}
 				}
 	
 	//	$problem_id = htmlentities($_POST['problem_id']);
 	//		$_SESSION['problem_id']=$problem_id;
 	} else {
-	}
-		$_SESSION['error']='The Assignment, Problem and instructor ID are all Required';
-
+	
+		 $_SESSION['error']='The Class, Assignment, Problem and instructor ID are all Required';
+		}
 	if(isset($_POST['pin'])){
 		$pin = htmlentities($_POST['pin']);
 		if ($pin>10000 or $pin<0){
@@ -129,7 +141,9 @@
 										'pin' => $_SESSION['pin'],
 										'iid' => $_SESSION['iid'],
 										'assign_num' => $_SESSION['assign_num'],
-										'alias_num' => $alias_num
+										'alias_num' => $alias_num,
+										'cclass_id' => $cclass_id,
+										'cclass_name' => $cclass_name
 									);
 									// echo ($pass['society_flag']);
 									//die();
@@ -199,25 +213,141 @@
  
 ?>
 
-<!--<h3>Print the problem statement with "Ctrl P"</h3>
- <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
-<form autocomplete="off" method="POST">
+<form autocomplete="off" method="POST" >
 	
 	<p><font color=#003399>Your Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
 	
 	<p><font color=#003399>Your PIN: </font><input type="number" min = "1" max = "10000" name="pin" id="pin_id" size=3 required value=<?php echo($pin);?> ></p>
-	<p><font color=#003399>Instructor ID: </font><input type="number"  min = 1 name="iid" id="iid" required size=5 value=<?php echo($iid.' ');?> >
-	<font color=#003399 >  &nbsp; &nbsp; &nbsp;  or if you don't know: <a href="getiid.php"><b>Click Here</b></a></font></p>
-<!--	<p><font color=#003399>script_flag: </font><input type="number" name="s_flag" id="script_flag" size=3 value=<?php echo($sc_flag);?> ></p>  -->
-<!--<p><font color=#003399>Problem Number: </font><input type="number" name="problem_id" id="prob_id" required size=3 value=<?php echo($problem_id);?> ></p> -->
-		<p><font color=#003399>Assignment Number: </font><input type="number" name="assign_num" id="assign_num" required size=3 value=<?php  echo($assign_num);?> ></p> 
-		<p><font color=#003399>Problem Number: </font><input type="number" name="alias_num" id="alias_num" required size=3 value=<?php // echo($alias_num);?> ></p> 
+	<div id ="instructor_id">	
+				<font color=#003399> Instructor: &nbsp; </font>
+				<select name = "iid" id = "iid">
+				<option value = "" selected disabled hidden >  Select Instructor  </option> 
+				
+				<?php
+				
+				$sql = 'SELECT DISTINCT iid, last, first FROM Users RIGHT JOIN CurrentClass ON Users.users_id = CurrentClass.iid';
+				$stmt = $pdo->prepare($sql);
+					$stmt -> execute();
+					while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
+				{ ?>
+						<option value="<?php echo $row['iid']; ?>" ><?php echo ($row['last'].",".$row['first']); ?> </option>
+						<?php
+ 							} 
+						?>
+				
+						
+				</select>
+				</div>
+				</br>
+	
+<!--	<div id ="current_class_dd">	-->
+			<font color=#003399>Course: </font>
+			 &nbsp;<select name = "cclass_id" id = "current_class_dd">
+		
+		</select>
+		</br>	
+		</br>
+		<font color=#003399>Assignment Number: </font>
+			 &nbsp;<select name = "assign_num" id = "assign_num">
+			
+		
+		</select>
+		</br>	
+		<br>
+		
+		<div id = "alias_num_div">
+		
+		</div>
+		</br>	
+		<br>
+		
 	<p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	</form>
 
 <script>
+	$("#iid").change(function(){
+		var	 iid = $("#iid").val();
+			$.ajax({
+					url: 'getcurrentclass.php',
+					method: 'post',
+						data: {iid:iid}
+				
+				}).done(function(cclass){
+					cclass = JSON.parse(cclass);
+					 // now get the currentclass_id
+			$.ajax({
+					url: 'getcurrentclass_id.php',
+					method: 'post',
+						data: {iid:iid}
+				
+				}).done(function(cclass_id){
+					cclass_id = JSON.parse(cclass_id);
+					 $('#current_class_dd').empty();
+					n = cclass.length;
+				//		console.log("n: "+n);
+						$('#current_class_dd').append("<option> Please Select Course </option>") ;
+						for (i=0;i<n;i++){
+							
+							  $('#current_class_dd').append('<option  value="' + cclass_id[i] + '">' + cclass[i] + '</option>');
+					}
+				})
+			})
+		});
+			
+			
+			
+			// this is getting the assignment number once the course has been selected
+			$("#current_class_dd").change(function(){
+		var	 currentclass_id = $("#current_class_dd").val();
+			console.log ('currentclass_id: '+currentclass_id);
+			$.ajax({
+					url: 'getactiveassignments.php',
+					method: 'post',
+					data: {currentclass_id:currentclass_id}
+				}).done(function(activeass){
+					activeass = JSON.parse(activeass);
+					 	 $('#assign_num').empty();
+						
+				
+					n = activeass.length;
+						$('#assign_num').append("&nbsp;&nbsp;&nbsp;&nbsp;Assignment for this courses : ") ;
+						for (i=0;i<n;i++){
+							  $('#assign_num').append('<option  value="' + activeass[i] + '">' + activeass[i] + '</option>');
+					}
+				}) 
+			});
+			
+			// this is getting the problem numbers (alias number) once the course has been selected
+			$("#assign_num").change(function(){
+		var	 assign_num = $("#assign_num").val();
+		var	 currentclass_id = $("#current_class_dd").val();
+			console.log ('currentclass_id 2nd time: '+currentclass_id);
+			$.ajax({
+					url: 'getactivealias.php',
+					method: 'post',
+					data: {assign_num:assign_num,currentclass_id:currentclass_id}
+				
+				}).done(function(activealias){
+				
+					activealias = JSON.parse(activealias);
+					 	 $('#alias_num').empty();
+					n = activealias.length;
+						$('#alias_num_div').append(" <font color=#003399> Select Problem for this Assignment : </font></br> </br>&nbsp;&nbsp;&nbsp;&nbsp;") ;
+						for (i=0;i<n;i++){
+							$('#alias_num_div').append('<input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'&nbsp; &nbsp; &nbsp;') ;
+
+					}
+					
+				}) 
+			});
+
+</script>
+
+<script>
+
+ 
 	// this is a function from 	https://stackoverflow.com/questions/19036684/jquery-redirect-with-post-data to post data and redirect without building a hidden from
-		$.extend(
+	 	$.extend(
 				{
 					redirectPost: function(location, args)
 					{
@@ -245,6 +375,8 @@
 		var iid = pass['iid'];
 		var assign_num = pass['assign_num'];
 		var alias_num = pass['alias_num'];
+		var cclass_id = pass['cclass_id'];
+		var cclass_name = pass['cclass_name'];
 	
 		sessionStorage.setItem('dex',dex);
 		sessionStorage.setItem('problem_id',problem);
@@ -253,22 +385,15 @@
 		sessionStorage.setItem('iid',iid);
 		sessionStorage.setItem('assign_num',assign_num);
 		sessionStorage.setItem('alias_num',alias_num);
+		sessionStorage.setItem('cclass_id',cclass_id);
+		sessionStorage.setItem('cclass_name',cclass_name);
 		
-		
-	// this was the start of me doing the whole thing in JS and JQ - did it the other way - we will see	
-		/*  $("form").submit(function(e){
-			e.preventDefault();
-		}); */
-		
-	//	$.post( "QRcontroller.php", { progress: "1", dex: dex } );
-	//	 window.location.href = "QRcontroller.php";
-	
 	
 	var file = "QRcontroller.php";
 	 $.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid, assign_num: assign_num, alias_num: alias_num });
 	
-	
-		
+	  
+		 
 </script>
 
 </body>

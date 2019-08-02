@@ -6,8 +6,7 @@ session_start();
 
 			$stmt = "SELECT DISTINCT assign_num
 			FROM Assign 
-		
-			WHERE currentclass_id ='".$currentclass_id."' ORDER BY assign_num"; 
+			WHERE currentclass_id ='".$currentclass_id."' ORDER BY assign_num DESC"; 
 			$stmt = $pdo->prepare($stmt);	
 			$stmt->execute();
 			$activeass = $stmt->fetchAll(PDO::FETCH_NUM);

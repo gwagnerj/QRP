@@ -274,7 +274,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				header( 'Location: QRPRepo.php' ) ;
 				return; 
 	
-	
+	}
 	// We have a file and are trying to edit it- just update the entry
    if(isset($_POST['Submitted']) && $Assign_data !== false){ 
    
