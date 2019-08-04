@@ -445,6 +445,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				<div id ="current_class_dd">	
 				Course: </br>
 				<select name = "currentclass_id" id = "currentclass_id">
+				<option value = "" selected disabled hidden >  Select Class  </option> 
 				<?php
 					$sql = 'SELECT * FROM `CurrentClass` WHERE `iid` = :iid';
 					$stmt = $pdo->prepare($sql);
@@ -504,15 +505,15 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" name="connect" <?php if($connect_flag ==1){echo ('checked');  }?> > Connect  <br>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" name="society" <?php if($society_flag ==1){echo ('checked');  }?> > Society  <br>
 			<br>
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" value = 1 <?php if($choice ==1){echo ('checked');  }?> > Any One  <br>
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" value = 2 <?php if($choice ==2){echo ('checked');  }?> > Any Two  <br>
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" value = 3 <?php if($choice ==3){echo ('checked');  }?> > Any Three  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" class = "choice_class" value = 1 <?php if($choice ==1){echo ('checked');  }?> > Any One  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" class = "choice_class" value = 2 <?php if($choice ==2){echo ('checked');  }?> > Any Two  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" class = "choice_class" value = 3 <?php if($choice ==3){echo ('checked');  }?> > Any Three  <br>
 			
 			<div id = "allow_grade">
 				</br>
 				&nbsp Who can see individual student results for this problem: </br>
-				&nbsp &nbsp <input type="radio" name="allow_grade" value=0 checked> Only me <br>
-				&nbsp &nbsp <input type="radio" name="allow_grade" value=1 id = "allow_grade" > Allow myself and Users with the following IDs:
+				&nbsp &nbsp <input type="radio" name="allow_grade" class = "allow_grade_class" value=0 checked> Only me <br>
+				&nbsp &nbsp <input type="radio" name="allow_grade" class = "allow_grade_class" value=1 id = "allow_grade" > Allow myself and Users with the following IDs:
 				<input type = "number" name = "grader_id1" id = "grader_id1" min = "0" max = "10000" value = "<?php if ($Assign_data['grader_id1'] !=null){echo $Assign_data['grader_id1'];} else{echo'';}?>">
 				<input type = "number" name = "grader_id2" id = "grader_id2" min = "0" max = "10000" value = "<?php if ($Assign_data['grader_id2'] !=null){echo $Assign_data['grader_id2'];} else{echo'';}?>">
 				<input type = "number" name = "grader_id3" id = "grader_id3" min = "0" max = "10000" value = "<?php if ($Assign_data['grader_id3'] !=null){echo $Assign_data['grader_id3'];} else{echo'';}?>">
@@ -658,7 +659,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			});
 			 
 			
-			$('input[type="radio"]').change(function() {
+			$('input[name="choice"]').change(function() {
 				if ($(this).is(':checked')){ //radio is now checked
 					$(".reflection").prop('checked', false);
 					
@@ -669,7 +670,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			$('.reflection').change(function() {
 			// $('input[type="checkbox"]').change(function() {
 				if ($(this).is(':checked')){
-					$('input[type="radio"]').prop('checked', false);
+					$('input[name="choice"]').prop('checked', false);
 				}
 			});
 			

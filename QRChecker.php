@@ -4,7 +4,7 @@
 	require_once "pdo.php";
 		// this is comes in directly from QRPindex.php file that from the problem statement (will have get parameters if they press on the link here or directly from QRdisplaypblm.php via a link with get parameters
 		
-	
+	$Bypass = 0;
 		
 	
 		
@@ -69,8 +69,18 @@
 				
 				
 			}				
-			
+			// add the following so I can access the problem with checkerBypass.php
+		} elseif(isset($_GET['problem_id']) && isset($_GET['pin'])&& isset($_GET['iid'])) {
+				$problem_id = $_GET['problem_id'];
+				$pin = $_GET['pin'];
+				$assign_num = '';
+				$alias_num = '';
+				$cclass_id = '';
+				$cclass_name = '';
+				$iid = '';
+				$Bypass = 1;
 		} else {
+			
 			 $_SESSION['error'] = "values for input";
 			   header('Location: QRPindex.php');
 				return;
@@ -716,7 +726,7 @@
 	<!-- <form method="get" >
 	<p><input type = "submit" value="Finished"/> </p>
 	</form> -->
-
+<?php if ($Bypass==1){echo('<b><font size = "4" color = "red" > Contribitors and Instructors - Do not go to the rating section! </font></b>');}?>
 	<form action="GetRating.php" method="POST">
 	 <hr>
 	<p><b><font Color="red">When Finished:</font></b></p>

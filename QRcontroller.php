@@ -2,11 +2,6 @@
 require_once "pdo.php";
 session_start();
 
-
-
-
-
-
 if (isset($_POST['problem_id'])){
 	$problem_id = $_POST['problem_id'];
 }elseif(isset($_GET['problem_id'])){
@@ -63,6 +58,16 @@ if (isset($_POST['alias_num'])){
 } else {
 	
 	$_SESSION['error'] = 'alias_num not set';
+}
+if (isset($_POST['cclass_id'])){
+	$cclass_id = $_POST['cclass_id'];
+}  elseif(isset($_GET['cclass_id'])){
+	$cclass_id = $_GET['cclass_id'];
+} elseif(isset($_SESSION['cclass_id'])){
+	$cclass_id = $_SESSION['cclass_id'];
+} else {
+	
+	$_SESSION['error'] = 'cclass_id not set';
 }
 
 if(isset($_POST['stu_name'])) {
@@ -127,8 +132,8 @@ if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 			if ( $activity_row === false ) {
 			
 			//  create and entry activity table
-				$sql = 'INSERT INTO Activity (problem_id, pin,iid, dex, assign_id, instr_last, university,pp1,pp2,pp3,pp4,post_pblm1,post_pblm2,post_pblm3,score,help_coins_used,assist_coins_gained,stu_name)	
-						VALUES (:problem_id, :pin, :iid, :dex, :assign_id, :instr_last,:university,:pp1,:pp2,:pp3,:pp4,:post_pblm1,:post_pblm2,:post_pblm3, :score,:help_coins_used, :assist_coins_gained, :stu_name)';
+				$sql = 'INSERT INTO Activity (problem_id, pin,iid, dex, assign_id, instr_last, university,pp1,pp2,pp3,pp4,post_pblm1,post_pblm2,post_pblm3,score,help_coins_used,assist_coins_gained,stu_name,alias_num,currentclass_id)	
+						VALUES (:problem_id, :pin, :iid, :dex, :assign_id, :instr_last,:university,:pp1,:pp2,:pp3,:pp4,:post_pblm1,:post_pblm2,:post_pblm3, :score,:help_coins_used, :assist_coins_gained, :stu_name, :alias_num, :cclass_id)';
 				$stmt = $pdo->prepare($sql);
 				$stmt -> execute(array(
 				':problem_id' => $assn_row['prob_num'],
@@ -149,6 +154,8 @@ if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 				':help_coins_used' => 0,
 				':assist_coins_gained' => 0,
 				':stu_name' => $stu_name,
+				':alias_num' => $alias_num,
+				':cclass_id' => $cclass_id,
 				));
 			
 			$sql = "SELECT * FROM Activity WHERE iid=:iid AND problem_id=:problem_id AND pin =:pin" ;

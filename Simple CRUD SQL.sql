@@ -1080,14 +1080,19 @@ CREATE TABLE IF NOT EXISTS `Threat` (
 	-- should use a index and a connector table but do it simply for now --
 	ALTER TABLE `Assign` 
 	ADD `currentclass_id` int(11) AFTER `prob_num`, 
-	ADD `sec_desig_1` VARCHAR(32)  AFTER `currentclass_name`, 
+	ADD `sec_desig_1` VARCHAR(32)  AFTER `currentclass_id`, 
 	ADD `sec_desig_2` VARCHAR(32)  AFTER `sec_desig_1`, 
 	ADD `sec_desig_3` VARCHAR(32)  AFTER `sec_desig_2`, 
 	ADD `sec_desig_4` VARCHAR(32)  AFTER `sec_desig_3`, 
 	ADD `sec_desig_5` VARCHAR(32)  AFTER `sec_desig_4`, 
 	ADD `sec_desig_6` VARCHAR(32)  AFTER `sec_desig_5`;
 
+	ALTER TABLE `Activity` 
+	ADD `currentclass_id` INT  AFTER `assign_id`,
+	ADD `alias_num` INT  AFTER `currentclass_id`;
 	
-	
-	
-	
+	ALTER TABLE Activity ADD CONSTRAINT `currentclass_id`
+FOREIGN KEY ( `currentclass_id` ) REFERENCES CurrentClass (`currentclass_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+	ALTER TABLE Assign ADD CONSTRAINT `currentclass_id`
+FOREIGN KEY ( `currentclass_id` ) REFERENCES CurrentClass (`currentclass_id`) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -2,8 +2,6 @@
 require_once "pdo.php";
 session_start();
 	if (isset($_POST['iid'])){
-		
-
 			$stmt = "SELECT name
 			FROM CurrentClass
 			WHERE iid ='". $_POST['iid']."'"; 

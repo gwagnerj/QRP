@@ -199,13 +199,19 @@
 	if (isset($_SESSION['username'])){
 		if ($security =='admin'){
 			
-			echo '<a href="threat_change.php">Change Threat Level for Repository</b></a>';
-			echo '<br>';
+			echo '<a href="threat_change.php">Change Threat Level </b></a>';
+			echo '&nbsp; &nbsp;&nbsp;';
+			echo '<a href="delete_expired.php">Delete Expired Activity</b></a>';
+			echo '&nbsp; &nbsp;&nbsp;';
 		}
 		if ($security =='admin' || $security =='contrib' || $security =='instruct'){
 			
 			echo '<a href="Current_Class.php">Add / Delete Current Classes </b></a>';
-			echo '<br>';
+			echo '&nbsp; &nbsp;&nbsp;';
+			echo '<a href="QRhomeworkBypass.php" target = "_blank">Look at Active Problem </a>';
+			echo '&nbsp; &nbsp;&nbsp;';
+			echo '<a href="checkerBypass.php" target = "_blank">Solution Check Problem</b></a>';
+			echo '&nbsp; &nbsp;&nbsp;';
 		}
 		
 		// check to see if the current user has sponsored anyone - if yes then allow them to suspend the them

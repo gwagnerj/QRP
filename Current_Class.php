@@ -100,39 +100,33 @@ if (isset($_SESSION['iid'])) {
 			<table id="table_format" class = "a" border="1" >
 			<thead>
 			</td>
-			<th> Function </th>
+			
 			<th> Class Number </th>
 			<th> Course Name</th>
-			<th> Sect 1 name </th>
+			<!--<th> Sect 1 name </th>
 			<th> Sect 2 name </th>
 			<th> Sect 3 name </th>
 			<th> Sect 4 name </th>
 			<th> Sect 5 name </th>
-			<th> Sect 6 name </th>
+			<th> Sect 6 name </th> -->
 			<th> Expires </th>
-			
+			<th> Function </th>
 			<tr>
 			</thead> <tbody>
 			<?php
 			
 			// get the current list of the courses for this instructor	
-			$sql = "SELECT * FROM `CurrentClass` WHERE iid = :iid";
+				$sql = "SELECT * FROM `CurrentClass` WHERE iid = :iid";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(':iid' => $iid));
 			while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-				echo "<tr><td>";
-			
-					echo('<a href="deletecourse.php?currentclass_id='.$row['currentclass_id'].'"><b> Delete</b></a>');
-
-			//echo('<form action = "deletecourse.php" method = "POST"> <input type = "hidden" name = "currentclass_id" value = "'.$row['currentclass_id'].'"><input type = "submit" value ="Delete"></form>');
-				echo "</td><td>";
-				
+				echo "<td>";
 				echo(htmlentities($row['currentclass_id']));
 				echo "</td><td>";
 				
 				echo(htmlentities($row['name']));
-				
-					echo "</td><td>";
+				echo "</td><td>";
+				/* 	echo "</td><td>";
 				echo(htmlentities($row['sec_desig_1']));
 				echo "</td><td>";
 				echo(htmlentities($row['sec_desig_2']));
@@ -143,11 +137,17 @@ if (isset($_SESSION['iid'])) {
 					echo "</td><td>";
 				echo(htmlentities($row['sec_desig_5']));
 					echo "</td><td>";
-				echo(htmlentities($row['sec_desig_6']));
-					echo "</td><td>";
+				echo(htmlentities($row['sec_desig_6'])); */
+					
 				echo(htmlentities($row['exp_date']));
-				echo "</td><tr>";
+				echo "</td><td>";
+			
 				
+			
+					echo('<a href="deletecourse.php?currentclass_id='.$row['currentclass_id'].'"><b> Delete </b> Class and  Remove all </br> Activity and Assignments</br> <font color = "red"> No Confirmation, No Undo </font></a>');
+
+			//echo('<form action = "deletecourse.php" method = "POST"> <input type = "hidden" name = "currentclass_id" value = "'.$row['currentclass_id'].'"><input type = "submit" value ="Delete"></form>');
+				echo "</td><tr>";
 			}
 		
 			?>
@@ -162,7 +162,7 @@ if (isset($_SESSION['iid'])) {
 			<p>When Should This Activation Expire - A few days after the end of the semester is fine (max 1 yr from now)</br> <input type="date" name="exp_date" value = "2019-05-13"  min="2019-05-13" max='2000-01-10' id="exp_date" ></p></br>
 
 			
-			<h3><font color = "Blue"  > Only Add Sections if you are Teaching Multiple Sections of the Same Course </font> </h3>
+		<!--	<h3><font color = "Blue"  > Only Add Sections if you are Teaching Multiple Sections of the Same Course </font> </h3>
 			<font size = "2"> 
 				Optional Section 1 Designation (e.g. Sect 1 - T,TH 10:00 AM) <br><input type= "text" Name="sec_desig_1"  ></br>
 				Optional Section 2 Designation (e.g. Sect 2 - MWF 8:00 AM) <br> <input type= "text" Name="sec_desig_2" > </br> 
@@ -172,7 +172,7 @@ if (isset($_SESSION['iid'])) {
 				Optional Section 6 Designation  </br> <input type= "text" Name="sec_desig_6"  > </br> 
 			</font>
 				
-			
+			-->
 			
 			
 			

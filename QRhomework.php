@@ -230,7 +230,7 @@
 					$stmt -> execute();
 					while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
 				{ ?>
-						<option value="<?php echo $row['iid']; ?>" ><?php echo ($row['last'].",".$row['first']); ?> </option>
+						<option value="<?php echo $row['iid']; ?>" ><?php echo ($row['last'].", ".$row['first']); ?> </option>
 						<?php
  							} 
 						?>
@@ -242,7 +242,7 @@
 	
 <!--	<div id ="current_class_dd">	-->
 			<font color=#003399>Course: </font>
-			 &nbsp;<select name = "cclass_id" id = "current_class_dd">
+			 &nbsp;<select name = "cclass_id" id = "current_class_dd" required>
 		
 		</select>
 		</br>	
@@ -267,6 +267,8 @@
 <script>
 	$("#iid").change(function(){
 		var	 iid = $("#iid").val();
+		 $('#alias_num_div').empty();
+		  $('#assign_num').empty();
 			$.ajax({
 					url: 'getcurrentclass.php',
 					method: 'post',
@@ -285,7 +287,7 @@
 					 $('#current_class_dd').empty();
 					n = cclass.length;
 				//		console.log("n: "+n);
-						$('#current_class_dd').append("<option> Please Select Course </option>") ;
+						$('#current_class_dd').append("<option selected disabled hidden> Please Select Course </option>") ;
 						for (i=0;i<n;i++){
 							
 							  $('#current_class_dd').append('<option  value="' + cclass_id[i] + '">' + cclass[i] + '</option>');
@@ -298,6 +300,7 @@
 			
 			// this is getting the assignment number once the course has been selected
 			$("#current_class_dd").change(function(){
+				 $('#alias_num_div').empty();
 		var	 currentclass_id = $("#current_class_dd").val();
 			console.log ('currentclass_id: '+currentclass_id);
 			$.ajax({
@@ -310,7 +313,7 @@
 						
 				
 					n = activeass.length;
-						$('#assign_num').append("&nbsp;&nbsp;&nbsp;&nbsp;Assignment for this courses : ") ;
+						$('#assign_num').append("<option selected disabled hidden>  </option>") ;
 						for (i=0;i<n;i++){
 							  $('#assign_num').append('<option  value="' + activeass[i] + '">' + activeass[i] + '</option>');
 					}
@@ -330,7 +333,7 @@
 				}).done(function(activealias){
 				
 					activealias = JSON.parse(activealias);
-					 	 $('#alias_num').empty();
+					 	 $('#alias_num_div').empty();
 					n = activealias.length;
 						$('#alias_num_div').append(" <font color=#003399> Select Problem for this Assignment : </font></br> </br>&nbsp;&nbsp;&nbsp;&nbsp;") ;
 						for (i=0;i<n;i++){
@@ -390,7 +393,7 @@
 		
 	
 	var file = "QRcontroller.php";
-	 $.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid, assign_num: assign_num, alias_num: alias_num });
+	 $.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid, assign_num: assign_num, alias_num: alias_num, cclass_id: cclass_id });
 	
 	  
 		 

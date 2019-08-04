@@ -10,7 +10,19 @@ if(isset($_GET['currentclass_id'])){
 	$sql = "DELETE FROM CurrentClass WHERE currentclass_id = :currentclass_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':currentclass_id' => $currentclass_id));
-	$_SESSION['success'] = 'Class Name entry was deleted';
+	
+	$sql = "DELETE FROM  `Activity` WHERE `currentclass_id` = :currentclass_id";
+			$stmt = $pdo->prepare($sql);
+			$stmt -> execute(array(':currentclass_id' => $currentclass_id ));
+	
+	$sql = "DELETE FROM  `Assign` WHERE `currentclass_id` = :currentclass_id";
+			$stmt = $pdo->prepare($sql);
+			$stmt -> execute(array(':currentclass_id' => $currentclass_id ));
+	
+	
+	
+	
+	$_SESSION['success'] = 'Class was removed including activity and assignments';
 	
 
 	header( 'Location: Current_Class.php' ) ;
