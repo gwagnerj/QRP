@@ -200,7 +200,18 @@
 						
 						
 					}
+		if (isset($_POST['reset']))	{
 			
+			$iid = '';
+			$stu_name = '';
+			$pin = '';
+			'session_unset';
+			$last = '';
+			$first = '';
+			$alias_num = $assign_num = $cclass_id = '';
+			
+			
+		}
 
 
 	?>
@@ -242,23 +253,38 @@
 	<p><font color=#003399>Your PIN: </font><input type="number" min = "1" max = "10000" name="pin" id="pin_id" size=3 required value=<?php echo($pin);?> ></p>
 	<div id ="instructor_id">	
 				<font color=#003399> Instructor: &nbsp; </font>
-				<select name = "iid" id = "iid">
-				<option value = "" selected disabled hidden >  Select Instructor  </option> 
-				
-				<?php
-				
-				$sql = 'SELECT DISTINCT iid, last, first FROM Users RIGHT JOIN CurrentClass ON Users.users_id = CurrentClass.iid';
-				$stmt = $pdo->prepare($sql);
-					$stmt -> execute();
-					while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
-				{ ?>
-						<option value="<?php echo $row['iid']; ?>" ><?php echo ($row['last'].", ".$row['first']); ?> </option>
-						<?php
- 							} 
-						?>
-				
+				<?php 
+					// $iid=1;
+					if (strlen($iid)>0 ){
 						
-				</select>
+						
+						$sql = 'SELECT users_id, last, first FROM Users WHERE `users_id` = :iid';
+						$stmt = $pdo->prepare($sql);
+						$stmt -> execute(array(':iid' => $iid));
+						$row = $stmt->fetch(PDO::FETCH_ASSOC);
+						$last = $row['last'];
+						$first = $row['first'];
+						echo ('<input type = "hidden" name = "have_iid" id = "have_iid" value = "'.$iid.'"></input>'); 
+						echo ('<input type = "hidden" name = "have_last" value = "'.$last.'"></input>'); 
+						echo ('<input type = "hidden" name = "have_first" value = "'.$first.'"></input>'); 
+						echo ($last.', '.$first);
+					} else {
+						
+						echo('<select name = "iid" id = "iid">');
+						echo ('	<option value = "" selected disabled hidden >  Select Instructor  </option> ');
+						$sql = 'SELECT DISTINCT iid, last, first FROM Users RIGHT JOIN CurrentClass ON Users.users_id = CurrentClass.iid';
+						$stmt = $pdo->prepare($sql);
+						$stmt -> execute();
+						while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
+							{ ?>
+								<option value="<?php echo $row['iid']; ?>" ><?php echo ($row['last'].", ".$row['first']); ?> </option>
+							<?php
+							} 
+						echo ('</select>');
+					}
+					?>
+						
+				
 				</div>
 				</br>
 	
@@ -285,9 +311,47 @@
 		
 	<p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	</form>
+	</br>
+	<form method = "POST">
+		<p><input type = "submit" value="Reset form" name = "reset"  size="2" style = "width: 30%; background-color: light yellow; color: black"/> &nbsp &nbsp </p>  
+	</form>
 
 <script>
-	$("#iid").change(function(){
+	var haveval = $('#have_iid').val();
+	console.log("haveval: "+haveval);
+	if($('#have_iid').val()!= undefined){
+		console.log("yip");
+		var iid = $('#have_iid').val();
+			$.ajax({
+					url: 'getcurrentclass.php',
+					method: 'post',
+						data: {iid:iid}
+				
+				}).done(function(cclass){
+					cclass = JSON.parse(cclass);
+					 // now get the currentclass_id
+			$.ajax({
+					url: 'getcurrentclass_id.php',
+					method: 'post',
+						data: {iid:iid}
+				
+				}).done(function(cclass_id){
+					cclass_id = JSON.parse(cclass_id);
+					 $('#current_class_dd').empty();
+					n = cclass.length;
+				//		console.log("n: "+n);
+						$('#current_class_dd').append("<option selected disabled hidden> Please Select Course </option>") ;
+						for (i=0;i<n;i++){
+							
+							  $('#current_class_dd').append('<option  value="' + cclass_id[i] + '">' + cclass[i] + '</option>');
+					}
+				})
+			})
+		
+		
+		
+	} else {
+		$("#iid").change(function(){
 		var	 iid = $("#iid").val();
 		 $('#alias_num_div').empty();
 		  $('#assign_num').empty();
@@ -318,7 +382,7 @@
 			})
 		});
 			
-			
+	}	
 			
 			// this is getting the assignment number once the course has been selected
 			$("#current_class_dd").change(function(){
