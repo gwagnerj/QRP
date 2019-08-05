@@ -180,11 +180,11 @@ $(document).ready(function(){
 		var iid = pass['iid'];
 		var assign_num = pass['assign_num'];
 		var alias_num = pass['alias_num'];
-		var reflect_flag = pass['reflect_flag'];
+	/* 	var reflect_flag = pass['reflect_flag'];
 		var explore_flag = pass['explore_flag'];
 		var connect_flag = pass['connect_flag'];
 		var society_flag = pass['society_flag'];
-		var choice = pass['choice'];
+		var choice = pass['choice']; */
 		var pp1 = pass['pp1'];
 		var pp2 = pass['pp2'];
 		var pp3 = pass['pp3'];

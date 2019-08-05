@@ -122,9 +122,23 @@
 							// put this in so that if a negative problem_id is put in we go right  to the problem
 								$pos_problem_id = abs($problem_id);
 								// check to see that we have an active assignment for that problem by that instructor
-								$sql3 = "SELECT * FROM Assign WHERE iid=$iid AND prob_num=$pos_problem_id" ;
-								$stmt3 = $pdo->query($sql3);
-								if($stmt3->rowCount()){
+								$sql3 = "SELECT * FROM Assign WHERE iid=:iid AND prob_num=$pos_problem_id" ;
+								$stmt3 = $pdo->prepare($sql3);
+								$stmt3->execute(array(':iid' => $iid));
+								$row3 =$stmt3 ->fetch();
+			//if ( $activity_row === false ) {
+			/* 					
+								$stmt = "SELECT DISTINCT assign_num
+			FROM Assign 
+			WHERE currentclass_id ='".$currentclass_id."' ORDER BY assign_num DESC"; 
+			$stmt = $pdo->prepare($stmt);	
+			$stmt->execute();
+			$activeass = $stmt->fetchAll(PDO::FETCH_NUM);
+					 */			
+								
+								
+								
+								if($row3 != false){
 									// go the controller
 									$_SESSION['progress']=1;
 								
@@ -143,11 +157,19 @@
 										'assign_num' => $_SESSION['assign_num'],
 										'alias_num' => $alias_num,
 										'cclass_id' => $cclass_id,
-										'cclass_name' => $cclass_name
+										'cclass_name' => $cclass_name,
+										'society_flag' => $row3['society_flag'],
+										'explore_flag' => $row3['explore_flag'],
+										'reflect_flag' => $row3['reflect_flag'],
+										'connect_flag' => $row3['connect_flag'],
+										'ref_choice' => $row3['ref_choice']
+																				
 									);
-									// echo ($pass['society_flag']);
-									//die();
+								// echo $row3['society_flag'];
+							// die();
 									echo '<script>';
+								//	echo 'console.log('.$pass.');';
+									
 									echo 'var pass = ' . json_encode($pass) . ';';
 									echo '</script>';
 								
@@ -380,7 +402,12 @@
 		var alias_num = pass['alias_num'];
 		var cclass_id = pass['cclass_id'];
 		var cclass_name = pass['cclass_name'];
-	
+		var society_flag = pass['society_flag'];
+		var reflect_flag = pass['reflect_flag'];
+		var connect_flag = pass['connect_flag'];
+		var explore_flag = pass['explore_flag'];
+		var ref_choice = pass['ref_choice'];
+	console.log('society_flag: '+society_flag);
 		sessionStorage.setItem('dex',dex);
 		sessionStorage.setItem('problem_id',problem);
 		sessionStorage.setItem('stu_name',s_name);
@@ -390,7 +417,11 @@
 		sessionStorage.setItem('alias_num',alias_num);
 		sessionStorage.setItem('cclass_id',cclass_id);
 		sessionStorage.setItem('cclass_name',cclass_name);
-		
+		sessionStorage.setItem('society_flag',society_flag);
+		sessionStorage.setItem('reflect_flag',reflect_flag);
+		sessionStorage.setItem('explore_flag',explore_flag);
+		sessionStorage.setItem('connect_flag',connect_flag);
+		sessionStorage.setItem('ref_choice',ref_choice);
 	
 	var file = "QRcontroller.php";
 	 $.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid, assign_num: assign_num, alias_num: alias_num, cclass_id: cclass_id });
