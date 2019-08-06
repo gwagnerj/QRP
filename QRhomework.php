@@ -16,6 +16,7 @@
 	$pin='';
 	$iid='';
 	$instr_last='';
+	
  
 	// first time thru set scriptflag to zero - this will turn to 1 if the script ran
 	if (!isset($sc_flag)){$sc_flag=0;}
@@ -54,14 +55,29 @@
 	} elseif (isset($_SESSION['iid'])){
 		$iid = htmlentities($_SESSION['iid']);
 	}
+	if(isset($_SESSION['cclass_id'])){
+		$cclass_id = $_SESSION['cclass_id'];
+	} else {
+		$cclass_id = '';
+	}
 	
+	if(isset($_SESSION['cclass_name'])){
+		$cclass_name = $_SESSION['cclass_name'];
+	} else {
+		$cclass_name = '';
+	}
+		if(isset($_SESSION['assign_num'])){
+		$assign_num = $_SESSION['assign_num'];
+	} else {
+		$assign_num = '';
+	}
 	
 	if(isset($_POST['stu_name'])){
 		$stu_name = htmlentities($_POST['stu_name']);
 		$_SESSION['stu_name']=$stu_name;
 	} 
 // Go get the problem id from the Assignment table
-	if(isset($_POST['assign_num'])&& isset($_POST['alias_num'])&& isset($_POST['iid']) && isset($_POST['cclass_id']) ){
+	if(isset($_POST['submit'])&& isset($_POST['assign_num'])&& isset($_POST['alias_num'])&& isset($_POST['iid']) && isset($_POST['cclass_id']) ){
 		$assign_num = htmlentities($_POST['assign_num']);
 		$alias_num = htmlentities($_POST['alias_num']);
 		$cclass_id = htmlentities($_POST['cclass_id']);
@@ -85,14 +101,14 @@
 						$cclass_name = "";
 					} else {
 							$cclass_name = $row['name'];
-						
+							$_SESSION['cclass_name'] = $cclass_name;
 					}
 				}
 	
 	//	$problem_id = htmlentities($_POST['problem_id']);
 	//		$_SESSION['problem_id']=$problem_id;
-	} else {
-	
+	} elseif(isset($_POST['submit'])) {
+		//$_SESSION['cclass_id'] = $_SESSION['cclass_name'] = '';
 		 $_SESSION['error']='The Class, Assignment, Problem and instructor ID are all Required';
 		}
 	if(isset($_POST['pin'])){
@@ -141,7 +157,6 @@
 								if($row3 != false){
 									// go the controller
 									$_SESSION['progress']=1;
-								
 									$_POST['progress']=0;
 									$_POST['checker']=0; 
 								
@@ -205,11 +220,10 @@
 			$iid = '';
 			$stu_name = '';
 			$pin = '';
-			'session_unset';
 			$last = '';
 			$first = '';
 			$alias_num = $assign_num = $cclass_id = '';
-			
+		//	session_destroy();
 			
 		}
 
@@ -247,15 +261,15 @@
 ?>
 
 <form autocomplete="off" method="POST" >
-	
+	  
 	<p><font color=#003399>Your Name: </font><input type="text" name="stu_name" id = "stu_name_id" size= 20  value="<?php echo($stu_name);?>" ></p>
-	
-	<p><font color=#003399>Your PIN: </font><input type="number" min = "1" max = "10000" name="pin" id="pin_id" size=3 required value=<?php echo($pin);?> ></p>
+	<input autocomplete="false" name="hidden" type="text" style="display:none;">
+	<p><font color=#003399>Your PIN: </font><input type="number"  min = "1" max = "10000" name="pin" id="pin_id" size=3 required value=<?php echo($pin);?> ></p>
 	<div id ="instructor_id">	
 				<font color=#003399> Instructor: &nbsp; </font>
 				<?php 
 					// $iid=1;
-					if (strlen($iid)>0 ){
+					if (strlen($iid)>0 && strlen($cclass_id)>0 && strlen($cclass_name)>0 && strlen($assign_num)>0 ){
 						
 						
 						$sql = 'SELECT users_id, last, first FROM Users WHERE `users_id` = :iid';
@@ -264,7 +278,7 @@
 						$row = $stmt->fetch(PDO::FETCH_ASSOC);
 						$last = $row['last'];
 						$first = $row['first'];
-						echo ('<input type = "hidden" name = "have_iid" id = "have_iid" value = "'.$iid.'"></input>'); 
+						echo ('<input type = "hidden" name = "iid" id = "have_iid" value = "'.$iid.'"></input>'); 
 						echo ('<input type = "hidden" name = "have_last" value = "'.$last.'"></input>'); 
 						echo ('<input type = "hidden" name = "have_first" value = "'.$first.'"></input>'); 
 						echo ($last.', '.$first);
@@ -290,16 +304,45 @@
 	
 <!--	<div id ="current_class_dd">	-->
 			<font color=#003399>Course: </font>
-			 &nbsp;<select name = "cclass_id" id = "current_class_dd" required>
+			
+			<?php
+			//$cclass_id = 2;
+			//$cclass_name = 'Particle Technology';
+			//echo ('cclass_id: ');
+			
+			//echo $cclass_id;
+			
+					if (strlen($iid)>0 && strlen($cclass_id)>0 && strlen($cclass_name)>0 && strlen($assign_num)>0 ){
+						echo ('<input type = "hidden" name = "cclass_id" id = "have_cclass_id" value = "'.$cclass_id.'"></input>'); 
+						echo ('<input type = "hidden" name = "cclass_name" id = "have_cclass_name" value = "'.$cclass_name.'"></input>'); 
+						echo $cclass_name;
+			} else {
+				
+			echo ('&nbsp;<select name = "cclass_id" id = "current_class_dd" >');
 		
-		</select>
+			echo('</select>');
+				
+				
+			}
+			
+			
+		
+		?>
 		</br>	
 		</br>
 		<font color=#003399>Assignment Number: </font>
-			 &nbsp;<select name = "assign_num" id = "assign_num">
+			<?php
+			//$assign_num = 1;
+			if (strlen($iid)>0 && strlen($cclass_id)>0 && strlen($cclass_name)>0 && strlen($assign_num)>0 ){
+				echo ('<input type = "hidden" name = "assign_num" id = "have_assign_num" value = "'.$assign_num.'"></input>'); 
+				echo $assign_num;
+			} else {
 			
-		
-		</select>
+			echo(' &nbsp;<select name = "assign_num" id = "assign_num">');
+			echo('</select>');
+			}
+			
+			?>
 		</br>	
 		<br>
 		
@@ -309,46 +352,42 @@
 		</br>	
 		<br>
 		
-	<p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
+	<p><input type = "submit" name = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	</form>
 	</br>
 	<form method = "POST">
-		<p><input type = "submit" value="Reset form" name = "reset"  size="2" style = "width: 30%; background-color: light yellow; color: black"/> &nbsp &nbsp </p>  
+		<p><input type = "submit" value="Reset Input" name = "reset"  size="2" style = "width: 30%; background-color: #FAF1BC; color: black"/> &nbsp &nbsp </p>  
 	</form>
 
 <script>
-	var haveval = $('#have_iid').val();
-	console.log("haveval: "+haveval);
-	if($('#have_iid').val()!= undefined){
-		console.log("yip");
+	
+	if($('#have_iid').val()!= undefined && $('#have_cclass_id').val()!= undefined && $('#have_cclass_name').val()!= undefined && $('#have_assign_num').val()!= undefined){
+	
 		var iid = $('#have_iid').val();
+ 		var cclass_id = $('#have_cclass_id').val();
+		var cclass_name = $('#have_cclass_name').val();
+		var assign_num = $('#have_assign_num').val();	
+			console.log("iid: "+iid);
+			console.log("cclass_id: "+cclass_id);
+			console.log("cclass_name: "+cclass_name);
+			console.log("assign_num: "+assign_num);
 			$.ajax({
-					url: 'getcurrentclass.php',
+					url: 'getactivealias.php',
 					method: 'post',
-						data: {iid:iid}
+					data: {assign_num:assign_num,currentclass_id:cclass_id}
 				
-				}).done(function(cclass){
-					cclass = JSON.parse(cclass);
-					 // now get the currentclass_id
-			$.ajax({
-					url: 'getcurrentclass_id.php',
-					method: 'post',
-						data: {iid:iid}
+				}).done(function(activealias){
 				
-				}).done(function(cclass_id){
-					cclass_id = JSON.parse(cclass_id);
-					 $('#current_class_dd').empty();
-					n = cclass.length;
-				//		console.log("n: "+n);
-						$('#current_class_dd').append("<option selected disabled hidden> Please Select Course </option>") ;
+					activealias = JSON.parse(activealias);
+					 	 $('#alias_num_div').empty();
+					n = activealias.length;
+						$('#alias_num_div').append(" <font color=#003399> Select Problem for this Assignment : </font></br> </br>&nbsp;&nbsp;&nbsp;&nbsp;") ;
 						for (i=0;i<n;i++){
-							
-							  $('#current_class_dd').append('<option  value="' + cclass_id[i] + '">' + cclass[i] + '</option>');
+							$('#alias_num_div').append('<input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'&nbsp; &nbsp; &nbsp;') ;
+
 					}
-				})
-			})
-		
-		
+					
+				}) 
 		
 	} else {
 		$("#iid").change(function(){
@@ -410,7 +449,8 @@
 			$("#assign_num").change(function(){
 		var	 assign_num = $("#assign_num").val();
 		var	 currentclass_id = $("#current_class_dd").val();
-			console.log ('currentclass_id 2nd time: '+currentclass_id);
+		
+			// console.log ('currentclass_id 2nd time: '+currentclass_id);
 			$.ajax({
 					url: 'getactivealias.php',
 					method: 'post',
@@ -423,6 +463,12 @@
 					n = activealias.length;
 						$('#alias_num_div').append(" <font color=#003399> Select Problem for this Assignment : </font></br> </br>&nbsp;&nbsp;&nbsp;&nbsp;") ;
 						for (i=0;i<n;i++){
+							
+							//could put in code to get from the activity table which problems have been attempted and which are complete and color the radio buttons different
+							
+							
+							
+							
 							$('#alias_num_div').append('<input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'&nbsp; &nbsp; &nbsp;') ;
 
 					}

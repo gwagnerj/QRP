@@ -140,7 +140,16 @@ $_SESSION['rtn_Code']=$rtn_Code;
 			$stu_name = $row['stu_name'];
 			}
 
-session_destroy();
+ //session_destroy();
+unset($_SESSION['rtn_Code']);
+unset($_SESSION['rand']);
+unset($_SESSION['count']);
+unset($_SESSION['rand2']);
+unset($_SESSION['score']);
+unset($_SESSION['index']);
+unset($_SESSION['wrote_try_flag']);
+
+
 
 ?>
 
