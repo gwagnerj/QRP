@@ -42,36 +42,7 @@ if(isset($_POST['title'])){
 
 		// Data validation Stuff
 		
-		/* if ( strlen($_POST['title']) < 5 ) {
-			$_SESSION['error'] = 'Please include a longer title';
-			 header("Location: requestPblmNum.php");
-			  return;
-		}
 		
-
-				if ($_POST['p_concept']=='Select') {
-						$_SESSION['error'] = 'Primary Concept Not Set';
-						header("Location: QRPRepo.php");
-						 return;
-					}
-					if ($_POST['s_concept']=='Select') {
-						
-						$_POST['s_concept']='';
-					}
-					
-					if(isset($_POST['game'])){
-						$game_prob_flag=1;	
-					}
-					else {
-						$game_prob_flag=0;
-					}
-					if(isset($_POST['nm_author'])){
-						$nm_author=$_POST['nm_author'];	
-					}
-					else {
-						$nm_author="Null";
-					}
-		 */
 		
 // Process the data and put it in the problem sheet
 	  $game_prob_flag=0;

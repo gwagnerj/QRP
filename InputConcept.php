@@ -93,14 +93,6 @@
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
 	} else {
 		 $_SESSION['error'] = 'something went wrong when adding the concept to the database';
 	}
@@ -125,8 +117,12 @@
 
 <header>
 <h1>Adding a Concept Title to the Database </h1>
-<h3><font color = blue> Please Search the Data Base for Synonyms before Adding this Concept  </font>  </h3>
+<h3><font color = red> Please Search Existing Concepts before Adding a New One </font>  </h3>
 </header>
+<?php
+echo('Session course '.$_SESSION['course']);
+?>
+
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
 <form  method="POST"  autocomplete = 'off' >
@@ -367,11 +363,11 @@
 	 echo("</th><th>");
 	echo('synonym4');
 	 echo("</th><th>");
-	echo('synonym5');
+/* 	echo('synonym5');
 	 echo("</th><th>");
 	echo('synonym6');
-	 echo("</th><th>");
-	echo('synonym7');
+	 echo("</th><th>"); */
+	echo('Function');
 	echo("</th></tr>\n");
 	 echo("</thead>");
 	 
@@ -393,11 +389,11 @@
 				echo("</td><td>");	
 			echo(htmlentities($row['synonym4']));
 				echo("</td><td>");	
-			echo(htmlentities($row['synonym5']));
+		/* 	echo(htmlentities($row['synonym5']));
 				echo("</td><td>");	
 			echo(htmlentities($row['synonym6']));
-				echo("</td><td>");	
-			echo(htmlentities($row['synonym7']));
+				echo("</td><td>");	 */
+			echo('<a href="addlistedconcept.php?concept_id='.$row['concept_id'].'"><b> Add this Concept </b> </a>');
 			echo("</td></tr>\n");
 	}
 	echo("</tbody>");
