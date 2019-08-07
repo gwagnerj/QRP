@@ -126,7 +126,8 @@
 
 <header>
 <h1>Adding a New Author to the Database </h1>
-<h3><font color = blue> Please Search the Data Base for Synonyms before Adding this Author  </font>  </h3>
+<h3><font color = red> Please Search Existing Concepts before Adding a New One  </font>  </h3>
+<h3><font color =black> Please do not add a new references for different additions  </font>  </h3>
 </header>
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
@@ -372,7 +373,8 @@
 	 echo("</th><th>");
 	echo('7th Author');
 	 echo("</th><th>");
-	echo('8th Author');
+	
+	echo('Function');
 	echo("</th></tr>\n");
 	 echo("</thead>");
 	 
@@ -399,6 +401,11 @@
 			echo(htmlentities($row['synonym6']));
 				echo("</td><td>");	
 			echo(htmlentities($row['synonym7']));
+			
+			//	echo("</td><td>");	
+	
+			echo('<a href="addlistedauthor.php?author_id='.$row['author_id'].'"><b> Add  </b> </a>');
+
 			echo("</td></tr>\n");
 	}
 	echo("</tbody>");
