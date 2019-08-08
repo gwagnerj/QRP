@@ -5,20 +5,23 @@ session_start();
 $discipline = '';	
 
 if (isset($_SESSION['username'])) {
-	
 	$username=$_SESSION['username'];
-	
 } else {
 	 $_SESSION['error'] = 'Session was lost -  please log in again';
-	
 	header('Location: QRPRepo.php');
 	return;
-	 
-	 
-	 
-	// die();
 }
 
+if (isset($_POST['title'])){
+		$title = $_POST['title'];
+		$_SESSION['title'] = $title;
+} elseif(isset($_SESSION['title']))	{
+		$title = $_SESSION['title'];
+} else {
+	$title = '';
+}
+	
+	
 
 // get the name email and school name using the username from the users table
 
@@ -37,11 +40,12 @@ if (isset($_SESSION['username'])) {
 						$users_id=$row['users_id'];
 						
 
-if(isset($_POST['title'])){	
+if(isset($_POST['title'])&&  isset($_POST['subject'])&& isset($_POST['course']) && isset($_POST['p_concept'])&& isset($_POST['submit'])){	
 	
-
+$title = $_POST['title'];
+$_SESSION['title'] = $title;
 		// Data validation Stuff
-		
+		// will try to put this in the script
 		
 		
 // Process the data and put it in the problem sheet
@@ -97,22 +101,28 @@ if(isset($_POST['title'])){
 				$_SESSION['file_name']=$file_name;
 				 header( 'Location: downloadDocx.php' ) ;
 				 return;
-				
-				
-	 
 	
 
+} else {
+	if (isset($_POST['submit'])){
+		$_SESSION['error'] = 'Title, Discipline, Course Name and Primary Concept must all be filled out';
+		
+	}
+}
 
-	// Flash pattern
+if (isset($_POST['reset']))	{
+			
+			$title = '';
+			unset($_SESSION['title']);
+			 unset($_POST);
+			header('Location: requestPblmNum.php'); // reloads the page
+			
+		}
+// Flash pattern
 	if ( isset($_SESSION['error']) ) {
 		echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
 		unset($_SESSION['error']);
 	}
-
-}
-
-
-
 
 ?>
 <!DOCTYPE html>
@@ -131,13 +141,13 @@ if(isset($_POST['title'])){
 <h2>Quick Response Problems</h2>
 </header>
 
-
+<p><font size = "2">note - If you must correct an input higher in the form - please reset the form and start over. Currently, adding a <u>new</u> author or concept resets the form</font></p>
 <p><b>Please provide:</b></p>
 <form role = "form" method="POST" action ="" >
 <p></p>
 <div class = "row">
 	<p>a Problem Title:
-		<input required  minlength="7" type="text" name="title" ></p>
+		<input   type="text" name="title" id = "title"></p>
 </div>	
 
 
@@ -145,15 +155,12 @@ if(isset($_POST['title'])){
 	<div class = "form-group">
 		<label for = "Discipline">Discipline (e.g. Chemical Engineering):</label>
 		<select class = "form-control" id = "discipline" name = "subject">
-			<option required selected = "" disabled = "" value = ""> Select Discipline </option>
+			<option  selected = "" disabled = "" value = ""> Select Discipline </option>
 			<?php
 				 $stmt = "SELECT * FROM `Discipline`";
 				$stmt = $pdo->query($stmt);
 				$stmt = $pdo->query("SELECT * FROM Discipline ORDER BY Discipline.discipline_name");
 				$disciplines = $stmt->fetchALL(PDO::FETCH_ASSOC);
-				// require 'dccData.php';
-				// $disciplines = loadDiscipline();
-				// echo $disciplines;
 					 foreach ($disciplines as $discipline) {
 							echo "<option id='".$discipline['discipline_id']."' value='".$discipline['discipline_name']."'>".$discipline['discipline_name']."</option>";
 					 }
@@ -165,7 +172,7 @@ if(isset($_POST['title'])){
 <div class = "row">	
 	<div class = "form-group">
 		<label for = "course">Course Name (e.g. Thermodynamics):</label>
-		<select required class = "form-control" id = "course" name = "course">	
+		<select  class = "form-control" id = "course" name = "course">	
 		<option selected = "" disabled = "" value = "" > Select Course </option>
 			
 		</select>
@@ -192,9 +199,15 @@ if(isset($_POST['title'])){
 
 
 <div id = "add_concept">
+</br>
 			<b>Don't see an Appropriate Concept in the Dropdown? 
-				<a href="inputConcept.php">Input Concept</b></a> 
+				<a href="inputConcept.php?title='.$title.'"> Input Concept </a> 
+			<!--	 <form>
+					<input type = "submit" name = "inputConcept" value = "Input New Concept"></input>
+				</form> -->
+				
 			</br>
+			
 </div>
 <p>Other Descriptor(s) Instructors may Search for (e.g. water treatment cooling tower )(optional):
 <input type="text" name="t_concept" ></p>
@@ -238,7 +251,9 @@ if(isset($_POST['title'])){
 
 	<div id = "add_auth">	
 		<b>Don't see an Appropriate Published Author in the Dropdown? 
-				<a href="inputAuthor.php">Add an Author</b></a> 
+			<a href="inputAuthor.php">Add an Author</b></a>  
+		
+				
 	</div>	
 </div>	
 </br>
@@ -259,9 +274,14 @@ if(isset($_POST['title'])){
 <p>
 </br>
 <p></p>
-<p><input  type="submit" value="Get Problem Number"/>
+<p><input  type="submit" value="Get Problem Number" name = "submit" size="2" style = "width: 15%; background-color: #C9DE86; color: black"/>
 &nbsp; &nbsp; 
-<a href="QRPRepo.php"><b><font color = "blue">Cancel </font></a></p>
+
+	<form method = "POST">
+		<input type = "submit" value="Reset Input" name = "reset"  size="2" style = "width: 10%; background-color: #FAF1BC; color: black"/> &nbsp &nbsp 
+	</form>
+	&nbsp; &nbsp;
+<a href="QRPRepo.php"><b><font color = "blue">Cancel - to Repository </font></a></p>
 </form>
 
 	<script type="text/javascript">
@@ -273,15 +293,12 @@ $(document).ready(function(){
 			$("#discipline").change(function(){
 				
 				var discipline = $("#discipline").val();
-				 // console.log (discipline);
 				$.ajax({
 					url: 'dcData.php',
 					method: 'post',
 					data: 'discipline=' + discipline
 				}).done(function(course){
-					// console.log(course);
 					 course = JSON.parse(course);
-					// $('#course').empty();
 					course.forEach(function(course){
 						$('#course').append('<option>' + course.course_name + '</option>') 
 						
@@ -294,17 +311,13 @@ $(document).ready(function(){
 				$('#add_concept').show();
 				
 				var course = $("#course").val();
-				
-				//  console.log (course);
 				$.ajax({
 					
 					url: 'ccData.php',
 					method: 'post',
 					data: 'course=' + course
 				}).done(function(p_concept){
-					// console.log(p_concept);
 					 concept = JSON.parse(p_concept);
-					// $('#p_concept').empty();
 					concept.forEach(function(concept){
 						$('#p_concept').append('<option>' + concept.concept_name + '</option>') 
 										
@@ -320,7 +333,6 @@ $(document).ready(function(){
 						data: 'course=' + course
 					}).done(function(author) {
 						var authors = JSON.parse(author);
-						console.log(authors);
 						authors.forEach(function(authors){
 								$('#nm_author').append('<option>' + authors.author_name + '</option>') 
 						})

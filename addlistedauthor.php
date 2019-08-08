@@ -34,13 +34,13 @@ if(isset($_GET['author_id'])){
 					 
 					 header( 'Location: requestPblmNum.php' ) ;
 					 return; 
-	
+					// $_SESSION[]
 	
 
 
 		} else {
 	
-	$_SESSION['error'] = 'Something Went Wrong - author_id was not accepted - author was not added to course';
+		$_SESSION['error'] = 'Something Went Wrong - author_id was not accepted - author was not added to course';
 	
 	header( 'Location: requestPblmNum.php' ) ;
     return;

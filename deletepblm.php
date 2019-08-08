@@ -2,8 +2,6 @@
 session_start();
 require_once "pdo.php";
 
-
-
 if (isset($_SESSION['username'])) {
 	$username=$_SESSION['username'];
 } else {
@@ -11,9 +9,6 @@ if (isset($_SESSION['username'])) {
 	header('Location: QRPRepo.php');
 	return;
 }
-
-
-
 
 if ( isset($_POST['delete']) && isset($_POST['problem_id']) ) {
   

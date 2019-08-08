@@ -2,11 +2,11 @@
 	require_once "pdo.php";
 	session_start();
 	
+		
 	 $_SESSION['error'] = '';
 	 $_SESSION['sucess'] = '';
 	 
-	//echo ($_SESSION['course']);
-	//die();
+	
 	
 	if (isset($_POST['cancel'])) {
 		
