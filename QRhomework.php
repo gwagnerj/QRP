@@ -360,7 +360,7 @@
 	</form>
 
 <script>
-	
+	// already been through and worked a problem and now getting another one all of the input fields should be defined just need another problem
 	if($('#have_iid').val()!= undefined && $('#have_cclass_id').val()!= undefined && $('#have_cclass_name').val()!= undefined && $('#have_assign_num').val()!= undefined){
 	
 		var iid = $('#have_iid').val();
@@ -481,7 +481,7 @@
 <script>
 
  
-	// this is a function from 	https://stackoverflow.com/questions/19036684/jquery-redirect-with-post-data to post data and redirect without building a hidden from
+	// this is a function from 	https://stackoverflow.com/questions/19036684/jquery-redirect-with-post-data to post data and redirect without building a hidden form
 	 	$.extend(
 				{
 					redirectPost: function(location, args)
