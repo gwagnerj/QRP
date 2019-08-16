@@ -93,9 +93,10 @@ session_start();
 
 	}
 // can do the same as above ot the rest of the varaibles but won't unless I have trouble
-
-
-
+if (isset($_GET['reflect_flag'])){$reflect_flag = $_GET['reflect_flag'];} else {$reflect_flag = '';}
+if (isset($_GET['explore_flag'])){$explore_flag = $_GET['explore_flag'];} else {$explore_flag = '';}
+if (isset($_GET['connect_flag'])){$connect_flag = $_GET['connect_flag'];} else {$connect_flag = '';}
+if (isset($_GET['society_flag'])){$society_flag = $_GET['society_flag'];} else {$society_flag = '';}
 
  $sql = "SELECT `htmlfilenm` FROM Problem WHERE problem_id = :problem_id";
     $stmt = $pdo->prepare($sql);
@@ -118,10 +119,10 @@ $pass = array(
 	'iid' => $iid,
 	// 'assign_num' => $assign_num,
 	// 'alias_num' => $alias_num,
-	'reflect_flag' => $_GET['reflect_flag'],
-	'explore_flag' => $_GET['explore_flag'],  // these are set in 
-	'connect_flag' => $_GET['connect_flag'],
-	'society_flag' => $_GET['society_flag'],
+	'reflect_flag' => $reflect_flag,
+	'explore_flag' => $explore_flag,  // these are set in 
+	'connect_flag' => $connect_flag,
+	'society_flag' => $society_flag,
 	'choice' => $_GET['choice'],
 	
 	'pp1' => $_GET['pp1'],
@@ -180,11 +181,11 @@ $(document).ready(function(){
 		var iid = pass['iid'];
 		var assign_num = pass['assign_num'];
 		var alias_num = pass['alias_num'];
-	/* 	var reflect_flag = pass['reflect_flag'];
+		var reflect_flag = pass['reflect_flag'];
 		var explore_flag = pass['explore_flag'];
 		var connect_flag = pass['connect_flag'];
 		var society_flag = pass['society_flag'];
-		var choice = pass['choice']; */
+		var choice = pass['choice']; 
 		var pp1 = pass['pp1'];
 		var pp2 = pass['pp2'];
 		var pp3 = pass['pp3'];
@@ -256,7 +257,6 @@ $(document).ready(function(){
 					console.log(contrib_last);
 					var contrib_last2 = sessionStorage.getItem('contrib_last');
 					console.log('contrib_last 2',contrib_last2);
-					
 				//	console.log('arr', arr);
 					if (status !== 'suspended'){
 							
