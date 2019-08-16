@@ -9,7 +9,7 @@ if (isset($_SESSION['username'])) {
 } else {
 	 $_SESSION['error'] = 'Session was lost -  please log in again';
 	header('Location: QRPRepo.php');
-	return;
+	die();
 }
 
 if (isset($_POST['title'])){
@@ -100,7 +100,7 @@ $_SESSION['title'] = $title;
 				$file_name = 'p'.$pblm_num.'_0_'.$_POST['title'];
 				$_SESSION['file_name']=$file_name;
 				 header( 'Location: downloadDocx.php' ) ;
-				 return;
+				die();
 	
 
 } else {
@@ -116,7 +116,7 @@ if (isset($_POST['reset']))	{
 			unset($_SESSION['title']);
 			 unset($_POST);
 			header('Location: requestPblmNum.php'); // reloads the page
-			
+			die();
 		}
 // Flash pattern
 	if ( isset($_SESSION['error']) ) {
@@ -201,7 +201,7 @@ if (isset($_POST['reset']))	{
 <div id = "add_concept">
 </br>
 			<b>Don't see an Appropriate Concept in the Dropdown? 
-				<a href="inputConcept.php?title='.$title.'"> Input Concept </a> 
+				<a href="inputConcept.php?title='.$title.'" target = "_blank"> Input Concept </a> 
 			<!--	 <form>
 					<input type = "submit" name = "inputConcept" value = "Input New Concept"></input>
 				</form> -->

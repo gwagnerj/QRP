@@ -9,7 +9,7 @@ if (isset($_SESSION['username'])) {
 } else {
 	 $_SESSION['error'] = 'Session was lost -  please log in again';
 	header('Location: QRPRepo.php');
-	return;
+	die();
 }
 
 
@@ -52,7 +52,7 @@ if ( isset($_POST['suspend']) && isset($_GET['problem_id']) ) {
 
 		
 		header( 'Location: QRPRepo.php' ) ;
-		return;
+		die();
 	} else {
 		
 		$status = 'suspended';
@@ -66,14 +66,14 @@ if ( isset($_POST['suspend']) && isset($_GET['problem_id']) ) {
 		$_SESSION['success'] = 'Record updated';	
 		
 		header( 'Location: QRPRepo.php' ) ;
-		return;
+		die();
 	}
 }
 // Guardian: Make sure that user_id is present
 if ( ! isset($_GET['problem_id']) ) {
   $_SESSION['error'] = "Missing user_id";
   header('Location: QRPRepo.php');
-  return;
+die();
 }
 
 $stmt = $pdo->prepare("SELECT title, problem_id FROM Problem where problem_id = :xyz");
@@ -82,7 +82,7 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 if ( $row === false ) {
     $_SESSION['error'] = 'Bad value for user_id';
     header( 'Location: QRPRepo.php' ) ;
-    return;
+   die();
 }
 
 ?>

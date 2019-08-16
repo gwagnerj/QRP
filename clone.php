@@ -7,14 +7,14 @@
 	} else {
 		 $_SESSION['error'] = 'Session was lost -  please log in again';
 		header('Location: QRPRepo.php');
-		return;
+		die();
 	}
 	if (isset($_POST['problem_id'])) {
 		$problem_id=$_POST['problem_id'];
 	} else {
 		 $_SESSION['error'] = 'No problem_id was transfered';
 		header('Location: QRPRepo.php');
-		return;
+		die();
 	}
 	
 	if (isset($_POST['submit'])){
@@ -182,7 +182,7 @@
 		
 		$_SESSION['success'] = 'problem '.$problem_id.' was cloned to problem '.$pblm_num;
 		header('Location: QRPRepo.php');
-		return;
+		die();
 		
 	
 	

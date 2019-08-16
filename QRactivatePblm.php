@@ -7,7 +7,7 @@ if (isset($_SESSION['username'])) {
 } else {
 	 $_SESSION['error'] = 'Session was lost -  please log in again';
 	header('Location: QRPRepo.php');
-	return;
+	die();
 }
 
 
@@ -16,7 +16,7 @@ if (isset($_SESSION['username'])) {
 if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
   $_SESSION['error'] = "Missing problem_id";
   header('Location: QRPRepo.php');
-  return;
+ die();
 } else {
 
 	$prob_num=$_GET['problem_id'];	
@@ -39,7 +39,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 	if ($current_class_data == false){
 		$_SESSION['error'] = 'There are no current classes for this Instructor - Please Add a Class that you are Teaching';
 		 header('Location: Current_Class.php');
-		return;
+		die();
 	} else {
 		
 		/* $currentclass_id = $current_class_data['currentclass_id'];	
@@ -59,7 +59,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 	if ($problem_data['status']=='num issued'){
 		$_SESSION['error'] = 'The status of this problem is num issued and cannot be activated';
 	 	header( 'Location: QRPRepo.php' ) ;
-		return;
+		die();
 	}
 
 
@@ -132,7 +132,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 	//echo('the problem was deactivated'.$assign_id);
 	 $_SESSION['sucess'] = 'the problem was deactivated';
 	 	header( 'Location: QRPRepo.php' ) ;
-		return; 
+		die();
    }
 
 
@@ -226,7 +226,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 		if ($check != false){
 			$_SESSION['error']	= 'Duplication error - problems must have distinct problem numbers for an assignment in a class';
 			header( 'Location: QRPRepo.php' ) ;
-			return; 
+			die();
 		}
 		
  
@@ -272,7 +272,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				));
 
 				header( 'Location: QRPRepo.php' ) ;
-				return; 
+			die();
 	
 	}
 	// We have a file and are trying to edit it- just update the entry

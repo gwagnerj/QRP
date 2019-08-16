@@ -9,7 +9,8 @@ if (isset($_SESSION['username'])) {
 } else {
 	 $_SESSION['error'] = 'Session was lost -  please log in again';
 	header('Location: QRPRepo.php');
-	return;
+	die();
+	
 }
 
 if (isset($_SESSION['iid'])) {

@@ -12,7 +12,7 @@
 		
 		//echo ('you cancelled');
 		 header( 'Location: requestPblmNum.php' ) ;
-		 return; 
+		die();
 		
 	}
 		$author_name = $syn1 = $syn2 = $syn3 = "";
@@ -83,7 +83,7 @@
 					 
 					 
 					 header( 'Location: requestPblmNum.php' ) ;
-					 return; 
+					die();
 		
 		} catch (PDOException $e) {
 			echo ('duplicate error');
@@ -156,6 +156,7 @@
 	
 	<input type="submit" name="cancel" value="Cancel" />
 	<p> <br> </p>
+
 	<b>Recorded Authors: </b>
 		<hr>	
 		

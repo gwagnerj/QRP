@@ -7,7 +7,7 @@
 	} else {
 		 $_SESSION['error'] = 'Session was lost -  please log in again';
 		header('Location: QRPRepo.php');
-		return;
+		die();
 	}
 
 // Guardian: Make sure that problem_id is present
@@ -18,7 +18,7 @@
 	} else { 
 	 $_SESSION['error'] = "Missing problem_id";
 	  header('Location: QRPRepo.php');
-	  return;
+	 die();
 	}
 
 	

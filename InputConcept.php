@@ -12,7 +12,7 @@
 		
 		//echo ('you cancelled');
 		 header( 'Location: requestPblmNum.php' ) ;
-		 return; 
+		die();
 		
 	}
 		$concept_name = $syn1 = $syn2 = $syn3 = "";
@@ -83,7 +83,7 @@
 					 
 					 
 					 header( 'Location: requestPblmNum.php' ) ;
-					 return; 
+					die();
 		
 		} catch (PDOException $e) {
 			echo ('duplicate error');
@@ -143,7 +143,7 @@ echo('Session course '.$_SESSION['course']);
 <!--	<input type="hidden" name="submitted" value="name" /> -->
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type = "submit" name "submit"> 
 			
-	<p><b> When Finished - Close <u>This</u> Browser Window </b></p>
+	<p><b> <font color = "red"> When Finished - Close <u>This</u> Browser Window and "Reset Input"</font></b></p>
 	<p> <br> </p>
 	<b>Recorded Concepts: </b>
 		<hr>	

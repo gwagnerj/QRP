@@ -12,7 +12,7 @@ $preview="Null";
 	} else {
 		$_SESSION['error']= 'QRPStuResults could not get problem number';
 		header( 'Location: QRPRepo.php' ) ;
-		return; 
+		die();
 	}
 	
 	if (isset($_SESSION['iid']) ){
@@ -23,7 +23,7 @@ $preview="Null";
 		
 		$_SESSION['error']= 'QRPStuResults could not get instructor ID';
 		header( 'Location: QRPRepo.php' ) ;
-		return; 
+		die();
 	}
 
 ?>

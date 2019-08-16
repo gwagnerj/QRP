@@ -19,7 +19,7 @@ if(isset($_POST['problem_id'])){
 
 	$_SESSION['error'] = 'problem id was not set';
 	header('Location: QRPRepo.php');
-	return;
+	die();
 	
 }
 
@@ -30,7 +30,7 @@ if(isset($_POST['iid'])){
 
 	$_SESSION['error'] = 'user_id iid was not set';
 	header('Location: QRPRepo.php');
-	return;
+	die();
 }
 
 

@@ -98,7 +98,7 @@
 								//	echo('can I put anythiung here?');
 									
 									header("Location: QRcontroller.php");
-									return; 
+									die();
 									
 								} else {
 

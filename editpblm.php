@@ -7,7 +7,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	} else {
 		 $_SESSION['error'] = 'Session was lost -  please log in again';
 		header('Location: QRPRepo.php');
-		return;
+		die();
 	}
 // get the users_id
 		$sql = 'SELECT * FROM Users WHERE username = :username';
@@ -27,7 +27,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 		if ( strlen($_POST['title']) < 1) {
 			$_SESSION['error'] = 'Valid title missing';
 			header("Location: editpblm.php?problem_id=".$_POST['problem_id']);
-			return;
+			die();
 		}
 
 	   
@@ -959,14 +959,14 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 		// If all fields have values we should set the status to new file
 		
 		header( 'Location: QRPRepo.php' ) ;
-		return;
+		die();
 	}
 
 	// Guardian: Make sure that problem_id is present
 	if ( ! isset($_GET['problem_id']) ) {
 	  $_SESSION['error'] = "Missing problem_id";
 	  header('Location: QRPRepo.php');
-	  return;
+	 die();
 	}
 
 
@@ -976,7 +976,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	if ( $row === false ) {
 		$_SESSION['error'] = 'Bad value for problem_id';
 		header( 'Location: QRPRepo.php' ) ;
-		return;
+		die();
 	}
 
 	// Flash pattern
