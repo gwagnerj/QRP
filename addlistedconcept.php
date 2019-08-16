@@ -32,7 +32,7 @@ if(isset($_GET['concept_id'])){
 					 $_SESSION['sucess'] = 'the concept was added to database';
 					 
 					 
-					 header( 'Location: requestPblmNum.php' ) ;
+					 header( 'Location: inputConcept.php' ) ;
 					 return; 
 	
 	
@@ -45,7 +45,7 @@ if(isset($_GET['concept_id'])){
 	echo 'wtf2';
 	 die();
 	 */
-	header( 'Location: requestPblmNum.php' ) ;
+	header( 'Location: inputConcept.php' ) ;
     return;
 	
 }
