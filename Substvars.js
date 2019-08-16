@@ -1,6 +1,4 @@
 
-
-
 var problem_id = sessionStorage.getItem('problem_id');
 var stu_name = sessionStorage.getItem('stu_name');
 
@@ -13,7 +11,6 @@ if(name_length<1){
 	var stu_name_back = stu_name;
 }
 var dex = sessionStorage.getItem('dex');
-console.log (dex);
 var pin = sessionStorage.getItem('pin');
 var reflect_flag = sessionStorage.getItem('reflect_flag');
 var explore_flag = sessionStorage.getItem('explore_flag');
@@ -52,7 +49,6 @@ if (contrib_last == null || contrib_last == "null") {contrib_last = " ";}
 var contrib_first = sessionStorage.getItem('contrib_first');
 if (contrib_first == null || contrib_first == "null" ){contrib_first = " ";}
 
-//console.log(contrib_first);
 
 var contrib_university = sessionStorage.getItem('contrib_university');
 if (contrib_university == null ||contrib_university == "null" ){contrib_university = " ";}
@@ -63,111 +59,32 @@ console.log ("specif_ref ");
 console.log (specif_ref);
 if (specif_ref == null || specif_ref == "null"){specif_ref = " ";}
 
-
-var nvar1 = sessionStorage.getItem('nv_1'); 
-
-var var1 = sessionStorage.getItem(nvar1);
-
-
-nvar1 = "##"+nvar1+",.+?##";
-var oNvar1 = new RegExp(nvar1,"g");
-
-
-
-var nvar2 = sessionStorage.getItem('nv_2'); 
-var var2 = sessionStorage.getItem(nvar2);
-nvar2 = "##"+nvar2+",.+?##";
-var oNvar2 = new RegExp(nvar2,"g");
-
-var nvar3 = sessionStorage.getItem('nv_3'); 
-var var3 = sessionStorage.getItem(nvar3);
-nvar3 = "##"+nvar3+",.+?##";
-var oNvar3 = new RegExp(nvar3,"g");
-
-var nvar4 = sessionStorage.getItem('nv_4'); 
-var var4 = sessionStorage.getItem(nvar4);
-nvar4 = "##"+nvar4+",.+?##";
-var oNvar4 = new RegExp(nvar4,"g");
-
-var nvar5 = sessionStorage.getItem('nv_5'); 
-var var5 = sessionStorage.getItem(nvar5);
-nvar5 = "##"+nvar5+",.+?##";
-var oNvar5 = new RegExp(nvar5,"g");
-
-var nvar6 = sessionStorage.getItem('nv_6'); 
-var var6 = sessionStorage.getItem(nvar6);
-nvar6 = "##"+nvar6+",.+?##";
-var oNvar6 = new RegExp(nvar6,"g");
-
-var nvar6 = sessionStorage.getItem('nv_6'); 
-var var6 = sessionStorage.getItem(nvar6);
-nvar6 = "##"+nvar6+",.+?##";
-var oNvar6 = new RegExp(nvar6,"g");
-
-var nvar7 = sessionStorage.getItem('nv_7'); 
-var var7 = sessionStorage.getItem(nvar7);
-nvar7 = "##"+nvar7+",.+?##";
-var oNvar7 = new RegExp(nvar7,"g");
-
-var nvar8 = sessionStorage.getItem('nv_8'); 
-var var8 = sessionStorage.getItem(nvar8);
-nvar8 = "##"+nvar8+",.+?##";
-var oNvar8 = new RegExp(nvar8,"g");
-
-var nvar9 = sessionStorage.getItem('nv_9'); 
-var var9 = sessionStorage.getItem(nvar9);
-nvar9 = "##"+nvar9+",.+?##";
-var oNvar9 = new RegExp(nvar9,"g");
-
-var nvar10 = sessionStorage.getItem('nv_10'); 
-var var10 = sessionStorage.getItem(nvar10);
-nvar10 = "##"+nvar10+",.+?##";
-var oNvar10 = new RegExp(nvar10,"g");
-
-var nvar11 = sessionStorage.getItem('nv_11'); 
-var var11 = sessionStorage.getItem(nvar11);
-nvar11 = "##"+nvar11+",.+?##";
-var oNvar11 = new RegExp(nvar11,"g");
-
-var nvar12 = sessionStorage.getItem('nv_12'); 
-var var12 = sessionStorage.getItem(nvar12);
-nvar12 = "##"+nvar12+",.+?##";
-var oNvar12 = new RegExp(nvar12,"g");
-
-var nvar13 = sessionStorage.getItem('nv_13'); 
-var var13 = sessionStorage.getItem(nvar13);
-nvar13 = "##"+nvar13+",.+?##";
-var oNvar13 = new RegExp(nvar13,"g");
-
-var nvar14 = sessionStorage.getItem('nv_14'); 
-var var14 = sessionStorage.getItem(nvar14);
-nvar14 = "##"+nvar14+",.+?##";
-var oNvar14 = new RegExp(nvar14,"g");
+var bc_var = Array(15);
+var x = "";
+var nvar = new Array(15);
+var vari = new Array(15);
+var oNvar = new Array(15);
+for (i=1;i<15;i++){
+	nvar[i] = sessionStorage.getItem('nv_'+i);
+	vari[i] = sessionStorage.getItem(nvar[i]);
+	nvar[i] ="##"+nvar[i]+",.+?##";
+	oNvar[i] = new RegExp(nvar[i],"g");
+	x = "bc_"+nvar[i];
+	bc_var[i] = sessionStorage.getItem(x);
+	
+}
 
 
-console.log ('Subst nvar1',nvar1); // temp
-console.log ('Subst var1',var1);
-console.log ('Subst oNvar1',oNvar1);
-
-console.log ('Subst nvar2',nvar2);
-console.log ('Subst var2',var2);
-console.log ('Subst oNvar2',oNvar2);
-
-console.log ('Subst nvar3',nvar3);
-console.log ('Subst var3',var3);
-console.log ('Subst oNvar3',oNvar3);
-
-console.log ('Subst nvar4',nvar4);
-console.log ('Subst var4',var4);
-console.log ('Subst oNvar4',oNvar4);
-
-console.log ('Subst nvar5',nvar5);
-console.log ('Subst var5',var5);
-console.log ('Subst oNvar5',oNvar5);
 
 
 
 // read in the basecase values for the variables
+var bc_var = Array(15);
+var x = "";
+for (i=1;i<15;i++){
+	 x = "bc_"+sessionStorage.getItem('nv_1');
+}
+
 var x = "bc_"+sessionStorage.getItem('nv_1');
 var bc_var1 = sessionStorage.getItem(x);
 
@@ -255,12 +172,6 @@ $(document).ready(function(){
 	 var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0 Originally Contributed by\xa0"+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field+" \xa0\xa0|\xa0\xa0"  + pp_txt);
 	
 	
-	
-
-	  
-	 // var Head_txt4 = $("<p></p>").text("Contributed by:\xa0"+contrib_first+contrib_last+"\xa0 from:\xa0"+contrib_university+ref_field+ auth_field );
-
-	// $('p:first').before(Head_txt4);
 	 $('p:first').before(Head_txt1,Head_txt3,'<hr>');
 	 
 	  
@@ -614,24 +525,15 @@ $(document).ready(function(){
 				$('#reflections').prepend('<h2>Reflections</h2>');
 
 			// build arrays for the values and names
-			var name_array=[];
-			var value_array=[];
+			
+			
+	
 
-			for (i=0;i<14;i++){
-				var j = i+1;
-				var nm_elem = 'var'+j
-				 name_array = name_array.concat('var'+j);
-				 value_array = value_array.concat(eval(nm_elem));
-			 
-			}
 
 			// Search thru all of the paragraphs in the problem statement or reflections looking for the image markups 
 			var numPara_tot = document.getElementsByTagName('p').length
 			var numPara_basecase = document.getElementById('basecase').getElementsByTagName('p').length
-			// console.log(numPara_tot);
-			// console.log(numPara_basecase);
 			var numPara = numPara_tot - numPara_basecase;
-			// console.log(numPara);
 
 			for (i=0;i<numPara;i++){
 				// if the caption exists get the title of it
@@ -653,8 +555,8 @@ $(document).ready(function(){
 							// for each caption test it against the variable values if one is the same delete the caption but if there is not one delete the caption
 							// and the paragraph above it which should contain the figure
 							
-							for (j=0;j<14;j++){
-								if(cap_var_title == value_array[j]){
+							for (j=1;j<15;j++){
+								if(cap_var_title == vari[j]){
 									found = true
 									document.querySelectorAll('p')[i].hidden = true;
 								}
@@ -664,7 +566,6 @@ $(document).ready(function(){
 									found = false;
 								} else	{
 									//set the caption to hidden and the previous paragraph to hidden
-								//	console.log('im here');
 									
 									document.querySelectorAll('p')[i].hidden = true;
 									document.querySelectorAll('p')[i-1].hidden = true;
@@ -678,10 +579,8 @@ $(document).ready(function(){
 //!!~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			//var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;                             
 			var newHref = '../QRP/QRChecker.php'+'?assign_num='+assign_num+'&cclass_id='+cclass_id+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid;
-			// console.log (newHref);
 			var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
 			//var oldHref = $('a').attr('href');
-			// console.log (newHref);
 
 
 			//selects the first anchor tag in the directions div and replaces it with the particular url
@@ -693,19 +592,7 @@ $(document).ready(function(){
 			// This worked but had to be fairly large for most QR readers to recognize it - options in the code may be able to be refined
 
 
-			/* let qrcode = new QRCode("output", {
-				text: newHref,
-				width:100,
-				height:100,
-				colorDark:"#990000",
-				colorLight:"#ffffff",
-				corectLevel: QRCode.CorrectLevel.M
-			}); */
-
-			//qrcode.clear();
-			//qrcode.makeCode(newHref);
-
-			// build arrays for the basecase values 
+			
 
 			var value_array_bc=[];
 
@@ -760,103 +647,23 @@ $(document).ready(function(){
 				
 			}	
 
+ // replace the variables in the problem statement and reflections---------------------------------------------------------------------------------------------------
 
-			  
-			   // replace the variables in the problem statement
+		for (i = 1;i<15;i++){
+			if(vari[i] !=null){
+				 $('#problem').html(function(){
+				   return $(this).html().replace(oNvar[i],'<span class ="var'+i+'">'+vari[i]+'</span>' ); });
+				
+				 $('#reflections').html(function(){
+				   return $(this).html().replace(oNvar[i],'<span class ="var'+i+'">'+vari[i]+'</span>' ); });
+				   
+				 $('#basecase').html(function(){
+					return $(this).html().replace(oNvar[i],'<span class ="bc_var'+i+'">'+bc_var[i]+'</span>' ); });
+				
+				}
+			}
 			   
-			  $('#problem').html(function(){
-			   return $(this).html().replace(oNvar1,var1 ); });
-			  $('#problem').html(function(){
-			   return $(this).html().replace(oNvar2,var2 ); });
-			   $('#problem').html(function(){
-			   return $(this).html().replace(oNvar3,var3 ); });
-			   $('#problem').html(function(){
-			   return $(this).html().replace(oNvar4,var4 ); });
-			   $('#problem').html(function(){
-			   return $(this).html().replace(oNvar5,var5 ); });
-				$('#problem').html(function(){
-			   return $(this).html().replace(oNvar6,var6 ); });
-				$('#problem').html(function(){
-			   return $(this).html().replace(oNvar7,var7 ); });
-				$('#problem').html(function(){
-			   return $(this).html().replace(oNvar8,var8 ); });
-				$('#problem').html(function(){
-			   return $(this).html().replace(oNvar9,var9 ); });
-				$('#problem').html(function(){
-			   return $(this).html().replace(oNvar10,var10 ); });
-				$('#problem').html(function(){
-			   return $(this).html().replace(oNvar11,var11 ); });
-				$('#problem').html(function(){
-			   return $(this).html().replace(oNvar12,var12 ); });
-				$('#problem').html(function(){
-			   return $(this).html().replace(oNvar13,var13 ); });
-				$('#problem').html(function(){
-			   return $(this).html().replace(oNvar14,var14 ); });
-			   
-			   
-			   // substitute the values into the relections if there is any in that section
-			  $('#reflections').html(function(){
-			   return $(this).html().replace(oNvar1,var1 ); });
-			  $('#reflections').html(function(){
-			   return $(this).html().replace(oNvar2,var2 ); });
-			   $('#reflections').html(function(){
-			   return $(this).html().replace(oNvar3,var3 ); });
-			   $('#reflections').html(function(){
-			   return $(this).html().replace(oNvar4,var4 ); });
-			   $('#reflections').html(function(){
-			   return $(this).html().replace(oNvar5,var5 ); });
-				$('#reflections').html(function(){
-			   return $(this).html().replace(oNvar6,var6 ); });
-				$('#reflections').html(function(){
-			   return $(this).html().replace(oNvar7,var7 ); });
-				$('#reflections').html(function(){
-			   return $(this).html().replace(oNvar8,var8 ); });
-				$('#reflections').html(function(){
-			   return $(this).html().replace(oNvar9,var9 ); });
-				$('#reflections').html(function(){
-			   return $(this).html().replace(oNvar10,var10 ); });
-				$('#reflections').html(function(){
-			   return $(this).html().replace(oNvar11,var11 ); });
-				$('#reflections').html(function(){
-			   return $(this).html().replace(oNvar12,var12 ); });
-				$('#reflections').html(function(){
-			   return $(this).html().replace(oNvar13,var13 ); });
-				$('#reflections').html(function(){
-			   return $(this).html().replace(oNvar14,var14 ); });
-
-			  // fill in the student name and dex number 
-			   
-			 // substitute in the basecase
-			 
-			  $('#basecase').html(function(){
-			   return $(this).html().replace(oNvar1,bc_var1 ); });
-			  $('#basecase').html(function(){
-			   return $(this).html().replace(oNvar2,bc_var2 ); });
-			   $('#basecase').html(function(){
-			   return $(this).html().replace(oNvar3,bc_var3 ); });
-			   $('#basecase').html(function(){
-			   return $(this).html().replace(oNvar4,bc_var4 ); });
-			   $('#basecase').html(function(){
-			   return $(this).html().replace(oNvar5,bc_var5 ); });
-				$('#basecase').html(function(){
-			   return $(this).html().replace(oNvar6,bc_var6 ); });
-				$('#basecase').html(function(){
-			   return $(this).html().replace(oNvar7,bc_var7 ); });
-				$('#basecase').html(function(){
-			   return $(this).html().replace(oNvar8,bc_var8 ); });
-				$('#basecase').html(function(){
-			   return $(this).html().replace(oNvar9,bc_var9 ); });
-				$('#basecase').html(function(){
-			   return $(this).html().replace(oNvar10,bc_var10 ); });
-				$('#basecase').html(function(){
-			   return $(this).html().replace(oNvar11,bc_var11 ); });
-				$('#basecase').html(function(){
-			   return $(this).html().replace(oNvar12,bc_var12 ); });
-				$('#basecase').html(function(){
-			   return $(this).html().replace(oNvar13,bc_var13 ); });
-				$('#basecase').html(function(){
-			   return $(this).html().replace(oNvar14,bc_var14 ); });
-			 
+	
 			 
 			 
 			  // now get rid of the markup
@@ -908,82 +715,15 @@ $(document).ready(function(){
 					   $("#reflections").toggle();
 					  $('#reflectionbutton').css("background-color", "lightgray");
 				
-				
-				
-				
-		/* 	// if the instructor is not requiring any reflections turn then dont show them
-			if(reflect_flag!=0 || explore_flag!=0 || connect_flag!=0 || society_flag!=0){	
-					   bgcolor4 = $('#reflectionbutton').css('backgroundColor'); 
-					   $("#reflections").toggle();
-					  $('#reflectionbutton').css("background-color", "white");
-					  $("#reflections").css("background-color", "ivory");
-					   $("#reflections").css("border-style", "solid");
-			 
-				 if(reflect_flag==0){
-					
-						if (white5 = !white5) {
-							 $('#refl').css("background-color", "bgcolor5");
-						
-						} else {
-							bgcolor5 = $('#refl').css('backgroundColor');
-							$('#refl').css("background-color", "lightgray");
-						}
-					$("#reflect").toggle();
-					$('.nex-text-div').toggle();
-					
-				} 
-			
-			console.log(reflect_flag, explore_flag, connect_flag, society_flag);
-			
-			
-				if(explore_flag==0){
-						if (white6 = !white6) {
-							 $('#expl').css("background-color", bgcolor6);
-						
-						} else {
-							bgcolor6 = $('#expl').css('backgroundColor');
-							$('#expl').css("background-color", "lightgray");
-						}
-					$("#explor").toggle();
-					$('.nex-text-div2').toggle();
-			
-				} 
-			
-					if (connect_flag==0){
-						if (white7 = !white7) {
-								 $('#conn').css("background-color", bgcolor7);
-							
-							} else {
-								bgcolor7 = $('#conn').css('backgroundColor');
-								$('#conn').css("background-color", "lightgray");
-							}
-							$("#connec").toggle();
-							$('.nex-text-div3').toggle();
-						 }
-			
-					if (society_flag==0){
-							 if (white8 = !white8) {
-								 $('#soci').css("background-color", bgcolor7);
-							
-							} else {
-								bgcolor8 = $('#soci').css('backgroundColor');
-								$('#soci').css("background-color", "lightgray");
-							}
-							$("#societ").toggle();
-							$('.nex-text-div4').toggle();
-					
-					}
-			
-			}	
-			 */
+	
 			// color the back botton a little different
 			$("#backbut").css('background-color','lightyellow')
 			
 			// go back to the input page for a different problem
 			$("#backbut").click(function(){
 					// e.preventDefault();
-					 console.log("hello1");
-					//alert('do something');
+					// console.log("hello1");
+				
 					window.location.replace('../QRP/QRhomework.php'+'?assign_num='+assign_num+'&cclass_id='+cclass_id+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid+'&stu_name='+stu_name_back);
 					
 				 });
@@ -992,7 +732,7 @@ $(document).ready(function(){
 			   // toggle the content between show and hide on click of the button
 				$('#directionsbutton').click(function(e){
 					 e.preventDefault();
-					 // console.log("hello1");
+					 // console.log("hello2");
 					 if (white1 = !white1) {
 						bgcolor1 = $(this).css('backgroundColor');
 						$(this).css("background-color", "lightgray");
@@ -1233,9 +973,8 @@ $(document).ready(function(){
 
 // if we are sent a 0 or 1 for the PIN we should display just the base-case without directions headers or 
 	
-	//console.log(static_flag);
-	 console.log('dex is ', dex);
-	  console.log('static_flag is ', static_flag);
+	// console.log('dex is ', dex);
+	//  console.log('static_flag is ', static_flag);
 			if (dex =='1' || static_flag == 'true'){
 			//	 console.log('index is ', index);
 				$('#directions').hide();
@@ -1259,7 +998,7 @@ $(document).ready(function(){
 			}
 	// put in the value of the multiple choice 
 		
-		 console.log (MC_flag);
+	//	 console.log (MC_flag);
 		if (MC_flag =="true"){
 			
 			$("#parta").append(part_a);
@@ -1286,7 +1025,7 @@ $(document).ready(function(){
 			if (part_i==""){$("#parti").hide();}
 			if (part_j==""){$("#partj").hide();}
 		
-			console.log (show_key);
+		//	console.log (show_key);
 			if(show_key == "1"){
 				if(key_2 == 0){key_2 = "";}
 				if(key_3 == 0){key_3 = "";}
@@ -1297,8 +1036,6 @@ $(document).ready(function(){
 	
 		});
 
-		
- 
 
 
  });
