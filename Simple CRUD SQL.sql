@@ -1096,3 +1096,7 @@ FOREIGN KEY ( `currentclass_id` ) REFERENCES CurrentClass (`currentclass_id`) ON
 
 	ALTER TABLE Assign ADD CONSTRAINT `currentclass_id`
 FOREIGN KEY ( `currentclass_id` ) REFERENCES CurrentClass (`currentclass_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+SELECT DISTINCT last, first FROM Users INNER JOIN Assign ON Users.users_id = Assign.iid
+-- sets all of the previous problems to college problems
+UPDATE Problem set grade = 4
