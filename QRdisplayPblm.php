@@ -29,7 +29,7 @@ session_start();
 		} else {
 			$_SESSION['error'] = 'problem_id is not being read into the diplay error 30';
 			header("Location: QRhomework.php");
-			return;
+			die();
 	} 
 
 	if(isset($_GET['dex'])) {
@@ -39,7 +39,7 @@ session_start();
 		} else {
 			$_SESSION['error'] = 'dex is not being read into the diplay error 31';
 			header("Location: QRhomework.php");
-			return;
+			die();
 	} 
 
 	if(isset($_GET['pin'])) {
@@ -49,7 +49,7 @@ session_start();
 		} else {
 			$_SESSION['error'] = 'pin is not being read into the diplay error 32';
 			header("Location: QRhomework.php");
-			return;
+			die();
 	} 
 	/* 
 	if(isset($_GET['assign_num'])) {
@@ -78,7 +78,7 @@ session_start();
 		} else {
 			$_SESSION['error'] = 'iid is not being read into the diplay error 35';
 			header("Location: QRhomework.php");
-			return;
+			die();
 	} 
 
 	if(isset($_GET['stu_name'])) {
@@ -88,7 +88,7 @@ session_start();
 		} else {
 			$_SESSION['error'] = 'stu_name is not being read into the diplay error 34';
 			header("Location: QRhomework.php");
-			return;
+			die();
 	} 
 
 	}

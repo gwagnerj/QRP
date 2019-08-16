@@ -27,7 +27,7 @@ Require_once "pdo.php";
 				));
 			
 			header("Location: QRcontroller.php");
-			return;
+			die();
 	}
 	
 	

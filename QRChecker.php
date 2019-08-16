@@ -30,7 +30,7 @@
 		} else {
 		  $_SESSION['error'] = "Missing iid";
 		  header('Location: QRPindex.php');
-		  return;
+		 die();
 		}
 		
 		if (isset($_GET['assign_num']) && isset($_GET['alias_num'])&& isset($_GET['cclass_id'])) {
@@ -50,7 +50,7 @@
 			if ( $row === false ) {
 				$_SESSION['error'] = 'Could not find an assigned problem for the instructor, assignment and problem number given';
 				header( 'Location: QRPindex.php' ) ;
-				return;
+				die();
 			} else {
 				$problem_id = $row['prob_num'];
 				
@@ -83,7 +83,7 @@
 			
 			 $_SESSION['error'] = "values for input";
 			   header('Location: QRPindex.php');
-				return;
+				die();
 		}
 	
 		if ( isset($_POST['pin']) ) {
@@ -118,7 +118,7 @@
 		if ($pin<0 or $pin>10000)  {
 		  $_SESSION['error'] = "pin  out of range";
 		  header('Location: QRPindex.php');
-		  return;
+		 die();
 		}
 		
 		$dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200 / this formula has to match the one in the QRHomework.php
@@ -130,7 +130,7 @@
 		if ($problem_id<1 or $problem_id>1000000)  {
 		  $_SESSION['error'] = "problem number out of range";
 		  header('Location: QRPindex.php');
-		  return;
+		 die();
 		}
 		
 		
@@ -183,7 +183,7 @@
 			if ( $row === false ) {
 				$_SESSION['error'] = 'Bad value for problem_id';
 				header( 'Location: QRPindex.php' ) ;
-				return;
+				die();
 			}	
 			$probData=$row;	
 			
@@ -191,7 +191,7 @@
 			if ($probStatus =='suspended'){
 				$_SESSION['error'] = 'problem has been suspended, check back later';
 				header( 'Location: QRPindex.php' ) ;
-				return;	
+				die();
 			}
 				
 			// get the tolerances and if the part has any hintfile	
@@ -233,7 +233,7 @@
 			if ( $row === false ) {
 				$_SESSION['error'] = 'Bad value for problem_id';
 				header( 'Location: QRPindex.php' ) ;
-				return;
+				die();
 			}	
 				$soln = array_slice($row,6,20); // this would mean the database table Qa would have the same structure - change the structure of the table and you break the code
 			

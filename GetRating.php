@@ -74,7 +74,7 @@
 	 if($pin==0) {
 		 
 			header( 'Location: QRhomework.php' ) ;
-			return;		
+			die();
 		 
 	 }
 
@@ -299,7 +299,7 @@
 
 
 	//			header( 'Location: rtnCode.php' ) ;
-	//			return;		
+	//			die();	
 					
 
 

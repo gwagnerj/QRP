@@ -29,7 +29,7 @@ $row = $stmt -> fetch();
 if ( $row === false ) {
     $_SESSION['error'] = 'Bad value for problem_id';
     header( 'Location: QRPhomework.php' ) ;
-    return;
+   die();
 }	
 		$soln = array_slice($row,6); // this would mean the database table Qa would have the same structure or this will get messed up - could fetch an ASSOC array instead
 	
@@ -54,7 +54,7 @@ if ( $row === false ) {
 	if ($probStatus =='suspended'){
 		$_SESSION['error'] = 'problem has been suspended, check back later';
 		header( 'Location: QRPindex.php' ) ;
-		return;	
+		die();
 	}
 	
 
@@ -104,7 +104,7 @@ if ( $row === false ) {
 			
 		));
 			header("Location: QRcontroller.php");
-			return;
+			die();
 	}
 	
 	

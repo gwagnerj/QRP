@@ -87,7 +87,7 @@ if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 	
 	
 	header("Location: QRhomework.php");
-	return;
+	die();
 	
 } else {
 	
@@ -110,7 +110,7 @@ if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 		if ( $assn_row === false ) {
 				$_SESSION['error'] = 'controller could not read assignment';
 				header( 'Location: QRhomework.php' ) ; 
-				return;
+				die();
 		}	else {
 			// we got information from the assignment table Now Check if there is an entry in the activity table 
 			// read assignment data and put what you need into Session variables
@@ -227,14 +227,14 @@ if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 						."&time_pp3=".$activity_row['time_pp3']
 						."&time_pp4=".$activity_row['time_pp4']
 						);
-						return;
+						die();
 
 				}
 				
 			// this problem has pre-problem assigned
 				
 				header("Location: QRdisplayPre.php");
-				return;
+				die();
 				
 				
 			
