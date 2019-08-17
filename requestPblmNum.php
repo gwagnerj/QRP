@@ -243,7 +243,7 @@ if (isset($_POST['reset']))	{
 	<div class = "row" >	
 		<div class = "form-group">
 			<label for = "course">Author of Published Base-Case (if different than Contributor):</label>
-			<select required class = "form-control" id = "nm_author" name = "nm_author">	
+			<select  class = "form-control" id = "nm_author" name = "nm_author">	
 			<option selected = "" disabled = ""> Select Author </option>		
 			</select>
 		</div>
