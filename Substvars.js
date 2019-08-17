@@ -67,10 +67,11 @@ var oNvar = new Array(15);
 for (i=1;i<15;i++){
 	nvar[i] = sessionStorage.getItem('nv_'+i);
 	vari[i] = sessionStorage.getItem(nvar[i]);
-	nvar[i] ="##"+nvar[i]+",.+?##";
-	oNvar[i] = new RegExp(nvar[i],"g");
 	x = "bc_"+nvar[i];
 	bc_var[i] = sessionStorage.getItem(x);
+	nvar[i] ="##"+nvar[i]+",.+?##";
+	oNvar[i] = new RegExp(nvar[i],"g");
+	
 	
 }
 
@@ -78,7 +79,7 @@ for (i=1;i<15;i++){
 
 
 
-// read in the basecase values for the variables
+/* // read in the basecase values for the variables
 var bc_var = Array(15);
 var x = "";
 for (i=1;i<15;i++){
@@ -115,7 +116,7 @@ var bc_var13 = sessionStorage.getItem(x);
 x = "bc_"+sessionStorage.getItem('nv_14');
 var bc_var14 = sessionStorage.getItem(x);
 
-
+ */
 // This is the Multiple choice stuff called from numericToMC.php for making questions you can print outerHTML
 
 var MC_flag = sessionStorage.getItem('MC_flag');
@@ -593,7 +594,7 @@ $(document).ready(function(){
 
 
 			
-
+/* 
 			var value_array_bc=[];
 
 			for (i=0;i<14;i++){
@@ -603,7 +604,7 @@ $(document).ready(function(){
 				 value_array_bc = value_array_bc.concat(eval(nm_elem));
 			 
 			}
-
+ */
 			// Search thru all of the paragraphs in the basecase  looking for the image markups 
 
 			for (i=numPara+1;i<numPara_tot;i++){
