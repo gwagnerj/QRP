@@ -152,7 +152,7 @@
 			$score = 0;
 			$PScore = 0;
 			$partsFlag = array();
-			$resp = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
+			$resp = array('a'=>'','b'=>'','c'=>'','d'=>'','e'=>'','f'=>'','g'=>'','h'=>'','i'=>'','j'=>'');
 			//$resp = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
 			$corr = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
 			$unit = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
@@ -300,18 +300,22 @@
 			
 
 			// read the student responses into an array
-
-			$resp['a']=(isset($_POST['a']) ? $_POST['a']+0 : $checker_data['resp_a']);
-			$resp['b']=(isset($_POST['b']) ? $_POST['b']+0 : $checker_data['resp_b']);
-			$resp['c']=(isset($_POST['c']) ? $_POST['c']+0 : $checker_data['resp_c']);
-			$resp['d']=(isset($_POST['d']) ? $_POST['d']+0 : $checker_data['resp_d']);
-			$resp['e']=(isset($_POST['e']) ? $_POST['e']+0 : $checker_data['resp_e']);
-			$resp['f']=(isset($_POST['f']) ? $_POST['f']+0 : $checker_data['resp_f']);
-			$resp['g']=(isset($_POST['g']) ? $_POST['g']+0 : $checker_data['resp_g']);
-			$resp['h']=(isset($_POST['h']) ? $_POST['h']+0 : $checker_data['resp_h']);
-			$resp['i']=(isset($_POST['i']) ? $_POST['i']+0 : $checker_data['resp_i']);
-			$resp['j']=(isset($_POST['j']) ? $_POST['j']+0 : $checker_data['resp_j']);
 			
+			for ($j=0; $j<=9; $j++) {
+				if($partsFlag[$j]) {
+					$x = 'resp_'.$corr_key[$j];
+						if (isset($_POST[$corr_key[$j]]) && is_numeric($_POST[$corr_key[$j]])){
+							$resp[$corr_key[$j]] = $_POST[$corr_key[$j]]+0;
+						} elseif(is_numeric($checker_data[$x])){
+							$resp[$corr_key[$j]] = $checker_data[$x];
+						} else {
+							$resp[$corr_key[$j]] = '';
+						}
+			
+				}
+			}
+			
+
 			// see if the responses have changed
 			
 			if ($checker_data['resp_a']== $resp['a']){$changed[0] = false;} else  {$changed[0] = true;}
@@ -331,40 +335,71 @@
 			for ($j=0; $j<=9; $j++) {
 				if($partsFlag[$j]) {
 								
-					if($soln[$j]==0){  // take care of the zero solution case - this does not really work should figure out why
-						$sol=1;
-					} else {
-						$sol=$soln[$j]; 
-					}	
-					
-					if(	abs(($soln[$j]-$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]]) {
-						//echo ($tol[$tol_key[$j]]);
-						$corr[$corr_key[$j]]='Correct';
-						$score=$score+1;
-						//	$_SESSION['$wrongC'[$j]] = 0;
-					
-						$addCount[$j]=0;  // if they get it write this gets set to zero?
-												
-					} else {// got it wrong or did not attempt
+					if($soln[$j]==0){ 
+
+						// its ero and they got it right
+						if(is_numeric($_POST[$resp_key[$j]])){
+								if ($_POST[$resp_key[$j]]==0){
+											$corr[$corr_key[$j]]='Correct';
+											$score=$score+1;
+											$addCount[$j]=0;
+									} else {
+											// its zero and they got it wrong or did not attempt
+																		
+									if ($resp[$resp_key[$j]]=='' )  //  did not attempted it
+									{
+										$addCount[$j]=0;
+										$corr[$corr_key[$j]]='';
+									
+									} elseif($changed[$j]==false) { // did not change it from last time but it's still wrong
+											$corr[$corr_key[$j]]='Not Correct';
+											$addCount[$j]=0;
+									}
+									else  // not correct (better to use POST value I suppose - fix later
+									{
+										$addCount[$j]=1;
+									
+											$corr[$corr_key[$j]]='Not Correct';
+									
+									}
+								}		
 								
-						if ($resp[$resp_key[$j]]==0 )  //  did not attempted it
-						{
-							$addCount[$j]=0;
-							//$wrongCount[$j] = ($_SESSION['wrongC'[$j]]);
-							//$_SESSION['wrongC'[$j]] = $wrongCount[$j];
-							$corr[$corr_key[$j]]='';
+								
+								
+							}
+
+						}	else {	
 						
-						} elseif($changed[$j]==false) { // did not change it from last time but it's still wrong
-								$corr[$corr_key[$j]]='Not Correct';
+					 
+						//	$sol=$soln[$j]; 
+							
+						
+						if(	abs(($soln[$j]-$resp[$resp_key[$j]])/$soln[$j])<= $tol[$tol_key[$j]]) {
+							//echo ($tol[$tol_key[$j]]);
+							$corr[$corr_key[$j]]='Correct';
+							$score=$score+1;
+							//	$_SESSION['$wrongC'[$j]] = 0;
+						
+							$addCount[$j]=0;  // if they get it right this gets set to zero?
+													
+						} else {// got it wrong or did not attempt
+									
+							if ($resp[$resp_key[$j]]=='' )  //  did not attempted it
+							{
 								$addCount[$j]=0;
-						}
-						else  // not correct (better to use POST value I suppose - fix later
-						{
-							$addCount[$j]=1;
-						//	$_SESSION['wrongC'[$j]] = $wrongCount[$j];
-								$corr[$corr_key[$j]]='Not Correct';
-						
-						}
+								$corr[$corr_key[$j]]='';
+							
+							} elseif($changed[$j]==false) { // did not change it from last time but it's still wrong
+									$corr[$corr_key[$j]]='Not Correct';
+									$addCount[$j]=0;
+							}
+							else  // not correct (better to use POST value I suppose - fix later
+							{
+								$addCount[$j]=1;
+							
+									$corr[$corr_key[$j]]='Not Correct';
+							}
+							}
 					}		
 				}
 			}
