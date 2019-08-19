@@ -465,10 +465,12 @@
 			echo(htmlentities($row['course']));
 			echo("</td><td>");
 			
-			$sec_des="";
+/* 			$sec_des="";
 			if(strlen($row['s_concept'])!=0){$sec_des="<br>2)&nbsp;";}
 			
-			echo("1)&nbsp;".htmlentities($row['p_concept']).$sec_des.htmlentities($row['s_concept']));
+			echo("1)&nbsp;".htmlentities($row['p_concept']).$sec_des.htmlentities($row['s_concept'])); 
+*/			
+			echo (htmlentities($row['p_concept']));
 			echo("</td><td>");
 			echo(htmlentities($row['computation_name']));
 			echo("</td><td>");  
@@ -583,7 +585,7 @@
 			"order": [[ 0, 'dsc' ] ],
 			 "lengthMenu": [ 50, 100, 200 ],
 			"oColumnFilterWidgets": {
-			"aiExclude": [ 0,1,2,3,6,9,11,14,15 ] }});
+			"aiExclude": [ 0,1,2,3,6,11,14,15 ] }});
 		
 
 		// jQuery('#table_format').ddTableFilter();
