@@ -92,7 +92,9 @@
 							<link rel="stylesheet" type="text/css" href="DataTables-1.10.18/css/jquery.dataTables.css"/> 
 							<script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
 							<script type="text/javascript" charset="utf-8" src="DataTables-1.10.18/extras/js/ColumnFilterWidgets.js"></script>
-		
+							<link href="yadcf-master\jquery.datatables.yadcf.css" rel="stylesheet" type="text/css" />
+							<script src="yadcf-master\jquery.dataTables.yadcf.js"></script>
+
 		
 				<!-- THis is from sparklines jquery plugin   -->	
 
