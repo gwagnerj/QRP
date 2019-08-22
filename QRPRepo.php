@@ -583,47 +583,24 @@
 		
 		
 		$(document).ready( function () {
+		
+		
 		$('#table_format').DataTable({
-			/* 
-			"bStateSave": true,
-				"fnStateSave": function (oSettings, oData) {
-					localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
-				},
-				"fnStateLoad": function (oSettings) {
-					var data = localStorage.getItem('DataTables_' + window.location.pathname);
-					return JSON.parse(data);
-				},
-
- */
-
-
-
-
-
-
-
-			// stateSave: true,
-			/*   
-			  stateSaveCallback: function(settings,data) {
-				  localStorage.setItem( 'DataTables_' + settings.sInstance, JSON.stringify(data) )
-				},
-			  stateLoadCallback: function(settings) {
-				return JSON.parse( localStorage.getItem( 'DataTables_' + settings.sInstance ) )
-				},
-
- */
-			
-			
 			"sDom": 'W<"clear">lfrtip',
 			"order": [[ 0, 'dsc' ] ],
 			
 			 "lengthMenu": [ 50, 100, 200 ],
 			"oColumnFilterWidgets": {
 			"aiExclude": [ 0,1,2,3,6,11,14,15 ] }});
+			
+			} );
+			
+			
+			
+			
+			
 		
-
-		// jQuery('#table_format').ddTableFilter();
-		} );
+		
 		
 		
 	</script>
