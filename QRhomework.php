@@ -349,8 +349,7 @@
 		<div id = "alias_num_div">
 		
 		</div>
-		</br>	
-		<br>
+		
 		
 	<p><input type = "submit" name = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	</form>
@@ -386,7 +385,8 @@
 							$('#alias_num_div').append('<input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'&nbsp; &nbsp; &nbsp;') ;
 
 					}
-					
+								$('#alias_num_div').append(" </br> </br> <font> Note - After pressing submit, if the problem fails to fully load - refresh the page using the browser </font></br> </br>&nbsp;&nbsp;&nbsp;&nbsp;") ;
+
 				}) 
 		
 	} else {
@@ -472,7 +472,7 @@
 							$('#alias_num_div').append('<input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'&nbsp; &nbsp; &nbsp;') ;
 
 					}
-					
+					$('#alias_num_div').append(" </br> </br> <font> Note - After pressing submit, if the problem fails to fully load - refresh the page using the browser </font></br> </br>&nbsp;&nbsp;&nbsp;&nbsp;") ;
 				}) 
 			});
 
