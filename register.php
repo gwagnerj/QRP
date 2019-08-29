@@ -140,6 +140,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	if ($security == 'grader'){
 		$exp_date = date("Y-m-d", strtotime("+6 month"));
 	}
+	if ($security == 'contrib' || $security == 'instruct'){
+		$exp_date = date("2100-12-1");
+	}
 	
 	// Validate Sponsor
 	 if(empty(trim($_POST['sponsor']))){
