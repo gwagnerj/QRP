@@ -38,7 +38,7 @@ session_start();
     echo 'The latest QR Solver excel macro enabled template is below - you may have to enable macros to use it.';
 	echo "<br>";
 	echo "<br>";
-    echo '<a href="downloads/QRP solver A500H.xltm"> QRP solver A500H.xltm </a>';
+    echo '<a href="downloads/QRP solver A500J.xltm"> QRP solver A500J.xltm </a>';
 	echo "<br>";
 	echo "<hr>";
 
