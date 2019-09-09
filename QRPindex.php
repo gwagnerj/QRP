@@ -157,16 +157,17 @@ $gs_num = "";
 						
 				
 					n = activeass.length;
-						$('#assign_num').append("&nbsp;&nbsp;&nbsp;&nbsp;Assignment for this courses : ") ;
+						$('#assign_num').append("<option> Please Select Assignment </option> ") ;
 						for (i=0;i<n;i++){
 							  $('#assign_num').append('<option  value="' + activeass[i] + '">' + activeass[i] + '</option>');
 					}
 				}) 
 			});
 			
-			// this is getting the problem numbers (alias number) once the course has been selected
+			// this is getting the problem numbers (assignment number) once the course has been selected
 			$("#assign_num").change(function(){
 		var	 assign_num = $("#assign_num").val();
+		console.log ('assign_num_id: '+assign_num);
 		var	 currentclass_id = $("#current_class_dd").val();
 			console.log ('currentclass_id 2nd time: '+currentclass_id);
 			$.ajax({
