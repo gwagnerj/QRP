@@ -541,12 +541,18 @@
                 
                 // echo ($row2["currentclass_id"]);
                  // find the current class from the Currentclass table
-                 $stmnt = "SELECT Currentclass.name AS class_name
-					FROM Currentclass
+                 $stmnt = "SELECT CurrentClass.name AS class_name
+					FROM CurrentClass
 					WHERE (currentclass_id = ".$row2['currentclass_id'].");";
                  $stmt6 = $pdo->query($stmnt);
                  $row6 = $stmt6->fetch(PDO::FETCH_ASSOC);
-                 echo(substr($row6['class_name'],0,7));
+              
+                 $class_words = str_word_count($row6['class_name'],1); // an array of the words
+                 foreach ($class_words as $class_word){
+                        echo(substr($class_word,0,4));
+                        echo(" ");
+                 }
+               
             }
             
            
@@ -621,7 +627,7 @@
 			"order": [[ 0, 'dsc' ] ],
 			 "lengthMenu": [ 50, 100, 200 ],
 			"oColumnFilterWidgets": {
-			"aiExclude": [ 0,1,2,3,6,11,17,18 ] }});
+			"aiExclude": [ 0,1,2,3,6,11,17,18] }});
 		
 
 		// jQuery('#table_format').ddTableFilter();
