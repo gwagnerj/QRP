@@ -69,7 +69,11 @@
 		  .widget-10 { width:150px; } 
 		  .widget-11 { width:150px; } 
 		  .widget-12 { width:150px; } 
-		   .widget-13 { width:150px; } 
+		   .widget-13 { width:150px; }
+            .widget-14 { width:150px; }  
+            .widget-15 { width:150px; }            
+             .widget-16 { width:150px; }            
+             .widget-17 { width:150px; }            
 			.widget-0 { width:150px; } 
 		 
 		 
@@ -92,9 +96,7 @@
 							<link rel="stylesheet" type="text/css" href="DataTables-1.10.18/css/jquery.dataTables.css"/> 
 							<script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
 							<script type="text/javascript" charset="utf-8" src="DataTables-1.10.18/extras/js/ColumnFilterWidgets.js"></script>
-							<link href="yadcf-master\jquery.datatables.yadcf.css" rel="stylesheet" type="text/css" />
-							<script src="yadcf-master\jquery.dataTables.yadcf.js"></script>
-
+		
 		
 				<!-- THis is from sparklines jquery plugin   -->	
 
@@ -277,6 +279,12 @@
 		echo('Title');
 		echo("</th><th>");
 		echo('Status');
+		echo("</th><th>");
+        echo('Class');
+		echo("</th><th>");
+        echo('Asn');
+		echo("</th><th>");
+         echo('pblm');
 		echo("</th><th>");
 		echo('Author');
 		echo("</th><th>");
@@ -504,8 +512,13 @@
 						} else {
 						echo($row['status']);
 						}
+                         $active_flag = 0;
 					} else {
-						echo('<span style = "color: red;" > Active </br> Class# '.$row2["currentclass_id"].'</br> Asn '.$row2["assign_ass_num"].'</br> Pblm '.$row2["alias_num"] .'<br>  </span>');
+                        $active_flag = 1;
+                       // if I turn it red the filter wont pick it up
+                       echo ('Active');
+                       
+						//echo('<span style = "color: red;" > Active </br> Class# '.$row2["currentclass_id"].'</br> Asn '.$row2["assign_ass_num"].'</br> Pblm '.$row2["alias_num"] .'<br>  </span>');
 					}
 					// test to see if it is being used by other people and display in use
 					$usestmnt = "SELECT Assign.instr_last AS instr_last_nm 
@@ -524,7 +537,28 @@
 					
 			
 			echo("</td><td>");
-
+            if ($active_flag ==1){
+                
+                // echo ($row2["currentclass_id"]);
+                 // find the current class from the Currentclass table
+                 $stmnt = "SELECT Currentclass.name AS class_name
+					FROM Currentclass
+					WHERE (currentclass_id = ".$row2['currentclass_id'].");";
+                 $stmt6 = $pdo->query($stmnt);
+                 $row6 = $stmt6->fetch(PDO::FETCH_ASSOC);
+                 echo(substr($row6['class_name'],0,7));
+            }
+            
+           
+             echo("</td><td>");
+              if ($active_flag ==1){
+                   echo ($row2["assign_ass_num"]);
+              }
+            echo("</td><td>");
+            if ($active_flag ==1){
+                echo ($row2["alias_num"]);
+            }
+            echo("</td><td>");
 			echo(htmlentities($row['nm_author']));
 			
 			echo("</td><td>");
@@ -583,24 +617,15 @@
 		
 		
 		$(document).ready( function () {
-		
-		
-		$('#table_format').DataTable({
-			"sDom": 'W<"clear">lfrtip',
+		$('#table_format').DataTable({"sDom": 'W<"clear">lfrtip',
 			"order": [[ 0, 'dsc' ] ],
-			
 			 "lengthMenu": [ 50, 100, 200 ],
 			"oColumnFilterWidgets": {
-			"aiExclude": [ 0,1,2,3,6,11,14,15 ] }});
-			
-			} );
-			
-			
-			
-			
-			
+			"aiExclude": [ 0,1,2,3,6,11,17,18 ] }});
 		
-		
+
+		// jQuery('#table_format').ddTableFilter();
+		} );
 		
 		
 	</script>
