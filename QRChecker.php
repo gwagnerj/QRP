@@ -172,7 +172,7 @@
 			
 			$time_sleep1 = 2;  // time delay in seconds
 			$time_sleep1_trip = 6;  // number of trials it talkes to trip the time delay
-			$time_sleep2 = 118;  // additional time if hit the next limit
+			$time_sleep2 = 20;  // additional time if hit the next limit
 			$time_sleep2_trip = 15;	
 			
 			// see if the problem has been suspended	
