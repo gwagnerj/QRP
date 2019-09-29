@@ -1113,14 +1113,14 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 					echo "<a href='".$file_pathin."' download = '".$infilenm_strip."'>".$infilenm_strip."</a>";
 				
 				echo "<br>";
-				echo "<hr>";
+			
 		}
 		if(strlen($af)>2) {
 				echo 'Current Solution Auxillary file for this Problem - click to download ';
 				echo "<a href='".$file_pathaf."' download = '".$aux_pblm_strip."'>".$aux_pblm_strip."</a>";
 				echo "<br>";
 		}
-		
+			echo "<hr>";
 		
 		?>
 
