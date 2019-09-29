@@ -159,6 +159,52 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 					$_SESSION['success'] = $_SESSION['success'].'xlsmFile upload successful';
 				}
 			} 	
+            
+            
+            //Get the Auxillary file that was uploaded
+			if($_FILES['solnaux']['name']) {
+				$filename=explode(".",$_FILES['solnaux']['name']); // divides the file into its name and extension puts it into an array
+				// if ($filename[1]=='xlsm'){ // this is the extension
+					$aux_file=addslashes($_FILES['solnaux']['tmp_name']);
+					$auxname=addslashes($_FILES['solnaux']['name']);
+					$aux_file=file_get_contents($aux_file);
+					$auxname = $_FILES['solnaux']['name'];
+					$tmp_auxname =  $_FILES['solnaux']['tmp_name'];
+					$location = "uploads/"; // This is the local file directory name where the files get saved
+				// what }
+
+				$sql = "UPDATE Problem SET  solnaux = :auxfilenm 	
+						WHERE problem_id=:problem_id";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(':auxfilenm'=> $auxname,	':problem_id' => $_POST['problem_id']));
+
+				if (fnmatch("P*_a_*",$auxname,FNM_CASEFOLD ) ){
+						$newauxNm = $auxname;
+				}
+				elseif($auxfname !=="" ) {
+						$newauxNm = "P".$problem_id."_a_".$auxname;
+				} else {
+						$newauxNm = "P".$problem_id."_a_solnaux.".$filename[1];
+				}
+			
+				$sql = "UPDATE Problem SET solnaux = :newauxNm WHERE problem_id = :pblm_num";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':newauxNm' => $newauxNm,
+					':pblm_num' => $_POST['problem_id']));
+			
+			//upload file
+				$pathName = 'uploads/'.$newauxNm;
+				if (move_uploaded_file($_FILES['solnaux']['tmp_name'], $pathName)){
+					
+					$_SESSION['success'] = $_SESSION['success'].'Auxillary File upload successful';
+				}
+			} 	
+            
+            
+            
+            
+            
 	// put the time estimate into the database
 	if (isset($_POST['time_est'])){
 			$sql = "UPDATE Problem SET time_est_contrib = :timeest WHERE problem_id = :pblm_num";
@@ -991,22 +1037,26 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	//print_r($gf);
 	$in = htmlentities($row['infilenm']);
 	$pf = htmlentities($row['soln_pblm']);
+     $af = htmlentities($row['solnaux']);
 	$df = htmlentities($row['docxfilenm']);
 	$sb = htmlentities($row['soln_book']);
 	$hf = htmlentities($row['htmlfilenm']);
-	 
+  
 	$problem_id = $row['problem_id'];
 
 		$file_pathdocx='uploads/'.$df;
 		$file_pathsb='uploads/'.$sb;
 		$file_pathpdf='uploads/'.$pf;
+        $file_pathaf='uploads/'.$af;
 		$file_pathhtml='uploads/'.$hf;
 		$file_pathin='uploads/'.$in;
+       
 	// now strip out the extra charcters that were added by the system so the download file has the same name as the original uploaded file	
 	
 	$soln_book_strip = substr($sb,strpos($sb,'_x_')+3);
 	$docxfilenm_strip = substr($df,strpos($df,'_d_')+3);
 	$soln_pblm_strip = substr($pf,strpos($pf,'_s_')+3);
+    $aux_pblm_strip = substr($af,strpos($af,'_a_')+3);
 	$htmlfilenm_strip = substr($hf,strpos($hf,'_ht_')+4);
 	$infilenm_strip = substr($in,strpos($in,'_i_')+3);
 	
@@ -1065,7 +1115,11 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 				echo "<br>";
 				echo "<hr>";
 		}
-		
+		if(strlen($af)>2) {
+				echo 'Current Solution Auxillary file for this Problem - click to download ';
+				echo "<a href='".$file_pathaf."' download = '".$aux_pblm_strip."'>".$aux_pblm_strip."</a>";
+				echo "<br>";
+		}
 		
 		
 		?>
@@ -1105,6 +1159,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 
 	<p>Problem Statement File - docx: <input type='file' accept='.docx' name='docxfile'/></p>
 	<p>Solution Spreadsheet - xlsm: <input type='file' accept='.xlsm' name='solnbook'/></p>
+    <p>Auxillary File used in Solution (e.g. - matlab, python...): <input type='file'  name='solnaux'/></p>
 	<p>Supplemental Problem Enhancements:</p>
 
 

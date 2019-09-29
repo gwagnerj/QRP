@@ -1100,3 +1100,7 @@ FOREIGN KEY ( `currentclass_id` ) REFERENCES CurrentClass (`currentclass_id`) ON
 SELECT DISTINCT last, first FROM Users INNER JOIN Assign ON Users.users_id = Assign.iid
 -- sets all of the previous problems to college problems
 UPDATE Problem set grade = 4
+
+ALTER TABLE `Problem` 
+	ADD `solnaux` VARCHAR(256) AFTER `grade`;
+	
