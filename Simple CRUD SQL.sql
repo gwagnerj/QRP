@@ -1104,3 +1104,8 @@ UPDATE Problem set grade = 4
 ALTER TABLE `Problem` 
 	ADD `solnaux` VARCHAR(256) AFTER `grade`;
 	
+UPDATE Problem 
+SET 
+    allow_edit = 1
+WHERE
+    problem_id < 320;
