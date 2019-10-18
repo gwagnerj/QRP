@@ -567,8 +567,8 @@
             echo("</td><td>");
 			echo(htmlentities($row['nm_author']));
 			
-			echo("</td><td>");
-			if($row['username']==$username || $security=='admin' || ($security == 'contrib' && $row['allow_edit'] == 2) || $users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3']){
+			echo("</td><td>"); // The users_id == 36 in the next line lets Brooke edit the problems and should be removed after she is done
+			if($row['username']==$username || $security=='admin' || ($security == 'contrib' && $row['allow_edit'] == 2) || ($security == 'contrib' && $users_id == 36) || $users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3']){
 				echo('<form action = "editpblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Edit"></form>');
 			}
 			if($row['username']==$username || $security=='admin'){
