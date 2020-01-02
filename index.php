@@ -1,11 +1,17 @@
 <?php
-if(isset($_SESSION['numPlayers'])){
-	session_destroy();
 
-//session_destroy();	
- unset($_SESSION['numPlayers']);
-}
 session_start();
+if(isset($_SESSION['problem_id'])){
+ unset($_SESSION['problem_id']);
+}
+
+ unset($_SESSION['oldPoints']);
+ $_SESSION['oldPoints']=0;
+
+ 
+$alt_dex = rand(2,200);
+//$alt_dex = 8;
+$_SESSION['alt_dex'] = $alt_dex;
 
 ?>
 
@@ -22,6 +28,9 @@ session_start();
 <header>
 <h1>Quick Response Game </h1>
 </header>
+
+
+
 <?php
 if ( isset($_SESSION['error']) ) {
     echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
@@ -32,14 +41,18 @@ if ( isset($_SESSION['success']) ) {
     unset($_SESSION['success']);
 }
 
+$g_num = "";
+$index = "";
+$gs_num = "";
 ?>
 
-<form action = "getGamePblmNum.php" method = "GET" autocomplete="off">
-		<!-- <p><font color=#003399>Total Number of Players on Your Team (including yourself): </font><input type="text" name="numPlayers" size=3 value="<?php echo (htmlentities($player_num))?>"  ></p> -->
-	<p><font color=#003399>Total Number of Players on Your Team (including yourself): </font><input type="text" name="numPlayers" size=3   ></p>
+<form action = "getGamePblmNum.php" method = "POST" autocomplete="off">
+	<p><font color=#003399>Game Number: </font><input type="text" name="game_id" size=3 value="<?php echo (htmlentities($g_num))?>"  ></p>
+	<p><font color=#003399> </font><input type="hidden" name="alt_dex" size=3 value="<?php echo (htmlentities($alt_dex))?>"  ></p>
 
 	<p><input type = "submit" value="Submit" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>
 
 </body>
 </html>
+

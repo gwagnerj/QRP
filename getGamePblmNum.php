@@ -4,26 +4,29 @@ if(isset($_SESSION['problem_id'])){
  unset($_SESSION['problem_id']);
 }
 
- unset($_SESSION['oldPoints']);
- $_SESSION['oldPoints']=0;
-
+// this is a passthrough file.  If they are comming from the index then the game number is input and is passed to this file as
+// a POST if it directly from a QRcode then the game_id should be a GET.  The purpose of this file is to assign a random number
+// for the $alt_dex and pass that $game_id and $alt_dex as a post to "QRGameGetIn.php" 
  
 // first do some error checking on the input.  If it is not OK set the session failure and send them back to QRGameIndex.
-if ( isset($_SESSION['numPlayers'])){
-	//echo 'numplayers set';
-} else {
-		if ( ! isset($_GET['numPlayers']) ) {
-		  $_SESSION['error'] = "Missing number of players";
-		  header('Location: index.php');
-		  return;
-		}
-		if ($_GET['numPlayers']<1 or $_GET['numPlayers']>6)  {
-		  $_SESSION['error'] = "number of players must be between 1 and 6";
-		  header('Location: index.php');
-		  return;
-		}
-		$_SESSION['numPlayers'] = $_GET['numPlayers'];
-}
+
+  if (isset($_POST['game_id'])){
+        $game_id = $_POST['game_id'];
+    } elseif(isset($_GET['game_id'])){
+          $game_id = $_POST['game_id'];
+    } else {
+       $_SESSION['error'] = "Missing game number";
+	  header('Location: index.php');
+	  return;   
+    }
+  
+	if ($game_id<1 || $game_id>1000000) {
+	  $_SESSION['error'] = "game number out of range";
+	  header('Location: index.php');
+	  return;
+	}
+
+
 $_SESSION['alt_dex'] = rand(2,200);
 $alt_dex = rand(2,200);
 ?>
@@ -60,10 +63,11 @@ $gs_num = "";
 ?>
 
 <form action = "QRGameGetIn.php" method = "POST" autocomplete="off">
-	<p><font color=#003399>Game Number: </font><input type="text" name="game_id" size=3 value="<?php echo (htmlentities($g_num))?>"  ></p>
+    <p> Wait until the Game Master/Instructor tells you to Start
+	<p><font color=#003399> </font><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 	<p><font color=#003399> </font><input type="hidden" name="alt_dex" size=3 value="<?php echo (htmlentities($alt_dex))?>"  ></p>
 
-	<p><input type = "submit" value="Submit" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
+	<p><input type = "submit" value="Start" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>
 
 </body>

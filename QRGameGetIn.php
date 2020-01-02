@@ -2,21 +2,26 @@
 	session_start();
 	require_once "pdo.php";
 	
-// This is the program that gives them the values for the input parameters and is called by GetgampblmNum.php  script calles fetchworktime.php to start the timer
+// This is the program that gives them the values for the input parameters and is called by index.php  script calles fetchworktime.php to start the timer
 	// first do some error checking on the input.  If it is not OK set the session failure and send them back to QRGameIndex.
-	if ( ! isset($_POST['game_id']) ) {
-	  $_SESSION['error'] = "Missing game number";
-	  header('Location: getGamePblmNum.php');
-	  return;
-	}
-	if ($_POST['game_id']<1 or $_POST['game_id']>1000000)  {
+	// Comming from index the game number will be a POST where if we are coming from a QRcode of the game it will be a GET
+    
+    if (isset($_POST['game_id'])){
+        $game_id = $_POST['game_id'];
+    }  else {
+       $_SESSION['error'] = "Missing game number";
+	  header('Location: index.php');
+	  return;   
+    }
+  
+	if ($game_id<1 || $game_id>1000000) {
 	  $_SESSION['error'] = "game number out of range";
-	  header('Location: getGamePblmNum.php');
+	  header('Location: index.php');
 	  return;
 	}
-	$game_id = $_POST['game_id'];
 	
-	$_SESSION['game_id'] = $_POST['game_id'];
+	
+	$_SESSION['game_id'] = $game_id;
 
 	if ( isset($_POST['alt_dex']) ) {
 		$alt_dex = $_POST['alt_dex'];
@@ -24,16 +29,9 @@
 		$alt_dex = $_SESSION['alt_dex'];
 	} else {
 	  $_SESSION['error'] = "Missing alt dex";
-	  header('Location: getGamePblmNum.php');
+	  header('Location: index.php');
 	  return;
 	}
-
-
-	$alt_dex = $_POST['alt_dex'];
-
-
-
-
 
 	$_SESSION['count']=0;
 	$_SESSION['startTime'] = time();

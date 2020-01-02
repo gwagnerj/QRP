@@ -980,10 +980,12 @@ $(document).ready(function(){
 			//	 console.log('index is ', index);
 				$('#directions').hide();
 				 $('#Header_stuff').hide();	
-				if (dex == '1'){
+				$('#reflections').show();	
+                
+                if (dex == '1'){
 					
 					// $('#Header_stuff').show();	
-					$('#reflections').show();	
+					
 					$('.nex-text-div').hide();
 					$('.nex-text-div2').hide();
 					$('.nex-text-div3').hide();

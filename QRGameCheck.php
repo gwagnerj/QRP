@@ -422,7 +422,7 @@ session_start();
 	 <hr>
 	<p><b><font Color="red">Finished:</font></b></p>
 	  <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
-	   <?php $_SESSION['score'] = $PScore;  $_SESSION['count'] = $count; ?>
+	   <?php $_SESSION['score'] = round($PScore);  $_SESSION['count'] = $count; ?>
 	 <b><input type="submit" value="Finished" name="score" style = "width: 30%; background-color:yellow "></b>
 	 <p><br> </p>
 	 <hr>
