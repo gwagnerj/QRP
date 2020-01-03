@@ -13,7 +13,16 @@
 	  header('Location: index.php');
 	  return;   
     }
-  
+    
+    if($_SESSION['game_progress']==1){
+        
+      header('Location: index.php');
+	  return;
+    }
+        
+        
+    
+    
 	if ($game_id<1 || $game_id>1000000) {
 	  $_SESSION['error'] = "game number out of range";
 	  header('Location: index.php');
@@ -32,7 +41,8 @@
 	  header('Location: index.php');
 	  return;
 	}
-
+    $_SESSION['game_progress']=1; //put this end to stop a page reload from restarting the clock
+    
 	$_SESSION['count']=0;
 	$_SESSION['startTime'] = time();
 

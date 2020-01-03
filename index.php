@@ -12,6 +12,7 @@ if(isset($_SESSION['problem_id'])){
 $alt_dex = rand(2,200);
 //$alt_dex = 8;
 $_SESSION['alt_dex'] = $alt_dex;
+$_SESSION['game_progress']=0;
 
 ?>
 
