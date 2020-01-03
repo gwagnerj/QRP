@@ -1039,7 +1039,20 @@ $(document).ready(function(){
 	
 		});
 
-
+// put in the QRcode for the game problem
+    var game_id = sessionStorage.getItem('game_id');
+   // console.log (game_id);
+     var qrcode = new QRCode(document.getElementById("qrcode"), {
+          
+        
+          text: "https://QRProblems.org/QRP/getGamePblmNum.php?game_id="+game_id,
+         
+            width: 128,
+            height: 128,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
 
  });
  

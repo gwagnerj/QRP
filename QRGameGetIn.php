@@ -9,7 +9,7 @@
     if (isset($_POST['game_id'])){
         $game_id = $_POST['game_id'];
     }  else {
-       $_SESSION['error'] = "Missing game number";
+       $_SESSION['error'] = "Missing game number- this one";
 	  header('Location: index.php');
 	  return;   
     }
@@ -42,7 +42,7 @@
 		$row = $stmt -> fetch();
 		if ( $row === false ) {
 			$_SESSION['error'] = 'Bad value for game_id or game_id not active';
-			header( 'Location: getGamePblmNum.php' ) ;
+			header( 'Location: index.php' ) ;
 			return;
 		}
 		$gameData=$row;	
@@ -80,7 +80,7 @@
 		//$row = $stmt -> fetch();
 			if ( $row === false ) {
 				$_SESSION['error'] = 'could not read row of table Qa for game variables';
-				header('Location: getGamePblmNum.php');
+				header('Location: index.php');
 				return;
 			}	
 		//$rect_length = 10;		

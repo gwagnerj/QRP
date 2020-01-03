@@ -48,6 +48,7 @@ $activate_flag = 1; // temp
 <title>QRGame</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="qrcode.js"></script>
 
 <style>
 table, th, td {
@@ -566,7 +567,12 @@ $(document).ready(function(){
 											var contrib_first = arr.first;
 											var contrib_last = arr.last;
 											var contrib_university = arr.university;
-											//	var newPath = "uploads/"+openup+ " 'document'";
+											
+                                            
+                                            
+                                            
+                                            
+                                            //	var newPath = "uploads/"+openup+ " 'document'";
 											
 											
 	// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 	
@@ -590,7 +596,11 @@ $(document).ready(function(){
 
 													  script.src = "Substvars.js";
 													  document.getElementsByTagName( "head" )[0].appendChild( script );
-												}
+												
+                                            
+                                                
+                                                
+                                                }
 
 // use the Substvars script to substitute in the varabiles after the QRproblem document has been loaded
 // substitute any images that the QRproblem Document has in it
@@ -634,7 +644,11 @@ $(document).ready(function(){
 											sessionStorage.setItem('contrib_university',contrib_university);
 											sessionStorage.setItem('nm_author',arr.nm_author);
 											sessionStorage.setItem('specif_ref',arr.specif_ref);
+                                            
+                                            // put the game_id into session storage so that the substvar can pull up the correct QRcode
 								
+                                            	sessionStorage.setItem('game_id',game_id);
+                                
 											//	console.log(contrib_first);
 											//	console.log('arr', arr);
 											if (status !== 'suspended'){
@@ -691,9 +705,21 @@ $(document).ready(function(){
 												var exp_date2 = mm +"/"+dd+"/20"+yy;	
 												
 											
-												$("#game_num").html('Game Number: '+ game_id+' \xa0\xa0 Please check your responses with qrgames.org or scan the QR code.\xa0\xa0\xa0\xa0  <img border=0 width=50 height=50 id="qr_game" src="qr_game.svg">');
+												$("#game_num").html('Game Number: '+ game_id+' \xa0\xa0 Please check your responses with qrgames.org or scan the QR code.\xa0\xa0\xa0\xa0 '+ '<div id="qrcode"></div>' );
+                                                //<div id="qrcode"></div>;
+                                                
+                                                
+                                               
+ 
+ 
+ 
+ 
+                                            //  <img border=0 width=50 height=50 id="qr_game" src="qr_game.svg">');
 												$("#exp_date").html("Expires: "+ exp_date2);
 												$("#cancel_id").hide();
+                                                
+                    
+                       
 											
 					// my attempt to see if the varaibles have been sustituted for																							
 												 $( "p" ).each(function( index ) {
@@ -743,6 +769,8 @@ $(document).ready(function(){
 	});  // fetch vars in problem
 	
 });	  // doc ready
+
+                   
 </script>
 
 </body>

@@ -12,10 +12,14 @@ if(isset($_SESSION['problem_id'])){
 
   if (isset($_POST['game_id'])){
         $game_id = $_POST['game_id'];
-    } elseif(isset($_GET['game_id'])){
-          $game_id = $_POST['game_id'];
-    } else {
-       $_SESSION['error'] = "Missing game number";
+  } 
+  elseif(isset($_GET['game_id'])){
+          $game_id = $_GET['game_id'];
+         
+  } else {
+       $_SESSION['error'] = "Missing game number from getGame";
+       //echo $game_id;
+       //die();
 	  header('Location: index.php');
 	  return;   
     }
