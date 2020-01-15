@@ -589,12 +589,10 @@ $(document).ready(function(){
 			$('#directions a').prop('target', '_blank');
 			// $("a".oldHref).prop('href', newHref);
 
-			// genrate an QRcode dynamically using the newHref  This had to be pretty large before the QR reader can read it
-			// This worked but had to be fairly large for most QR readers to recognize it - options in the code may be able to be refined
 
 
 			
-/* 
+ /* 
 			var value_array_bc=[];
 
 			for (i=0;i<14;i++){
@@ -604,7 +602,7 @@ $(document).ready(function(){
 				 value_array_bc = value_array_bc.concat(eval(nm_elem));
 			 
 			}
- */
+  */
 			// Search thru all of the paragraphs in the basecase  looking for the image markups 
 
 			for (i=numPara+1;i<numPara_tot;i++){
@@ -1041,18 +1039,20 @@ $(document).ready(function(){
 
 // put in the QRcode for the game problem
     var game_id = sessionStorage.getItem('game_id');
-   // console.log (game_id);
+    console.log ("game_id "+game_id);
+     
+    if ( game_id!=null) {
      var qrcode = new QRCode(document.getElementById("qrcode"), {
           
         
           text: "https://QRProblems.org/QRP/getGamePblmNum.php?game_id="+game_id,
          
-            width: 128,
-            height: 128,
+            width: 100,
+            height: 100,
             colorDark : "#000000",
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
-
+    }
  });
  
