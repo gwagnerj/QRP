@@ -14,7 +14,7 @@
 	  return;   
     }
     
-    if($_SESSION['game_progress']==1){
+    if($_SESSION['game_progress']==2){
         
       header('Location: index.php');
 	  return;
@@ -41,7 +41,7 @@
 	  header('Location: index.php');
 	  return;
 	}
-    $_SESSION['game_progress']=1; //put this end to stop a page reload from restarting the clock
+    $_SESSION['game_progress']=2; //put this in to stop a page reload from restarting the clock
     
 	$_SESSION['count']=0;
 	$_SESSION['startTime'] = time();
@@ -187,7 +187,7 @@
 
 <h3> Game number: <?php echo($game_id);?> </h3>
 
-	<h4><font color = "red"> Write the below values on your sheet before you proceed </font></h4>			
+	<h4><font color = "red"> Write</font> the below values on your sheet before you proceed </h4>			
 		
 
 

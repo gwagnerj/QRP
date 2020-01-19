@@ -414,9 +414,6 @@ session_start();
 
 	<p> Count: <?php echo ($count) ?> </p>
 
-	<!-- <form method="get" >
-	<p><input type = "submit" value="Finished"/> </p>
-	</form> -->
 
 	<form action="StopGame.php" method="POST">
 	 <hr>
@@ -428,9 +425,6 @@ session_start();
 	 <hr>
 	</form>
 
-	<!--<form method = "POST">
-	<p><input type = "submit" value="Get Base-Case Answers" name = "show_base" size="10" style = "width: 30%; background-color: green; color: white"/> &nbsp &nbsp <b> <font size="4" color="Green"></font></b></p>
-	</form> -->
 
 	<script>
 		$(document).ready( function () {
