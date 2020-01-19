@@ -67,7 +67,7 @@ $gs_num = "";
 ?>
 
 <form action = "QRGameGetIn.php" method = "POST" autocomplete="off">
-    <p> Wait until the Game Master/Instructor tells you to Start
+    <p><font color = "red"> Wait</font> until the Game Master/Instructor tells you to Start </p>
 	<p><font color=#003399> </font><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 	<p><font color=#003399> </font><input type="hidden" name="alt_dex" size=3 value="<?php echo (htmlentities($alt_dex))?>"  ></p>
 

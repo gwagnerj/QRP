@@ -104,9 +104,9 @@ if ( isset($_SESSION['success']) ) {
 	<p><font color=#003399> </font><input type="hidden" name="problem_id" id="prob_id" size=3 value=<?php echo($problem_id);?> >
 	 <p><font color=#003399> </font><input type="hidden" name="iid" id="iid" size=3 value=<?php echo($iid);?> > 
 	<div id ="dex_input"><p><font color="red">Index of Dataset - must print off each version since the number of vars > selected shapes </font><input type="number" name="dex" id="dex" size=3 required min = "2" max = "199" ></p></div>
-	<p><font color=#003399>Prep Time in Minutes for Discussion on How to  Work Problem</font><input type="number" name="prep_time" id="prep_time" value = 1 size=3 required min = "1" max = "15" ></p>
+	<p><font color=#003399>Prep Time in Minutes for Discussion on How to  Work Problem</font><input type="number" name="prep_time" id="prep_time" value = 5 size=3 required min = "1" max = "15" ></p>
 	<p><font color=#003399>Work Time in Minutes for Students to Work Problem </font><input type="number" name="work_time" id="work_time" value = 15 size=3 required min = "1" max = "199" ></p>
-	<p><font color=#003399>Post Time in Minutes for Post Problem Analysis </font><input type="number" name="post_time" id="post_time" value = 1 size=3 required min = "1" max = "15" ></p>
+	<p><font color=#003399>Post Time in Minutes for Post Problem Analysis </font><input type="number" name="post_time" id="post_time" value = 5 size=3 required min = "1" max = "15" ></p>
 	<p><font color=#003399>How long in days to keep this Game Problem Active </font><input type="number" name="days_till_delete" value = 30 id="days_till_delete" size=3 required min = "1" ></p>
 	
 	
