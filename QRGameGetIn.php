@@ -215,13 +215,14 @@
 	</svg>
 
 
-	<form action = "QRGameCheck.php" method = "POST" >
+	<form action = "QRGameCheck.php" method = "POST" id = "the_form" >
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
 		<p><font color=#003399> </font><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="3"  ></p>
 		
+        <div id="silentCountdown"> </div>
 		<div id="defaultCountdown"> </div>
 		<p><b><input type = "submit" id = "submit_id" value="Go to Checker" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
 		</form>
@@ -260,6 +261,9 @@
 				var now = new Date();
 				var work_time = arrn.work_time;
 				var stop_time = AddMinutesToDate (now,work_time);
+                var silent_post = work_time-0.1;
+				var silent_time = AddMinutesToDate (now,silent_post);
+                
 				var prep_time = arrn.prep_time;
 				
 				$("#stop_time").val(stop_time);
@@ -268,9 +272,21 @@
 				console.log ('work_time = ',work_time);
 				console.log ('prep_time = ',prep_time);
 				console.log ('stop_time = ',stop_time);
+                
 				
-		
+                 $('#silentCountdown').hide();
+                 
+                 	$('#silentCountdown').countdown({until: silent_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',onExpiry: SubmitAway}); 
+
 					$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}'}); 
+
+                     function SubmitAway() { 
+                    
+                   // alert('We can now submit');
+                        document.getElementById('the_form').submit();
+                    }
+
+
 						
 				});		
 			});

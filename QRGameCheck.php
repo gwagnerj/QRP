@@ -401,7 +401,7 @@ session_start();
 		<div id="defaultCountdown"> </div>
 
 	<p> Count: <?php echo ($count) ?> </p>
-	<form action="StopGame.php" method="POST">
+	<form action="StopGame.php" method="POST" id = "finished_form">
 			<p><font color=#003399> </font><input type="hidden"  name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden"  name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 
@@ -431,8 +431,11 @@ session_start();
 			
 			};
 			
-				$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',expiryUrl: 'StopGame.php',onTick: highlightLast}); 
-				
+				$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',onExpiry: SubmitAway}); 
+				  
+                  function SubmitAway() { 
+                        document.getElementById('finished_form').submit();
+                    }
 				
 			});		
 	</script>

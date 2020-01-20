@@ -182,7 +182,7 @@
 
                     function Discuss() { 
                       $('#defaultCountdown').show();
-                         $('#message').text('Planning Stage - Group Discussion Phase');
+                         $('#message').html('Planning Stage - <font color = "red"> Group Discussion </font>Phase');
                         document.body.style.background = "SkyBlue";
                          // flash the message
                           $('#message2').show();

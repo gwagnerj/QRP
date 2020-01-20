@@ -58,7 +58,7 @@ session_start();
 			<p><font color=#003399> </font><input type="hidden" id = "game_id" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 
     <hr>
-	<p><b><font Color="red">Wait</font> for the instructor/game master to give you a reflection topic then preceed to reflection</b></p>
+	<p><b>Record Score then <font Color="red">Wait</font> for the instructor/game master to give you a reflection topic then preceed to reflection</b></p>
 	  <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
 	  <!-- <?php //$_SESSION['score'] = round($PScore);  $_SESSION['count'] = $count; ?> -->
 	 <b><input type="submit" value="Go To Reflection" name="score" style = "width: 30%; background-color:yellow "></b>

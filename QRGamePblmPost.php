@@ -175,7 +175,7 @@
 
                     function Discuss() { 
                       $('#defaultCountdown').show();
-                         $('#message').text('Reflection Stage - Group Discussion Phase');
+                         $('#message').html('Reflection Stage - <font color = "red"> Group Discussion </font> Phase');
                         document.body.style.background = "SkyBlue";
                          // flash the message
                           $('#message2').show();
