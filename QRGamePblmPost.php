@@ -105,15 +105,10 @@
 
 ?>
 
-
-
 <h3> Game number: <?php echo($game_id);?> </h3>
 
 	<h2> <span id = "message"> Post Problem Reflection - <font color = "red">Silent Phase </font> </p>
     Write  down your response </h2>	</span>		
-
-
-
 	
 
 	<form action = "index.php" method = "POST" id="the_form" >
