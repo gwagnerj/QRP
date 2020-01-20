@@ -2,21 +2,20 @@
 	session_start();
 	require_once "pdo.php";
 	
-// This is the program that gives them the values for the input parameters and is called by index.php  script calles fetchworktime.php to start the timer
-	// first do some error checking on the input.  If it is not OK set the session failure and send them back to QRGameIndex.
+	// this is called by stop game and is for the disscussion of the 
 	// Comming from index the game number will be a POST where if we are coming from a QRcode of the game it will be a GET
-    
-    if (isset($_POST['game_id'])){
+   
+     if (isset($_POST['game_id'])){
         $game_id = $_POST['game_id'];
     }  else {
        $_SESSION['error'] = "Missing game number- this one";
 	  header('Location: index.php');
 	  return;   
     }
-    
-    if($_SESSION['game_progress']==1){
+     /*
+    if($_SESSION['game_progress']==5){
         
-      header('Location: index.php');
+     echo ('reloaded page');
 	  return;
     }
     
@@ -24,12 +23,12 @@
 	  $_SESSION['error'] = "game number out of range";
 	  header('Location: index.php');
 	  return;
-	}
+	} */
 	
 	
 	$_SESSION['game_id'] = $game_id;
 
-	if ( isset($_POST['alt_dex']) ) {
+	/* if ( isset($_POST['alt_dex']) ) {
 		$alt_dex = $_POST['alt_dex'];
 	} elseif (isset($_SESSION['alt_dex'])){
 		$alt_dex = $_SESSION['alt_dex'];
@@ -38,7 +37,7 @@
 	  header('Location: index.php');
 	  return;
 	}
-    $_SESSION['game_progress']=1; //put this in to stop a page reload from restarting the clock
+    $_SESSION['game_progress']=; //put this in to stop a page reload from restarting the clock
     
 	$_SESSION['count']=0;
 	$_SESSION['startTime'] = time();
@@ -53,11 +52,11 @@
 			header( 'Location: index.php' ) ;
 			return;
 		}
+         */
         
-        
-		$gameData=$row;	
+		// $gameData=$row;	
 		
-       // echo ($gameData['prep_time']);
+       // echo ($gameData['post_time']);
 		
 
 		
@@ -110,16 +109,17 @@
 
 <h3> Game number: <?php echo($game_id);?> </h3>
 
-	<h2> <span id = "message"> Planning Stage - <font color = "red">Silent Phase </font> </p>
-    Write down your plan </h2>	</span>		
+	<h2> <span id = "message"> Post Problem Reflection - <font color = "red">Silent Phase </font> </p>
+    Write  down your response </h2>	</span>		
+
+
+
 	
 
-	<form action = "QRGameGetIn.php" method = "POST" id="the_form" >
+	<form action = "index.php" method = "POST" id="the_form" >
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
 		<p><font color=#003399> </font><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-		<p><font color=#003399> </font><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
-		<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="3"  ></p>
 		<div id="silentCountdown"> </div>
 		<div id="defaultCountdown"> </div>
 		<p><b><input type = "submit" id = "submit_id" value="Get Problem Parameters" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
@@ -158,19 +158,17 @@
 				
 				var now = new Date();
 				
-                var prep_time = arrn.prep_time;
-                var work_time = arrn.work_time;
-                var silent_prep = prep_time/2
-				var silent_time = AddMinutesToDate (now,silent_prep);
-				var stop_time = AddMinutesToDate (now,prep_time);
-				$("#stop_time").val(stop_time);  // This is the value that gets fed to QRGameGetIn
+                var post_time = arrn.post_time;
+               
+                var silent_post = post_time/2
+				var silent_time = AddMinutesToDate (now,silent_post);
+				var stop_time = AddMinutesToDate (now,post_time);
 				$('#submit_id').hide();
                 $('#defaultCountdown').hide();
                   $('#message2').hide();
 				console.log ('now = ',now);
-				console.log ('work_time = ',work_time);
-				console.log ('prep_time = ',prep_time);
-                console.log ('silent_prep_time = ',silent_prep);
+				console.log ('post_time = ',post_time);
+                console.log ('silent_post_time = ',silent_post);
 				console.log ('stop_time = ',stop_time);
                
 					
@@ -182,7 +180,7 @@
 
                     function Discuss() { 
                       $('#defaultCountdown').show();
-                         $('#message').text('Planning Stage - Group Discussion Phase');
+                         $('#message').text('Reflection Stage - Group Discussion Phase');
                         document.body.style.background = "SkyBlue";
                          // flash the message
                           $('#message2').show();

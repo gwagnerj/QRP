@@ -249,9 +249,6 @@ session_start();
 		}
 
 		
-		
-		  // we are coming through the first time
-		
 		$PScore=$score/$probParts*100;  
 	
 		$_SESSION['points']=$score;
@@ -294,13 +291,8 @@ session_start();
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
 
-
-
 	<form autocomplete="off" method="POST" >
-	<!-- <p>Problem Number: <input type="text" name="problem_number" ></p> -->
-	<!-- <p> Please put in your index number </p> -->
 	<!--<p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
-	<!--<p> <strong> Fill in - then select "Check" </strong></p> -->
 
 	<?php
 
@@ -399,24 +391,21 @@ session_start();
 	$_SESSION['time']=time();
 	?>
 
-	<!--<p>Grading Scheme: <input type="text" name="grade_scheme" ></p> -->
 	<p><input type = "submit" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy">Score:  <?php echo (round($PScore)) ?>%</font></b></p>
 			<p><font color=#003399> </font><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden" id = "game_id" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="<?php echo (htmlentities($stop_time))?>"  ></p>
-			
 
 	</form>
-
-
 		<div id="defaultCountdown"> </div>
 
 	<p> Count: <?php echo ($count) ?> </p>
-
-
 	<form action="StopGame.php" method="POST">
-	 <hr>
+			<p><font color=#003399> </font><input type="hidden"  name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
+			<p><font color=#003399> </font><input type="hidden"  name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+
+    <hr>
 	<p><b><font Color="red">Finished:</font></b></p>
 	  <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
 	   <?php $_SESSION['score'] = round($PScore);  $_SESSION['count'] = $count; ?>
@@ -431,29 +420,7 @@ session_start();
 				var stop_time = $("#stop_time").val();
 				var stop_time = new Date(stop_time);
 				
-	/* 			
-				$.countdown.resync();
-				var now = new Date();
-				now_ms = Math.abs(now);
-				stop_time_ms = Math.abs(stop_time);
-				
-				console.log ('now_ms = ',now_ms);
-				console.log ('stop_time_ms = ',stop_time_ms);
-				var diff_time_ms = Math.floor(stop_time_ms-now_ms); 
-				console.log ('diff_time_ms = ',diff_time_ms);
-					*/
-			
-				//	$('#defaultCountdown').countdown({until: "10s", expiryUrl: 'http://jquery.com', 
-				//		description: 'To go to jQuery'}); 
-						 
-					/* $('#newPageStart').click(function() { 
-						shortly = new Date(); 
-						shortly.setSeconds(shortly.getSeconds() + 5.5); 
-						$('#newPage').countdown('option', {until: shortly}); 
-					}); */
-			
-			//$('#highlightCountdown').countdown({until: 0, 
-			//	onTick: highlightLast5}); 
+	
 			function highlightLast(periods) { 
 				if ($.countdown.periodsToSeconds(periods) === 20) { 
 					$(this).css('color', 'red','font-weight', 'Bold' ); 
@@ -469,11 +436,6 @@ session_start();
 				
 			});		
 	</script>
-
-	
-
-
-
 
 	</main>
 	</body>

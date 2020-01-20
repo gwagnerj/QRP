@@ -1,6 +1,24 @@
 <?php
 session_start();
 	
+
+	if ( isset($_POST['problem_id']) ) {
+			$problem_id = $_POST['problem_id'];
+		} else {
+		  $_SESSION['error'] = "Missing problem_id";
+		  header('Location: getGamePblmNum.php');
+		  return;
+		}
+		
+	if ( isset($_POST['game_id']) ) {
+			$game_id = $_POST['game_id'];
+		}  else {
+		  $_SESSION['error'] = "Missing game_id";
+		  header('Location: getGamePblmNum.php');
+		  return;
+		}	
+		
+
 	 
 	$elapTime = $_SESSION['time']-$_SESSION['startTime'];
 	 $minutes = floor(($elapTime / 60) % 60);
@@ -34,8 +52,25 @@ session_start();
 	<b><font size=4><p>Number of Tries:<font color = "blue"> <?php echo ($_SESSION['count'])?></font></font></b>
 	<p><br></p>
 	<!--<span class = 'push_luck'> You can keep your points by Selecting a New Problem</span></br> -->
-	<a href="index.php"><b><font size = 5> New Problem </font></b></a>
 	
+    	<form action="QRGamePblmPost.php" method="POST">
+			<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
+			<p><font color=#003399> </font><input type="hidden" id = "game_id" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+
+    <hr>
+	<p><b><font Color="red">Wait</font> for the instructor/game master to give you a reflection topic then preceed to reflection</b></p>
+	  <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
+	  <!-- <?php //$_SESSION['score'] = round($PScore);  $_SESSION['count'] = $count; ?> -->
+	 <b><input type="submit" value="Go To Reflection" name="score" style = "width: 30%; background-color:yellow "></b>
+	 <p><br> </p>
+	 <hr>
+	</form>
+
+    
+    
+   <!-- <a href="QRGamePblmPost.php"><b><font size = 5> Go To Reflection </font></b></a>
+	   <a href="index.php"><b><font size = 5> New Problem </font></b></a>  -->
+
 	</main>
 	
 

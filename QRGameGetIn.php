@@ -187,7 +187,7 @@
 
 <h3> Game number: <?php echo($game_id);?> </h3>
 
-	<h4><font color = "red"> Write</font> the below values on your sheet before you proceed </h4>			
+	<h4><font color = "red"> Write</font> the below values on your sheet then proceed to checker </h4>			
 		
 
 

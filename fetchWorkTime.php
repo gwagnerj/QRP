@@ -18,7 +18,7 @@ session_start();
 		}	
 	if (!empty($row['work_time'])){$resp_arr['work_time'] = $row['work_time']; }
 	if (!empty($row['prep_time'])){$resp_arr['prep_time'] = $row['prep_time']; }
-	if (!empty($row['nv_3'])){$resp_arr['post_time'] = $row['post_time']; }
+	if (!empty($row['post_time'])){$resp_arr['post_time'] = $row['post_time']; }
 	
 
 	
