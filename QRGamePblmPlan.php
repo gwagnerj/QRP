@@ -111,7 +111,15 @@
 <h3> Game number: <?php echo($game_id);?> </h3>
 
 	<h2> <span id = "message"> Planning Stage - <font color = "red">Silent Phase </font> </p>
-    Write down your plan </h2>	</span>		
+    <font color = "red">Write </font> down your plan. Prompts:</h2>	
+    <ol> <li> Principles and equations?</li>
+   <li><b>Diagrams</b> / Tables? </li>
+   <li>Additional information?</li>
+    <li>Assumptions/basis?</li>
+    <li>Procedure / Algorithm?</li>
+     <li>Hardest part?</li>
+     <li>Where to start?</li>
+    </ol> </span>		
 	
 
 	<form action = "QRGameGetIn.php" method = "POST" id="the_form" >

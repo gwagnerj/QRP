@@ -1037,10 +1037,10 @@ $(document).ready(function(){
 	
 		});
 
-// put in the QRcode for the game problem
+// put in the QRcode directions for the plannning and reflections stages for the game problem
     var game_id = sessionStorage.getItem('game_id');
     console.log ("game_id "+game_id);
-     
+   
     if ( game_id!=null) {
      var qrcode = new QRCode(document.getElementById("qrcode"), {
           
@@ -1053,6 +1053,34 @@ $(document).ready(function(){
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
-    }
+   
+   
+    // put the directions for the planning
+ /*     
+      $("#exp_date").replaceWith("<p><font size = 3> Planning Stage - After reading the statement and making any preliminary diagrams try to answer the following: </font></p>");
+      //  $("#exp_date").append("<font size = 2><ol> <li>What principles and equations will I need?</li><li>Do I need information not in the problem statment?</li><li>Are there assumptions/basis/that would make the solution easier?</li><li>Are there tables or diagrams I can create to keep track of the information?</li><li>Which part will be the most difficult?</li></ol></font>");
+       
+
+       $(":button").remove();
+        $("#reflections").hide();
+          $("#pblmbutton").remove();
+           $("#reflectionbutton").remove();
+          $("#backbut").css('background-color','blue')
+          
+           */
+   }
+
+
+   /*  
+  
+    $("#exp_date").append("<p><font size = 3> Planning Stage - After reading the statement and making any preliminary diagrams try to answer the following:
+</p> <p>  What other tables / diagrams will be useful </p> <p> What Principles or equations will I need   </font></p>");
+
+    
+    	
+     */    
+         
+      
+    
  });
  

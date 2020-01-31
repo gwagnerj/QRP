@@ -767,7 +767,7 @@ $(document).ready(function(){
 		}); // on click
 		
 	});  // fetch vars in problem
-	
+		
 });	  // doc ready
 
                    
