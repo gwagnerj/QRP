@@ -83,7 +83,7 @@ session_start();
 	if (isset($_POST['prep_time'])){
 		$prep_time = $_POST['prep_time'];
 	} else {
-		$prep_time = 1;  // 15 minutes
+		$prep_time = 1;  // 1 minutes
 	}
 	
 	if (isset($_POST['work_time'])){
@@ -95,7 +95,7 @@ session_start();
 	if (isset($_POST['post_time'])){
 		$post_time = $_POST['post_time'];
 	} else {
-		$post_time = 1;  // 15 minutes
+		$post_time = 1;  // 1 minutes
 	}
 	
 	

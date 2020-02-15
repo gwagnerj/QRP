@@ -20,8 +20,6 @@
 	  return;
     }
         
-        
-    
     
 	if ($game_id<1 || $game_id>1000000) {
 	  $_SESSION['error'] = "game number out of range";
@@ -31,6 +29,28 @@
 	
 	
 	$_SESSION['game_id'] = $game_id;
+    
+   	if ( isset($_POST['pin']) ) {
+		$pin = $_POST['pin'];
+	} elseif (isset($_SESSION['pin'])){
+		$pin = $_SESSION['pin'];
+	} else {
+	  $_SESSION['error'] = "Missing pin";
+	  header('Location: index.php');
+	  return;
+    }
+      	if ( isset($_POST['team_id']) ) {
+		$team_id = $_POST['team_id'];
+	} elseif (isset($_SESSION['team_id'])){
+		$team_id = $_SESSION['team_id'];
+	} else {
+	  $_SESSION['error'] = "Missing team_id";
+	  header('Location: index.php');
+	  return;
+    }
+    $_SESSION['team_id']=$team_id;
+
+
 
 	if ( isset($_POST['alt_dex']) ) {
 		$alt_dex = $_POST['alt_dex'];
@@ -78,18 +98,74 @@
 		 */
 		
 		if($dex == -1 ) {$dex = $alt_dex;} // temp will change to Assigned dex from the players pin
-	//echo $_SESSION['problem_id'];
-	//echo '<br>';
-	//echo $_SESSION['index'];
-	//echo '<br>';
-	//die();
+	
+        // write to the Game_activity table the values for the 
+        
+       // get the answers for parts b and the last part from the QA table
+       	$stmt = $pdo->prepare("SELECT * FROM Qa where problem_id = :problem_id AND dex = :dex");
+			$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
+			$row = $stmt -> fetch();
+			if ( $row === false ) {
+				$_SESSION['error'] = 'Bad value for problem_id';
+				header( 'Location: getGamePblmNum.php' ) ;
+				return;
+			}	
+            
+            $ans_b = $row['ans_b'];
+          
+
+          // gota be a better way but I am going to bruit force it
+            
+            $ans_last = $row['ans_j'];
+            if($row['ans_j']>=1.2e43 && $row['ans_j'] < 1.3e43){
+                $ans_last = $row['ans_i'];
+            }
+             if($row['ans_i']>=1.2e43 && $row['ans_i'] < 1.3e43){
+                $ans_last = $row['ans_h'];
+            }
+              if($row['ans_h']>=1.2e43 && $row['ans_h'] < 1.3e43){
+                $ans_last = $row['ans_g'];
+            }
+            if($row['ans_g']>=1.2e43 && $row['ans_g'] < 1.3e43){
+                $ans_last = $row['ans_f'];
+            }
+             if($row['ans_f']>=1.2e43 && $row['ans_f'] < 1.3e43){
+                $ans_last = $row['ans_e'];
+            }
+             if($row['ans_e']>=1.2e43 && $row['ans_e'] < 1.3e43){
+                $ans_last = $row['ans_d'];
+            }
+              if($row['ans_d']>=1.2e43 && $row['ans_d'] < 1.3e43){
+                $ans_last = $row['ans_c'];
+            }
+              if($row['ans_c']>=1.2e43 && $row['ans_c'] < 1.3e43){
+                $ans_last = $row['ans_b'];
+            }
+
+
+// will sum them up in the next file down QRGameCheck
+
+
+       $sql = "INSERT INTO Gameactivity (game_id, team_id, pin, dex, ans_b, ans_last)
+							VALUES (:game_id, :team_id, :pin, :dex, :ans_b, :ans_last)";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(
+					':game_id' => $game_id,
+					':team_id' => $team_id,
+					':pin' => $pin,
+					':dex' => $dex,
+                    ':ans_b' => $ans_b,
+                    ':ans_last' => $ans_last,
+					));
+					
+    
 
 		$stmt = $pdo->prepare("SELECT * FROM `Input` where problem_id = :problem_id AND dex = :dex");
 		$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		//$row = $stmt -> fetch();
 			if ( $row === false ) {
-				$_SESSION['error'] = 'could not read row of table Qa for game variables dex ='.$dex.' problem_id ='.$problem_id;
+				$_SESSION['error'] = 'could not read row of table input for game variables dex ='.$dex.' problem_id ='.$problem_id;
 				header('Location: index.php');
 				return;
 			}	
@@ -218,6 +294,8 @@
 	<form action = "QRGameCheck.php" method = "POST" id = "the_form" >
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
 		<p><font color=#003399> </font><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+        <p><font color=#003399> </font><input type="hidden" name="team_id" id = "team_id" size=3 value="<?php echo (htmlentities($team_id))?>"  ></p>
+        <p><font color=#003399> </font><input type="hidden" name="pin" id = "pin" size=3 value="<?php echo (htmlentities($pin))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="3"  ></p>

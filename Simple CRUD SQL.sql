@@ -1116,6 +1116,8 @@ WHERE
 		`team_id` int(11) NOT NULL,
 		`pin` int(8) NOT NULL,
 		`dex` INT(4) NOT NULL,
+         `ans_b` DOUBLE,
+        `ans_last` DOUBLE,
         `ans_sumb` DOUBLE,
         `ans_sumlast` DOUBLE,
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

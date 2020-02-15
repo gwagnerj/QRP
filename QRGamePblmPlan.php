@@ -29,6 +29,17 @@
 	
 	$_SESSION['game_id'] = $game_id;
 
+    if ( isset($_POST['team_id']) ) {
+		$team_id = $_POST['team_id'];
+	} elseif (isset($_SESSION['team_id'])){
+		$team_id = $_SESSION['team_id'];
+	} else {
+	  $_SESSION['error'] = "Missing team number";
+	  header('Location: index.php');
+	  return;
+	}
+    $_SESSION['team_id']=$team_id;
+
 	if ( isset($_POST['pin']) ) {
 		$pin = $_POST['pin'];
 	} elseif (isset($_SESSION['pin'])){
@@ -127,7 +138,7 @@
 
 <h3> Game number: <?php echo($game_id);?> </h3>
 <h3> PIN: <?php echo($pin);?> </h3>
-<h3> alt_dex: <?php echo($alt_dex);?> </h3>
+<h3> Team Number: <?php echo($team_id);?> </h3>
 	<h2> <span id = "message"> Planning Stage - <font color = "red">Silent Phase </font> </p>
     <font color = "red">Write </font> down your plan. Prompts:</h2>	
     <ol> <li> Principles and equations?</li>
@@ -143,8 +154,10 @@
 	<form action = "QRGameGetIn.php" method = "POST" id="the_form" >
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
 		<p><font color=#003399> </font><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+        <p><font color=#003399> </font><input type="hidden" name="team_id" id = "team_id" size=3 value="<?php echo (htmlentities($team_id))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" id = "alt_dex" name="alt_dex" size=3 value="<?php echo (htmlentities($alt_dex))?>"  ></p>
-		<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
+        	<p><font color=#003399> </font><input type="hidden" id = "pin" name="pin" size=3 value="<?php echo (htmlentities($pin))?>"  ></p>
+		
 		<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="3"  ></p>
 		<div id="silentCountdown"> </div>
 		<div id="defaultCountdown"> </div>

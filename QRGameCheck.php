@@ -44,7 +44,26 @@ session_start();
 			  return;
 		}	
 		
-		
+		 	if ( isset($_POST['team_id']) ) {
+            $team_id = $_POST['team_id'];
+        } elseif (isset($_SESSION['team_id'])){
+            $team_id = $_SESSION['team_id'];
+        } else {
+          $_SESSION['error'] = "Missing team_id";
+          header('Location: index.php');
+          return;
+        }
+        $_SESSION['team_id']=$team_id;
+
+        	if ( isset($_POST['pin']) ) {
+                $pin = $_POST['pin'];
+            } elseif (isset($_SESSION['pin'])){
+                $pin = $_SESSION['pin'];
+            } else {
+              $_SESSION['error'] = "Missing pin";
+              header('Location: index.php');
+              return;
+            }
 		
 			// initialize a few variables
 			$count = 0;
@@ -83,7 +102,7 @@ session_start();
 			
 			$time_sleep1 = 2;  // time delay in seconds
 			$time_sleep1_trip = 5;  // number of trials it talkes to trip the time delay
-			$time_sleep2 = 5;  // additional time if hit the next limit
+			$time_sleep2 = 10;  // additional time if hit the next limit
 			$time_sleep2_trip = 10;	
 			
 			// see if the problem has been suspended	
@@ -179,6 +198,37 @@ session_start();
 		$_SESSION['count'] = $count;
 
 	}
+    
+    if($_SESSION['count']==1){
+        
+      // update the ans_sumb and ans_sumlast for the members of the group
+
+        $stmt = $pdo->prepare("SELECT SUM(`ans_b`) AS ans_sumb FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id");
+			$stmt->execute(array(":game_id" => $game_id, ":team_id" => $team_id));
+			$row = $stmt -> fetch();
+            $ans_sumb = $row['ans_sumb'];
+			echo ($row['ans_sumb']);
+    
+        $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumb` = $ans_sumb WHERE game_id = :game_id AND pin = :pin");
+			$stmt->execute(array(":game_id" => $game_id, ":pin" => $pin));
+			
+         $stmt = $pdo->prepare("SELECT SUM(`ans_last`) AS ans_sumlast FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id");
+			$stmt->execute(array(":game_id" => $game_id, ":team_id" => $team_id));
+			$row = $stmt -> fetch();
+            $ans_sumlast = $row['ans_sumlast'];
+			echo ($row['ans_sumlast']);
+    
+        $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumlast` = $ans_sumlast WHERE game_id = :game_id AND pin = :pin");
+			$stmt->execute(array(":game_id" => $game_id, ":pin" => $pin));
+        
+    }
+    
+    
+    
+    
+    
+    
+    
 	// read the student responses into an array
 		$resp['a']=$_POST['a']+0;
 		$resp['b']=$_POST['b']+0;

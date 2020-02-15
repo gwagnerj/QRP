@@ -68,7 +68,7 @@ $gs_num = "";
 <form action = "QRGamePblmPlan.php" method = "POST" autocomplete="off">
 
     <p><font color=#003399> Fill in your PIN </font><input type="number" name="pin" size=3 min="1" max= "9999"  ></p>
-     <p><font color=#003399> and Team Number </font><input type="number" name="team_num" size=3 min="1" max= "100"  ></p>
+     <p><font color=#003399> and Team Number </font><input type="number" name="team_id" size=3 min="1" max= "100"  ></p>
      <p> <font color=#0000CD size = "1">(PIN and Team Number are supplied from the Instructor)</font> </p>
     <p> then <font color = "red" size = "5" > Wait</font> until the Instructor tells you to Start </p>
 	<p><font color=#003399> </font><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
