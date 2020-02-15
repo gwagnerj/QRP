@@ -48,7 +48,7 @@
 
 		$stmt = $pdo->prepare("SELECT * FROM Game WHERE game_id = :game_id");
 		$stmt->execute(array(":game_id" => $game_id));
-		//$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		
 		$row = $stmt -> fetch();
 		if ( $row === false ) {
 			$_SESSION['error'] = 'Bad value for game_id or game_id not active';
@@ -59,7 +59,7 @@
 		//echo $probData['tol_a'];
 		
 		$problem_id = $gameData['problem_id'];
-		$dex = $gameData['dex'];
+		 $dex = $gameData['dex'];
 		
 		$rect_length = $gameData['rect_length'];
 		$oval_length = $gameData['oval_length'];
@@ -77,7 +77,7 @@
 		die();
 		 */
 		
-		if($dex == -1) {$dex = $alt_dex;} // temp will change to random number 
+		if($dex == -1 ) {$dex = $alt_dex;} // temp will change to Assigned dex from the players pin
 	//echo $_SESSION['problem_id'];
 	//echo '<br>';
 	//echo $_SESSION['index'];
@@ -89,7 +89,7 @@
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		//$row = $stmt -> fetch();
 			if ( $row === false ) {
-				$_SESSION['error'] = 'could not read row of table Qa for game variables';
+				$_SESSION['error'] = 'could not read row of table Qa for game variables dex ='.$dex.' problem_id ='.$problem_id;
 				header('Location: index.php');
 				return;
 			}	

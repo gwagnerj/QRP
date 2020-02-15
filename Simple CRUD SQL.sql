@@ -1109,3 +1109,18 @@ SET
     allow_edit = 1
 WHERE
     problem_id < 320;
+    
+ CREATE TABLE IF NOT EXISTS `Gameactivity` (
+		`gameactivity_id` int(11) NOT NULL AUTO_INCREMENT,
+		`game_id` int(11) NOT NULL,
+		`team_id` int(11) NOT NULL,
+		`pin` int(8) NOT NULL,
+		`dex` INT(4) NOT NULL,
+        `ans_sumb` DOUBLE,
+        `ans_sumlast` DOUBLE,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		PRIMARY KEY (`gameactivity_id`),
+		CONSTRAINT FOREIGN KEY (`game_id`) REFERENCES `Game` (`game_id`) 
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+    

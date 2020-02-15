@@ -29,15 +29,32 @@
 	
 	$_SESSION['game_id'] = $game_id;
 
-	if ( isset($_POST['alt_dex']) ) {
-		$alt_dex = $_POST['alt_dex'];
-	} elseif (isset($_SESSION['alt_dex'])){
-		$alt_dex = $_SESSION['alt_dex'];
+	if ( isset($_POST['pin']) ) {
+		$pin = $_POST['pin'];
+	} elseif (isset($_SESSION['pin'])){
+		$pin = $_SESSION['pin'];
 	} else {
-	  $_SESSION['error'] = "Missing alt dex";
+	  $_SESSION['error'] = "Missing pin";
 	  header('Location: index.php');
 	  return;
 	}
+            $_SESSION['pin']=$pin;
+				$alt_dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
+				$_SESSION['alt_dex'] = $alt_dex;
+                
+     if ( isset($_POST['team_num']) ) {
+		$team_num = $_POST['team_num'];
+	} elseif (isset($_SESSION['team_num'])){
+		$team_num = $_SESSION['team_num'];
+	} else {
+        $team_num = 10;
+	 // uncomment this when we do something with team number
+     /* $_SESSION['error'] = "Missing team_num";
+	  header('Location: index.php');
+	  return; */
+	}   
+        $_SESSION['team_num'] = $team_num;
+                
     $_SESSION['game_progress']=1; //put this in to stop a page reload from restarting the clock
     
 	$_SESSION['count']=0;
@@ -109,7 +126,8 @@
 
 
 <h3> Game number: <?php echo($game_id);?> </h3>
-
+<h3> PIN: <?php echo($pin);?> </h3>
+<h3> alt_dex: <?php echo($alt_dex);?> </h3>
 	<h2> <span id = "message"> Planning Stage - <font color = "red">Silent Phase </font> </p>
     <font color = "red">Write </font> down your plan. Prompts:</h2>	
     <ol> <li> Principles and equations?</li>
@@ -125,7 +143,7 @@
 	<form action = "QRGameGetIn.php" method = "POST" id="the_form" >
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
 		<p><font color=#003399> </font><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-		<p><font color=#003399> </font><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
+		<p><font color=#003399> </font><input type="hidden" id = "alt_dex" name="alt_dex" size=3 value="<?php echo (htmlentities($alt_dex))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="3"  ></p>
 		<div id="silentCountdown"> </div>

@@ -29,10 +29,9 @@ if(isset($_SESSION['problem_id'])){
 	  header('Location: index.php');
 	  return;
 	}
-
-
-$_SESSION['alt_dex'] = rand(2,200);
-$alt_dex = rand(2,200);
+    $_SESSION['game_progress'] = 0;
+   
+  
 ?>
 
 <!DOCTYPE html>
@@ -67,9 +66,13 @@ $gs_num = "";
 ?>
 
 <form action = "QRGamePblmPlan.php" method = "POST" autocomplete="off">
-    <p><font color = "red"> Wait</font> until the Game Master/Instructor tells you to Start </p>
+
+    <p><font color=#003399> Fill in your PIN </font><input type="number" name="pin" size=3 min="1" max= "9999"  ></p>
+     <p><font color=#003399> and Team Number </font><input type="number" name="team_num" size=3 min="1" max= "100"  ></p>
+     <p> <font color=#0000CD size = "1">(PIN and Team Number are supplied from the Instructor)</font> </p>
+    <p> then <font color = "red" size = "5" > Wait</font> until the Instructor tells you to Start </p>
 	<p><font color=#003399> </font><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-	<p><font color=#003399> </font><input type="hidden" name="alt_dex" size=3 value="<?php echo (htmlentities($alt_dex))?>"  ></p>
+	
 
 	<p><input type = "submit" value="Start" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>
