@@ -82,12 +82,12 @@ session_start();
 			$score = 0;
 			$PScore = 0;
 			$partsFlag = array();
-			$resp = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
+			$resp = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0,'sumb'=>0,'sumlast'=>0);
 			//$resp = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
-			$corr = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
+			$corr = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"",'sumb'=>"",'sumlast'=>"");
 			$unit = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
-			$tol=array('a'=>0.02,'b'=>0.02,'c'=>0.02,'d'=>0.02,'e'=>0.02,'f'=>0.02,'g'=>0.02,'h'=>0.02,'i'=>0.02,'j'=>0.02);
-			$ansFormat=array('ans_a' =>"",'ans_b' =>"",	'ans_c' =>"",'ans_d' =>"",'ans_e' =>"",'ans_f' =>"",	'ans_g' =>"",'ans_h' =>"",'ans_i' =>"",'ans_j'=>"" );
+			$tol=array('a'=>0.02,'b'=>0.02,'c'=>0.02,'d'=>0.02,'e'=>0.02,'f'=>0.02,'g'=>0.02,'h'=>0.02,'i'=>0.02,'j'=>0.02,'sumb'=>0.02,'sumlast'=>0.02);
+			$ansFormat=array('ans_a' =>"",'ans_b' =>"",	'ans_c' =>"",'ans_d' =>"",'ans_e' =>"",'ans_f' =>"",	'ans_g' =>"",'ans_h' =>"",'ans_i' =>"",'ans_j'=>"" ,'ans_sumb'=>"",'ans_sumlast'=>"");
 			
 			
 			$hintLimit = 3;
@@ -140,6 +140,7 @@ session_start();
 			$tol['h']=$probData['tol_h']*0.001;
 			$tol['i']=$probData['tol_i']*0.001;	
 			$tol['j']=$probData['tol_j']*0.001;	
+            
 			
 			
 			if (strlen($probData['hint_a'])>1){$hinta = $probData['hint_a'];$hintaPath="uploads/".$hinta;} else {$hintaPath ="uploads/default_hints.html";	}
@@ -159,7 +160,7 @@ session_start();
 			
 		
 			// Next check the Qa table and see which values have non null values - for those 
-			$probParts=0;
+			$probParts=1;
 			$stmt = $pdo->prepare("SELECT * FROM Qa where problem_id = :problem_id AND dex = :dex");
 			$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
 			$row = $stmt -> fetch();
@@ -179,8 +180,8 @@ session_start();
 					$partsFlag[$i]=true;
 				}
 			}
-			
-
+			$partsFlag[10]=true;
+            $partsFlag[11]=true;
 
 
 		// keep track of the number of tries the student makes
@@ -192,7 +193,7 @@ session_start();
 					$_SESSION['wrongC'[$j]]=$wrongCount[$j]; 
 				}
 		
-		$count=1;
+		$count=2;
 	}else{
 		$count = $_SESSION['count'] + 1;
 		$_SESSION['count'] = $count;
@@ -208,6 +209,7 @@ session_start();
 			$row = $stmt -> fetch();
             $ans_sumb = $row['ans_sumb'];
 			echo ($row['ans_sumb']);
+            $soln[10]=$ans_sumb;
     
         $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumb` = $ans_sumb WHERE game_id = :game_id AND pin = :pin");
 			$stmt->execute(array(":game_id" => $game_id, ":pin" => $pin));
@@ -216,11 +218,22 @@ session_start();
 			$stmt->execute(array(":game_id" => $game_id, ":team_id" => $team_id));
 			$row = $stmt -> fetch();
             $ans_sumlast = $row['ans_sumlast'];
-			echo ($row['ans_sumlast']);
+			$soln[11]=$ans_sumlast;
     
         $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumlast` = $ans_sumlast WHERE game_id = :game_id AND pin = :pin");
 			$stmt->execute(array(":game_id" => $game_id, ":pin" => $pin));
         
+    } else {
+        
+             $stmt = $pdo->prepare("SELECT *  FROM `Gameactivity` WHERE game_id = :game_id AND pin = :pin");
+			$stmt->execute(array(":game_id" => $game_id, ":pin" => $pin));
+			$row = $stmt -> fetch();
+            $ans_sumb = $row['ans_sumb'];
+			echo ($ans_sumb);
+            $soln[10]=$ans_sumb;
+             $ans_sumlast = $row['ans_sumlast'];
+            echo ($ans_sumlast);
+            $soln[11]=$ans_sumlast;
     }
     
     
@@ -240,10 +253,11 @@ session_start();
 		$resp['h']=$_POST['h']+0;
 		$resp['i']=$_POST['i']+0;
 		$resp['j']=$_POST['j']+0;
-		
+		$resp['sumb']=$_POST['sumb']+0;
+        $resp['sumlast']=$_POST['sumlast']+0;
 		
 	//}	 
-		For ($j=0; $j<=9; $j++) {
+		For ($j=0; $j<=11; $j++) {
 			if($partsFlag[$j]) {
 					//If ($soln[$j]>((1-$tol[$tol_key[$j]])*$resp[$resp_key[$j]]) and ($soln[$j]<((1+$tol[$tol_key[$j]]))*($resp[$resp_key[$j]]))) //if the correct value is within the response plus or minus the tolerance
 								
@@ -364,6 +378,11 @@ session_start();
 	<?php if (isset($_POST['pin']) and $changed[1] and @$wrongCount[1]>=$time_sleep2_trip and $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
+    
+    if ($partsFlag[10]){ ?> 
+	<p> Sum of b): <input [ type=number]{width: 5%;} name="sumb" size = 10% value="<?php echo (htmlentities($resp['sumb']))?>" > <?php echo($unit[1]) ?> &nbsp - <b><?php echo ($corr['sumb']) ?> </b>
+	</p>
+	<?php } 
 
 	if ($partsFlag[2]){ ?> 
 	<p> c): <input [ type=number]{width: 5%;} name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b>
@@ -436,6 +455,10 @@ session_start();
 	</p>
 	<?php } 
 
+  if ($partsFlag[11]){ ?> 
+	<p> Sum of last part): <input [ type=number]{width: 5%;} name="sumlast" size = 10% value="<?php echo (htmlentities($resp['sumlast']))?>" >  &nbsp - <b><?php echo ($corr['sumlast']) ?> </b>
+	</p>
+	<?php } 
 
 
 	$_SESSION['time']=time();
