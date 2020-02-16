@@ -1126,3 +1126,8 @@ WHERE
 		CONSTRAINT FOREIGN KEY (`game_id`) REFERENCES `Game` (`game_id`) 
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
     
+    ALTER TABLE `Gameactivity` 
+	ADD `score` int(4) AFTER `ans_sumlast`, 
+    ADD `team_score` int(4) AFTER `score`;
+	
+    

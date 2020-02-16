@@ -1,6 +1,6 @@
 <?php
 session_start();
-	
+	require_once "pdo.php";
 
 	if ( isset($_POST['problem_id']) ) {
 			$problem_id = $_POST['problem_id'];
@@ -17,14 +17,28 @@ session_start();
 		  header('Location: getGamePblmNum.php');
 		  return;
 		}	
-		
-
+	if ( isset($_POST['game_score']) ) {
+			$GamePts = $_POST['game_score'];
+		}  else {
+            $GamePts=$_SESSION['points'];
+		}		
+   
+   if ( isset($_POST['gameactivity_id']) ) {
+			$gameactivity_id = $_POST['gameactivity_id'];
+		}  
+    
+    // update the gameactivity table with the score
+    
+            $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `score` = $GamePts WHERE gameactivity_id = :gameactivity_id ");
+			$stmt->execute(array(":gameactivity_id" => $gameactivity_id));
+    
+    
 	 
 	$elapTime = $_SESSION['time']-$_SESSION['startTime'];
 	 $minutes = floor(($elapTime / 60) % 60);
 	$seconds = $elapTime % 60;
 	
-	$GamePts=$_SESSION['points'];
+	//$GamePts=$_SESSION['points'];
 	
 	?>
 
@@ -56,7 +70,7 @@ session_start();
     	<form action="QRGamePblmPost.php" method="POST">
 			<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden" id = "game_id" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-
+            <p><font color=#003399> </font><input type="hidden" id = "gameactivity_id" name="gameactivity_id" size=3 value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
     <hr>
 	<p><b>Record Score then <font Color="red">Wait</font> for the instructor/game master to give you a reflection topic then preceed to reflection</b></p>
 	  <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->

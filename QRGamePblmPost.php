@@ -12,6 +12,31 @@
 	  header('Location: index.php');
 	  return;   
     }
+     if ( isset($_POST['gameactivity_id']) ) {
+			$gameactivity_id = $_POST['gameactivity_id'];
+          
+           $stmt = $pdo->prepare("SELECT *  FROM `Gameactivity` WHERE gameactivity_id = :gameactivity_id ");
+			$stmt->execute(array(":gameactivity_id" => $gameactivity_id));
+			$row = $stmt -> fetch();
+            $game_id = $row['game_id'];
+            $team_id = $row['team_id'];
+
+         $stmt = $pdo->prepare("SELECT AVG(`score`) AS avg_score FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id AND created_at >= DATE_SUB(NOW(),INTERVAL 1 HOUR)");
+			$stmt->execute(array(":game_id" => $game_id, ":team_id" => $team_id));
+			$row = $stmt -> fetch();
+            $team_score = $row['avg_score'];
+			// echo ($row['ans_sumb']);
+            
+    
+        $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `team_score` = $team_score WHERE gameactivity_id = :gameactivity_id ");
+			$stmt->execute(array(":gameactivity_id" => $gameactivity_id));
+
+
+	}  
+        
+    
+    
+    
      /*
     if($_SESSION['game_progress']==5){
         
@@ -116,6 +141,7 @@
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
 		<p><font color=#003399> </font><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 		<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
+        <p><font color=#003399> </font><input type="hidden" id = "gameactivity_id" name="gameactivity_id" size=3 value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
 		<div id="silentCountdown"> </div>
 		<div id="defaultCountdown"> </div>
 		<p><b><input type = "submit" id = "submit_id" value="Get Problem Parameters" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>

@@ -228,6 +228,7 @@ session_start();
              $stmt = $pdo->prepare("SELECT *  FROM `Gameactivity` WHERE game_id = :game_id AND pin = :pin");
 			$stmt->execute(array(":game_id" => $game_id, ":pin" => $pin));
 			$row = $stmt -> fetch();
+            $gameactivity_id = $row['gameactivity_id'];
             $ans_sumb = $row['ans_sumb'];
 			//echo ($ans_sumb);
             $soln[10]=$ans_sumb;
@@ -479,6 +480,8 @@ session_start();
 	<form action="StopGame.php" method="POST" id = "finished_form">
 			<p><font color=#003399> </font><input type="hidden"  name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden"  name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+            <p><font color=#003399> </font><input type="hidden"  name="gameactivity_id" size=3 value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
+            <p><font color=#003399> </font><input type="hidden"  name="game_score" size=3 value="<?php echo (htmlentities(round($PScore)))?>"  ></p>
 
     <hr>
 	<p><b><font Color="red">Finished:</font></b></p>

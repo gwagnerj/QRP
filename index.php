@@ -4,14 +4,24 @@ session_start();
 if(isset($_SESSION['problem_id'])){
  unset($_SESSION['problem_id']);
 }
-
+require_once "pdo.php";
  unset($_SESSION['oldPoints']);
  $_SESSION['oldPoints']=0;
-
  
-$alt_dex = rand(2,200);
+ if ( isset($_POST['gameactivity_id']) ) {
+			$gameactivity_id = $_POST['gameactivity_id'];
+          
+           $stmt = $pdo->prepare("SELECT *  FROM `Gameactivity` WHERE gameactivity_id = :gameactivity_id ");
+			$stmt->execute(array(":gameactivity_id" => $gameactivity_id));
+			$row = $stmt -> fetch();
+            $team_score = $row['team_score'];
+            $game_id = $row['game_id'];
+           echo ('<h2> Your Average Team Score for Game '.$game_id.' was '.$team_score.'</h2>');
+	}  
+ 
+//$alt_dex = rand(2,200);
 //$alt_dex = 8;
-$_SESSION['alt_dex'] = $alt_dex;
+//$_SESSION['alt_dex'] = $alt_dex;
 $_SESSION['game_progress']=0;
 
 ?>
