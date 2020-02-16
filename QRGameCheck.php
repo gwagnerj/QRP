@@ -160,7 +160,7 @@ session_start();
 			
 		
 			// Next check the Qa table and see which values have non null values - for those 
-			$probParts=1;
+			$probParts=2;
 			$stmt = $pdo->prepare("SELECT * FROM Qa where problem_id = :problem_id AND dex = :dex");
 			$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
 			$row = $stmt -> fetch();
@@ -204,11 +204,11 @@ session_start();
         
       // update the ans_sumb and ans_sumlast for the members of the group
 
-        $stmt = $pdo->prepare("SELECT SUM(`ans_b`) AS ans_sumb FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id");
+        $stmt = $pdo->prepare("SELECT SUM(`ans_b`) AS ans_sumb FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id AND created_at >= DATE_SUB(NOW(),INTERVAL 1 HOUR)");
 			$stmt->execute(array(":game_id" => $game_id, ":team_id" => $team_id));
 			$row = $stmt -> fetch();
             $ans_sumb = $row['ans_sumb'];
-			echo ($row['ans_sumb']);
+			// echo ($row['ans_sumb']);
             $soln[10]=$ans_sumb;
     
         $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumb` = $ans_sumb WHERE game_id = :game_id AND pin = :pin");
@@ -229,10 +229,10 @@ session_start();
 			$stmt->execute(array(":game_id" => $game_id, ":pin" => $pin));
 			$row = $stmt -> fetch();
             $ans_sumb = $row['ans_sumb'];
-			echo ($ans_sumb);
+			//echo ($ans_sumb);
             $soln[10]=$ans_sumb;
              $ans_sumlast = $row['ans_sumlast'];
-            echo ($ans_sumlast);
+            //echo ($ans_sumlast);
             $soln[11]=$ans_sumlast;
     }
     
@@ -362,7 +362,8 @@ session_start();
 
 	if ($partsFlag[0]){ ?> 
 	<p> a): <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b>
-	<?php if (isset($_POST['pin']) and $corr['a']=="Correct" ){echo '- Computed value is: '.$soln[0];} ?>  
+	
+    <?php if (isset($_POST['pin']) and $corr['a']=="Correct" ){echo '- Computed value is: '.$soln[0];} ?>  
 	<?php if (isset($_POST['pin']) and @$wrongCount[0]>$hintLimit and $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>$time_sleep1_trip and @$wrongCount[0]< $time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>=$time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
@@ -466,6 +467,7 @@ session_start();
 
 	<p><input type = "submit" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy">Score:  <?php echo (round($PScore)) ?>%</font></b></p>
 			<p><font color=#003399> </font><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
+            <input type = "number" hidden name = "pin"  value = <?php echo ($pin); ?> > </input>
 			<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden" id = "game_id" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="<?php echo (htmlentities($stop_time))?>"  ></p>
