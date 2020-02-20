@@ -1129,5 +1129,20 @@ WHERE
     ALTER TABLE `Gameactivity` 
 	ADD `score` int(4) AFTER `ans_sumlast`, 
     ADD `team_score` int(4) AFTER `score`;
+
+
+
 	
-    
+     CREATE TABLE IF NOT EXISTS `Gmact` (
+		`gmact_id` int(11) NOT NULL AUTO_INCREMENT,
+		`game_id` int(11) NOT NULL,
+		`iid` int(11) NOT NULL,
+		`phase` INT(4) NOT NULL,
+        `prep_time` INT(11),
+        `work_time` INT(11),
+        `post_time` INT(11),
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		PRIMARY KEY (`gmact_id`),
+		CONSTRAINT FOREIGN KEY (`game_id`) REFERENCES `Game` (`game_id`) 
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
