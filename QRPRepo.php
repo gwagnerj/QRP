@@ -216,6 +216,8 @@
 			echo '&nbsp; &nbsp;&nbsp;';
 			echo '<a href="checkerBypass.php" target = "_blank">Solution Check Problem</b></a>';
 			echo '&nbsp; &nbsp;&nbsp;';
+            echo '<a href="QRGameMasterStart.php" target = "_blank">Game Master Screen</b></a>';
+			echo '&nbsp; &nbsp;&nbsp;';
 		}
 		
 		// check to see if the current user has sponsored anyone - if yes then allow them to suspend the them
@@ -567,8 +569,8 @@
             echo("</td><td>");
 			echo(htmlentities($row['nm_author']));
 			
-			echo("</td><td>"); // The users_id == 36 in the next line lets Brooke edit the problems and should be removed after she is done
-			if($row['username']==$username || $security=='admin' || ($security == 'contrib' && $row['allow_edit'] == 2) || ($security == 'contrib' && $users_id == 36) || $users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3']){
+			echo("</td><td>"); 
+			if($row['username']==$username || $security=='admin' || ($security == 'contrib' && $row['allow_edit'] == 2) || ($security == 'contrib') || $users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3']){
 				echo('<form action = "editpblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Edit"></form>');
 			}
 			if($row['username']==$username || $security=='admin'){
