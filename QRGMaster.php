@@ -61,7 +61,19 @@
             elseif(isset($_POST['game_num']) && is_numeric($_POST['game_num'])){
                 $game_id = $_POST['game_num'];
                 // Update the with any new values of the input parmaters in the html
+              
                 $phase = $_POST['phase'];
+               if(isset($_POST['phase_inc'])){
+                    $phase_inc=$_POST['phase_inc'];
+               } else {
+                   $phase_inc='not set';
+               }
+    
+              if( $phase_inc=="set"){
+                   $phase = $phase+1;
+               }
+
+             
                 $prep_time = $_POST['prep_time'];
                 $work_time = $_POST['work_time'];
                 $post_time = $_POST['post_time'];
@@ -105,7 +117,29 @@
                 $work_time = $row3['work_time'];
                 $post_time = $row3['post_time'];
             }
-
+            if($phase <=0){
+              $stage = 'waiting to start';  
+            } elseif ($phase ==1){
+                $stage = 'Planning Stage - Silent';  
+            } elseif ($phase ==2){  
+              $stage = 'Planning Stage - Team Discussion';  
+            } elseif ($phase ==3){  
+              $stage = 'Planning Stage - Questions?';  
+            } elseif ($phase ==4){
+                  $stage = 'Working on Problem';  
+            } elseif ($phase ==5){
+                      $stage = 'Reflection - Silent Phase';  
+            } elseif ($phase ==6){
+                      $stage = 'Reflection - Team Discussion Phase';  
+            } elseif ($phase ==7){
+                  $stage = 'Reflection - Class Discussion Phase';  
+            } else {
+                $stage = 'End - Increment will go back to beginning'; 
+                $phase = -1;
+            }
+            
+                
+                
 	?>
 <!DOCTYPE html>
 <html lang = "en">
@@ -151,7 +185,9 @@
    <p> Game Number = <?php echo $game_id; ?></p>
 	<p><input type="hidden" name="game_num" id="game_num" size=3 value=<?php echo($game_id);?> ></p>
     <p><input type="hidden" name="gmact_id" id="gmact_id" size=3 value=<?php echo($gmact_id);?> ></p>
-	<p><font color=#003399>Phase: </font><input type="number" name="phase" id="phase" size=3 value=<?php echo($phase);?> ></p>
+    <h2><font color="red"> <?php echo $stage;?></h2>
+	<p><font color=#003399></font><input type="hidden" name="phase" id="phase" size=3 value=<?php echo($phase);?> ></p>
+    <h2><input type="radio" name="phase_inc" value = "set" style="height:35px; width:35px;" id="phase_inc" > Increment Stage</h2>
 	<p><font color=#003399>Planning Time: </font><input type="number" name="prep_time" id="prep_time" size=5 value=<?php echo($prep_time);?> >
     <p><font color=#003399>Working Time: </font><input type="number" name="work_time" id="work_time" size=5 value=<?php echo($work_time);?> >
     <p><font color=#003399>Reflection Time: </font><input type="number" name="post_time" id="post_time" size=5 value=<?php echo($post_time);?> >
