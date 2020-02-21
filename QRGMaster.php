@@ -2,16 +2,28 @@
 	require_once "pdo.php";
 	session_start();
 	
-	
-            $sql_stmt = "SELECT * FROM Game WHERE DATE(NOW())<= exp_date order by game_id";
-            $stmt = $pdo->prepare($sql_stmt);
-            $stmt->execute();
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	
-     
-// this will be called form the main repo when the game master wants to run a game
-// this is just to get the game number and go on to QRGMaster.php with a post of the game number.
-// Validity will be checked in that file and sent back here if it is not valid
+
+ /*     
+ this will be called form the QRGameMasterStart.php with the game_id as a POST 
+ Validity will be checked here and sent back to QRGameMasterStart.php  if it is not valid
+ This will give control of the game on the fly allowing the GM to change to timers and phase of the game 
+ it will also have a link way to monitor the game in a separate tab say QRGameMonitor.php
+ */
+
+//Check the input
+
+		if ( isset($_POST['game_id']) && is_numeric($_POST['game_id']) ) {
+			$game_id = $_POST['game_id'];
+		
+		} else {
+		  $_SESSION['error'] = "Missing game_id";
+		  header('Location: QRGameMasterStart.php');
+		 die();
+		}
+
+
+
+
 
 
 	?>
@@ -28,7 +40,7 @@
 
 <body>
 <header>
-<h1>Quick Response Game - Get Game Number</h1>
+<h1>Quick Response Game Master Screen</h1>
 </header>
 
 <?php
@@ -41,7 +53,7 @@
 			echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
 			unset($_SESSION['success']);
 		}
-	
+
  
  
  
@@ -49,25 +61,15 @@
 
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
-<form  method="POST" action = "QRGMaster.php">
+<form  method="POST" action = "">
 		
     
      
      
-     <label> <h2>Select Active Game Number: </label>
+   <h2>Game Master: </h2>
       
-     
-			 <select name="game_id" id = "game_id">	
-                 <option>  </option>
-                <?php foreach ($rows as $row): ?>
-                    <option><?=$row["game_id"]?> 
-                     </option>
-                <?php endforeach ?>
-
-</h2>
-
-
-            </select>
+   
+		
 
       <p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	
