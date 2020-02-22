@@ -211,7 +211,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="jquery.countdown.css"> 
-		
+	
 <script type="text/javascript" src="jquery.plugin.js"></script> 
 <script type="text/javascript" src="jquery.countdown.js"></script>
 </head>
@@ -270,7 +270,7 @@
      <p><input type = "submit" value="Submit Changes" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	
 	</form>
-    
+   
     
 	<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
 	
@@ -279,8 +279,35 @@
 				var stop_time = $("#stop_time").val();
 				var stop_time = new Date(stop_time);
 				
-	
-			function highlightLast(periods) { 
+                //if you have another AudioContext class use that one, as some browsers have a limit
+                var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
+
+                //All arguments are optional:
+
+                //duration of the tone in milliseconds. Default is 500
+                //frequency of the tone in hertz. default is 440
+                //volume of the tone. Default is 1, off is 0.
+                //type of tone. Possible values are sine, square, sawtooth, triangle, and custom. Default is sine.
+                //callback to use on end of tone
+                function beep(duration, frequency, volume, type, callback) {
+                    var oscillator = audioCtx.createOscillator();
+                    var gainNode = audioCtx.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+
+                    if (volume){gainNode.gain.value = volume;}
+                    if (frequency){oscillator.frequency.value = frequency;}
+                    if (type){oscillator.type = type;}
+                    if (callback){oscillator.onended = callback;}
+
+                    oscillator.start(audioCtx.currentTime);
+                    oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
+                };
+                
+            
+            
+            function highlightLast(periods) { 
 				if ($.countdown.periodsToSeconds(periods) === 20) { 
 					$(this).css('color', 'red','font-weight', 'Bold' ); 
 				} 
@@ -295,6 +322,7 @@
                   function SubmitAway() { 
                        radiobtn = document.getElementById('phase_inc');
                        radiobtn.checked = true;
+                        beep();
                        document.getElementById('submit_form').submit();
                     }
 				
