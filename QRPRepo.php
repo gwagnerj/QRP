@@ -216,7 +216,7 @@
 			echo '&nbsp; &nbsp;&nbsp;';
 			echo '<a href="checkerBypass.php" target = "_blank">Solution Check Problem</b></a>';
 			echo '&nbsp; &nbsp;&nbsp;';
-            echo '<a href="QRGameMasterStart.php" target = "_blank">Game Master Screen</b></a>';
+            echo '<a href="QRGameMasterStart.php" >Game Master Screen</b></a>';
 			echo '&nbsp; &nbsp;&nbsp;';
 		}
 		
