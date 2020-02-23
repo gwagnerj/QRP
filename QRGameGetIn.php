@@ -2,7 +2,7 @@
 	session_start();
 	require_once "pdo.php";
 	
-// This is the program that gives them the values for the input parameters and is called by index.php  script calles fetchworktime.php to start the timer
+// This is the program that gives them the values for the input parameters and is called by QRGameProblemPlan.php  script calles fetchworktime.php to start the timer
 	// first do some error checking on the input.  If it is not OK set the session failure and send them back to QRGameIndex.
 	// Comming from index the game number will be a POST where if we are coming from a QRcode of the game it will be a GET
     

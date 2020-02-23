@@ -14,6 +14,12 @@
 	  return;   
     }
     
+    if (isset($_POST['name'])){
+        $name = $_POST['name'];
+    }  else {
+        $name = 'Left Blank';
+    }
+    
     if($_SESSION['game_progress']==1){
         
       header('Location: index.php');
@@ -135,7 +141,7 @@
 ?>
 
 
-
+<h3> Name: <?php echo($name);?> </h3>
 <h3> Game number: <?php echo($game_id);?> </h3>
 <h3> PIN: <?php echo($pin);?> </h3>
 <h3> Team Number: <?php echo($team_id);?> </h3>

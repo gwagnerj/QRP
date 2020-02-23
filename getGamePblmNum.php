@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once "pdo.php";
 if(isset($_SESSION['problem_id'])){
  unset($_SESSION['problem_id']);
 }
@@ -31,6 +32,16 @@ if(isset($_SESSION['problem_id'])){
 	}
     $_SESSION['game_progress'] = 0;
    
+   
+   //get the current phase of the game
+    $sql_stmt = "SELECT * FROM Gmact WHERE `game_id`= :game_id";
+            $stmt = $pdo->prepare($sql_stmt);
+            $stmt->execute(array(':game_id' => $game_id));
+            $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($row2 as $row3){
+                $phase = $row3['phase'];  // if on_the_fly was 0 then the game master has set up the teams and we could use JS to only ask for the pin or select the name from a list
+                $on_the_fly = $row3['on_the_fly'];
+            }
   
 ?>
 
@@ -65,16 +76,20 @@ $index = "";
 $gs_num = "";
 ?>
 
-<form action = "QRGamePblmPlan.php" method = "POST" autocomplete="off">
+<form action = "QRGameConfirm.php" method = "POST" autocomplete="off">
 
-    <p><font color=#003399> Fill in your PIN </font><input type="number" name="pin" size=3 min="1" max= "9999"  ></p>
-     <p><font color=#003399> and Team Number </font><input type="number" name="team_id" size=3 min="1" max= "100"  ></p>
+     <p><font color=#003399> Name </font><input type="text" name="name" id = "name" size=3 ></p>
+    <p><font color=#003399> Fill in your PIN </font><input type="number" id = "pin" name="pin" size=3 min="1" max= "9999"  ></p>
+     <p><font color=#003399> and Team Number </font><input type="number" name="team_id" id = "team_id" size=3 min="1" max= "100"  ></p>
      <p> <font color=#0000CD size = "1">(PIN and Team Number are supplied from the Instructor)</font> </p>
-    <p> then <font color = "red" size = "5" > Wait</font> until the Instructor tells you to Start </p>
-	<p><font color=#003399> </font><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-	
-
-	<p><input type = "submit" value="Start" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
+     <p><font color=#003399> Total Number of People on Your Team </font><input type="number" name="team_size" id = "team_size" size=3 min="1" max= "6"  ></p>
+     
+    <p> When all the info is complete select "Submit" </p>
+	<p><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+	<p><input type="hidden" name="phase" size=3 value="<?php echo (htmlentities($phase))?>"  ></p>
+    <p><input type="hidden" name="on_the_fly" size=3 value="<?php echo (htmlentities($on_the_fly))?>"  ></p>
+    
+	<p><input type = "submit" value="Submit" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>
 
 </body>

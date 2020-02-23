@@ -1114,21 +1114,23 @@ WHERE
 		`gameactivity_id` int(11) NOT NULL AUTO_INCREMENT,
 		`game_id` int(11) NOT NULL,
 		`team_id` int(11) NOT NULL,
+        `name` VARCHAR(64),
+        `team_size` int(2),
 		`pin` int(8) NOT NULL,
 		`dex` INT(4) NOT NULL,
          `ans_b` DOUBLE,
         `ans_last` DOUBLE,
         `ans_sumb` DOUBLE,
         `ans_sumlast` DOUBLE,
+        `score` int(4),
+        `team_score` int(4),
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 		PRIMARY KEY (`gameactivity_id`),
 		CONSTRAINT FOREIGN KEY (`game_id`) REFERENCES `Game` (`game_id`) 
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
     
-    ALTER TABLE `Gameactivity` 
-	ADD `score` int(4) AFTER `ans_sumlast`, 
-    ADD `team_score` int(4) AFTER `score`;
+   
 
 
 
