@@ -181,7 +181,7 @@
             if($phase <=0){
               $stage = 'Waiting to Start';  
             } elseif ($phase ==1){
-                $stage = 'Planning Stage - Silent';  
+                $stage = 'Planning Stage - Writing';  
                 
             } elseif ($phase ==2){  
               $stage = 'Planning Stage - Team Discussion';  
@@ -250,12 +250,12 @@
  
       
    <h2> Game Number = <?php echo $game_id; ?></h2>
-   <!-- <p> time of the end of this phase = <?php echo $stop_time; ?></p> -->
 	<p><input type="hidden" name="game_num" id="game_num" size=3 value=<?php echo($game_id);?> ></p>
     <p style="font-size:100px;">
     <p><input type="hidden" name="gmact_id" id="gmact_id" size=3 value=<?php echo($gmact_id);?> ></p>
     <p><input type="hidden" name="on_the_fly" id="on_the_fly" size=3 value=1 ></p>
     <p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="<?php echo (htmlentities($stop_time))?>"  ></p>
+    <p> This phase ends at: <?php echo $stop_time  ?> </p>
     <h1><font  style="font-size:300%; color:blue;"> <?php echo $stage;?> </font>
     	<div id="defaultCountdown" style="font-size:300%;color:red;"> </div></h1>
    <p style="font-size:400px;">
@@ -281,7 +281,7 @@
 		$(document).ready( function () {
 				var stop_time = $("#stop_time").val();
 				var stop_time = new Date(stop_time);
-				
+		/* 		
                 //if you have another AudioContext class use that one, as some browsers have a limit
                 var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
 
@@ -308,7 +308,7 @@
                     oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
                 };
                 
-            
+             */
             
             function highlightLast(periods) { 
 				if ($.countdown.periodsToSeconds(periods) === 20) { 
@@ -325,7 +325,7 @@
                   function SubmitAway() { 
                        radiobtn = document.getElementById('phase_inc');
                        radiobtn.checked = true;
-                        beep();
+                       // beep();
                        document.getElementById('submit_form').submit();
                     }
 				

@@ -156,7 +156,7 @@ require_once "pdo.php";
 
                 // get the gameactivity_id
                 
-               $sql = "SELECT `gameactivity_id` FROM `GameActivity` ORDER BY gameactivity_id DESC LIMIT 1";
+               $sql = "SELECT `gameactivity_id` FROM `Gameactivity` ORDER BY gameactivity_id DESC LIMIT 1";
                $stmt = $pdo->prepare($sql);
                $stmt -> execute(); 
                 $row3 = $stmt->fetchAll(PDO::FETCH_ASSOC);

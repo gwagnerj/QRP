@@ -56,7 +56,7 @@ $gs_num = "";
 
  session_destroy();
  session_unset();
- session_start();
+ //session_start();
 ?>
 
 <form action = "getGamePblmNum.php" method = "POST" autocomplete="off">
