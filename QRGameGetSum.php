@@ -115,7 +115,7 @@
     
     // See what the team size is that is reported by the users
     
-	 $sql_stmt = "SELECT * FROM Gameactivity WHERE `team_id`= :team_id AND `game_id`= :game_id AND created_at >= DATE_SUB(NOW(),INTERVAL 1 HOUR)";
+	 $sql_stmt = "SELECT * FROM Gameactivity WHERE `team_id`= :team_id AND `game_id`= :game_id AND created_at >= DATE_SUB(NOW(),INTERVAL 2 HOUR)";
             $stmt = $pdo->prepare($sql_stmt);
             $stmt->execute(array(':team_id' => $team_id,':game_id' => $game_id));
             $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);

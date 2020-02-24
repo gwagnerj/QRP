@@ -183,6 +183,19 @@ require_once "pdo.php";
                     ':ans_b' => $ans_b,
                     ':ans_last' => $ans_last,
                 ));
+                
+                 $sql = "SELECT `gameactivity_id` FROM `Gameactivity` WHERE game_id = :game_id AND pin = :pin LIMIT 1";
+               $stmt = $pdo->prepare($sql);
+               $stmt -> execute(array(
+                    ':game_id' => $game_id,
+					':pin' => $pin,
+                    )); 
+                $row3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                foreach($row3 as $row){
+             //   print_r ($row);
+                $gameactivity_id = $row['gameactivity_id'];
+                }
+                
         }
         
         

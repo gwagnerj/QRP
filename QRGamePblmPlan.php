@@ -194,16 +194,20 @@
 				var gmact_id = $("#gmact_id").val();
 				console.log ('gmact_id = ',gmact_id);
 				
-                window.setInterval(function(){
-                      /// call your function here
-                      $.post('fetchPhase.php', {gmact_id : gmact_id, }, function(data){
-				
-                            try{
+                var request;
+                function fetchPhase() {
+                    request = $.ajax({
+                        type: "POST",
+                        url: "fetchPhase.php",
+                        data: "gmact_id="+gmact_id,
+                        success: function(data){
+                           try{
                                 var arrn = JSON.parse(data);
                             }
                             catch(err) {
                                 alert ('game data unavailable Data not found');
                                 alert (err);
+                                return;
                             }
                             
                              var phase = arrn.phase;
@@ -232,13 +236,13 @@
                                SubmitAway(); 
                                 
                             }
-                            
-                            
-                            
-                        });
-                      
-                    }, 1000);  // calling the function every 1 second
-                
+                        }
+                    });
+                }
+                setInterval(function() {
+                    if (request) request.abort();
+                    fetchPhase();
+                }, 1000);
                   function Discuss(x) { 
                      
                          $('#message').html('Planning Stage - <font color = "red">'+ x +'</font>Phase');
@@ -254,7 +258,7 @@
                     
                     }
                 
-                     function SubmitAway() { 
+                    function SubmitAway() { 
                   
                         document.getElementById('the_form').submit();
                     }

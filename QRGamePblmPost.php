@@ -203,23 +203,28 @@
 				// get the how long the students have to solve the problem
 				var gmact_id = $("#gmact_id").val();
 				console.log ('gmact_id = ',gmact_id);
-				
-                window.setInterval(function(){
-                      /// call your function here
-                      $.post('fetchPhase.php', {gmact_id : gmact_id, }, function(data){
-				
-                            try{
+		             
+
+                var request;
+                function fetchPhase() {
+                    request = $.ajax({
+                        type: "POST",
+                        url: "fetchPhase.php",
+                        data: "gmact_id="+gmact_id,
+                        success: function(data){
+                           try{
                                 var arrn = JSON.parse(data);
                             }
                             catch(err) {
                                 alert ('game data unavailable Data not found');
                                 alert (err);
+                                return;
                             }
                             
                              var phase = arrn.phase;
                             var end_of_phase = arrn.end_of_phase;
                             	console.log ('phase = ',phase);
-                            if(phase == 6){  // preptime silent
+                               if(phase == 6){  // preptime silent
                                 	
                                     Discuss("Writing ");
                                   // $('#message2').hide();
@@ -235,14 +240,16 @@
                                  $('#submit_id').show();
                                SubmitAway(); 
                                 
-                            }
-                            
-                            
-                            
-                        });
-                      
-                    }, 1000);  // calling the function every 1 second
-                
+                            } 
+                        }
+                    });
+                }
+                setInterval(function() {
+                    if (request) request.abort();
+                    fetchPhase();
+                }, 1000);
+
+ 
                   function Discuss(x) { 
                      
                          $('#message').html('Reflections Stage - <font color = "red">'+ x +'</font>Phase');

@@ -290,7 +290,39 @@
 				// get the current phase
 				var gmact_id = $("#gmact_id").val();
 				console.log ('gmact_id = ',gmact_id);
-				
+			
+
+                  var request;
+                function fetchPhase() {
+                    request = $.ajax({
+                        type: "POST",
+                        url: "fetchPhase.php",
+                        data: "gmact_id="+gmact_id,
+                        success: function(data){
+                           try{
+                                var arrn = JSON.parse(data);
+                            }
+                            catch(err) {
+                                alert ('game data unavailable Data not found');
+                                alert (err);
+                                return;
+                            }
+                            
+                             var phase = arrn.phase;
+                            var end_of_phase = arrn.end_of_phase;
+                            	console.log ('phase = ',phase);
+                           if(phase > 4){  // submit away work time has eneded
+                               SubmitAway(); 
+                            }
+                        }
+                    });
+                }
+                setInterval(function() {
+                    if (request) request.abort();
+                    fetchPhase();
+                }, 1000);
+
+  /*           
                 window.setInterval(function(){
                       /// call your function here
                       $.post('fetchPhase.php', {gmact_id : gmact_id, }, function(data){
@@ -313,7 +345,7 @@
                       
                     }, 1000);  // calling the function every 1 second
                 
-                 
+            */      
                 
                      function SubmitAway() { 
                   
