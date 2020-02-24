@@ -2,78 +2,86 @@
 	session_start();
 	require_once "pdo.php";
 	
-// This is the program that gives them the values for the input parameters and is called by index.php  script calles fetchworktime.php to start the timer
+// This is the program that gives them the values for the input parameters and is called by QRGameRouter.php  script determines if Phase has advanced  fetchworktime.php to start the timer
 	// first do some error checking on the input.  If it is not OK set the session failure and send them back to QRGameIndex.
 	// Comming from index the game number will be a POST where if we are coming from a QRcode of the game it will be a GET
     
-    if (isset($_POST['game_id'])){
-        $game_id = $_POST['game_id'];
+    if (isset($_SESSION['phase'])){
+        $phase = $_SESSION['phase'];
     }  else {
-       $_SESSION['error'] = "Missing game number- this one";
+       $_SESSION['error'] = "Missing phase in QRGamePblmPlan";
 	  header('Location: index.php');
 	  return;   
     }
     
-    if (isset($_POST['name'])){
-        $name = $_POST['name'];
+    if (isset($_SESSION['game_id'])){
+        $game_id = $_SESSION['game_id'];
     }  else {
-        $name = 'Left Blank';
+       $_SESSION['error'] = "Missing game_id in QRGamePblmPlan";
+	  header('Location: index.php');
+	  return;   
+    }
+   
+    if (isset($_SESSION['gmact_id'])){
+        $gmact_id = $_SESSION['gmact_id'];
+    }  else {
+       $_SESSION['error'] = "Missing gmact_id in QRGamePblmPlan";
+	  header('Location: index.php');
+	  return;   
+    }
+   
+    if (isset($_SESSION['gameactivity_id'])){
+        $gameactivity_id = $_SESSION['gameactivity_id'];
+    }  else {
+       $_SESSION['error'] = "Missing gameactivity_id in QRGamePblmPlan";
+	  header('Location: index.php');
+	  return;   
     }
     
-    if($_SESSION['game_progress']==1){
-        
-      header('Location: index.php');
-	  return;
+     if (isset($_SESSION['name'])){
+        $name = $_SESSION['name'];
+    }  else {
+       $_SESSION['error'] = "Missing name in QRGamePblmPlan";
+	  header('Location: index.php');
+	  return;   
     }
     
-	if ($game_id<1 || $game_id>1000000) {
-	  $_SESSION['error'] = "game number out of range";
+     if (isset($_SESSION['pin'])){
+        $pin = $_SESSION['pin'];
+    }  else {
+       $_SESSION['error'] = "Missing pin in QRGamePblmPlan";
 	  header('Location: index.php');
-	  return;
-	}
-	
-	
-	$_SESSION['game_id'] = $game_id;
-
-    if ( isset($_POST['team_id']) ) {
-		$team_id = $_POST['team_id'];
-	} elseif (isset($_SESSION['team_id'])){
-		$team_id = $_SESSION['team_id'];
-	} else {
-	  $_SESSION['error'] = "Missing team number";
-	  header('Location: index.php');
-	  return;
-	}
-    $_SESSION['team_id']=$team_id;
-
-	if ( isset($_POST['pin']) ) {
-		$pin = $_POST['pin'];
-	} elseif (isset($_SESSION['pin'])){
-		$pin = $_SESSION['pin'];
-	} else {
-	  $_SESSION['error'] = "Missing pin";
-	  header('Location: index.php');
-	  return;
-	}
-            $_SESSION['pin']=$pin;
-				$alt_dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
-				$_SESSION['alt_dex'] = $alt_dex;
-                
-     if ( isset($_POST['team_num']) ) {
-		$team_num = $_POST['team_num'];
-	} elseif (isset($_SESSION['team_num'])){
-		$team_num = $_SESSION['team_num'];
-	} else {
-        $team_num = 10;
-	 // uncomment this when we do something with team number
-     /* $_SESSION['error'] = "Missing team_num";
-	  header('Location: index.php');
-	  return; */
-	}   
-        $_SESSION['team_num'] = $team_num;
-                
-    $_SESSION['game_progress']=1; //put this in to stop a page reload from restarting the clock
+	  return;   
+    }
     
+     if (isset($_SESSION['team_id'])){
+        $team_id = $_SESSION['team_id'];
+    }  else {
+       $_SESSION['error'] = "Missing team_id in QRGamePblmPlan";
+	  header('Location: index.php');
+	  return;   
+    }
+    
+     if (isset($_SESSION['dex'])){
+        $dex = $_SESSION['dex'];
+    }  else {
+       $_SESSION['error'] = "Missing dex in QRGamePblmPlan";
+	  header('Location: index.php');
+	  return;   
+    }
+    
+     if (isset($_SESSION['problem_id'])){
+        $problem_id = $_SESSION['problem_id'];
+    }  else {
+       $_SESSION['error'] = "Missing problem_id in QRGamePblmPlan";
+	  header('Location: index.php');
+	  return;   
+    }
+    
+    
+    
+   
+   /*  
 	$_SESSION['count']=0;
 	$_SESSION['startTime'] = time();
 
@@ -93,7 +101,7 @@
 		
        // echo ($gameData['prep_time']);
 		
-
+ */
 		
 		
 ?>
@@ -145,108 +153,116 @@
 <h3> Game number: <?php echo($game_id);?> </h3>
 <h3> PIN: <?php echo($pin);?> </h3>
 <h3> Team Number: <?php echo($team_id);?> </h3>
-	<h2> <span id = "message"> Planning Stage - <font color = "red">Silent Phase </font> </p>
-    <font color = "red">Write </font> down your plan. Prompts:</h2>	
-    <ol> <li> Principles and equations?</li>
+	<h2> <div id = "message"> Planning Stage - <font color = "red">Silent Phase </font> </p>
+    
+    
+    <font class = "show" color = "red">Write </font> down your plan. Prompts:</h2>	
+    <ol class = "show"> <li> Principles and equations?</li>
    <li><b>Diagrams</b> / Tables? </li>
    <li>Additional information?</li>
     <li>Assumptions/basis?</li>
     <li>Procedure / Algorithm?</li>
      <li>Hardest part?</li>
      <li>Where to start?</li>
-    </ol> </span>		
-	
+    </ol> 		
+	</div>
 
-	<form action = "QRGameGetIn.php" method = "POST" id="the_form" >
+	<form action = "QRGameGetSum.php" method = "POST" id="the_form" >
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
-		<p><font color=#003399> </font><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-        <p><font color=#003399> </font><input type="hidden" name="team_id" id = "team_id" size=3 value="<?php echo (htmlentities($team_id))?>"  ></p>
-		<p><font color=#003399> </font><input type="hidden" id = "alt_dex" name="alt_dex" size=3 value="<?php echo (htmlentities($alt_dex))?>"  ></p>
-        	<p><font color=#003399> </font><input type="hidden" id = "pin" name="pin" size=3 value="<?php echo (htmlentities($pin))?>"  ></p>
+		<p><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+        <p><input type="hidden" name="name" id = "name" size=3 value="<?php echo (htmlentities($name))?>"  ></p>
+        <p><input type="hidden" name="problem_id" id = "problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
+        <p><input type="hidden" name="gmact_id" id = "gmact_id" size=3 value="<?php echo (htmlentities($gmact_id))?>"  ></p>
+        <p><input type="hidden" name="gameactivity_id" id = "gameactivity_id" size=3 value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
+     
+        <p><input type="hidden" name="team_id" id = "team_id" size=3 value="<?php echo (htmlentities($team_id))?>"  ></p>
+		<p><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
+        <p><input type="hidden" id = "pin" name="pin" size=3 value="<?php echo (htmlentities($pin))?>"  ></p>
 		
-		<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="3"  ></p>
-		<div id="silentCountdown"> </div>
-		<div id="defaultCountdown"> </div>
+        
+        
 		<p><b><input type = "submit" id = "submit_id" value="Get Problem Parameters" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
 		</form>
-        <h2><font color = "black"> <span id = "message2"> Share and Listen </span> </font>  </h2>	
+        <h2><font color = "black"> <span id = "message2" class = "show">  </span> </font>  </h2>	
 		<script>
 			
 			$(document).ready( function () {
-				// get the how long the students have to solve the problem
-				var game_id = $("#game_id").val();
-				console.log ('game_id = ',game_id);
-				
-				$.post('fetchWorkTime.php', {game_id : game_id, }, function(data){
-				
-				try{
-					var arrn = JSON.parse(data);
-				}
-				catch(err) {
-					alert ('game data unavailable Data not found');
-					alert (err);
-				}
-
-				function AddMinutesToDate(date, minutes) {
-					return new Date(date.getTime() + minutes*60000);
-				}
-				function DateFormat(date){
-				  var days=date.getDate();
-				  var year=date.getFullYear();
-				  var month=(date.getMonth()+1);
-				  var hours = date.getHours();
-				  var minutes = date.getMinutes();
-				  minutes = minutes < 10 ? '0'+ minutes : minutes;
-				  var strTime =days+'/'+month+'/'+year+'/ '+hours + ':' + minutes;
-				  return strTime;
-				}
-				
-				var now = new Date();
-				
-                var prep_time = arrn.prep_time;
-                var work_time = arrn.work_time;
-                var silent_prep = prep_time/2
-				var silent_time = AddMinutesToDate (now,silent_prep);
-				var stop_time = AddMinutesToDate (now,prep_time);
-				$("#stop_time").val(stop_time);  // This is the value that gets fed to QRGameGetIn
-				$('#submit_id').hide();
-                $('#defaultCountdown').hide();
-                  $('#message2').hide();
-				console.log ('now = ',now);
-				console.log ('work_time = ',work_time);
-				console.log ('prep_time = ',prep_time);
-                console.log ('silent_prep_time = ',silent_prep);
-				console.log ('stop_time = ',stop_time);
-               
-					
-                // http://keith-wood.name/countdownRef.html
                 
-                    $('#silentCountdown').countdown({until: silent_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',onExpiry: Discuss}); 
-
-                    $('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',onExpiry: SubmitAway}); 
-
-                    function Discuss() { 
-                      $('#defaultCountdown').show();
-                         $('#message').html('Planning Stage - <font color = "red"> Group Discussion </font>Phase');
-                        document.body.style.background = "SkyBlue";
+                  $('#submit_id').hide();
+                    
+				// get the how long the students have to solve the problem
+				var gmact_id = $("#gmact_id").val();
+				console.log ('gmact_id = ',gmact_id);
+				
+                window.setInterval(function(){
+                      /// call your function here
+                      $.post('fetchPhase.php', {gmact_id : gmact_id, }, function(data){
+				
+                            try{
+                                var arrn = JSON.parse(data);
+                            }
+                            catch(err) {
+                                alert ('game data unavailable Data not found');
+                                alert (err);
+                            }
+                            
+                             var phase = arrn.phase;
+                            var end_of_phase = arrn.end_of_phase;
+                            	console.log ('phase = ',phase);
+                            if(phase <= 0 || phase == null){  // preptime waiting to start
+                                	
+                                  
+                                    $('.show').hide();
+                                   // $('#message').hide();
+                                    Discuss("Waiting to Start ");
+                              } else if(phase == 1){ //preptime silent
+                            
+                                    Discuss("Writing ");
+                                      $('.show').show();
+                            } else if(phase == 2){ //preptime talk
+                            
+                                    Discuss("Group Discussion ");
+                                     document.body.style.background = "SkyBlue";
+                                     
+                            } else if (phase == 3){ // wait
+                                 Discuss("Questions for Instructor? ");
+                                    document.body.style.background = "LightGoldenRodYellow";
+                            } else {  // go to QRGameGetin.php
+                                 $('#submit_id').show();
+                               SubmitAway(); 
+                                
+                            }
+                            
+                            
+                            
+                        });
+                      
+                    }, 1000);  // calling the function every 1 second
+                
+                  function Discuss(x) { 
+                     
+                         $('#message').html('Planning Stage - <font color = "red">'+ x +'</font>Phase');
+                       
                          // flash the message
                           $('#message2').show();
- /*                          
-                        var f = document.getElementById('message2');
+                     /* 
+                            var f = document.getElementById('message2');
                             setInterval(function() {
                                 f.style.display = (f.style.display == 'none' ? '' : 'none');
                             }, 1000);
-                         */
-                    }
-                    function SubmitAway() { 
+                     */
                     
-                   // alert('We can now submit');
+                    }
+                
+                     function SubmitAway() { 
+                  
                         document.getElementById('the_form').submit();
                     }
-           
-				});		
-			});
-                    
+                });
+                
+                
+                
+             
 		</script>
 
 	</body>

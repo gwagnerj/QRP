@@ -3,69 +3,113 @@ session_start();
 //	if(session_status()!=PHP_SESSION_ACTIVE) session_start();  // put this in to try to get rid of a warning of headers already sent - didn't work
 	require_once "pdo.php";
 
-	
-	
-	   $_SESSION['score'] = "0";
-		/* if($_SESSION['oldPoints']!==0){ //trying to reload with back button - old way take care of this when we do the new Game table
-		 echo '<br>';
-		 $_SESSION['error']='using backboutton for retry';
-		header('Location: getGamePblmNum.php');
-	  return; 
-	 } */
-		//$_SESSION['count'] = 0;
 
-	if ( isset($_POST['dex']) ) {
-			$dex = $_POST['dex'];
-	} else {
-		  $_SESSION['error'] = "Missing dex";
-		  header('Location: getGamePblmNum.php');
-		  return;
+
+	   if (isset($_POST['game_id'])){
+        $game_id = $_POST['game_id'];
+    }  elseif(isset($_SESSION['game_id'])){
+         $game_id = $_SESSION['game_id'];
+    } else  {
+       $_SESSION['error'] = "Missing game_id from QRGameCheck";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['game_id'] = $game_id;
+   
+
+   
+     if (isset($_POST['pin'])){
+        $pin = $_POST['pin'];
+    }  elseif(isset($_SESSION['pin'])){
+         $pin = $_SESSION['pin'];
+    } else  {
+       $_SESSION['error'] = "Missing pin from QRGameCheck";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['pin'] = $pin;
+    
+    
+      if (isset($_POST['team_id'])){
+        $team_id = $_POST['team_id'];
+    }  elseif(isset($_SESSION['team_id'])){
+         $team_id = $_SESSION['team_id'];
+    } else  {
+       $_SESSION['error'] = "Missing team_id from QRGameCheck";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['team_id'] = $team_id;
+    
+      if (isset($_POST['gmact_id'])){
+        $gmact_id = $_POST['gmact_id'];
+    }  elseif(isset($_SESSION['gmact_id'])){
+         $gmact_id = $_SESSION['gmact_id'];
+    } else  {
+       $_SESSION['error'] = "Missing gmact_id from QRGameCheck";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['gmact_id'] = $gmact_id;
+    
+      if (isset($_POST['gameactivity_id'])){
+        $gameactivity_id = $_POST['gameactivity_id'];
+    }  elseif(isset($_SESSION['gameactivity_id'])){
+         $gameactivity_id = $_SESSION['gameactivity_id'];
+    } else  {
+       $_SESSION['error'] = "Missing gameactivity_id from QRGameCheck";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['gameactivity_id'] = $gameactivity_id;
+    
+      if (isset($_POST['name'])){
+        $name = $_POST['name'];
+    }  elseif(isset($_SESSION['name'])){
+         $name = $_SESSION['name'];
+    } else  {
+       $_SESSION['error'] = "Missing name from QRGameCheck";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['name'] = $name;
+    
+      if (isset($_POST['problem_id'])){
+        $problem_id = $_POST['problem_id'];
+    }  elseif(isset($_SESSION['problem_id'])){
+         $problem_id = $_SESSION['problem_id'];
+    } else  {
+       $_SESSION['error'] = "Missing problem_id from QRGameCheck";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['problem_id'] = $problem_id;
+    
+   
+      if (isset($_POST['dex'])){
+        $dex = $_POST['dex'];
+    }  elseif(isset($_SESSION['dex'])){
+         $dex = $_SESSION['dex'];
+    } else  {
+       $_SESSION['error'] = "Missing dex from QRGameCheck";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['dex'] = $dex;
+   
+   
+    
+	if ($game_id<1 || $game_id>1000000) {
+	  $_SESSION['error'] = "game number out of range";
+	  header('Location: index.php');
+	  return;
 	}
-	if ( isset($_POST['problem_id']) ) {
-			$problem_id = $_POST['problem_id'];
-		} else {
-		  $_SESSION['error'] = "Missing problem_id";
-		  header('Location: getGamePblmNum.php');
-		  return;
-		}
-		
-	if ( isset($_POST['game_id']) ) {
-			$game_id = $_POST['game_id'];
-		}  else {
-		  $_SESSION['error'] = "Missing game_id";
-		  header('Location: getGamePblmNum.php');
-		  return;
-		}	
-		if ( isset($_POST['stop_time']) ) {
-			$stop_time = $_POST['stop_time'];
-		} else {
-			$_SESSION['error'] = "Missing stop_time";
-			  header('Location: getGamePblmNum.php');
-			  return;
-		}	
-		
-		 	if ( isset($_POST['team_id']) ) {
-            $team_id = $_POST['team_id'];
-        } elseif (isset($_SESSION['team_id'])){
-            $team_id = $_SESSION['team_id'];
-        } else {
-          $_SESSION['error'] = "Missing team_id";
-          header('Location: index.php');
-          return;
-        }
-        $_SESSION['team_id']=$team_id;
-
-        	if ( isset($_POST['pin']) ) {
-                $pin = $_POST['pin'];
-            } elseif (isset($_SESSION['pin'])){
-                $pin = $_SESSION['pin'];
-            } else {
-              $_SESSION['error'] = "Missing pin";
-              header('Location: index.php');
-              return;
-            }
-		
-			// initialize a few variables
+	
+        
+        // initialize a few variables
+        
+         $_SESSION['score'] = "0";
+			
 			$count = 0;
 			for ($j=0;$j<=9;$j++){
 					$wrongCount[$j]=0;		// accumulates how many times they missed a part
@@ -74,9 +118,7 @@ session_start();
 					$addCount[$j]=0;  // this is zero if they get it right and 1 if they get it wrong
 			}	
 			
-		//	$_SESSION['pin'] = $pin;
-		//	$_SESSION['iid'] = $iid;
-			$_SESSION['problem_id'] = $problem_id;
+	
 			
 			
 			$score = 0;
@@ -203,32 +245,33 @@ session_start();
     if($_SESSION['count']==1){
         
       // update the ans_sumb and ans_sumlast for the members of the group
+       // $stmt = $pdo->prepare("SELECT SUM(`ans_b`) AS ans_sumb FROM `Gameactivity` WHERE gameactivity_id = :gameactivity_id");
 
-        $stmt = $pdo->prepare("SELECT SUM(`ans_b`) AS ans_sumb FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id AND created_at >= DATE_SUB(NOW(),INTERVAL 1 HOUR)");
+       $stmt = $pdo->prepare("SELECT SUM(`ans_b`) AS ans_sumb FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id AND created_at >= DATE_SUB(NOW(),INTERVAL 2 HOUR)");
 			$stmt->execute(array(":game_id" => $game_id, ":team_id" => $team_id));
 			$row = $stmt -> fetch();
             $ans_sumb = $row['ans_sumb'];
 			// echo ($row['ans_sumb']);
             $soln[10]=$ans_sumb;
     
-        $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumb` = $ans_sumb WHERE game_id = :game_id AND pin = :pin");
-			$stmt->execute(array(":game_id" => $game_id, ":pin" => $pin));
+        $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumb` = :ans_sumb WHERE gameactivity_id = :gameactivity_id");
+			$stmt->execute(array(":gameactivity_id" => $gameactivity_id, ":ans_sumb" => $ans_sumb ));
 			
-         $stmt = $pdo->prepare("SELECT SUM(`ans_last`) AS ans_sumlast FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id");
+          $stmt = $pdo->prepare("SELECT SUM(`ans_last`) AS ans_sumlast FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id AND created_at >= DATE_SUB(NOW(),INTERVAL 2 HOUR)");
 			$stmt->execute(array(":game_id" => $game_id, ":team_id" => $team_id));
 			$row = $stmt -> fetch();
             $ans_sumlast = $row['ans_sumlast'];
 			$soln[11]=$ans_sumlast;
     
-        $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumlast` = $ans_sumlast WHERE game_id = :game_id AND pin = :pin");
-			$stmt->execute(array(":game_id" => $game_id, ":pin" => $pin));
+        $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumlast` = :ans_sumlast WHERE gameactivity_id = :gameactivity_id");
+			$stmt->execute(array(":gameactivity_id" => $gameactivity_id,  ":ans_sumlast" => $ans_sumlast ));
         
     } else {
         
-             $stmt = $pdo->prepare("SELECT *  FROM `Gameactivity` WHERE game_id = :game_id AND pin = :pin");
-			$stmt->execute(array(":game_id" => $game_id, ":pin" => $pin));
+             $stmt = $pdo->prepare("SELECT *  FROM `Gameactivity` WHERE gameactivity_id = :gameactivity_id");
+			$stmt->execute(array(":gameactivity_id" => $gameactivity_id));
 			$row = $stmt -> fetch();
-            $gameactivity_id = $row['gameactivity_id'];
+           
             $ans_sumb = $row['ans_sumb'];
 			//echo ($ans_sumb);
             $soln[10]=$ans_sumb;
@@ -351,7 +394,10 @@ session_start();
 	<h1>QRGame Checker</h1>
 	</header>
 	<main>
-	<h3>  Game Number: <?php echo ($game_id) ?> </h3>
+	<h3> Name: <?php echo($name);?> </h3>
+    <h3> Game number: <?php echo($game_id);?> </h3>
+    <h3> PIN: <?php echo($pin);?> </h3>
+    <h3> Team Number: <?php echo($team_id);?> </h3>
 	
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
@@ -474,15 +520,19 @@ session_start();
 			<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="<?php echo (htmlentities($stop_time))?>"  ></p>
 
 	</form>
-		<div id="defaultCountdown"> </div>
 
 	<p> Count: <?php echo ($count) ?> </p>
 	<form action="StopGame.php" method="POST" id = "finished_form">
-			<p><font color=#003399> </font><input type="hidden"  name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
-			<p><font color=#003399> </font><input type="hidden"  name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-            <p><font color=#003399> </font><input type="hidden"  name="gameactivity_id" size=3 value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
-            <p><font color=#003399> </font><input type="hidden"  name="game_score" size=3 value="<?php echo (htmlentities(round($PScore)))?>"  ></p>
-
+		<p><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+        <p><input type="hidden" name="name" id = "name" size=3 value="<?php echo (htmlentities($name))?>"  ></p>
+        <p><input type="hidden" name="problem_id" id = "problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
+        <p><input type="hidden" name="gmact_id" id = "gmact_id" size=3 value="<?php echo (htmlentities($gmact_id))?>"  ></p>
+        <p><input type="hidden" name="gameactivity_id" id = "gameactivity_id" size=3 value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
+     
+        <p><input type="hidden" name="team_id" id = "team_id" size=3 value="<?php echo (htmlentities($team_id))?>"  ></p>
+		<p><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
+        <p><input type="hidden" id = "pin" name="pin" size=3 value="<?php echo (htmlentities($pin))?>"  ></p>
+         <p><input type="hidden" id = "game_score" name="game_score" size=3 value="<?php echo (htmlentities($PScore))?>"  
     <hr>
 	<p><b><font Color="red">Finished:</font></b></p>
 	  <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
@@ -495,27 +545,41 @@ session_start();
 
 	<script>
 		$(document).ready( function () {
-				var stop_time = $("#stop_time").val();
-				var stop_time = new Date(stop_time);
+                
+				// get the current phase
+				var gmact_id = $("#gmact_id").val();
+				console.log ('gmact_id = ',gmact_id);
 				
-	
-			function highlightLast(periods) { 
-				if ($.countdown.periodsToSeconds(periods) === 20) { 
-					$(this).css('color', 'red','font-weight', 'Bold' ); 
-				} 
-				if ($.countdown.periodsToSeconds(periods) <= 60) { 
-					$(this).css('background-color', 'yellow'); 
-				} 
-			
-			};
-			
-				$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',onExpiry: SubmitAway}); 
-				  
-                  function SubmitAway() { 
+                window.setInterval(function(){
+                      /// call your function here
+                      $.post('fetchPhase.php', {gmact_id : gmact_id, }, function(data){
+				
+                            try{
+                                var arrn = JSON.parse(data);
+                            }
+                            catch(err) {
+                                alert ('game data unavailable Data not found');
+                                alert (err);
+                            }
+                            
+                             var phase = arrn.phase;
+                            var end_of_phase = arrn.end_of_phase;
+                            
+                            if(phase > 4){  // submit away work time has eneded
+                               SubmitAway(); 
+                            }
+                        });
+                      
+                    }, 1000);  // calling the function every 1 second
+                
+                 
+                
+                     function SubmitAway() { 
+                  
                         document.getElementById('finished_form').submit();
                     }
-				
-			});		
+                });
+                
 	</script>
 
 	</main>

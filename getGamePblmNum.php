@@ -30,7 +30,7 @@ if(isset($_SESSION['problem_id'])){
 	  header('Location: index.php');
 	  return;
 	}
-    $_SESSION['game_progress'] = 0;
+   
    
    
    //get the current phase of the game
@@ -38,11 +38,17 @@ if(isset($_SESSION['problem_id'])){
             $stmt = $pdo->prepare($sql_stmt);
             $stmt->execute(array(':game_id' => $game_id));
             $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+           	if ( $row2 == false ) {
+                $_SESSION['error'] = 'Game problem has not yet been activated by the Instructor ';
+                header( 'Location: index.php' ) ;
+                return;
+            }
+            
             foreach ($row2 as $row3){
                 $phase = $row3['phase'];  // if on_the_fly was 0 then the game master has set up the teams and we could use JS to only ask for the pin or select the name from a list
                 $on_the_fly = $row3['on_the_fly'];
             }
-  
+    
 ?>
 
 <!DOCTYPE html>

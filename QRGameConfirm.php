@@ -64,7 +64,7 @@ session_start();
             $name = $_POST['name'];
           } 
         else {
-           $name = 'Not Given';
+           $name = 'Left Blank';
         }
    
   
@@ -124,7 +124,7 @@ if ( isset($_SESSION['success']) ) {
     
     <p> <font color=#003399> If the information above is correct select confirm</font> </p>
     
-	<p><input type = "submit" value="confirm" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
+	<p><input type = "submit" value="Confirm" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>
      <p> <font color=#003399> Otherwise "Re_Input Data"</font> </p>
     <form action = "getGamePblmNum.php" method = "POST">

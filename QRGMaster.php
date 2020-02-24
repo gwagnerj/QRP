@@ -37,7 +37,7 @@
             
             // Create the table entry into the Gmact table from the values that were put in the Game table
             
-            $sql = 'INSERT INTO `Gmact` (game_id, iid, phase, on_the_fly, prep_time, prep_time_talk,work_time, post_time, post_time_talk,class_time_talk)	
+            $sql = 'INSERT INTO `Gmact` (game_id, iid, phase, on_the_fly,  prep_time, prep_time_talk,work_time, post_time, post_time_talk,class_time_talk)	
 						VALUES (:game_id, :iid, 0,1 , :prep_time, :prep_time_talk,:work_time, :post_time, :post_time_talk, 5)';
 				$stmt = $pdo->prepare($sql);
 				$stmt -> execute(array(
@@ -108,10 +108,13 @@
                     } elseif ($phase ==4){
                          $t_inc = $work_time;
                     } elseif ($phase ==5){
+                         $t_inc = 0;
+                    }      
+                     elseif ($phase ==6){
                          $t_inc = $post_time; 
-                    } elseif ($phase ==6){
-                         $t_inc = $post_time_talk; 
                     } elseif ($phase ==7){
+                         $t_inc = $post_time_talk; 
+                    } elseif ($phase ==8){
                           $t_inc = $class_time_talk;  
                     } else {
                         $t_inc = 0;
@@ -144,9 +147,7 @@
                 ':class_time_talk' => $class_time_talk,
                 ':on_the_fly' => $on_the_fly,
                 ':gmact_id' => $gmact_id,
-			
-			
-			));
+                ));
                 
             } else
 
@@ -187,12 +188,14 @@
             } elseif ($phase ==3){  
               $stage = 'Planning Stage - Questions?';  
             } elseif ($phase ==4){
-                  $stage = 'Working on Problem';  
+                  $stage = 'Working on Problem'; 
             } elseif ($phase ==5){
-                      $stage = 'Reflection - Silent Phase';  
+                  $stage = 'Record Score - Questions';                    
             } elseif ($phase ==6){
-                      $stage = 'Reflection - Team Discussion Phase';  
+                      $stage = 'Reflection - Silent Phase';  
             } elseif ($phase ==7){
+                      $stage = 'Reflection - Team Discussion Phase';  
+            } elseif ($phase ==8){
                   $stage = 'Reflection - Class Discussion Phase';  
             } else {
                 $stage = 'End - Increment will go back to beginning'; 

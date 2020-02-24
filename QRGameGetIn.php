@@ -8,18 +8,97 @@
     
     if (isset($_POST['game_id'])){
         $game_id = $_POST['game_id'];
-    }  else {
-       $_SESSION['error'] = "Missing game number- this one";
+    }  elseif(isset($_SESSION['game_id'])){
+         $game_id = $_SESSION['game_id'];
+    } else  {
+       $_SESSION['error'] = "Missing game_id from QRGameGetin";
 	  header('Location: index.php');
 	  return;   
     }
-    
-    if($_SESSION['game_progress']==2){
-        
-      header('Location: index.php');
-	  return;
+    $_SESSION['game_id'] = $game_id;
+   
+
+   
+     if (isset($_POST['pin'])){
+        $pin = $_POST['pin'];
+    }  elseif(isset($_SESSION['pin'])){
+         $pin = $_SESSION['pin'];
+    } else  {
+       $_SESSION['error'] = "Missing pin from QRGameGetin";
+	  header('Location: index.php');
+	  return;   
     }
-        
+    $_SESSION['pin'] = $pin;
+    
+    
+      if (isset($_POST['team_id'])){
+        $team_id = $_POST['team_id'];
+    }  elseif(isset($_SESSION['team_id'])){
+         $team_id = $_SESSION['team_id'];
+    } else  {
+       $_SESSION['error'] = "Missing team_id from QRGameGetin";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['team_id'] = $team_id;
+    
+      if (isset($_POST['gmact_id'])){
+        $gmact_id = $_POST['gmact_id'];
+    }  elseif(isset($_SESSION['gmact_id'])){
+         $gmact_id = $_SESSION['gmact_id'];
+    } else  {
+       $_SESSION['error'] = "Missing gmact_id from QRGameGetin";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['gmact_id'] = $gmact_id;
+    
+      if (isset($_POST['gameactivity_id'])){
+        $gameactivity_id = $_POST['gameactivity_id'];
+    }  elseif(isset($_SESSION['gameactivity_id'])){
+         $gameactivity_id = $_SESSION['gameactivity_id'];
+    } else  {
+       $_SESSION['error'] = "Missing gameactivity_id from QRGameGetin";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['gameactivity_id'] = $gameactivity_id;
+    
+      if (isset($_POST['name'])){
+        $name = $_POST['name'];
+    }  elseif(isset($_SESSION['name'])){
+         $name = $_SESSION['name'];
+    } else  {
+       $_SESSION['error'] = "Missing name from QRGameGetin";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['name'] = $name;
+    
+      if (isset($_POST['problem_id'])){
+        $problem_id = $_POST['problem_id'];
+    }  elseif(isset($_SESSION['problem_id'])){
+         $problem_id = $_SESSION['problem_id'];
+    } else  {
+       $_SESSION['error'] = "Missing problem_id from QRGameGetin";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['problem_id'] = $problem_id;
+    
+   
+      if (isset($_POST['dex'])){
+        $dex = $_POST['dex'];
+    }  elseif(isset($_SESSION['dex'])){
+         $dex = $_SESSION['dex'];
+    } else  {
+       $_SESSION['error'] = "Missing dex from QRGameGetin";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['dex'] = $dex;
+   
+   
     
 	if ($game_id<1 || $game_id>1000000) {
 	  $_SESSION['error'] = "game number out of range";
@@ -27,59 +106,24 @@
 	  return;
 	}
 	
-	
-	$_SESSION['game_id'] = $game_id;
-    
-   	if ( isset($_POST['pin']) ) {
-		$pin = $_POST['pin'];
-	} elseif (isset($_SESSION['pin'])){
-		$pin = $_SESSION['pin'];
-	} else {
-	  $_SESSION['error'] = "Missing pin";
-	  header('Location: index.php');
-	  return;
-    }
-      	if ( isset($_POST['team_id']) ) {
-		$team_id = $_POST['team_id'];
-	} elseif (isset($_SESSION['team_id'])){
-		$team_id = $_SESSION['team_id'];
-	} else {
-	  $_SESSION['error'] = "Missing team_id";
-	  header('Location: index.php');
-	  return;
-    }
-    $_SESSION['team_id']=$team_id;
+	  
 
-
-
-	if ( isset($_POST['alt_dex']) ) {
-		$alt_dex = $_POST['alt_dex'];
-	} elseif (isset($_SESSION['alt_dex'])){
-		$alt_dex = $_SESSION['alt_dex'];
-	} else {
-	  $_SESSION['error'] = "Missing alt dex";
-	  header('Location: index.php');
-	  return;
-	}
-    $_SESSION['game_progress']=2; //put this in to stop a page reload from restarting the clock
-    
-	$_SESSION['count']=0;
-	$_SESSION['startTime'] = time();
 
 		$stmt = $pdo->prepare("SELECT * FROM Game WHERE game_id = :game_id");
 		$stmt->execute(array(":game_id" => $game_id));
-		
 		$row = $stmt -> fetch();
 		if ( $row === false ) {
 			$_SESSION['error'] = 'Bad value for game_id or game_id not active';
 			header( 'Location: index.php' ) ;
 			return;
 		}
+        
+        
 		$gameData=$row;	
-		//echo $probData['tol_a'];
+
 		
-		$problem_id = $gameData['problem_id'];
-		 $dex = $gameData['dex'];
+		// $problem_id = $gameData['problem_id'];
+		// $dex = $gameData['dex'];
 		
 		$rect_length = $gameData['rect_length'];
 		$oval_length = $gameData['oval_length'];
@@ -91,73 +135,16 @@
 		
 		if ($rect_length == null || strlen($rect_length)<1){$rect_length = 20;}
 		
-		/* 
-		echo ('$rect_length');
-		echo ($rect_length);
-		die();
-		 */
 		
-		if($dex == -1 ) {$dex = $alt_dex;} // temp will change to Assigned dex from the players pin
 	
-        // write to the Game_activity table the values for the 
+        // write to the Game_activity table the values 
         
-       // get the answers for parts b and the last part from the QA table
-       	$stmt = $pdo->prepare("SELECT * FROM Qa where problem_id = :problem_id AND dex = :dex");
-			$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
-			$row = $stmt -> fetch();
-			if ( $row === false ) {
-				$_SESSION['error'] = 'Bad value for problem_id';
-				header( 'Location: getGamePblmNum.php' ) ;
-				return;
-			}	
-            
-            $ans_b = $row['ans_b'];
-          
-
-          // gota be a better way but I am going to bruit force it
-            
-            $ans_last = $row['ans_j'];
-            if($row['ans_j']>=1.2e43 && $row['ans_j'] < 1.3e43){
-                $ans_last = $row['ans_i'];
-            }
-             if($row['ans_i']>=1.2e43 && $row['ans_i'] < 1.3e43){
-                $ans_last = $row['ans_h'];
-            }
-              if($row['ans_h']>=1.2e43 && $row['ans_h'] < 1.3e43){
-                $ans_last = $row['ans_g'];
-            }
-            if($row['ans_g']>=1.2e43 && $row['ans_g'] < 1.3e43){
-                $ans_last = $row['ans_f'];
-            }
-             if($row['ans_f']>=1.2e43 && $row['ans_f'] < 1.3e43){
-                $ans_last = $row['ans_e'];
-            }
-             if($row['ans_e']>=1.2e43 && $row['ans_e'] < 1.3e43){
-                $ans_last = $row['ans_d'];
-            }
-              if($row['ans_d']>=1.2e43 && $row['ans_d'] < 1.3e43){
-                $ans_last = $row['ans_c'];
-            }
-              if($row['ans_c']>=1.2e43 && $row['ans_c'] < 1.3e43){
-                $ans_last = $row['ans_b'];
-            }
-
-
+     
+        
 // will sum them up in the next file down QRGameCheck
 
 
-       $sql = "INSERT INTO Gameactivity (game_id, team_id, pin, dex, ans_b, ans_last)
-							VALUES (:game_id, :team_id, :pin, :dex, :ans_b, :ans_last)";
-					$stmt = $pdo->prepare($sql);
-					$stmt->execute(array(
-					':game_id' => $game_id,
-					':team_id' => $team_id,
-					':pin' => $pin,
-					':dex' => $dex,
-                    ':ans_b' => $ans_b,
-                    ':ans_last' => $ans_last,
-					));
-					
+     
     
 
 		$stmt = $pdo->prepare("SELECT * FROM `Input` where problem_id = :problem_id AND dex = :dex");
@@ -206,15 +193,7 @@
 
 		
 		
-		/* $_SESSION['g1']=$row['g1'];
-		$_SESSION['g2']=$row['g2'];
-		$_SESSION['g3']=$row['g3'];
-
-		if ($_SESSION['g1']=="" or $_SESSION['g1']=="NULL"){
-				$_SESSION['error']="Game variable 1 is empty for this problem";
-				header('Location: getGamePblmNum.php');
-				return; 
-		}*/
+		
 ?>
 
 	<!DOCTYPE html>
@@ -260,12 +239,12 @@
 ?>
 
 
-
+<h3> Name: <?php echo($name);?> </h3>
 <h3> Game number: <?php echo($game_id);?> </h3>
+<h3> PIN: <?php echo($pin);?> </h3>
+<h3> Team Number: <?php echo($team_id);?> </h3>
 
 	<h4><font color = "red"> Write</font> the values on your sheet then proceed to checker </h4>			
-		
-
 
 
 	<svg  width=<?php echo($rect_svg); ?> height="100" >
@@ -277,8 +256,6 @@
 	  <rect  fill="white" stroke="red" stroke-width="4" width="<?php echo($oval_width);?>" rx = "25"  ry = "25" height = "50" x="15" y = "5"/>
 	  <text x="<?php echo($oval_width/2+14);?>" y="40" text-anchor="middle" fill="black" font-size="30"> <?php echo ($oval_val);?></text>
 	</svg>
-
-
 
 	<svg  width=<?php echo($trap_svg) ?> height="100" >
 	  <polygon  fill="white" stroke="green" stroke-width="4" points="20,5 <?php echo($trapx_pt2);?>,5 <?php echo($trap_width);?>,50 5,50"/>
@@ -293,81 +270,60 @@
 
 	<form action = "QRGameCheck.php" method = "POST" id = "the_form" >
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
-		<p><font color=#003399> </font><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-        <p><font color=#003399> </font><input type="hidden" name="team_id" id = "team_id" size=3 value="<?php echo (htmlentities($team_id))?>"  ></p>
-        <p><font color=#003399> </font><input type="hidden" name="pin" id = "pin" size=3 value="<?php echo (htmlentities($pin))?>"  ></p>
-		<p><font color=#003399> </font><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
-		<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
-		<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="3"  ></p>
+			<p><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+        <p><input type="hidden" name="name" id = "name" size=3 value="<?php echo (htmlentities($name))?>"  ></p>
+        <p><input type="hidden" name="problem_id" id = "problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
+        <p><input type="hidden" name="gmact_id" id = "gmact_id" size=3 value="<?php echo (htmlentities($gmact_id))?>"  ></p>
+        <p><input type="hidden" name="gameactivity_id" id = "gameactivity_id" size=3 value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
+     
+        <p><input type="hidden" name="team_id" id = "team_id" size=3 value="<?php echo (htmlentities($team_id))?>"  ></p>
+		<p><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
+        <p><input type="hidden" id = "pin" name="pin" size=3 value="<?php echo (htmlentities($pin))?>"  ></p>
 		
-        <div id="silentCountdown"> </div>
-		<div id="defaultCountdown"> </div>
+        
 		<p><b><input type = "submit" id = "submit_id" value="Go to Checker" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
 		</form>
 
 		<script>
-			
 			$(document).ready( function () {
-				// get the how long the students have to solve the problem
-				var game_id = $("#game_id").val();
-				console.log ('game_id = ',game_id);
-				
-				$.post('fetchWorkTime.php', {game_id : game_id, }, function(data){
-				
-				try{
-					var arrn = JSON.parse(data);
-				}
-				catch(err) {
-					alert ('game data unavailable Data not found');
-					alert (err);
-				}
-
-				function AddMinutesToDate(date, minutes) {
-					return new Date(date.getTime() + minutes*60000);
-				}
-				function DateFormat(date){
-				  var days=date.getDate();
-				  var year=date.getFullYear();
-				  var month=(date.getMonth()+1);
-				  var hours = date.getHours();
-				  var minutes = date.getMinutes();
-				  minutes = minutes < 10 ? '0'+ minutes : minutes;
-				  var strTime =days+'/'+month+'/'+year+'/ '+hours + ':' + minutes;
-				  return strTime;
-				}
-				
-				var now = new Date();
-				var work_time = arrn.work_time;
-				var stop_time = AddMinutesToDate (now,work_time);
-                var silent_post = work_time-0.1;
-				var silent_time = AddMinutesToDate (now,silent_post);
                 
-				var prep_time = arrn.prep_time;
+				// get the current phase
+				var gmact_id = $("#gmact_id").val();
+				console.log ('gmact_id = ',gmact_id);
 				
-				$("#stop_time").val(stop_time);
+                window.setInterval(function(){
+                      /// call your function here
+                      $.post('fetchPhase.php', {gmact_id : gmact_id, }, function(data){
 				
-				console.log ('now = ',now);
-				console.log ('work_time = ',work_time);
-				console.log ('prep_time = ',prep_time);
-				console.log ('stop_time = ',stop_time);
+                            try{
+                                var arrn = JSON.parse(data);
+                            }
+                            catch(err) {
+                                alert ('game data unavailable Data not found');
+                                alert (err);
+                            }
+                            
+                             var phase = arrn.phase;
+                            var end_of_phase = arrn.end_of_phase;
+                            
+                            if(phase > 4){  // submit away work time has eneded
+                               SubmitAway(); 
+                            }
+                        });
+                      
+                    }, 1000);  // calling the function every 1 second
                 
-				
-                 $('#silentCountdown').hide();
                  
-                 	$('#silentCountdown').countdown({until: silent_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',onExpiry: SubmitAway}); 
-
-					$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}'}); 
-
+                
                      function SubmitAway() { 
-                    
-                   // alert('We can now submit');
+                  
                         document.getElementById('the_form').submit();
                     }
-
-
-						
-				});		
-			});
+                });
+                
+                
+                
+			
 		
 		</script>
 
