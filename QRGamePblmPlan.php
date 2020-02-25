@@ -81,27 +81,7 @@
     
     
    
-   /*  
-	$_SESSION['count']=0;
-	$_SESSION['startTime'] = time();
-
-		$stmt = $pdo->prepare("SELECT * FROM Game WHERE game_id = :game_id");
-		$stmt->execute(array(":game_id" => $game_id));
-		//$row = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        $row = $stmt -> fetch();
-		if ( $row === false ) {
-			$_SESSION['error'] = 'Bad value for game_id or game_id not active';
-			header( 'Location: index.php' ) ;
-			return;
-		}
-        
-        
-		$gameData=$row;	
-		
-       // echo ($gameData['prep_time']);
-		
- */
+   
 		
 		
 ?>

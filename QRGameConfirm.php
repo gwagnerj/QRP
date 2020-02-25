@@ -32,6 +32,17 @@ session_start();
           return;   
         }
         
+              if (isset($_POST['iid'])){
+            $iid = $_POST['iid'];
+            $_SESSION['iid'] = $iid;
+              } 
+           else {
+               $_SESSION['error'] = "Missing iid from QRGameConfirm";
+              
+              header('Location: getGamePblmNum.php');
+              return;   
+            }
+        
         
         if (isset($_POST['team_id'])){
             $team_id = $_POST['team_id'];
@@ -108,7 +119,7 @@ if ( isset($_SESSION['success']) ) {
 <h3> Total People on Team: <?php echo($team_size);?> </h3>
 
 
-<form action = "QRGameRouter.php" method = "POST" autocomplete="off">
+<form action = "QRGameSetUp.php" method = "POST" autocomplete="off">
 
     
      
@@ -121,6 +132,7 @@ if ( isset($_SESSION['success']) ) {
     <p><input type="hidden" name="name" size=3 value="<?php echo (htmlentities($name))?>"  ></p>
     <p><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
     <p><input type="hidden" name="phase" size=3 value="<?php echo (htmlentities($phase))?>"  ></p>
+     <p><input type="hidden" name="iid" size=3 value="<?php echo (htmlentities($iid))?>"  ></p>
     
     <p> <font color=#003399> If the information above is correct select confirm</font> </p>
     

@@ -161,8 +161,6 @@
             
                             header('Location: QRGameGetIn.php');
                             return;   
-            
-            
                  }
         }
         

@@ -34,7 +34,7 @@ if(isset($_SESSION['problem_id'])){
    
    
    //get the current phase of the game
-    $sql_stmt = "SELECT * FROM Gmact WHERE `game_id`= :game_id";
+    $sql_stmt = "SELECT * FROM Gmact WHERE `game_id`= :game_id ORDER BY `Gmact_id` DESC LIMIT 1";
             $stmt = $pdo->prepare($sql_stmt);
             $stmt->execute(array(':game_id' => $game_id));
             $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -47,6 +47,7 @@ if(isset($_SESSION['problem_id'])){
             foreach ($row2 as $row3){
                 $phase = $row3['phase'];  // if on_the_fly was 0 then the game master has set up the teams and we could use JS to only ask for the pin or select the name from a list
                 $on_the_fly = $row3['on_the_fly'];
+                $iid = $row3['iid'];
             }
     
 ?>
@@ -94,6 +95,7 @@ $gs_num = "";
 	<p><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 	<p><input type="hidden" name="phase" size=3 value="<?php echo (htmlentities($phase))?>"  ></p>
     <p><input type="hidden" name="on_the_fly" size=3 value="<?php echo (htmlentities($on_the_fly))?>"  ></p>
+     <p><input type="hidden" name="iid" size=3 value="<?php echo (htmlentities($iid))?>"  ></p>
     
 	<p><input type = "submit" value="Submit" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
 	</form>

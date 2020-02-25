@@ -12,9 +12,13 @@
 
 //Check the input - coming from the QRGameMasterStart.php
 
-		if ( isset($_POST['game_id']) && is_numeric($_POST['game_id']) ) {
-			$game_id = $_POST['game_id'];
-             
+		if ( (isset($_POST['game_id']) && is_numeric($_POST['game_id'])) || $_POST['phase'] == -1 ) {
+			
+            if  (isset($_POST['game_id']) && is_numeric($_POST['game_id'])){
+            $game_id = $_POST['game_id'];
+            } else {
+               $game_id = $_POST['game_num']; 
+            }  
                
             // fill in the initial values for the Gmact table using the values from the Game table
             // get values from Game table
@@ -115,7 +119,9 @@
                     } elseif ($phase ==7){
                          $t_inc = $post_time_talk; 
                     } elseif ($phase ==8){
-                          $t_inc = $class_time_talk;  
+                          $t_inc = $class_time_talk; 
+                    } elseif ($phase ==9){
+                          $t_inc = 0;                            
                     } else {
                         $t_inc = 0;
                       }  
@@ -196,7 +202,9 @@
             } elseif ($phase ==7){
                       $stage = 'Reflection - Team Discussion Phase';  
             } elseif ($phase ==8){
-                  $stage = 'Reflection - Class Discussion Phase';  
+                  $stage = 'Reflection - Class Discussion Phase'; 
+            } elseif ($phase ==9){
+                  $stage = 'Results and Reset';                    
             } else {
                 $stage = 'End - Increment will go back to beginning'; 
                 $phase = -1;
@@ -255,7 +263,7 @@
     <p><input type="hidden" name="gmact_id" id="gmact_id" size=3 value=<?php echo($gmact_id);?> ></p>
     <p><input type="hidden" name="on_the_fly" id="on_the_fly" size=3 value=1 ></p>
     <p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="<?php echo (htmlentities($stop_time))?>"  ></p>
-    <p> This phase ends at: <?php echo $stop_time  ?> </p>
+    <p> This phase ends at: <?php if (isset($stop_time)) {echo $stop_time;}   ?> </p>
     <h1><font  style="font-size:300%; color:blue;"> <?php echo $stage;?> </font>
     	<div id="defaultCountdown" style="font-size:300%;color:red;"> </div></h1>
    <p style="font-size:400px;">

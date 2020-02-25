@@ -181,7 +181,7 @@
    <p> Also, how did your group perform and how could they have done better?</p></span>		
 	
 
-	<form action = "index.php" method = "POST" id="the_form" >
+	<form action = "QRGameShowResults.php" method = "POST" id="the_form" >
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
             <p><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
             <p><input type="hidden" name="name" id = "name" size=3 value="<?php echo (htmlentities($name))?>"  ></p>
@@ -236,7 +236,7 @@
                             } else if (phase == 8){ // wait
                                  Discuss("Class Question and Discussion ");
                                   document.body.style.background = "LightGoldenRodYellow";
-                            } else {  // go to QRGameGetin.php
+                            } else {  // go to QRGameShowResults.php
                                  $('#submit_id').show();
                                SubmitAway(); 
                                 

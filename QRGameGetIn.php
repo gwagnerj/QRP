@@ -322,30 +322,7 @@
                     fetchPhase();
                 }, 1000);
 
-  /*           
-                window.setInterval(function(){
-                      /// call your function here
-                      $.post('fetchPhase.php', {gmact_id : gmact_id, }, function(data){
-				
-                            try{
-                                var arrn = JSON.parse(data);
-                            }
-                            catch(err) {
-                                alert ('game data unavailable Data not found');
-                                alert (err);
-                            }
-                            
-                             var phase = arrn.phase;
-                            var end_of_phase = arrn.end_of_phase;
-                            
-                            if(phase > 4){  // submit away work time has eneded
-                               SubmitAway(); 
-                            }
-                        });
-                      
-                    }, 1000);  // calling the function every 1 second
-                
-            */      
+ 
                 
                      function SubmitAway() { 
                   
