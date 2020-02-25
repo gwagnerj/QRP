@@ -12,7 +12,7 @@
 
 //Check the input - coming from the QRGameMasterStart.php
 
-		if ( (isset($_POST['game_id']) && is_numeric($_POST['game_id'])) || $_POST['phase'] == -1 ) {
+		if ( (isset($_POST['game_id']) && is_numeric($_POST['game_id'])) || $_POST['phase'] == -1 ) {  // the phase of -1 is the case where we have gone thru an entire game and are cycling through again
 			
             if  (isset($_POST['game_id']) && is_numeric($_POST['game_id'])){
             $game_id = $_POST['game_id'];
@@ -127,8 +127,12 @@
                       }  
                    
                    if($no_current=="notSet"){ //update the current time
-                       $sql = "UPDATE `Gmact`
-                              SET `end_of_phase` = (now() + INTERVAL :t_inc MINUTE)
+                       // SET `end_of_phase` = (now() + INTERVAL :t_inc MINUTE)
+
+                      $sql = "UPDATE `Gmact`
+                             
+                            
+                             SET `end_of_phase` = (UTC_TIMESTAMP() + INTERVAL :t_inc MINUTE)
                               WHERE gmact_id = :gmact_id";
                         $stmt = $pdo->prepare($sql);
                         $stmt -> execute(array(
@@ -263,7 +267,7 @@
     <p><input type="hidden" name="gmact_id" id="gmact_id" size=3 value=<?php echo($gmact_id);?> ></p>
     <p><input type="hidden" name="on_the_fly" id="on_the_fly" size=3 value=1 ></p>
     <p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="<?php echo (htmlentities($stop_time))?>"  ></p>
-    <p> This phase ends at: <?php if (isset($stop_time)) {echo $stop_time;}   ?> </p>
+    <p> This phase ends at: <?php if (isset($stop_time)) {echo $stop_time;}   ?> UTC </p>
     <h1><font  style="font-size:300%; color:blue;"> <?php echo $stage;?> </font>
     	<div id="defaultCountdown" style="font-size:300%;color:red;"> </div></h1>
    <p style="font-size:400px;">
@@ -271,13 +275,13 @@
    <hr> <font color = "blue">manual override </font>
 	<p><input type="hidden" name="phase" id="phase" size=3 value=<?php echo($phase);?> ></p>
     <h2><input type="radio" name="phase_inc" value = "set" style="height:15px; width:15px;" id="phase_inc" > Increment Stage</h2>
-	<p>Planning Time - Silent Phase: </font><input type="number" name="prep_time" id="prep_time" size=5 value=<?php echo($prep_time);?> >
+	<p>Planning Time - Writing Phase: </font><input type="number" name="prep_time" id="prep_time" size=5 value=<?php echo($prep_time);?> >
     <p>Planning Time - Discussion Phase: </font><input type="number" name="prep_time_talk" id="prep_time_talk" size=5 value=<?php echo($prep_time_talk);?> >
     <p>Working Time: <input type="number" name="work_time" id="work_time" size=5 value=<?php echo($work_time);?>></p >
-    <p>Reflection Time - Silent Phase: <input type="number" name="post_time" id="post_time" size=5 value=<?php echo($post_time);?> >
+    <p>Reflection Time - Writing Phase: <input type="number" name="post_time" id="post_time" size=5 value=<?php echo($post_time);?> >
      <p>Reflection Time - Team Discussion Phase: <input type="number" name="post_time_talk" id="post_time_talk" size=5 value=<?php echo($post_time_talk);?> >
      <p>Reflection Time - Class - Discussion Phase: <input type="number" name="class_time_talk" id="class_time_talk" size=5 value=<?php echo($class_time_talk);?> >
-     <p><input type="radio" name="no_current" value = "set" style="height:10px; width:10px;" id="no_current" > Do Not Change Current Time on Submit</p>
+     <p><input type="radio" name="no_current" value = "set" style="height:20px; width:20px;" id="no_current" > Do Not Change Current Time on Submit</p>
      <p><input type = "submit" value="Submit Changes" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	
 	</form>
@@ -288,7 +292,24 @@
 <script>
 		$(document).ready( function () {
 				var stop_time = $("#stop_time").val();
-				var stop_time = new Date(stop_time);
+				var stop_time = new Date(stop_time)
+                var current_time = new Date();
+                var offset = current_time.getTimezoneOffset();
+              /*   
+                console.log ("stop time UTC = "+stop_time);
+                console.log ("current_time UTC = "+current_time);
+                 console.log ("offset = "+offset);
+                  */
+               //  var new_stop = stop_time.subtract(3, 'minutes').toDate();
+                
+                var new_stop=stop_time.setMinutes(stop_time.getMinutes()-offset);
+                
+              
+                //  console.log ("new_stop = "+new_stop);
+
+                
+                // var d = new Date("July 21, 1983 01:15:00");
+               //  var n = d.getUTCDate();
 		/* 		
                 //if you have another AudioContext class use that one, as some browsers have a limit
                 var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);

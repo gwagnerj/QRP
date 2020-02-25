@@ -1,5 +1,5 @@
 <?php
-
+session_unset();
 session_start();
 require_once "pdo.php";
 /* 
@@ -9,7 +9,7 @@ if(isset($_SESSION['problem_id'])){
 
  unset($_SESSION['oldPoints']);
  $_SESSION['oldPoints']=0;
-  */
+ 
  if ( isset($_POST['gameactivity_id']) ) {
 			$gameactivity_id = $_POST['gameactivity_id'];
           
@@ -20,7 +20,7 @@ if(isset($_SESSION['problem_id'])){
             $game_id = $row['game_id'];
            echo ('<h2> Your Average Team Score for Game '.$game_id.' was '.$team_score.'</h2>');
 	}  
-
+ */
 
 ?>
 
@@ -54,8 +54,7 @@ $g_num = "";
 $index = "";
 $gs_num = "";
 
- session_destroy();
- session_unset();
+ 
  //session_start();
 ?>
 

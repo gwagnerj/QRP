@@ -148,7 +148,7 @@ require_once "pdo.php";
                header( 'Location: QRGamePblmPost.php' ) ;
 				return;
            } elseif ($phase == 4){
-              header( 'Location: QRGameGetin.php' ) ;
+              header( 'Location: QRGameGetIn.php' ) ;
 				return;
             } elseif ($phase == 5){
               header( 'Location: StopGame.php' ) ;

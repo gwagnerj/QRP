@@ -211,7 +211,7 @@
                             } else if (phase == 3){ // wait
                                  Discuss("Questions for Instructor? ");
                                     document.body.style.background = "LightGoldenRodYellow";
-                            } else {  // go to QRGameGetin.php
+                            } else {  // go to QRGameGetIn.php
                                  $('#submit_id').show();
                                SubmitAway(); 
                                 
