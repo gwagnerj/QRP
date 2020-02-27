@@ -173,9 +173,15 @@
 				// get the how long the students have to solve the problem
 				var gmact_id = $("#gmact_id").val();
 				console.log ('gmact_id = ',gmact_id);
-				
+				var dex = $("#dex").val();  // getting the dex to set a delay so not all of the request occur at same time
+                    console.log ('dex = ',dex);
+                var delay = 500+dex * 5;  // delay in milisecounds for the request so we spread out the requests
+                
+                
                 var request;
                 function fetchPhase() {
+                    
+                    
                     request = $.ajax({
                         type: "POST",
                         url: "fetchPhase.php",
@@ -194,7 +200,6 @@
                             var end_of_phase = arrn.end_of_phase;
                             	console.log ('phase = ',phase);
                             if(phase <= 0 || phase == null){  // preptime waiting to start
-                                	
                                   
                                     $('.show').hide();
                                    // $('#message').hide();
@@ -221,9 +226,9 @@
                 }
                 setInterval(function() {
                     if (request) request.abort();
-                    fetchPhase();
-                }, 1000);
-                  function Discuss(x) { 
+                        fetchPhase();
+                    }, delay);
+                      function Discuss(x) { 
                      
                          $('#message').html('Planning Stage - <font color = "red">'+ x +'</font>Phase');
                        
