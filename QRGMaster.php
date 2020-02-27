@@ -366,7 +366,8 @@
     
     <input type="button" id="pause" value="Pause" />
     <input type="button" id="resume" value="Resume" />  
-   
+     <p style="font-size:50px;"></p>
+   	<a href="QRPGameScoreBoard.php" target = "_blank">Score Board</a>
    <hr color = "green"> <font color = "blue">manual override </font>
    
 	<p><input type="hidden" name="phase" id="phase" size=3 value=<?php echo($phase);?> ></p>
@@ -391,7 +392,7 @@
   <p> Note - there is a delay of about 3 to 5 seconds to finish game</p>
   </form>
     
-	<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
+
 	
 <script>
 		$(document).ready( function () {
