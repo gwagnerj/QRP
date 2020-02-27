@@ -159,8 +159,8 @@ require_once "pdo.php";
 
    // what if they have already loged into the game once and have an entry then we should update instead of insert
    
-        $stmt = $pdo->prepare("SELECT * FROM Gameactivity WHERE gmact_id = :gmact_id ");
-        $stmt->execute(array(":gmact_id" => $gmact_id));
+        $stmt = $pdo->prepare("SELECT * FROM Gameactivity WHERE gmact_id = :gmact_id AND pin = :pin ");
+        $stmt->execute(array(":gmact_id" => $gmact_id,":pin" => $pin));
         $row = $stmt -> fetch();
         if ( $row === false ) {
             $sql = "INSERT INTO Gameactivity (game_id, team_id, gmact_id, pin, dex, iid, team_size, team_size_error, name, ans_b, ans_last)
@@ -196,7 +196,7 @@ require_once "pdo.php";
             $team_size_error = 0;
              $sql = "UPDATE `Gameactivity` 
 				SET game_id = :game_id, team_id = :team_id ,pin = :pin, dex = :dex, iid = :iid, team_size = :team_size, team_size_error = :team_size_error, name = :name, ans_b = :ans_b, ans_last = :ans_last
-				WHERE gmact_id = :gmact_id ";
+				WHERE gmact_id = :gmact_id AND pin = :pin";
                 $stmt = $pdo->prepare($sql);
                 $stmt -> execute(array(
                     ':game_id' => $game_id,
@@ -212,10 +212,11 @@ require_once "pdo.php";
                     ':ans_last' => $ans_last,
                 ));
                 
-                 $sql = "SELECT `gameactivity_id` FROM `Gameactivity` WHERE gmact_id = :gmact_id  LIMIT 1";
+                 $sql = "SELECT `gameactivity_id` FROM `Gameactivity` WHERE gmact_id = :gmact_id AND pin = :pin  LIMIT 1";
                $stmt = $pdo->prepare($sql);
                $stmt -> execute(array(
                     ':gmact_id' => $gmact_id,
+                     ':pin' => $pin,
                     )); 
                 $row3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 foreach($row3 as $row){
@@ -229,9 +230,9 @@ require_once "pdo.php";
                 
         
          // get what the current phase of the game is so we can tell where to send them
-             $sql_stmt = "SELECT * FROM Gmact WHERE `game_id`= :game_id";
+             $sql_stmt = "SELECT * FROM Gmact WHERE `gmact_id`= :gmact_id";
             $stmt = $pdo->prepare($sql_stmt);
-            $stmt->execute(array(':game_id' => $game_id));
+            $stmt->execute(array(':gmact_id' => $gmact_id));
             $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
             foreach ($row2 as $row3){
                 $phase = $row3['phase'];

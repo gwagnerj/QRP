@@ -154,7 +154,7 @@
                      //   print_r ($row);
                         $gmact_id = $row['gmact_id'];
                         }
-                    //    echo 'gmact_id = '.$gmact_id;
+                       echo 'gmact_id top = '.$gmact_id;
                }
            } 
             
@@ -354,6 +354,7 @@
  
       
    <h2> Game Number = <?php echo $game_id; ?></h2>
+   
 	<p><input type="hidden" name="game_num" id="game_num" size=3 value=<?php echo($game_id);?> ></p>
     <p style="font-size:100px;">
     <p><input type="hidden" name="gmact_id" id="gmact_id" size=3 value=<?php echo($gmact_id);?> ></p>
@@ -367,7 +368,8 @@
     <input type="button" id="pause" value="Pause" />
     <input type="button" id="resume" value="Resume" />  
      <p style="font-size:50px;"></p>
-   	<a href="QRPGameScoreBoard.php" target = "_blank">Score Board</a>
+     <?php echo('<a href="QRPGameScoreBoard.php?gmact_id='.$gmact_id.'"target=_blank><b> Score Board</b></a>');?>
+   
    <hr color = "green"> <font color = "blue">manual override </font>
    
 	<p><input type="hidden" name="phase" id="phase" size=3 value=<?php echo($phase);?> ></p>

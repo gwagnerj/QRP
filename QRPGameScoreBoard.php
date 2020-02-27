@@ -8,7 +8,7 @@
 	<link rel="icon" type="image/png" href="McKetta.png" />  
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<meta Charset = "utf-8">
-	<title>QRG Score</title>
+	<title>QRGame Score</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 	<style>
 	div {
@@ -119,10 +119,13 @@
 		if(isset($_SESSION['gmact_id'])){
             $gmact_id = $_SESSION['gmact_id'];
         
-        } else {
+        } elseif(isset($_GET['gmact_id'])){
+            $gmact_id = $_GET['gmact_id'];
+        
+        }else{
             $gmact_id = '';
         }
-      //  echo "gmact_id".$gmact_id;
+       // echo "gmact_id".$gmact_id;
 
 	echo ('<table id="table_format" class = "a" border="1" >'."\n");
 		
@@ -142,11 +145,12 @@
 		// Get the team_id of all the teams in the game_prob_flag
           $stmt = $pdo->prepare("SELECT `team_id`  FROM `Gameactivity` WHERE gmact_id = :gmact_id ");
 			$stmt->execute(array(":gmact_id" => $gmact_id));
-            while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-               
-                 $team_id = $row['team_id'];
+             $row = $stmt->fetch(PDO::FETCH_ASSOC); 
+            // print_r($row);
+                $team_ids = array_unique($row);
+                
              //     echo "team_id ".$team_id;
-        
+                foreach ($team_ids as $team_id){
              $stmt2 = $pdo->prepare("SELECT AVG(`score`) AS avg_score FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
                 $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
                 $row2 = $stmt2 -> fetch();
@@ -158,6 +162,8 @@
                 echo($team_score);
                echo("</td></tr>\n");
             }
+            
+            
             echo("</tbody>");
              echo("</table>");
             echo ('</div>');	

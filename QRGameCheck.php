@@ -246,14 +246,16 @@ session_start();
         
       // update the ans_sumb and ans_sumlast for the members of the group
        // $stmt = $pdo->prepare("SELECT SUM(`ans_b`) AS ans_sumb FROM `Gameactivity` WHERE gameactivity_id = :gameactivity_id");
-/* 
-       $stmt = $pdo->prepare("SELECT SUM(`ans_b`) AS ans_sumb FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id AND created_at >= DATE_SUB(NOW(),INTERVAL 2 HOUR)");
-			$stmt->execute(array(":game_id" => $game_id, ":team_id" => $team_id));
+
+       $stmt = $pdo->prepare("SELECT *  FROM `Gameactivity` WHERE gameactivity_id = :gameactivity_id ");
+			$stmt->execute(array(":gameactivity_id" => $gameactivity_id));
 			$row = $stmt -> fetch();
             $ans_sumb = $row['ans_sumb'];
 			// echo ($row['ans_sumb']);
             $soln[10]=$ans_sumb;
-    
+             $ans_sumlast = $row['ans_sumlast'];
+             $soln[11]=$ans_sumlast;
+   /*           
         $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumb` = :ans_sumb WHERE gameactivity_id = :gameactivity_id");
 			$stmt->execute(array(":gameactivity_id" => $gameactivity_id, ":ans_sumb" => $ans_sumb ));
 			
