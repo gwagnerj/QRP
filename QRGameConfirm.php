@@ -32,6 +32,16 @@ session_start();
           return;   
         }
         
+         if (isset($_POST['gmact_id'])){
+            $gmact_id = $_POST['gmact_id'];
+          } 
+       else {
+           $_SESSION['error'] = "Missing Gmact_id in QRGameConfirm";
+          
+          header('Location: getGamePblmNum.php');
+          return;   
+        }
+        
               if (isset($_POST['iid'])){
             $iid = $_POST['iid'];
             $_SESSION['iid'] = $iid;
@@ -131,6 +141,7 @@ if ( isset($_SESSION['success']) ) {
      
     <p><input type="hidden" name="name" size=3 value="<?php echo (htmlentities($name))?>"  ></p>
     <p><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+     <p><input type="hidden" name="gmact_id" size=3 value="<?php echo (htmlentities($gmact_id))?>"  ></p>
     <p><input type="hidden" name="phase" size=3 value="<?php echo (htmlentities($phase))?>"  ></p>
      <p><input type="hidden" name="iid" size=3 value="<?php echo (htmlentities($iid))?>"  ></p>
     

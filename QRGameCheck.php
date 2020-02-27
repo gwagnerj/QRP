@@ -361,7 +361,8 @@ session_start();
 	
 		$_SESSION['points']=$score;
 		
-	
+           $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `score` = :score WHERE gameactivity_id = :gameactivity_id ");
+			$stmt->execute(array(":gameactivity_id" => $gameactivity_id, ":score" => $PScore));
 		
 		
 		
@@ -584,35 +585,7 @@ session_start();
                 
                 
                 
-                
-                
-                
-                
-                
-              /*   
-                window.setInterval(function(){
-                      /// call your function here
-                      $.post('fetchPhase.php', {gmact_id : gmact_id, }, function(data){
-				
-                            try{
-                                var arrn = JSON.parse(data);
-                            }
-                            catch(err) {
-                                alert ('game data unavailable Data not found');
-                                alert (err);
-                            }
-                            
-                             var phase = arrn.phase;
-                            var end_of_phase = arrn.end_of_phase;
-                            
-                            if(phase > 4){  // submit away work time has eneded
-                               SubmitAway(); 
-                            }
-                        });
-                      
-                    }, 1000);  // calling the function every 1 second
-                 */
-                 
+      
                 
                      function SubmitAway() { 
                   

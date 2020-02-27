@@ -108,16 +108,16 @@
 	
     // check the number of individuals on the team
         
-        $sql_stmt = "SELECT COUNT(*) FROM Gameactivity WHERE team_id = :team_id";
+        $sql_stmt = "SELECT COUNT(*) FROM Gameactivity WHERE team_id = :team_id AND `gmact_id`= :gmact_id ";
             $stmt = $pdo->prepare($sql_stmt);
-            $stmt->execute(array(':team_id' => $team_id));
+            $stmt->execute(array(':team_id' => $team_id,':gmact_id' => $gmact_id));
            $number_activated = $stmt->fetchColumn(); 
     
     // See what the team size is that is reported by the users
     
-	 $sql_stmt = "SELECT * FROM Gameactivity WHERE `team_id`= :team_id AND `game_id`= :game_id AND created_at >= DATE_SUB(NOW(),INTERVAL 2 HOUR)";
+	 $sql_stmt = "SELECT * FROM Gameactivity WHERE `team_id`= :team_id AND `gmact_id`= :gmact_id ";
             $stmt = $pdo->prepare($sql_stmt);
-            $stmt->execute(array(':team_id' => $team_id,':game_id' => $game_id));
+            $stmt->execute(array(':team_id' => $team_id,':gmact_id' => $gmact_id));
             $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
             foreach ($row2 as $row3){
                 $team_size = $row3['team_size'];
@@ -139,16 +139,16 @@
                  else {
             
                    // Sum up the answers for b and the last one and update the gameactivity table with those values - this is done in QRGetGamein but could be done here instead
-                      $stmt = $pdo->prepare("SELECT SUM(`ans_b`) AS ans_sumb FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id AND created_at >= DATE_SUB(NOW(),INTERVAL 2 HOUR)");
-                        $stmt->execute(array(":game_id" => $game_id, ":team_id" => $team_id));
+                      $stmt = $pdo->prepare("SELECT SUM(`ans_b`) AS ans_sumb FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
+                        $stmt->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
                         $row = $stmt -> fetch();
                         $ans_sumb = $row['ans_sumb'];
                         
                     $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumb` = :ans_sumb WHERE gameactivity_id = :gameactivity_id");
                         $stmt->execute(array(":gameactivity_id" => $gameactivity_id, ":ans_sumb" => $ans_sumb ));
                         
-                     $stmt = $pdo->prepare("SELECT SUM(`ans_last`) AS ans_sumlast FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id AND created_at >= DATE_SUB(NOW(),INTERVAL 2 HOUR)");
-                        $stmt->execute(array(":game_id" => $game_id, ":team_id" => $team_id));
+                     $stmt = $pdo->prepare("SELECT SUM(`ans_last`) AS ans_sumlast FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
+                        $stmt->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
                         $row = $stmt -> fetch();
                         $ans_sumlast = $row['ans_sumlast'];   
                         

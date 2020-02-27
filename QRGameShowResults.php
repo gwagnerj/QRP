@@ -118,24 +118,6 @@ require_once "pdo.php";
             $game_id = $row['game_id'];
            echo ('<h2> Your Average Team Score for Game '.$game_id.' was '.$team_score.'</h2>');
 	}  
-// Cleanup the data 
-        $sql = "DELETE from `Gameactivity` WHERE game_id = :game_id AND iid = :iid";
-        $count=$pdo->prepare($sql);
-        $count->execute(array(
-            ":game_id" => $game_id,
-             ":iid" => $iid,
-        ));
-
-        $no=$count->rowCount();
-
-       $sql = "DELETE from `Gmact` WHERE gmact_id = :gmact_id";
-        $count=$pdo->prepare($sql);
-        $count->execute(array(
-            ":gmact_id" => $gmact_id,
-        ));
-
-        $num=$count->rowCount();
-
 
 
 
@@ -218,7 +200,7 @@ if ( isset($_SESSION['success']) ) {
                              var phase = arrn.phase;
                             var end_of_phase = arrn.end_of_phase;
                             	console.log ('phase = ',phase);
-                           if(phase <= 0){  // submit away work time has eneded
+                           if(phase <= 0 || phase >=9){  // submit away work time has eneded
                                SubmitAway(); 
                             }
                         }

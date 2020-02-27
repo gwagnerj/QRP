@@ -1114,6 +1114,7 @@ WHERE
 		`gameactivity_id` int(11) NOT NULL AUTO_INCREMENT,
 		`game_id` int(11) NOT NULL,
 		`team_id` int(11) NOT NULL,
+        `gmact_id` int(11) NOT NULL,
         `name` VARCHAR(64),
         `iid` int(11) NOT NULL,
         `team_size` int(2),

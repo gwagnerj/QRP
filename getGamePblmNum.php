@@ -48,6 +48,7 @@ if(isset($_SESSION['problem_id'])){
                 $phase = $row3['phase'];  // if on_the_fly was 0 then the game master has set up the teams and we could use JS to only ask for the pin or select the name from a list
                 $on_the_fly = $row3['on_the_fly'];
                 $iid = $row3['iid'];
+                $gmact_id = $row3['gmact_id'];
             }
     
 ?>
@@ -93,6 +94,7 @@ $gs_num = "";
      
     <p> When all the info is complete select "Submit" </p>
 	<p><input type="hidden" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
+    <p><input type="hidden" name="gmact_id" size=3 value="<?php echo (htmlentities($gmact_id))?>"  ></p>
 	<p><input type="hidden" name="phase" size=3 value="<?php echo (htmlentities($phase))?>"  ></p>
     <p><input type="hidden" name="on_the_fly" size=3 value="<?php echo (htmlentities($on_the_fly))?>"  ></p>
      <p><input type="hidden" name="iid" size=3 value="<?php echo (htmlentities($iid))?>"  ></p>

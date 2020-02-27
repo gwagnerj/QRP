@@ -15,6 +15,20 @@ require_once "pdo.php";
           header('Location: index.php');
           return;   
         }
+        
+          if (isset($_POST['gmact_id'])){
+            $gmact_id = $_POST['gmact_id'];
+      } 
+       else {
+           $_SESSION['error'] = "Missing gmact_id from getGame";
+          header('Location: index.php');
+          return;   
+        }
+        
+        
+        
+        
+        
   
         if ($game_id<1 || $game_id>1000000) {
           $_SESSION['error'] = "game number out of range";
@@ -145,16 +159,17 @@ require_once "pdo.php";
 
    // what if they have already loged into the game once and have an entry then we should update instead of insert
    
-        $stmt = $pdo->prepare("SELECT * FROM Gameactivity where game_id = :game_id AND pin = :pin");
-        $stmt->execute(array(":game_id" => $game_id, ":pin" => $pin));
+        $stmt = $pdo->prepare("SELECT * FROM Gameactivity WHERE gmact_id = :gmact_id ");
+        $stmt->execute(array(":gmact_id" => $gmact_id));
         $row = $stmt -> fetch();
         if ( $row === false ) {
-            $sql = "INSERT INTO Gameactivity (game_id, team_id, pin, dex, iid, team_size, team_size_error, name, ans_b, ans_last)
-				VALUES (:game_id, :team_id, :pin, :dex, :iid, :team_size, 0, :name, :ans_b, :ans_last)";
+            $sql = "INSERT INTO Gameactivity (game_id, team_id, gmact_id, pin, dex, iid, team_size, team_size_error, name, ans_b, ans_last)
+				VALUES (:game_id, :team_id, :gmact_id, :pin, :dex, :iid, :team_size, 0, :name, :ans_b, :ans_last)";
 					$stmt = $pdo->prepare($sql);
 					$stmt->execute(array(
 					':game_id' => $game_id,
 					':team_id' => $team_id,
+                    ':gmact_id' => $gmact_id,
 					':pin' => $pin,
                     ':dex' => $dex,
                     ':iid' => $iid,
@@ -180,11 +195,12 @@ require_once "pdo.php";
             // update the gameactivity table or tell them there is a duplicate entry in the table - wont worry about this right now
             $team_size_error = 0;
              $sql = "UPDATE `Gameactivity` 
-				SET game_id = :game_id, team_id = :team_id, pin = :pin, dex = :dex, iid = :iid, team_size = :team_size, team_size_error = :team_size_error, name = :name, ans_b = :ans_b, ans_last = :ans_last
-				WHERE game_id = :game_id AND pin = :pin ";
+				SET game_id = :game_id, team_id = :team_id ,pin = :pin, dex = :dex, iid = :iid, team_size = :team_size, team_size_error = :team_size_error, name = :name, ans_b = :ans_b, ans_last = :ans_last
+				WHERE gmact_id = :gmact_id ";
                 $stmt = $pdo->prepare($sql);
                 $stmt -> execute(array(
                     ':game_id' => $game_id,
+                     ':gmact_id' => $gmact_id,
 					':team_id' => $team_id,
 					':pin' => $pin,
                     ':dex' => $dex,
@@ -196,11 +212,10 @@ require_once "pdo.php";
                     ':ans_last' => $ans_last,
                 ));
                 
-                 $sql = "SELECT `gameactivity_id` FROM `Gameactivity` WHERE game_id = :game_id AND pin = :pin LIMIT 1";
+                 $sql = "SELECT `gameactivity_id` FROM `Gameactivity` WHERE gmact_id = :gmact_id  LIMIT 1";
                $stmt = $pdo->prepare($sql);
                $stmt -> execute(array(
-                    ':game_id' => $game_id,
-					':pin' => $pin,
+                    ':gmact_id' => $gmact_id,
                     )); 
                 $row3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 foreach($row3 as $row){
@@ -220,7 +235,6 @@ require_once "pdo.php";
             $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
             foreach ($row2 as $row3){
                 $phase = $row3['phase'];
-                $gmact_id = $row3['gmact_id'];
             }
            // Put everthing in Session variables and send them on their way?  Could put in html and use JS to submit the correct form if headers gives me a problem set up 
            // html form and make action a php varaibel and submit with JS

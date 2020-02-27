@@ -10,6 +10,64 @@
  it will also have a link way to monitor the game in a separate tab say QRGameMonitor.php
  */
 
+// Check to see if the finished button is pressed
+
+        if  (isset($_POST['finished'])){
+               // Cleanup the data - this should go in the gamemaster table
+
+                $gmact_id = $_POST['gmact_id'];
+             // update the phase so the students stuff will go to the end   
+                 $sql = "UPDATE `Gmact` 
+				SET phase = :phase
+				WHERE gmact_id = :gmact_id";
+                $stmt = $pdo->prepare($sql);
+                $stmt -> execute(array(
+                ':phase' => 9,
+                ':gmact_id' => $gmact_id,
+                ));
+                
+             // this was put in so the phones have time to advance to the end   
+              sleep(3);
+
+                $new_gmact_id = $gmact_id + 100000;
+                $sql = "UPDATE `Gameactivity` 
+				SET gmact_id = :new_gmact_id 
+				WHERE gmact_id = :gmact_id";
+                $stmt = $pdo->prepare($sql);
+                $stmt -> execute(array(
+                    
+                    ':gmact_id' => $gmact_id,
+                    ':new_gmact_id' => $new_gmact_id,
+                    
+                ));
+
+/* 
+              $sql = "DELETE from `Gameactivity` WHERE gmact_id = :gmact_id";
+                $count=$pdo->prepare($sql);
+                $count->execute(array(
+                    ":gmact_id" => $gmact_id,
+                ));
+
+                $no=$count->rowCount();
+ */
+
+
+               $sql = "DELETE from `Gmact` WHERE gmact_id = :gmact_id";
+                $count=$pdo->prepare($sql);
+                $count->execute(array(
+                    ":gmact_id" => $gmact_id,
+                ));
+
+                $num=$count->rowCount();
+                 header('Location: QRPRepo.php');
+                    return;   
+ 
+            } 
+
+
+
+
+
 //Check the input - coming from the QRGameMasterStart.php
 
 		if ( (isset($_POST['game_id']) && is_numeric($_POST['game_id'])) || $_POST['phase'] == -1 ) {  // the phase of -1 is the case where we have gone thru an entire game and are cycling through again
@@ -19,7 +77,12 @@
             } else {
                $game_id = $_POST['game_num']; 
             }  
-               
+            
+        
+
+        
+
+            
             // fill in the initial values for the Gmact table using the values from the Game table
             // get values from Game table
   
@@ -32,40 +95,67 @@
             foreach($row1 as $row){
          //   print_r ($row);
             }
-            $iid = $row['iid'];
-            $prep_time = round($row['prep_time']/2);
-            $prep_time_talk = $prep_time;
-            $post_time = round($row['post_time']/2);
-            $post_time_talk = $post_time;
-            $work_time = $row['work_time'];
+                $iid = $row['iid'];
+                $prep_time = round($row['prep_time']/2);
+                $prep_time_talk = $prep_time;
+                $post_time = round($row['post_time']/2);
+                $post_time_talk = $post_time;
+                $work_time = $row['work_time'];
             
-            // Create the table entry into the Gmact table from the values that were put in the Game table
-            
-            $sql = 'INSERT INTO `Gmact` (game_id, iid, phase, on_the_fly,  prep_time, prep_time_talk,work_time, post_time, post_time_talk,class_time_talk)	
-						VALUES (:game_id, :iid, 0,1 , :prep_time, :prep_time_talk,:work_time, :post_time, :post_time_talk, 5)';
-				$stmt = $pdo->prepare($sql);
-				$stmt -> execute(array(
-				':game_id' => $game_id,
-				':iid' => $iid,
-				':prep_time' => $prep_time,
-                ':prep_time_talk' => $prep_time_talk,
-				':work_time' => $work_time,
-                ':post_time' => $post_time,
-                 ':post_time_talk' => $post_time_talk,
-				));
-                
-                // get the gmact_id
-           
-               $sql = "SELECT `gmact_id` FROM `Gmact` ORDER BY gmact_id DESC LIMIT 1";
+            // see if the game is already running
+                  $sql = "SELECT * FROM `Gmact` WHERE game_id = :game_id AND iid = :iid";
                $stmt = $pdo->prepare($sql);
-               $stmt -> execute(); 
-                $row3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                foreach($row3 as $row){
-             //   print_r ($row);
-                $gmact_id = $row['gmact_id'];
-                }
-                echo 'gmact_id = '.$gmact_id;
+               $stmt -> execute(array(
+                    ':game_id' => $game_id,
+                    ':iid' => $iid,
+                    )); 
+               if ($row5 = $stmt->fetch(PDO::FETCH_ASSOC)!= false) { 
+                    //$row5 = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                         $gmact_id = $row5['gmact_id'];
+                         $phase = $row5['phase'];
+                        $prep_time = $row5['prep_time'];
+                        $prep_time_talk = $row5['prep_time_talk'];
+                        $work_time = $row5['work_time'];
+                        $post_time = $row5['post_time'];
+                        $post_time_talk = $row5['post_time_talk'];
+                        $class_time_talk = $row5['class_time_talk'];
+                        $on_the_fly = $row5['on_the_fly'];
+                        $stop_time = $row5['end_of_phase'];        
+                                
+                    
 
+
+               } else {
+             
+            
+                    // Create the table entry into the Gmact table from the values that were put in the Game table
+                    
+                    $sql = 'INSERT INTO `Gmact` (game_id, iid, phase, on_the_fly,  prep_time, prep_time_talk,work_time, post_time, post_time_talk,class_time_talk)	
+                                VALUES (:game_id, :iid, 0,1 , :prep_time, :prep_time_talk,:work_time, :post_time, :post_time_talk, 5)';
+                        $stmt = $pdo->prepare($sql);
+                        $stmt -> execute(array(
+                        ':game_id' => $game_id,
+                        ':iid' => $iid,
+                        ':prep_time' => $prep_time,
+                        ':prep_time_talk' => $prep_time_talk,
+                        ':work_time' => $work_time,
+                        ':post_time' => $post_time,
+                         ':post_time_talk' => $post_time_talk,
+                        ));
+                        
+                        // get the gmact_id
+                   
+                       $sql = "SELECT `gmact_id` FROM `Gmact` ORDER BY gmact_id DESC LIMIT 1";
+                       $stmt = $pdo->prepare($sql);
+                       $stmt -> execute(); 
+                        $row3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        foreach($row3 as $row){
+                     //   print_r ($row);
+                        $gmact_id = $row['gmact_id'];
+                        }
+                    //    echo 'gmact_id = '.$gmact_id;
+               }
            } 
             
             
@@ -75,9 +165,9 @@
               
                 $phase = $_POST['phase'];
                if(isset($_POST['phase_inc'])){
-                    $phase_inc=$_POST['phase_inc'];
+                    $phase_inc=1;
                } else {
-                   $phase_inc='not set';
+                   $phase_inc=0;
                }
                // test to see if we should increment the current time on submit
                $no_current = "notSet";
@@ -95,7 +185,7 @@
                 $on_the_fly = $_POST['on_the_fly'];
                 $gmact_id = $_POST['gmact_id'];
 
-             if( $phase_inc=="set"){
+             if( $phase_inc==1){
                    $phase = $phase+1;
                     }
                     
@@ -188,6 +278,8 @@
                 $on_the_fly = $row3['on_the_fly'];
                 $stop_time = $row3['end_of_phase'];
             }
+            
+            
             if($phase <=0){
               $stage = 'Waiting to Start';  
             } elseif ($phase ==1){
@@ -267,14 +359,20 @@
     <p><input type="hidden" name="gmact_id" id="gmact_id" size=3 value=<?php echo($gmact_id);?> ></p>
     <p><input type="hidden" name="on_the_fly" id="on_the_fly" size=3 value=1 ></p>
     <p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="<?php echo (htmlentities($stop_time))?>"  ></p>
-    <p> This phase ends at: <?php if (isset($stop_time)) {echo $stop_time;}   ?> UTC </p>
+   <!-- <p> This phase ends at: <?php if (isset($stop_time)) {echo $stop_time;}   ?> UTC </p> -->
     <h1><font  style="font-size:300%; color:blue;"> <?php echo $stage;?> </font>
     	<div id="defaultCountdown" style="font-size:300%;color:red;"> </div></h1>
-   <p style="font-size:400px;">
+   <p style="font-size:400px;"></p>
     
-   <hr> <font color = "blue">manual override </font>
+    <input type="button" id="pause" value="Pause" />
+    <input type="button" id="resume" value="Resume" />  
+   
+   <hr color = "green"> <font color = "blue">manual override </font>
+   
 	<p><input type="hidden" name="phase" id="phase" size=3 value=<?php echo($phase);?> ></p>
-    <h2><input type="radio" name="phase_inc" value = "set" style="height:15px; width:15px;" id="phase_inc" > Increment Stage</h2>
+    <h2><input type="checkbox" name="phase_inc" value = 1 style="height:15px; width:15px;" id="phase_inc" > Next Stage</h2>
+     <p><input type = "submit" value="Submit Changes" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
+	
 	<p>Planning Time - Writing Phase: </font><input type="number" name="prep_time" id="prep_time" size=5 value=<?php echo($prep_time);?> >
     <p>Planning Time - Discussion Phase: </font><input type="number" name="prep_time_talk" id="prep_time_talk" size=5 value=<?php echo($prep_time_talk);?> >
     <p>Working Time: <input type="number" name="work_time" id="work_time" size=5 value=<?php echo($work_time);?>></p >
@@ -282,10 +380,16 @@
      <p>Reflection Time - Team Discussion Phase: <input type="number" name="post_time_talk" id="post_time_talk" size=5 value=<?php echo($post_time_talk);?> >
      <p>Reflection Time - Class - Discussion Phase: <input type="number" name="class_time_talk" id="class_time_talk" size=5 value=<?php echo($class_time_talk);?> >
      <p><input type="radio" name="no_current" value = "set" style="height:20px; width:20px;" id="no_current" > Do Not Change Current Time on Submit</p>
-     <p><input type = "submit" value="Submit Changes" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
-	
+    <hr color = "green">
 	</form>
-   
+    
+    
+   <form  method="POST" action = "" id = "finish_form">
+   <p style="font-size:50px;"></p>
+   <p><input type="hidden" name="gmact_id" id="gmact_id" size=3 value=<?php echo($gmact_id);?> ></p>
+  <p><input type = "submit" name = "finished" value="Game Finished Clear Data Return to Repo" id="submit_id" size="2" style = "width: 30%; background-color: red; color: white"/> &nbsp &nbsp </p>  
+  <p> Note - there is a delay of about 3 to 5 seconds to finish game</p>
+  </form>
     
 	<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
 	
@@ -303,8 +407,8 @@
                //  var new_stop = stop_time.subtract(3, 'minutes').toDate();
                 
                 var new_stop=stop_time.setMinutes(stop_time.getMinutes()-offset);
-                
-              
+                Start();
+             
                 //  console.log ("new_stop = "+new_stop);
 
                 
@@ -349,8 +453,34 @@
 			
 			};
 			
+                function Start(){
 				$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',onExpiry: SubmitAway}); 
-				  
+				}
+                
+                function pause() {
+                    $('#defaultCountdown').countdown('pause');
+                }
+                 function resume() {
+                    $('#defaultCountdown').countdown('resume');
+                }
+                
+                // https://hilios.github.io/jQuery.countdown/documentation.html       
+               
+/* 
+               function addaminute() {
+                   offset = offset+1;
+                    console.log ("offset = "+offset);
+                }
+  */
+                $('#pause').click(pause);
+                $('#resume').click(resume);
+            //    $('#addaminute').click(addaminute);
+                Start();
+
+
+
+
+                
                   function SubmitAway() { 
                        radiobtn = document.getElementById('phase_inc');
                        radiobtn.checked = true;

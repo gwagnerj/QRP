@@ -107,8 +107,8 @@
             $game_id = $row['game_id'];
             $team_id = $row['team_id'];
 
-         $stmt = $pdo->prepare("SELECT AVG(`score`) AS avg_score FROM `Gameactivity` WHERE game_id = :game_id AND team_id = :team_id AND created_at >= DATE_SUB(NOW(),INTERVAL 2 HOUR)");
-			$stmt->execute(array(":game_id" => $game_id, ":team_id" => $team_id));
+         $stmt = $pdo->prepare("SELECT AVG(`score`) AS avg_score FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
+			$stmt->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
 			$row = $stmt -> fetch();
             $team_score = $row['avg_score'];
 			// echo ($row['ans_sumb']);

@@ -69,10 +69,10 @@
 
             </select>
 
-      <p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
+      <p><input type = "submit" value="Submit" id="submit_id" size="2" style = "width: 40%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	
 	</form>
-    
+  <p style="font-size:150px;"></p>   
     
 	<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
 	
