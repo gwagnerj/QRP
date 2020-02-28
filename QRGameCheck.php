@@ -243,7 +243,7 @@ session_start();
 	}
     
     if($_SESSION['count']==1){
-        
+          
       // update the ans_sumb and ans_sumlast for the members of the group
        // $stmt = $pdo->prepare("SELECT SUM(`ans_b`) AS ans_sumb FROM `Gameactivity` WHERE gameactivity_id = :gameactivity_id");
 
@@ -255,7 +255,7 @@ session_start();
             $soln[10]=$ans_sumb;
              $ans_sumlast = $row['ans_sumlast'];
              $soln[11]=$ans_sumlast;
-   /*           
+            
         $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumb` = :ans_sumb WHERE gameactivity_id = :gameactivity_id");
 			$stmt->execute(array(":gameactivity_id" => $gameactivity_id, ":ans_sumb" => $ans_sumb ));
 			
@@ -267,7 +267,7 @@ session_start();
     
         $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumlast` = :ans_sumlast WHERE gameactivity_id = :gameactivity_id");
 			$stmt->execute(array(":gameactivity_id" => $gameactivity_id,  ":ans_sumlast" => $ans_sumlast ));
-         */
+         
     } else {
         
              $stmt = $pdo->prepare("SELECT *  FROM `Gameactivity` WHERE gameactivity_id = :gameactivity_id");

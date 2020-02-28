@@ -125,7 +125,7 @@
         }else{
             $gmact_id = '';
         }
-       // echo "gmact_id".$gmact_id;
+        echo "gmact_id".$gmact_id;
 
 	echo ('<table id="table_format" class = "a" border="1" >'."\n");
 		
@@ -134,7 +134,9 @@
 		echo("</td><th>");
 		echo('Team');
 		echo("</th><th>");
-		echo('Score');
+		echo('Team Score');
+        echo("</th><th>");
+		echo('Individual Scores');
 		
 		echo("</th></tr>\n");
 		 echo("</thead>");
@@ -143,23 +145,68 @@
 		//
 		
 		// Get the team_id of all the teams in the game_prob_flag
-          $stmt = $pdo->prepare("SELECT `team_id`  FROM `Gameactivity` WHERE gmact_id = :gmact_id ");
+          $stmt = $pdo->prepare("SELECT DISTINCT `team_id`  FROM `Gameactivity` WHERE gmact_id = :gmact_id ");
 			$stmt->execute(array(":gmact_id" => $gmact_id));
-             $row = $stmt->fetch(PDO::FETCH_ASSOC); 
-            // print_r($row);
-                $team_ids = array_unique($row);
-                
-             //     echo "team_id ".$team_id;
+             $rows = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+           //  print_r($row[0]);
+             
+             foreach($rows as $row){
+                 
+             $team_ids =($row);
+               //  echo $row['team_id'];
+                // echo $Urow['team_id'];
+                 echo $team_ids['team_id'];
+            
+             
+             
+             
+               // $team_ids = array_unique($row);
+      //         print_r($team_ids);
+                //  echo "team_id ".$team_id;
                 foreach ($team_ids as $team_id){
+                    
+                    
              $stmt2 = $pdo->prepare("SELECT AVG(`score`) AS avg_score FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
                 $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
                 $row2 = $stmt2 -> fetch();
                 $team_score = $row2['avg_score'];
-        
+            
+            // now get the individual scores to put it on an inline graph say up to 6 on a team_id  next lines are from repo
+         /*    
+           			if(!isset($row["eff_stu_1"])){$eff_stu_1 = 0;} else {$eff_stu_1 = $row["eff_stu_1"];}
+			if(!isset($row["eff_stu_2"])){$eff_stu_2 = 0;} else {$eff_stu_2 = $row["eff_stu_2"];}
+			if(!isset($row["eff_stu_3"])){$eff_stu_3 = 0;} else {$eff_stu_3 = $row["eff_stu_3"];}
+			if(!isset($row["eff_stu_4"])){$eff_stu_4 = 0;} else {$eff_stu_4 = $row["eff_stu_4"];}
+			if(!isset($row["eff_stu_5"])){$eff_stu_5 = 0;} else {$eff_stu_5 = $row["eff_stu_5"];}
+ */
+           //echo('<span class="inlinebar1">'.$eff_stu_1.", ".$eff_stu_2.", ".$eff_stu_3.", ".$eff_stu_4.", ".$eff_stu_5.'</span>');	
+            
+             $stmt2 = $pdo->prepare("SELECT `score` FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
+                $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
+                $row2 = $stmt2 -> fetchALL(PDO::FETCH_ASSOC);
+                
+            
+              }   
+            
+            
+            
+            
                  echo "<tr><td>";
                 echo($team_id);
                 echo("</td><td>");	
-                echo($team_score);
+               
+                  echo($team_score);
+                echo("</td><td>");	
+                 print('<span class="inlinebar1">');
+                // $score.
+                foreach ($row2 as $score){
+                    
+                   echo $score['score'].', ' ;
+                }
+                echo'</span>';	
+                
+                
+               
                echo("</td></tr>\n");
             }
             
@@ -173,9 +220,11 @@
 ?>
 
 	<script>
-	/* 	
+	    	
 		$(".inlinebar1").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
-		$(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
+	 /*	
+    
+        $(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
 		
 		localStorage.setItem('MC_flag','false');  // initialize multiple choice flag to false
 		
