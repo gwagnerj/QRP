@@ -1,6 +1,20 @@
 <?php
 	require_once "pdo.php";
 	session_start();
+    
+      if (isset($_POST['gmact_id'])){
+        $gmact_id = $_POST['gmact_id'];
+    }  elseif(isset($_SESSION['gmact_id'])){
+         $gmact_id = $_SESSION['gmact_id'];
+    } else  {
+       $_SESSION['error'] = "Missing gmact_id from QRGameShowResults";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['gmact_id'] = $gmact_id;
+   
+
+   
 ?>
 	 <!DOCTYPE html>
 	<html lang = "en">
