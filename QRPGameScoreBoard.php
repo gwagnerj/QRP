@@ -293,7 +293,7 @@
                 // $sdev = std_deviation($row2);
                  
                // echo 'sdev= ';
-                echo $sdev;
+                echo (round($sdev,1));
                  echo("</td><td>");
                 if($range>=$range_limit){
                   $cohesivity =  $cohesivity-500;
@@ -319,7 +319,21 @@
                  echo("</td><td>");
                 $weighted_teamscore = round($team_score*($cum_cohesivity/1000),1);
                 echo $weighted_teamscore;    
-                   // upadate the team_score of the Gameactivity table  
+                  
+                  // upadate the team_score of the Gameactivity table  
+                  $sql = "UPDATE `Gameactivity` 
+                    SET team_score = :team_score
+                    WHERE gmact_id = :gmact_id AND team_id = :team_id";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt -> execute(array(
+                        ':team_score' => $weighted_teamscore,
+                        ':team_id' => $team_id,
+                        ':gmact_id' => $gmact_id,
+                    )); 
+                   
+                   
+                   
+                   
                echo("</td></tr>\n");
             }
             

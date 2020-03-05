@@ -355,7 +355,7 @@
  <h1><font  style="font-size:300%; color:blue;"> <?php echo $stage;?> </font>
     	<div id="defaultCountdown" style="font-size:300%;color:red;"> </div></h1> 
 <div id = 'backstage_view'>
-    <iframe src="QRPGameBackStage.php?gmact_id=<?php echo($gmact_id);?>" style = "width:100%; height:700px;"></iframe>
+    <iframe src="QRPGamePlayers.php?gmact_id=<?php echo($gmact_id);?>" style = "width:100%; height:700px;"></iframe>
     
 </div>
 

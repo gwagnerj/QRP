@@ -235,10 +235,9 @@ if(isset($_POST['gmact_id'])){
             
             echo("</tbody>");
              echo("</table>");
-/* 
-            echo('<input type="button" id="show_all" value="Show All" />');
-             echo('<input type="button" id="hide_all" value="Hide All" />');
- */
+
+         
+
 	
 ?>
 
@@ -258,14 +257,15 @@ if(isset($_POST['gmact_id'])){
 		
 		 */
 		$(document).ready( function () {
-
-                $('#table_format').DataTable({
-                        "order": [[ 0, 'dsc' ] ]
-                });
-
-		// jQuery('#table_format').ddTableFilter();
-		} );
-         
+          
+               $('#table_format').DataTable({
+                    "order": [[ 0, 'dsc' ] ],
+                    "columnDefs": [
+                { "visible": false, "targets": [4,5,6,7,8,9,10] }
+                ]
+			
+            });
+        });
 		
 	</script>
 
