@@ -1115,6 +1115,7 @@ WHERE
 		`game_id` int(11) NOT NULL,
 		`team_id` int(11) NOT NULL,
         `gmact_id` int(11) NOT NULL,
+        `problem_id` int(11) NOT NULL,
         `name` VARCHAR(64),
         `iid` int(11) NOT NULL,
         `team_size` int(2),

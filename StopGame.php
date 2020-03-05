@@ -94,6 +94,16 @@ session_start();
     }
     $_SESSION['dex'] = $dex;
 	
+     if (isset($_POST['iid'])){
+        $iid = $_POST['iid'];
+    }  elseif(isset($_SESSION['iid'])){
+         $iid = $_SESSION['iid'];
+    } else  {
+       $_SESSION['error'] = "Missing iid from StopGame";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['iid'] = $iid;
     
     
     if ( isset($_POST['game_score']) ) {
@@ -144,16 +154,18 @@ session_start();
 	<p><br></p>
 	<!--<span class = 'push_luck'> You can keep your points by Selecting a New Problem</span></br> -->
 	
-    	<form action="QRGamePblmPost.php" method="POST" id = "the_form">
-            <p><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-            <p><input type="hidden" name="name" id = "name" size=3 value="<?php echo (htmlentities($name))?>"  ></p>
-            <p><input type="hidden" name="problem_id" id = "problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
-            <p><input type="hidden" name="gmact_id" id = "gmact_id" size=3 value="<?php echo (htmlentities($gmact_id))?>"  ></p>
-            <p><input type="hidden" name="gameactivity_id" id = "gameactivity_id" size=3 value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
-        
-			<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
-			<p><font color=#003399> </font><input type="hidden" id = "game_id" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-            <p><font color=#003399> </font><input type="hidden" id = "gameactivity_id" name="gameactivity_id" size=3 value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
+    	<form action="QRGameRouter.php" method="POST" id = "the_form">
+            <input type="hidden" name="name"  value="<?php echo ($name)?>" >
+            <input type="hidden" name="pin" value="<?php echo ($pin)?>" >
+            <input type="hidden" name="team_id"  value="<?php echo ($team_id)?>" >
+            <input type="hidden" name="problem_id"  value="<?php echo ($problem_id)?>" >
+            <input type="hidden" name="dex" value="<?php echo ($dex)?>" >
+            <input type="hidden" name="game_id" value="<?php echo ($game_id)?>" >
+            <input type="hidden" id = "gmact_id" name="gmact_id" value="<?php echo ($gmact_id)?>" >
+            <input type="hidden" name="gameactivity_id" value="<?php echo ($gameactivity_id)?>" >
+            <input type="hidden" name="phase" id = "phase" >
+            <input type="hidden" name="iid" value="<?php echo ($iid)?>" >
+            
     <hr>
 	<p><b>Record Score then <font Color="red">Wait</font> for the instructor/game master to advance to reflection topic then preceed to reflection</b></p>
 	  <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
@@ -193,7 +205,8 @@ session_start();
                              var phase = arrn.phase;
                             var end_of_phase = arrn.end_of_phase;
                             
-                            if(phase >= 6){  // Question time is over
+                            if(phase != 5){  // Question time is over
+                                $("#phase").attr('value', phase);
                                SubmitAway(); 
                             }
                         });

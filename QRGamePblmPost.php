@@ -98,7 +98,16 @@
     }
     $_SESSION['dex'] = $dex;
    
-   
+        if (isset($_POST['iid'])){
+            $iid = $_POST['iid'];
+        }  elseif(isset($_SESSION['iid'])){
+             $iid = $_SESSION['iid'];
+        } else  {
+           $_SESSION['error'] = "Missing iid from QRGamePblmPost";
+          header('Location: index.php');
+          return;   
+        }
+        $_SESSION['iid'] = $iid;
   
           
            $stmt = $pdo->prepare("SELECT *  FROM `Gameactivity` WHERE gameactivity_id = :gameactivity_id ");
@@ -181,15 +190,17 @@
    <p> Also, how did your group perform and how could they have done better?</p></span>		
 	
 
-	<form action = "QRGameShowResults.php" method = "POST" id="the_form" >
-	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
-            <p><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-            <p><input type="hidden" name="name" id = "name" size=3 value="<?php echo (htmlentities($name))?>"  ></p>
-            <p><input type="hidden" name="problem_id" id = "problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
-            <p><input type="hidden" name="gmact_id" id = "gmact_id" size=3 value="<?php echo (htmlentities($gmact_id))?>"  ></p>
-            <p><input type="hidden" name="gameactivity_id" id = "gameactivity_id" size=3 value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
-        
-        
+	<form action = "QRGameRouter.php" method = "POST" id="the_form" >
+            <input type="hidden" name="name"  value="<?php echo ($name)?>" >
+            <input type="hidden" name="pin" value="<?php echo ($pin)?>" >
+            <input type="hidden" name="team_id"  value="<?php echo ($team_id)?>" >
+            <input type="hidden" name="problem_id"  value="<?php echo ($problem_id)?>" >
+            <input type="hidden" name="dex" value="<?php echo ($dex)?>" >
+            <input type="hidden" name="game_id" value="<?php echo ($game_id)?>" >
+            <input type="hidden" id = "gmact_id" name="gmact_id" value="<?php echo ($gmact_id)?>" >
+            <input type="hidden" name="gameactivity_id" value="<?php echo ($gameactivity_id)?>" >
+            <input type="hidden" name="phase" id = "phase" >
+            <input type="hidden" name="iid" value="<?php echo ($iid)?>" >
 		
 		<p><b><input type = "submit" id = "submit_id" value="Get Problem Parameters" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
 		</form>
@@ -236,8 +247,9 @@
                             } else if (phase == 8){ // wait
                                  Discuss("Class Question and Discussion ");
                                   document.body.style.background = "LightGoldenRodYellow";
-                            } else {  // go to QRGameShowResults.php
-                                 $('#submit_id').show();
+                            } else {  // go to QRGameRouter.php
+                                 $("#phase").attr('value', phase);
+                                 $('#submit_id').show(); 
                                SubmitAway(); 
                                 
                             } 
@@ -256,16 +268,13 @@
                         
                          // flash the message
                           $('#message2').show();
-                     /* 
-                            var f = document.getElementById('message2');
-                            setInterval(function() {
-                                f.style.display = (f.style.display == 'none' ? '' : 'none');
-                            }, 1000);
-                     */
+                    
                     
                     }
                 
                      function SubmitAway() { 
+                     
+                     
                   
                         document.getElementById('the_form').submit();
                     }

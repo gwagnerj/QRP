@@ -98,16 +98,67 @@
     }
     $_SESSION['dex'] = $dex;
    
-   
-    
-	if ($game_id<1 || $game_id>1000000) {
-	  $_SESSION['error'] = "game number out of range";
+    if (isset($_POST['iid'])){
+        $iid = $_POST['iid'];
+    }  elseif(isset($_SESSION['iid'])){
+         $iid = $_SESSION['iid'];
+    } else  {
+       $_SESSION['error'] = "Missing iid from QRGameGetin";
 	  header('Location: index.php');
-	  return;
-	}
-	
-	  
+	  return;   
+    }
+    $_SESSION['iid'] = $iid;
+   
+// now check the size of the teams and get the sums
 
+ // check the number of individuals on the team
+        
+        $sql_stmt = "SELECT COUNT(*) FROM Gameactivity WHERE team_id = :team_id AND `gmact_id`= :gmact_id ";
+            $stmt = $pdo->prepare($sql_stmt);
+            $stmt->execute(array(':team_id' => $team_id,':gmact_id' => $gmact_id));
+           $number_activated = $stmt->fetchColumn(); 
+
+
+ $sql_stmt = "SELECT * FROM Gameactivity WHERE `team_id`= :team_id AND `gmact_id`= :gmact_id ";
+            $stmt = $pdo->prepare($sql_stmt);
+            $stmt->execute(array(':team_id' => $team_id,':gmact_id' => $gmact_id));
+            $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($row2 as $row3){
+                $team_size = $row3['team_size'];
+                if ($number_activated != $team_size){
+                   // update the gameactivity table to set the team_size_error to 1 
+                   $sql = "UPDATE `Gameactivity` 
+                        SET team_size_error = 1
+                        WHERE gameactivity_id = :gameactivity_id";
+                        $stmt = $pdo->prepare($sql);
+                        $stmt -> execute(array(
+                        ':gameactivity_id' => $gameactivity_id,
+                        )); 
+                        $_SESSION['error'] = "the number of active team members do not match someone on the teams input for team size";
+                    }
+            
+                 
+            
+                   // Sum up the answers for b and the last one and update the gameactivity table with those values - this is done in QRGetGamein but could be done here instead
+                      $stmt = $pdo->prepare("SELECT SUM(`ans_b`) AS ans_sumb FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
+                        $stmt->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
+                        $row = $stmt -> fetch();
+                        $ans_sumb = $row['ans_sumb'];
+                        
+                    $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumb` = :ans_sumb WHERE gameactivity_id = :gameactivity_id");
+                        $stmt->execute(array(":gameactivity_id" => $gameactivity_id, ":ans_sumb" => $ans_sumb ));
+                        
+                     $stmt = $pdo->prepare("SELECT SUM(`ans_last`) AS ans_sumlast FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
+                        $stmt->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
+                        $row = $stmt -> fetch();
+                        $ans_sumlast = $row['ans_sumlast'];   
+                        
+                    $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `ans_sumlast` = :ans_sumlast WHERE gameactivity_id = :gameactivity_id");
+                    $stmt->execute(array(":gameactivity_id" => $gameactivity_id,  ":ans_sumlast" => $ans_sumlast )); 
+                        
+            }
+
+// now get the data for the game
 
 		$stmt = $pdo->prepare("SELECT * FROM Game WHERE game_id = :game_id");
 		$stmt->execute(array(":game_id" => $game_id));
@@ -139,12 +190,7 @@
 	
         // write to the Game_activity table the values 
         
-     
-        
-// will sum them up in the next file down QRGameCheck
-
-
-     
+   
     
 
 		$stmt = $pdo->prepare("SELECT * FROM `Input` where problem_id = :problem_id AND dex = :dex");
@@ -171,9 +217,6 @@
 			$oval_width = $oval_length * $char_to_width+5;
 			$trap_width = $trap_length * $char_to_width +25;
 			$hexa_width = $hexa_length * $char_to_width+10;
-			
-			
-			
 			
 			
 			$rect_svg = $rect_width+32;
@@ -213,8 +256,39 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 	
-	
-	
+    <style>
+   
+    
+  
+ 
+    
+    .rect {
+            font-size: 2rem;
+             padding:6px;
+            vertical-align: middle;
+            display: inline-block;
+            text-allign:center;
+            border:4px solid blue;
+            margin:4px;
+        }
+        .oval {
+            font-size: 2rem;
+            padding:6px;
+            vertical-align: middle;
+            display: inline-block;
+            text-allign:center;
+            border:4px solid red ;
+           border-radius:50%;
+            margin:4px;
+       }
+      #trap_id {
+            display: inline;
+       }
+        #hexa_id {
+            display: inline;
+       }
+   
+    </style>
 	
 	</head>
 
@@ -244,9 +318,17 @@
 <h3> PIN: <?php echo($pin);?> </h3>
 <h3> Team Number: <?php echo($team_id);?> </h3>
 
-	<h4><font color = "red"> Write</font> the values on your sheet then proceed to checker </h4>			
+      
 
 
+	<h4><font color = "red"> Write</font> the values on your sheet then proceed to checker </h4>
+<ul style="list-style-type:none;">    
+  <li>
+        <div class = "rect" >  <?php echo ($rect_val); ?></div>
+    </li><li>
+        <div class = "oval" >  <?php echo ($oval_val); ?></div>
+    </li><li>
+<!--
 	<svg  width=<?php echo($rect_svg); ?> height="100" >
 	  <rect  fill="white" stroke="blue" stroke-width="4" width="<?php echo($rect_width);?>" height = "50" x="15" y = "5"/>
 	  <text x="<?php echo($rect_width/2+12);?>" y="40" text-anchor="middle" fill="black" font-size="30"> <?php echo ($rect_val);?></text>
@@ -256,38 +338,90 @@
 	  <rect  fill="white" stroke="red" stroke-width="4" width="<?php echo($oval_width);?>" rx = "25"  ry = "25" height = "50" x="15" y = "5"/>
 	  <text x="<?php echo($oval_width/2+14);?>" y="40" text-anchor="middle" fill="black" font-size="30"> <?php echo ($oval_val);?></text>
 	</svg>
+-->
 
-	<svg  width=<?php echo($trap_svg) ?> height="100" >
-	  <polygon  fill="white" stroke="green" stroke-width="4" points="20,5 <?php echo($trapx_pt2);?>,5 <?php echo($trap_width);?>,50 5,50"/>
-	  <text x="<?php echo($trap_width/2+4);?>" y="40" text-anchor="middle" fill="black" font-size="30"> <?php echo ($trap_val);?></text>
-	</svg>
-
-	<svg  width=<?php echo($hexa_svg) ?> height="100" >
-	  <polygon  fill="white" stroke="#E67E22" stroke-width="4" points="15,5 <?php echo($hexax_pt2);?>,5 <?php echo($hexa_width);?>,30 <?php echo($hexax_pt2);?>,50 15,50 5,30"/>
-	  <text x="<?php echo($hexa_width/2+4);?>" y="40" text-anchor="middle" fill="black" font-size="30"> <?php echo ($hexa_val);?></text>
-	</svg>
-
-
+        <span class = "trap_id">
+            <svg  width=<?php echo($trap_svg) ?> height="60" >
+              <polygon  fill="white" stroke="green" stroke-width="4" points="20,5 <?php echo($trapx_pt2);?>,5 <?php echo($trap_width);?>,50 5,50"/>
+              <text x="<?php echo($trap_width/2+4);?>" y="40" text-anchor="middle" fill="black" font-size="30"> <?php echo ($trap_val);?></text>
+            </svg>
+        </span>
+ </li><li>
+         <span class = "hexa_id">
+            <svg  width=<?php echo($hexa_svg) ?> height="60" >
+              <polygon  fill="white" stroke="#E67E22" stroke-width="4" points="15,5 <?php echo($hexax_pt2);?>,5 <?php echo($hexa_width);?>,30 <?php echo($hexax_pt2);?>,50 15,50 5,30"/>
+              <text x="<?php echo($hexa_width/2+4);?>" y="40" text-anchor="middle" fill="black" font-size="30"> <?php echo ($hexa_val);?></text>
+            </svg>
+         </span>
+</li>
 	<form action = "QRGameCheck.php" method = "POST" id = "the_form" >
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
-			<p><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-        <p><input type="hidden" name="name" id = "name" size=3 value="<?php echo (htmlentities($name))?>"  ></p>
-        <p><input type="hidden" name="problem_id" id = "problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
-        <p><input type="hidden" name="gmact_id" id = "gmact_id" size=3 value="<?php echo (htmlentities($gmact_id))?>"  ></p>
-        <p><input type="hidden" name="gameactivity_id" id = "gameactivity_id" size=3 value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
-     
-        <p><input type="hidden" name="team_id" id = "team_id" size=3 value="<?php echo (htmlentities($team_id))?>"  ></p>
-		<p><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
-        <p><input type="hidden" id = "pin" name="pin" size=3 value="<?php echo (htmlentities($pin))?>"  ></p>
-		
+            <input type="hidden" name="name"  value="<?php echo ($name)?>" >
+            <input type="hidden" name="pin" value="<?php echo ($pin)?>" >
+            <input type="hidden" name="team_id"  value="<?php echo ($team_id)?>" >
+            <input type="hidden" name="problem_id"  value="<?php echo ($problem_id)?>" >
+            <input type="hidden" name="dex" value="<?php echo ($dex)?>" >
+            <input type="hidden" name="game_id" value="<?php echo ($game_id)?>" >
+            <input type="hidden" id = "gmact_id" name="gmact_id" value="<?php echo ($gmact_id)?>" >
+            <input type="hidden" name="gameactivity_id" value="<?php echo ($gameactivity_id)?>" >
+            <input type="hidden" name="phase" id = "phase" >
+            <input type="hidden" name="iid" value="<?php echo ($iid)?>" >
         
 		<p><b><input type = "submit" id = "submit_id" value="Go to Checker" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
 		</form>
 
 		<script>
+  /*       
+        function convertRemToPixels(rem) {    
+    return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+        }
 			$(document).ready( function () {
+             //   var var gmact_id = $("#gmact_id").val();
+             <?php $trap_val = "lalala blablabla"; ?>
+
+                var canvas = document.getElementById('trap_fig');
+                canvas.width = 400;
+                shape = canvas.getContext('2d');
+                   // shape.fillStyle = 'green';
+                   shape.beginPath();
+                   var text = "<?=$trap_val?>";
+                   var textWidth = text.length * (convertRemToPixels(2)/1.5);
+                   shape.font = convertRemToPixels(2)+'px Arial';
+                    shape.textAlign = 'center';
+                    shape.fillText(text, textWidth/2, 5+convertRemToPixels(2));
+                    
+                    shape.moveTo(20, 5);
+                    shape.lineTo(10+textWidth, 5);
+                    shape.lineTo(30+textWidth, 50);
+                    shape.lineTo(5, 50);
+                    shape.closePath();
+                    shape.lineWidth = 4;
+                    shape.strokeStyle = "green";
+                    shape.stroke();
+                    
+                    
+
+                    //shape.fill();
                 
-				// get the current phase
+                var shape = document.getElementById('hexa_fig').getContext('2d');
+                    // shape.fillStyle = 'green';
+                   
+                    shape.beginPath();
+                    shape.moveTo(15, 5);
+                    shape.lineTo(100, 5);
+                    shape.lineTo(115, 30);
+                    shape.lineTo(100, 50);
+                    shape.lineTo(15, 50);
+                    shape.lineTo(5, 30);
+                    shape.closePath();
+                    shape.lineWidth = 4;
+                    shape.strokeStyle = "orange";
+                    shape.stroke();
+                
+                 */
+                // get the current phase
+                
+        $(document).ready( function () {
 				var gmact_id = $("#gmact_id").val();
 				console.log ('gmact_id = ',gmact_id);
 			
@@ -311,7 +445,8 @@
                              var phase = arrn.phase;
                             var end_of_phase = arrn.end_of_phase;
                             	console.log ('phase = ',phase);
-                           if(phase > 4){  // submit away work time has eneded
+                           if(phase != 4){  // submit away work time has ended go to checker that will go to the router - this can't go directly to router
+                                $("#phase").attr('value', phase);
                                SubmitAway(); 
                             }
                         }

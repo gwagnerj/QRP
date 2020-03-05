@@ -57,7 +57,7 @@
                 $count->execute(array(
                     ":gmact_id" => $gmact_id,
                 ));
-
+                $_SESSION['success']= 'deleted game '.$gmact;
                 $num=$count->rowCount();
                  header('Location: QRPRepo.php');
                     return;   
@@ -101,17 +101,21 @@
                 $post_time = round($row['post_time']/2);
                 $post_time_talk = $post_time;
                 $work_time = $row['work_time'];
-            
+                $problem_id = $row['problem_id'];
+                 
             // see if the game is already running
+ 
                   $sql = "SELECT * FROM `Gmact` WHERE game_id = :game_id AND iid = :iid";
                $stmt = $pdo->prepare($sql);
                $stmt -> execute(array(
                     ':game_id' => $game_id,
                     ':iid' => $iid,
                     )); 
-               if ($row5 = $stmt->fetch(PDO::FETCH_ASSOC)!= false) { 
-                    //$row5 = $stmt->fetch(PDO::FETCH_ASSOC);
+                $row5 = $stmt->fetch(PDO::FETCH_ASSOC);
                     
+               if ($row5 != false) { 
+                   
+               
                          $gmact_id = $row5['gmact_id'];
                          $phase = $row5['phase'];
                         $prep_time = $row5['prep_time'];
@@ -123,7 +127,6 @@
                         $on_the_fly = $row5['on_the_fly'];
                         $stop_time = $row5['end_of_phase'];        
                                 
-                    
 
 
                } else {
@@ -325,7 +328,7 @@
 
 <body>
 <header>
-<h1>Quick Response Game Time and Phase Screen</h1>
+<h1>Quick Response - Game Time and Phase Screen</h1>
 </header>
 
 <?php
@@ -346,6 +349,15 @@
 
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
+
+
+
+ <h1><font  style="font-size:300%; color:blue;"> <?php echo $stage;?> </font>
+    	<div id="defaultCountdown" style="font-size:300%;color:red;"> </div></h1> 
+
+<div id = 'scorebrd'>
+ <iframe src="QRPGameScoreBoard.php?gmact_id=<?php echo($gmact_id);?>" style = "width:100%; height:700px;"></iframe>
+</div>
 <form  method="POST" action = "" id = "submit_form">
 		
     
@@ -360,17 +372,25 @@
     <p><input type="hidden" name="gmact_id" id="gmact_id" size=3 value=<?php echo($gmact_id);?> ></p>
     <p><input type="hidden" name="on_the_fly" id="on_the_fly" size=3 value=1 ></p>
     <p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="<?php echo (htmlentities($stop_time))?>"  ></p>
-   <!-- <p> This phase ends at: <?php if (isset($stop_time)) {echo $stop_time;}   ?> UTC </p> -->
+   <!-- <p> This phase ends at: <?php if (isset($stop_time)) {echo $stop_time;}   ?> UTC </p>
     <h1><font  style="font-size:300%; color:blue;"> <?php echo $stage;?> </font>
-    	<div id="defaultCountdown" style="font-size:300%;color:red;"> </div></h1>
-   <p style="font-size:400px;"></p>
+    	<div id="defaultCountdown" style="font-size:300%;color:red;"> </div></h1> -->
+         <p style="font-size:40px;"></p>
+        
+
+
+ 
     
     <input type="button" id="pause" value="Pause" />
     <input type="button" id="resume" value="Resume" />  
      <p style="font-size:50px;"></p>
-     <?php echo('<a href="QRPGameScoreBoard.php?gmact_id='.$gmact_id.'"target=_blank><b> Score Board</b></a>');?>
-   
-   <hr color = "green"> <font color = "blue">manual override </font>
+ <!--    <?php echo('<a href="QRPGameScoreBoard.php?gmact_id='.$gmact_id.'&stop_time='.$stop_time.'"target=_blank><b> Score Board</b></a>');?>  -->
+  
+
+  <!-- - If you pause and want to correct the score board clock  - upon resume - 1)close the scoreboard tab 2)change the working time to the remaining time 3)submit 4)reopen the Score Boeard  -->
+  
+
+  <hr color = "green"> <font color = "blue">manual override </font>
    
 	<p><input type="hidden" name="phase" id="phase" size=3 value=<?php echo($phase);?> ></p>
     <h2><input type="checkbox" name="phase_inc" value = 1 style="height:15px; width:15px;" id="phase_inc" > Next Stage</h2>
@@ -387,31 +407,68 @@
 	</form>
     
     
+    <form  method="POST" action = "QRPGameBackStage.php" id = "backstage" target = "_blank">
+   <p style="font-size:50px;"></p>
+   
+   <p><input type="hidden" name="gmact_id" id="gmact_id" value=<?php echo($gmact_id);?> ></p>
+   
+  <p><input type = "submit" name = "backstage" value="Back Stage Game Data" id="backstage_submit" size="2" style = "width: 30%; background-color: green; color: white"/>  </p>  
+  
+  </form>
+    
+    
+   
+    
    <form  method="POST" action = "" id = "finish_form">
    <p style="font-size:50px;"></p>
-   <p><input type="hidden" name="gmact_id" id="gmact_id" size=3 value=<?php echo($gmact_id);?> ></p>
-  <p><input type = "submit" name = "finished" value="Game Finished Clear Data Return to Repo" id="submit_id" size="2" style = "width: 30%; background-color: red; color: white"/> &nbsp &nbsp </p>  
+   
+   <p><input type="hidden" name="gmact_id" id="gmact_id" value=<?php echo($gmact_id);?> ></p>
+   
+  <p><input type = "submit" name = "finished" value="Kill Game - Clear Data & Return to Repo" id="submit_id" size="2" style = "width: 30%; background-color: red; color: white"/> &nbsp &nbsp </p>  
   <p> Note - there is a delay of about 3 to 5 seconds to finish game</p>
   </form>
     
+ 
 
 	
 <script>
 		$(document).ready( function () {
-				var stop_time = $("#stop_time").val();
-				var stop_time = new Date(stop_time)
-                var current_time = new Date();
-                var offset = current_time.getTimezoneOffset();
-              /*   
-                console.log ("stop time UTC = "+stop_time);
-                console.log ("current_time UTC = "+current_time);
-                 console.log ("offset = "+offset);
-                  */
-               //  var new_stop = stop_time.subtract(3, 'minutes').toDate();
+                    
+                var stop_time;
+                stop_time = $("#stop_time").val();
+                 console.log ("stop time1 UTC = "+stop_time);
+                 
+                     console.log (typeof(stop_time));  
+                        var stop_time = new Date(stop_time)
+                        var current_time = new Date();
+                        var offset = current_time.getTimezoneOffset();
+                        
+                        console.log ("stop time UTC = "+stop_time);
+                        console.log ("current_time UTC = "+current_time);
+                         console.log ("offset = "+offset);
+                         
+                       //  var new_stop = stop_time.subtract(3, 'minutes').toDate();
+                        
+                        var new_stop=stop_time.setMinutes(stop_time.getMinutes()-offset);
+                        Start();
                 
-                var new_stop=stop_time.setMinutes(stop_time.getMinutes()-offset);
-                Start();
-             
+                   console.log (typeof(stop_time));  
+                
+                var phase = $("#phase").val();
+                console.log("phase is = "+phase);
+                if (phase ==4 || phase ==5){
+                     $("#scorebrd").show();
+                } else {
+                    console.log("phase is = "+phase);
+                     $("#scorebrd").hide();
+                }
+                if (phase == 0 || phase == 3 || phase == 5 || phase == 9){
+                  // hide the pasue resume buttons 
+                  
+                  $("#pause").hide();
+                  $("#resume").hide();
+                    
+                }
                 //  console.log ("new_stop = "+new_stop);
 
                 
@@ -444,7 +501,7 @@
                     oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
                 };
                 
-             */
+            
             
             function highlightLast(periods) { 
 				if ($.countdown.periodsToSeconds(periods) === 20) { 
@@ -455,7 +512,7 @@
 				} 
 			
 			};
-			
+			 */
                 function Start(){
 				$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',onExpiry: SubmitAway}); 
 				}
@@ -493,7 +550,8 @@
 				
 			});		
 	</script>
-
+      
+      
 </body>
 </html>
 

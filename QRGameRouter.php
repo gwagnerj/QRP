@@ -8,11 +8,11 @@ require_once "pdo.php";
 // first do some error checking on the input.  If it is not OK set the session failure and send them back to QRGameIndex or getGamePblmNum.php.
 
         if (isset($_POST['game_id'])){
-        $game_id = $_POST['game_id'];
+            $game_id = $_POST['game_id'];
     }  elseif(isset($_SESSION['game_id'])){
-         $game_id = $_SESSION['game_id'];
+            $game_id = $_SESSION['game_id'];
     } else  {
-       $_SESSION['error'] = "Missing game_id from QRGameRouter";
+            $_SESSION['error'] = "Missing game_id from QRGameRouter";
 	  header('Location: index.php');
 	  return;   
     }
@@ -125,12 +125,20 @@ require_once "pdo.php";
       
     }
     $_SESSION['phase'] = $phase;
+?>
+
+	<!DOCTYPE html>
+	<html lang = "en">
+	<head>
+	<meta Charset = "utf-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	</head>
+	<body>
 
 
-
-
+<?php
 // Dump all of the vars in session vars and send on the way
-
+/* 
           $_SESSION['name']=$name;
            $_SESSION['pin']=$pin;
            $_SESSION['team_id']=$team_id;
@@ -158,14 +166,48 @@ require_once "pdo.php";
                 header( 'Location: QRGamePblmPlan.php' ) ;
 				return;
            }
-           
-
-
+            */
+//echo ("phase = ".$phase);
 ?>
+    
+    <form  method = "POST" id = "the_form">
+            <input type="hidden" name="name"  value="<?php echo ($name)?>" >
+            <input type="hidden" name="pin" value="<?php echo ($pin)?>" >
+            <input type="hidden" name="team_id"  value="<?php echo ($team_id)?>" >
+            <input type="hidden" name="problem_id"  value="<?php echo ($problem_id)?>" >
+            <input type="hidden" name="dex" value="<?php echo ($dex)?>" >
+            <input type="hidden" name="game_id" value="<?php echo ($game_id)?>" >
+            <input type="hidden" name="gmact_id" value="<?php echo ($gmact_id)?>" >
+            <input type="hidden" name="gameactivity_id" value="<?php echo ($gameactivity_id)?>" >
+            <input type="hidden" name="phase" id = "phase" value="<?php echo ($phase)?>" >
+            <input type="hidden" name="iid" value="<?php echo ($iid)?>" >
+       
+         
+        <p><input type = "submit" value="Go To Game" name = "submit_name" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
+    </form>
 
-
-
-
+   <script>
+			
+            $(document).ready( function () {
+               var phase = $("#phase").val(); 
+               console.log ("phase "+phase);
+                if (phase >=6 && phase <=7){
+                    $("#the_form").attr('action', 'QRGamePblmPost.php');
+                } else if(phase == 4){
+                     $("#the_form").attr('action', 'QRGameGetIn.php');
+                } else if (phase == 5){
+                     $("#the_form").attr('action', 'StopGame.php');
+                } else if(phase==8) {
+                     $("#the_form").attr('action', 'QRGameShowResults.php');
+                } else if(phase < 0 || phase >= 9){
+                      $("#the_form").attr('action', 'index.php');
+                } else {
+                     $("#the_form").attr('action', 'QRGamePblmPlan.php');
+                }
+                $("#the_form").submit();    
+             });
+             
+		</script>
 
 
 

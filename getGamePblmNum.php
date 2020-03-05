@@ -86,7 +86,7 @@ $gs_num = "";
 
 <form action = "QRGameConfirm.php" method = "POST" autocomplete="off">
 
-     <p><font color=#003399> Name </font><input type="text" name="name" id = "name" size=3 width = "30%"></p>
+     <p><font color=#003399> Name </font><input type="text" name="name" id = "name" size=3 width = "40px"></p>
     <p><font color=#003399> Fill in your PIN </font><input type="number" id = "pin" name="pin" size=3 min="1" max= "9999"  ></p>
      <p><font color=#003399> and Team Number </font><input type="number" name="team_id" id = "team_id" size=3 min="1" max= "100"  ></p>
      <p> <font color=#0000CD size = "1">(PIN and Team Number are supplied from the Instructor)</font> </p>

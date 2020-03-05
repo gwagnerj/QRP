@@ -163,13 +163,14 @@ require_once "pdo.php";
         $stmt->execute(array(":gmact_id" => $gmact_id,":pin" => $pin));
         $row = $stmt -> fetch();
         if ( $row === false ) {
-            $sql = "INSERT INTO Gameactivity (game_id, team_id, gmact_id, pin, dex, iid, team_size, team_size_error, name, ans_b, ans_last)
-				VALUES (:game_id, :team_id, :gmact_id, :pin, :dex, :iid, :team_size, 0, :name, :ans_b, :ans_last)";
+            $sql = "INSERT INTO Gameactivity (game_id, team_id, gmact_id, problem_id, pin, dex, iid, team_size, team_size_error, name, ans_b, ans_last)
+				VALUES (:game_id, :team_id, :gmact_id,:problem_id, :pin, :dex, :iid, :team_size, 0, :name, :ans_b, :ans_last)";
 					$stmt = $pdo->prepare($sql);
 					$stmt->execute(array(
 					':game_id' => $game_id,
 					':team_id' => $team_id,
                     ':gmact_id' => $gmact_id,
+                    ':problem_id' => $problem_id,
 					':pin' => $pin,
                     ':dex' => $dex,
                     ':iid' => $iid,
@@ -195,12 +196,13 @@ require_once "pdo.php";
             // update the gameactivity table or tell them there is a duplicate entry in the table - wont worry about this right now
             $team_size_error = 0;
              $sql = "UPDATE `Gameactivity` 
-				SET game_id = :game_id, team_id = :team_id ,pin = :pin, dex = :dex, iid = :iid, team_size = :team_size, team_size_error = :team_size_error, name = :name, ans_b = :ans_b, ans_last = :ans_last
+				SET game_id = :game_id, team_id = :team_id , problem_id = :problem_id, pin = :pin, dex = :dex, iid = :iid, team_size = :team_size, team_size_error = :team_size_error, name = :name, ans_b = :ans_b, ans_last = :ans_last
 				WHERE gmact_id = :gmact_id AND pin = :pin";
                 $stmt = $pdo->prepare($sql);
                 $stmt -> execute(array(
                     ':game_id' => $game_id,
                      ':gmact_id' => $gmact_id,
+                     ':problem_id' => $problem_id,
 					':team_id' => $team_id,
 					':pin' => $pin,
                     ':dex' => $dex,
@@ -239,8 +241,8 @@ require_once "pdo.php";
             }
            // Put everthing in Session variables and send them on their way?  Could put in html and use JS to submit the correct form if headers gives me a problem set up 
            // html form and make action a php varaibel and submit with JS
-           
-           $_SESSION['name']=$name;
+         
+ /*           $_SESSION['name']=$name;
            $_SESSION['pin']=$pin;
            $_SESSION['team_id']=$team_id;
            $_SESSION['problem_id']=$problem_id;
@@ -251,20 +253,57 @@ require_once "pdo.php";
             $_SESSION['gmact_id']=$gmact_id;
             $_SESSION['gameactivity_id']=$gameactivity_id;
             $_SESSION['iid']=$iid;
-            
              header( 'Location: QRGameRouter.php' ) ;
 				return;
-            
-           
+             */
+ ?> 
+	<!DOCTYPE html>
+	<html lang = "en">
+	<head>
+	<meta Charset = "utf-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	</head>
+	<body>
 
+<?php
+	if ( isset($_SESSION['error']) ) {
+		echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
+		unset($_SESSION['error']);
+	}
+	if ( isset($_SESSION['success']) ) {
+		echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
+		unset($_SESSION['success']);
+	}
 
 ?>
 
+ 
+    <form action = "QRGameRouter.php" method = "POST" id = "the_form">
+         
+          <p><input type="hidden" name="name"  value="<?php echo (htmlentities($name))?>"  ></p>
+          <p><input type="hidden" name="pin" value="<?php echo (htmlentities($pin))?>"  ></p>
+          <p><input type="hidden" name="team_id"  value="<?php echo (htmlentities($team_id))?>"  ></p>
+          <p><input type="hidden" name="problem_id"  value="<?php echo (htmlentities($problem_id))?>"  ></p>
+        <p><input type="hidden" name="dex" value="<?php echo (htmlentities($dex))?>"  ></p>
+        <p><input type="hidden" name="game_id" value="<?php echo (htmlentities($game_id))?>"  ></p>
+         <p><input type="hidden" name="gmact_id" value="<?php echo (htmlentities($gmact_id))?>"  ></p>
+          <p><input type="hidden" name="gameactivity_id" value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
+        <p><input type="hidden" name="phase" value="<?php echo (htmlentities($phase))?>"  ></p>
+         <p><input type="hidden" name="iid" value="<?php echo (htmlentities($iid))?>"  ></p>
+        
+       
+        
+        <p><input type = "submit" value="Go To Game" name = "submit_name" size="14" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>
+    </form>
 
+        <script>
+			
+            $(document).ready( function () {
+                $("#the_form").submit();    
+             });
+             
+		</script>
 
-
-
-
-
-
+	</body>
+</html>
 

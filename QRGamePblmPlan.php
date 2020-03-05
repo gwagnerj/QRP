@@ -6,78 +6,108 @@
 	// first do some error checking on the input.  If it is not OK set the session failure and send them back to QRGameIndex.
 	// Comming from index the game number will be a POST where if we are coming from a QRcode of the game it will be a GET
     
-    if (isset($_SESSION['phase'])){
-        $phase = $_SESSION['phase'];
-    }  else {
-       $_SESSION['error'] = "Missing phase in QRGamePblmPlan";
+     if (isset($_POST['game_id'])){
+        $game_id = $_POST['game_id'];
+    }  elseif(isset($_SESSION['game_id'])){
+         $game_id = $_SESSION['game_id'];
+    } else  {
+       $_SESSION['error'] = "Missing game_id from QRGamePblmPlan";
 	  header('Location: index.php');
 	  return;   
     }
-    
-    if (isset($_SESSION['game_id'])){
-        $game_id = $_SESSION['game_id'];
-    }  else {
-       $_SESSION['error'] = "Missing game_id in QRGamePblmPlan";
-	  header('Location: index.php');
-	  return;   
-    }
+    $_SESSION['game_id'] = $game_id;
    
-    if (isset($_SESSION['gmact_id'])){
-        $gmact_id = $_SESSION['gmact_id'];
-    }  else {
-       $_SESSION['error'] = "Missing gmact_id in QRGamePblmPlan";
-	  header('Location: index.php');
-	  return;   
-    }
+
    
-    if (isset($_SESSION['gameactivity_id'])){
-        $gameactivity_id = $_SESSION['gameactivity_id'];
-    }  else {
-       $_SESSION['error'] = "Missing gameactivity_id in QRGamePblmPlan";
+     if (isset($_POST['pin'])){
+        $pin = $_POST['pin'];
+    }  elseif(isset($_SESSION['pin'])){
+         $pin = $_SESSION['pin'];
+    } else  {
+       $_SESSION['error'] = "Missing pin from QRGamePblmPlan";
 	  header('Location: index.php');
 	  return;   
     }
+    $_SESSION['pin'] = $pin;
     
-     if (isset($_SESSION['name'])){
-        $name = $_SESSION['name'];
-    }  else {
-       $_SESSION['error'] = "Missing name in QRGamePblmPlan";
+    
+      if (isset($_POST['team_id'])){
+        $team_id = $_POST['team_id'];
+    }  elseif(isset($_SESSION['team_id'])){
+         $team_id = $_SESSION['team_id'];
+    } else  {
+       $_SESSION['error'] = "Missing team_id from QRGamePblmPlan";
 	  header('Location: index.php');
 	  return;   
     }
+    $_SESSION['team_id'] = $team_id;
     
-     if (isset($_SESSION['pin'])){
-        $pin = $_SESSION['pin'];
-    }  else {
-       $_SESSION['error'] = "Missing pin in QRGamePblmPlan";
+      if (isset($_POST['gmact_id'])){
+        $gmact_id = $_POST['gmact_id'];
+    }  elseif(isset($_SESSION['gmact_id'])){
+         $gmact_id = $_SESSION['gmact_id'];
+    } else  {
+       $_SESSION['error'] = "Missing gmact_id from QRGamePblmPlan";
 	  header('Location: index.php');
 	  return;   
     }
+    $_SESSION['gmact_id'] = $gmact_id;
     
-     if (isset($_SESSION['team_id'])){
-        $team_id = $_SESSION['team_id'];
-    }  else {
-       $_SESSION['error'] = "Missing team_id in QRGamePblmPlan";
+      if (isset($_POST['gameactivity_id'])){
+        $gameactivity_id = $_POST['gameactivity_id'];
+    }  elseif(isset($_SESSION['gameactivity_id'])){
+         $gameactivity_id = $_SESSION['gameactivity_id'];
+    } else  {
+       $_SESSION['error'] = "Missing gameactivity_id from QRGamePblmPlan";
 	  header('Location: index.php');
 	  return;   
     }
+    $_SESSION['gameactivity_id'] = $gameactivity_id;
     
-     if (isset($_SESSION['dex'])){
-        $dex = $_SESSION['dex'];
-    }  else {
-       $_SESSION['error'] = "Missing dex in QRGamePblmPlan";
+      if (isset($_POST['name'])){
+        $name = $_POST['name'];
+    }  elseif(isset($_SESSION['name'])){
+         $name = $_SESSION['name'];
+    } else  {
+       $_SESSION['error'] = "Missing name from QRGamePblmPlan";
 	  header('Location: index.php');
 	  return;   
     }
+    $_SESSION['name'] = $name;
     
-     if (isset($_SESSION['problem_id'])){
-        $problem_id = $_SESSION['problem_id'];
-    }  else {
-       $_SESSION['error'] = "Missing problem_id in QRGamePblmPlan";
+      if (isset($_POST['problem_id'])){
+        $problem_id = $_POST['problem_id'];
+    }  elseif(isset($_SESSION['problem_id'])){
+         $problem_id = $_SESSION['problem_id'];
+    } else  {
+       $_SESSION['error'] = "Missing problem_id from QRGamePblmPlan";
 	  header('Location: index.php');
 	  return;   
     }
+    $_SESSION['problem_id'] = $problem_id;
     
+   
+      if (isset($_POST['dex'])){
+        $dex = $_POST['dex'];
+    }  elseif(isset($_SESSION['dex'])){
+         $dex = $_SESSION['dex'];
+    } else  {
+       $_SESSION['error'] = "Missing dex from QRGamePblmPlan";
+	  header('Location: index.php');
+	  return;   
+    }
+    $_SESSION['dex'] = $dex;
+   
+        if (isset($_POST['iid'])){
+            $iid = $_POST['iid'];
+        }  elseif(isset($_SESSION['iid'])){
+             $iid = $_SESSION['iid'];
+        } else  {
+           $_SESSION['error'] = "Missing iid from QRGamePblmPlan";
+          header('Location: index.php');
+          return;   
+        }
+        $_SESSION['iid'] = $iid;
     
     
    
@@ -147,19 +177,17 @@
     </ol> 		
 	</div>
 
-	<form action = "QRGameGetSum.php" method = "POST" id="the_form" >
-	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
-		<p><input type="hidden" name="game_id" id = "game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
-        <p><input type="hidden" name="name" id = "name" size=3 value="<?php echo (htmlentities($name))?>"  ></p>
-        <p><input type="hidden" name="problem_id" id = "problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
-        <p><input type="hidden" name="gmact_id" id = "gmact_id" size=3 value="<?php echo (htmlentities($gmact_id))?>"  ></p>
-        <p><input type="hidden" name="gameactivity_id" id = "gameactivity_id" size=3 value="<?php echo (htmlentities($gameactivity_id))?>"  ></p>
-     
-        <p><input type="hidden" name="team_id" id = "team_id" size=3 value="<?php echo (htmlentities($team_id))?>"  ></p>
-		<p><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
-        <p><input type="hidden" id = "pin" name="pin" size=3 value="<?php echo (htmlentities($pin))?>"  ></p>
-		
-        
+	<form action = "QRGameRouter.php" method = "POST" id="the_form" >
+            <input type="hidden" name="name"  value="<?php echo ($name)?>" >
+            <input type="hidden" name="pin" value="<?php echo ($pin)?>" >
+            <input type="hidden" name="team_id"  value="<?php echo ($team_id)?>" >
+            <input type="hidden" name="problem_id"  value="<?php echo ($problem_id)?>" >
+            <input type="hidden" id = "dex" name="dex" value="<?php echo ($dex)?>" >
+            <input type="hidden" name="game_id" value="<?php echo ($game_id)?>" >
+            <input type="hidden" id = "gmact_id" name="gmact_id" value="<?php echo ($gmact_id)?>" >
+            <input type="hidden" name="gameactivity_id" value="<?php echo ($gameactivity_id)?>" >
+            <input type="hidden" name="phase" id = "phase" >
+            <input type="hidden" name="iid" value="<?php echo ($iid)?>" >
         
 		<p><b><input type = "submit" id = "submit_id" value="Get Problem Parameters" size="30" style = "width: 50%; background-color: #003399; color: white"/> &nbsp &nbsp </b></p>
 		</form>
@@ -172,9 +200,9 @@
                     
 				// get the how long the students have to solve the problem
 				var gmact_id = $("#gmact_id").val();
-				console.log ('gmact_id = ',gmact_id);
+			//	console.log ('gmact_id = ',gmact_id);
 				var dex = $("#dex").val();  // getting the dex to set a delay so not all of the request occur at same time
-                    console.log ('dex = ',dex);
+           //         console.log ('dex = ',dex);
                 var delay = 500+dex * 5;  // delay in milisecounds for the request so we spread out the requests
                 
                 
@@ -216,7 +244,9 @@
                             } else if (phase == 3){ // wait
                                  Discuss("Questions for Instructor? ");
                                     document.body.style.background = "LightGoldenRodYellow";
-                            } else {  // go to QRGameGetIn.php
+                            } else {  // put the phase in the html block and go to QRGameRouter.php
+                                    
+                                $("#phase").attr('value', phase);
                                  $('#submit_id').show();
                                SubmitAway(); 
                                 
@@ -234,13 +264,6 @@
                        
                          // flash the message
                           $('#message2').show();
-                     /* 
-                            var f = document.getElementById('message2');
-                            setInterval(function() {
-                                f.style.display = (f.style.display == 'none' ? '' : 'none');
-                            }, 1000);
-                     */
-                    
                     }
                 
                     function SubmitAway() { 
