@@ -1127,6 +1127,7 @@ WHERE
         `ans_sumb` DOUBLE,
         `ans_sumlast` DOUBLE,
         `score` int(4),
+        `team_cohesivity` int(4),
         `team_score` int(4),
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

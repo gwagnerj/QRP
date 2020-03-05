@@ -354,6 +354,7 @@
             </svg>
          </span>
 </li>
+       
 	<form action = "QRGameCheck.php" method = "POST" id = "the_form" >
 	<!--	<p><font color=#003399>Problem Number: </font><input type="text" name="problem_id" size=3 value="<?php echo (htmlentities($p_num))?>"  ></p> -->
             <input type="hidden" name="name"  value="<?php echo ($name)?>" >

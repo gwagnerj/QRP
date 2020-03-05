@@ -157,14 +157,14 @@ require_once "pdo.php";
             }
 
 
-   // what if they have already loged into the game once and have an entry then we should update instead of insert
+   // starting a new game
    
         $stmt = $pdo->prepare("SELECT * FROM Gameactivity WHERE gmact_id = :gmact_id AND pin = :pin ");
         $stmt->execute(array(":gmact_id" => $gmact_id,":pin" => $pin));
         $row = $stmt -> fetch();
         if ( $row === false ) {
-            $sql = "INSERT INTO Gameactivity (game_id, team_id, gmact_id, problem_id, pin, dex, iid, team_size, team_size_error, name, ans_b, ans_last)
-				VALUES (:game_id, :team_id, :gmact_id,:problem_id, :pin, :dex, :iid, :team_size, 0, :name, :ans_b, :ans_last)";
+            $sql = "INSERT INTO Gameactivity (game_id, team_id, gmact_id, problem_id, pin, dex, iid, team_size, team_size_error, name, ans_b, ans_last, team_cohesivity)
+				VALUES (:game_id, :team_id, :gmact_id,:problem_id, :pin, :dex, :iid, :team_size, 0, :name, :ans_b, :ans_last,1000)";
 					$stmt = $pdo->prepare($sql);
 					$stmt->execute(array(
 					':game_id' => $game_id,

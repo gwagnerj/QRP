@@ -132,6 +132,10 @@
 if(isset($_POST['gmact_id'])){
             $gmact_id = $_POST['gmact_id'];
         
+        } elseif(isset($_GET['gmact_id'])){
+            $gmact_id = $_GET['gmact_id'];
+            
+        
         } elseif(isset($_SESSION['gmact_id'])){
             $gmact_id = $_SESSION['gmact_id'];
         
@@ -262,11 +266,29 @@ if(isset($_POST['gmact_id'])){
 		localStorage.setItem('MC_flag','false');  // initialize multiple choice flag to false
 		
 		
-		
+		 */
 		$(document).ready( function () {
+		$('#table_format').DataTable({
+			"order": [[ 0, 'dsc' ] ],
+            "columnDefs": [
+                { "visible": false, "targets": [4,5,6,7,8,9,10] }
+                ]
+			/* 
+                "oColumnFilterWidgets": {
+                "aiExclude": [ ] 
+            }
+             */
+            });
+		
+
+		// jQuery('#table_format').ddTableFilter();
+		} );
+		
+   /*       
+    $(document).ready( function () {
 		$('#table_format').DataTable({"sDom": 'W<"clear">lfrtip',
 			"order": [[ 0, 'dsc' ] ],
-			 "lengthMenu": [ 50, 100, 200 ],
+			
 			"oColumnFilterWidgets": {
 			"aiExclude": [ ] }});
 		
@@ -274,12 +296,9 @@ if(isset($_POST['gmact_id'])){
 		// jQuery('#table_format').ddTableFilter();
 		} );
 		 */
-         
-    
-		
 			
 				
-			});		
+		
 	
          
          

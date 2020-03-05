@@ -13,6 +13,8 @@
 // this is just to get the game number and go on to QRGMaster.php with a post of the game number.
 // Validity will be checked in that file and sent back here if it is not valid
 
+$_SESSION['counter']=0;  // this is for the score board
+
 
 	?>
 <!DOCTYPE html>

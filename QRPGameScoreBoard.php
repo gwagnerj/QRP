@@ -1,6 +1,10 @@
 <?php
 	require_once "pdo.php";
 	session_start();
+    
+    $range_limit = 40;
+    $stdev_limit = 15;
+    
 ?>
 	 <!DOCTYPE html>
 	<html lang = "en">
@@ -93,11 +97,6 @@
                     <script type="text/javascript" src="jquery.plugin.js"></script> 
                     <script type="text/javascript" src="jquery.countdown.js"></script>
                     
-                    
-                    
-                    
-                    
-                    
 				<!-- THis is from sparklines jquery plugin   -->	
 
 				<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.js"></script>
@@ -132,9 +131,12 @@
 			echo '&nbsp; &nbsp;&nbsp;';
 		if(isset($_SESSION['gmact_id'])){
             $gmact_id = $_SESSION['gmact_id'];
+           
         
         } elseif(isset($_GET['gmact_id'])){
             $gmact_id = $_GET['gmact_id'];
+            
+            
         
         }else{
             $gmact_id = '';
@@ -150,6 +152,15 @@
         $time_type = gettype( $stop_time);
         $time_time = strtotime($stop_time);
         
+        
+        if(isset($_SESSION['counter'])){
+            
+          $counter = $_SESSION['counter'];
+        } else{
+           $counter = 0; 
+        }
+        $counter = $counter+1;
+        $_SESSION['counter']= $counter;
         
        // echo ('time_type = '.$time_type);
         
@@ -179,7 +190,7 @@
 
 <?php     
       //  echo "gmact_id".$gmact_id;
-	
+	echo "counter =".$counter;
 	 echo ('<table id="table_format" class = "a" border="1" >'."\n");	
 		 echo("<thead>");
 
@@ -229,6 +240,11 @@
                 $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
                 $row2 = $stmt2 -> fetch();
                 $team_score = $row2['avg_score'];
+                
+                $stmt2 = $pdo->prepare("SELECT AVG(`team_cohesivity`) AS cum_cohesivity FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
+                $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
+                $row2 = $stmt2 -> fetch();
+                $cum_cohesivity = $row2['cum_cohesivity'];
             
            
              $stmt2 = $pdo->prepare("SELECT `score` FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
@@ -252,7 +268,7 @@
                 // $score.
                 $max_score = 0.0;
                 $min_score = 100.0;
-                $cohesivity = 1.0;
+                $cohesivity = 1000.0;
                 $n = 0;
                 $cumm = 0;
                 foreach ($row2 as $score){
@@ -279,18 +295,31 @@
                // echo 'sdev= ';
                 echo $sdev;
                  echo("</td><td>");
-                if($range>=40){
-                  $cohesivity =  $cohesivity-0.5;
+                if($range>=$range_limit){
+                  $cohesivity =  $cohesivity-500;
                 }
-                if($sdev>=15){
-                  $cohesivity =  $cohesivity-0.5;
+                if($sdev>=$stdev_limit){
+                  $cohesivity =  $cohesivity-500;
                 }
-                echo $cohesivity;
+                echo ($cohesivity+0)/10;
+                
+                $cum_cohesivity = ($cum_cohesivity*($counter-1)+ $cohesivity)/$counter;
+                // update the team_cohesivity in the Gameactivity table with the $cum_cohesivity
+                
+                $sql = "UPDATE `Gameactivity` 
+				SET team_cohesivity = :team_cohesivity
+				WHERE gmact_id = :gmact_id AND team_id = :team_id";
+                $stmt = $pdo->prepare($sql);
+                $stmt -> execute(array(
+                    ':team_cohesivity' => $cum_cohesivity,
+                    ':team_id' => $team_id,
+                    ':gmact_id' => $gmact_id,
+                ));
                 
                  echo("</td><td>");
-                
-                echo 'TEAM SCORE';    
-                    
+                $weighted_teamscore = round($team_score*($cum_cohesivity/1000),1);
+                echo $weighted_teamscore;    
+                   // upadate the team_score of the Gameactivity table  
                echo("</td></tr>\n");
             }
             
@@ -299,7 +328,7 @@
              echo("</table>");
 
 
-
+            
 
 
 
@@ -321,7 +350,7 @@
 
 	<script>
 	    $(document).ready( function () {	
-		$(".inlinebar1").sparkline("html",{type: "bar", height: "100", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
+		$(".inlinebar1").sparkline("html",{type: "bar", height: "70",chartRangeMax:"100", barWidth: "10", resize: true, barSpacing: "5", barColor: "blue"});
 	 /*	
     
         $(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});

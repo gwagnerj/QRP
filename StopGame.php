@@ -205,7 +205,7 @@ session_start();
                              var phase = arrn.phase;
                             var end_of_phase = arrn.end_of_phase;
                             
-                            if(phase != 5){  // Question time is over
+                            if(phase > 5){  // Question time is over or they have pressed finished button
                                 $("#phase").attr('value', phase);
                                SubmitAway(); 
                             }

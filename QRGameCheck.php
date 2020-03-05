@@ -54,14 +54,12 @@ session_start();
     
       if (isset($_POST['gameactivity_id'])){
         $gameactivity_id = $_POST['gameactivity_id'];
-    }  elseif(isset($_SESSION['gameactivity_id'])){
-         $gameactivity_id = $_SESSION['gameactivity_id'];
-    } else  {
+    }  else {
        $_SESSION['error'] = "Missing gameactivity_id from QRGameCheck";
 	  header('Location: index.php');
 	  return;   
     }
-    $_SESSION['gameactivity_id'] = $gameactivity_id;
+   // $_SESSION['gameactivity_id'] = $gameactivity_id;
     
       if (isset($_POST['name'])){
         $name = $_POST['name'];
@@ -361,7 +359,7 @@ session_start();
 		
 		$PScore=$score/$probParts*100;  
 	
-		$_SESSION['points']=$score;
+		$_SESSION['points']=$score; // this will cause problems if running multiple browser windows on the same machine - testing on localhost
 		
            $stmt = $pdo->prepare("UPDATE `Gameactivity` SET `score` = :score WHERE gameactivity_id = :gameactivity_id ");
 			$stmt->execute(array(":gameactivity_id" => $gameactivity_id, ":score" => $PScore));
@@ -521,6 +519,7 @@ session_start();
 			<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden" id = "game_id" name="game_id" size=3 value="<?php echo (htmlentities($game_id))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="<?php echo (htmlentities($stop_time))?>"  ></p>
+             <input type="hidden" name="gameactivity_id" value="<?php echo ($gameactivity_id)?>" >
 
 	</form>
 

@@ -29,7 +29,7 @@
              // this was put in so the phones have time to advance to the end   
               sleep(3);
 
-                $new_gmact_id = $gmact_id + 100000;
+                $new_gmact_id = $gmact_id + 1000000;
                 $sql = "UPDATE `Gameactivity` 
 				SET gmact_id = :new_gmact_id 
 				WHERE gmact_id = :gmact_id";
@@ -40,7 +40,7 @@
                     ':new_gmact_id' => $new_gmact_id,
                     
                 ));
-
+                unset($_SESSION['counter']);    
 /* 
               $sql = "DELETE from `Gameactivity` WHERE gmact_id = :gmact_id";
                 $count=$pdo->prepare($sql);
@@ -354,6 +354,10 @@
 
  <h1><font  style="font-size:300%; color:blue;"> <?php echo $stage;?> </font>
     	<div id="defaultCountdown" style="font-size:300%;color:red;"> </div></h1> 
+<div id = 'backstage_view'>
+    <iframe src="QRPGameBackStage.php?gmact_id=<?php echo($gmact_id);?>" style = "width:100%; height:700px;"></iframe>
+    
+</div>
 
 <div id = 'scorebrd'>
  <iframe src="QRPGameScoreBoard.php?gmact_id=<?php echo($gmact_id);?>" style = "width:100%; height:700px;"></iframe>
@@ -456,6 +460,16 @@
                 
                 var phase = $("#phase").val();
                 console.log("phase is = "+phase);
+                 if (phase ==0){
+                     $("#backstage_view").show();
+                } else {
+                    console.log("phase is = "+phase);
+                     $("#backstage_view").hide();
+                }
+                
+                
+                
+                
                 if (phase ==4 || phase ==5){
                      $("#scorebrd").show();
                 } else {
