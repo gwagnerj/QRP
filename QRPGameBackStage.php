@@ -145,9 +145,17 @@ if(isset($_POST['gmact_id'])){
 		echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
 		unset($_SESSION['success']);
 	}
-        
+    ?>
+       <form  method="POST" action = "GetKahootData.php" target = "_blank" id = "get_kahoot">
+   <p style="font-size:50px;"></p>
+   
+   <p><input type="hidden" name="gmact_id" id="gmact_id" value=<?php echo($gmact_id);?> ></p>
+   
+  <p><input type = "submit" name = "getkahootdata" value="Get Kahoot Data" id="submit_id" size="2" style = "width: 30%; background-color: indigo; color: white"/> &nbsp &nbsp </p>  
   
-	
+  </form>  
+  
+	<?php
 	 echo ('<table id="table_format" style = "text-align:center" class = "a" border="1" >'."\n");	
 		 echo("<thead>");
 
@@ -159,6 +167,8 @@ if(isset($_POST['gmact_id'])){
      	echo('name');
         echo("</th><th>");
      	echo('team_size');
+         echo("</th><th>");
+        echo('Kahoot Score');
         echo("</th><th>");
         echo('ans_b');
 		echo("</th><th>");
@@ -198,6 +208,9 @@ if(isset($_POST['gmact_id'])){
             
                 echo("</td><td>");	
                  echo($row['team_size']);
+                 
+                  echo("</td><td>");	
+                 echo('');   // this is where Kahoot score will go
             
                  echo("</td><td>");
                 echo($row['ans_b']);

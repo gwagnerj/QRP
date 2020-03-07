@@ -1,7 +1,15 @@
 <?php
 	require_once "pdo.php";
 	session_start();
+    
+    
+    
+    // Should put the redirects up hear or the header location will have already been sent
 ?>
+
+
+
+
 	 <!DOCTYPE html>
 	<html lang = "en">
 	<head>
