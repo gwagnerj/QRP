@@ -42,7 +42,8 @@
                           //  echo(', type of kahoot_score is = '.gettype($kahoot_score));
                           //   echo(', kahoot_score is = '.$kahoot_score);
                   
-                   $sql = "UPDATE `Gameactivity` 
+                  try{
+                  $sql = "UPDATE `Gameactivity` 
                         SET
                        
                         kahoot_score = :kahoot_score
@@ -53,7 +54,12 @@
                          ':kahoot_score' => $kahoot_score,
                          ':pin' => $pin,
                         )); 
-                
+                         echo $stmt->rowCount() . " rows updated - Kahoot data uploaded successfully";
+                  } catch (PDOException $e)  {
+                      
+                         echo $sql . "<br>" . $e->getMessage();
+                      
+                  }
                 
                 }
             
@@ -64,9 +70,11 @@
         
     }
 
-
-
-  
+     if(isset($_POST['close'])){
+        echo  "<script type='text/javascript'>";
+        echo "window.close();";
+        echo "</script>";
+     }
 ?>
 
 
@@ -88,7 +96,7 @@
 <body>
 <header>
 <h1>Import the Kahoot Scores from a CSV file</h1>
-<h2>File Should have Form: student pin, score</h2>
+<h3>File Should have Form: student "pin, score" with no headings</h3>
 </header>   
   
 
@@ -98,16 +106,19 @@
 <font size = "2"><?php  echo('  gmact_id = '.$gmact_id);?> </font>
 <form  method="POST" enctype="multipart/form-data">
 	 <div >	
-        <p> Upload Kahoot CSV file <p>
+       
 
-        <p><font color="black">Input Kahoot Scores - csv: </font><input type='file' accept='.csv'  name='kahoot_scores'/></p>
+        <p><font size = "6" color="black">Upload Kahoot Scores - csv: <input type='file' accept='.csv'  name='kahoot_scores'/></font></p>
           <p><input type="hidden" name="gmact_id" id="gmact_id" value=<?php echo($gmact_id);?> ></p>
+          <p style="font-size:50px;"></p>
           <p><input type = "submit" name = "import_csv" value="Import" id="submit_id" size="2" style = "width: 40%; background-color: indigo; color: white"/> &nbsp &nbsp </p>  
         </div>
 	</form>
   <p style="font-size:150px;"></p>   
-    
-	
+      <form method="POST" >
+           <p><input type="hidden" name="gmact_id" id="gmact_id" value=<?php echo($gmact_id);?> ></p>
+         <p><input type = "submit" name = "close" value="Exit - Close Window" id="close_id" size="2" style = "width: 40%; background-color: black; color: white"/> &nbsp &nbsp </p>
+      </form>
 	
 
 

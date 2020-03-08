@@ -7,49 +7,30 @@
     
   
     
-      if (isset($_POST['team_id'])){
-        $team_id = $_POST['team_id'];
-    }  elseif(isset($_SESSION['team_id'])){
-         $team_id = $_SESSION['team_id'];
-    } else  {
-       $_SESSION['error'] = "Missing team_id from QRGameGetSum";
-	  header('Location: index.php');
-	  return;   
+      if (isset($_POST['gameactivity_id'])){
+        $gameactivity_id = $_POST['gameactivity_id'];
+    }  else  {
+       $_SESSION['error'] = "Missing gameactivity_id from QRGameEditPlayer";
+	  
+      echo  "<script type='text/javascript'>";
+        echo "window.close();";
+        echo "</script>";
     }
-    $_SESSION['team_id'] = $team_id;
-    
-      if (isset($_POST['gmact_id'])){
-        $gmact_id = $_POST['gmact_id'];
-    }  elseif(isset($_SESSION['gmact_id'])){
-         $gmact_id = $_SESSION['gmact_id'];
-    } else  {
-       $_SESSION['error'] = "Missing gmact_id from QRGameGetSum";
-	  header('Location: index.php');
-	  return;   
-    }
-    $_SESSION['gmact_id'] = $gmact_id;
-    
-      if (isset($_POST['pin'])){
-        $pin = $_POST['pin'];
-    }  elseif(isset($_SESSION['pin'])){
-         $pin = $_SESSION['pin'];
-    } else  {
-       $_SESSION['error'] = "Missing pin from QRGameGetSum";
-	  header('Location: index.php');
-	  return;   
-    }
-    $_SESSION['pin'] = $pin;
    
-   
+
+   $sql_stmt = "SELECT * FROM Gameactivity WHERE `gameactivity_id`= :gameactivity_id";
+            $stmt = $pdo->prepare($sql_stmt);
+            $stmt->execute(array(':gameactivity_id' => $gameactivity_id));
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 	
     // check the number of individuals on the team
     
-	 $sql_stmt = "DELETE FROM Gameactivity WHERE `pin`= :pin AND `gmact_id`= :gmact_id ";
+	 $sql_stmt = "DELETE FROM Gameactivity WHERE `gameactivity_id`= :gameactivity_id ";
             $stmt = $pdo->prepare($sql_stmt);
-            $stmt->execute(array(':pin' => $pin,':gmact_id' => $gmact_id));
-           
-       
-                    $gameactivity_id = $row['gameactivity_id'];
+            $stmt->execute(array(':gameactivity_id' => $gameactivity_id));
+                $gmact_id = $row['gmact_id'];
+                 $team_id = $row['team_id'];
+                 
               
                    // update the gameactivity table to set the team_size_error to 1 
 

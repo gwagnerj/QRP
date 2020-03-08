@@ -86,7 +86,7 @@
                     <link rel="stylesheet" type="text/css" href="DataTables-1.10.18/css/jquery.dataTables.css"/> 
                     <script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
                     <script type="text/javascript" charset="utf-8" src="DataTables-1.10.18/extras/js/ColumnFilterWidgets.js"></script>
-                    <meta http-equiv="refresh" content="10"/>
+                    <!-- <meta http-equiv="refresh" content="10"/> -->
                 
                     
                     
@@ -147,20 +147,19 @@ if(isset($_POST['gmact_id'])){
 	}
     ?>
        <form  method="POST" action = "GetKahootData.php" target = "_blank" id = "get_kahoot">
-   <p style="font-size:50px;"></p>
-   
-   <p><input type="hidden" name="gmact_id" id="gmact_id" value=<?php echo($gmact_id);?> ></p>
-   
-  <p><input type = "submit" name = "getkahootdata" value="Get Kahoot Data" id="submit_id" size="2" style = "width: 30%; background-color: indigo; color: white"/> &nbsp &nbsp </p>  
-  
-  </form>  
+           <p style="font-size:50px;"></p>
+           <p><input type="hidden" name="gmact_id"  value=<?php echo($gmact_id);?> ></p>
+          <p><input type = "submit" name = "getkahootdata" value="Get Kahoot Data" id="submit_id" size="2" style = "width: 30%; background-color: indigo; color: white"/> &nbsp &nbsp </p>  
+       </form>  
   
 	<?php
 	 echo ('<table id="table_format" style = "text-align:center" class = "a" border="1" >'."\n");	
 		 echo("<thead>");
 
-		echo("</td><th>");
+		echo("<th>");
 		echo('team_id');
+        echo("</th><th>");
+		echo('gameactivity_id');
 		echo("</th><th>");
 		echo('pin');
          echo("</th><th>");
@@ -199,7 +198,10 @@ if(isset($_POST['gmact_id'])){
             
                  echo "<tr><td>";
                 echo($row['team_id']);
-                
+             
+                  echo "</td><td>";
+                echo($row['gameactivity_id']);
+               
                 echo("</td><td>");	
                   echo($row['pin']);
                   
@@ -210,7 +212,7 @@ if(isset($_POST['gmact_id'])){
                  echo($row['team_size']);
                  
                   echo("</td><td>");	
-                 echo('');   // this is where Kahoot score will go
+               echo($row['kahoot_score']);
             
                  echo("</td><td>");
                 echo($row['ans_b']);
@@ -234,7 +236,8 @@ if(isset($_POST['gmact_id'])){
                 
                
                 echo('<form action = "QRGameFixSum.php" method = "POST" target = "_blank"> <input type = "hidden" name = "gmact_id" value = "'.$row['gmact_id'].'"><input type = "hidden" name = "team_id" value =  "'.$row['team_id'].'"><input type = "submit" value ="Fix Team Sums"></form>');
-	             echo('<form action = "QRGameDeletePlayer.php" method = "POST" target = "_blank"> <input type = "hidden" name = "gmact_id" value = "'.$row['gmact_id'].'"><input type = "hidden" name = "pin" value =  "'.$row['pin'].'"><input type = "hidden" name = "team_id" value =  "'.$row['team_id'].'"><input type = "submit" value ="Delete Player"></form>');
+	             echo('<form action = "QRGameDeletePlayer.php" method = "POST" target = "_blank">  <input type = "hidden" name = "gameactivity_id" value = "'.$row['gameactivity_id'].'"><input type = "submit" value ="Delete Player"></form>');
+                 echo('<form action = "QRGameEditPlayer.php" method = "POST" target = "_blank"> <input type = "hidden" name = "gameactivity_id" value = "'.$row['gameactivity_id'].'"><input type = "submit" value ="Edit Player Data"></form>');
 
                 // echo("&nbsp; ");
 				// echo('<form action = "getGame.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Game"></form>');
@@ -248,6 +251,12 @@ if(isset($_POST['gmact_id'])){
             
             echo("</tbody>");
              echo("</table>");
+             
+                if(isset($_POST['close'])){
+                    echo  "<script type='text/javascript'>";
+                    echo "window.close();";
+                echo "</script>";
+     }
 /* 
             echo('<input type="button" id="show_all" value="Show All" />');
              echo('<input type="button" id="hide_all" value="Hide All" />');
@@ -255,9 +264,17 @@ if(isset($_POST['gmact_id'])){
 	
 ?>
 
- 
-
-
+        <form  method="POST" action = "" id = "refresh_page">
+           <p style="font-size:50px;"></p>
+           page auto-refreshes every 5s
+           <p><input type="hidden" name="gmact_id"  value=<?php echo($gmact_id);?> ></p>
+          <p><input type = "submit" name = "refresh" value="Refresh Page" id="refrsh_id" size="2" style = "width: 30%; background-color: blue; color: white"/> &nbsp &nbsp </p>  
+       </form>  
+        <p style="font-size:150px;"></p>   
+        <form method="POST" >
+             <p><input type="hidden" name="gmact_id" id="gmact_id" value=<?php echo($gmact_id);?> ></p>
+             <p><input type = "submit" name = "close" value="Exit - Close Window" id="close_id" size="2" style = "width: 40%; background-color: black; color: white"/> &nbsp &nbsp </p>
+        </form>
 
 	<script>
 	  /*  $(document).ready( function () {	
@@ -271,6 +288,12 @@ if(isset($_POST['gmact_id'])){
 		
 		 */
 		$(document).ready( function () {
+            
+            // auto refresh page 
+            
+             setInterval("$('#refresh_page').submit()",5000);
+          
+            
 
                 $('#table_format').DataTable({
                         "order": [[ 0, 'dsc' ] ]
@@ -279,6 +302,8 @@ if(isset($_POST['gmact_id'])){
 		// jQuery('#table_format').ddTableFilter();
 		} );
          
+         
+                   
 		
 	</script>
 
