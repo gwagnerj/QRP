@@ -157,7 +157,7 @@
                      //   print_r ($row);
                         $gmact_id = $row['gmact_id'];
                         }
-                       echo 'gmact_id top = '.$gmact_id;
+                      // echo 'gmact_id top = '.$gmact_id;
                }
            } 
             

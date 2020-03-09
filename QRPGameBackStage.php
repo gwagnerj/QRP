@@ -218,13 +218,13 @@ if(isset($_POST['gmact_id'])){
                 echo($row['ans_b']);
             
                 echo("</td><td>");
-                echo($row['ans_sumb']);
+                echo(sigFig($row['ans_sumb'],4));
                               
                  echo("</td><td>");
                  echo($row['ans_last']);
                  
                  echo("</td><td>");
-                 echo($row['ans_sumlast']);
+                 echo(sigFig($row['ans_sumlast'],4));
                
                 echo("</td><td>");	
                  echo($row['score']);
@@ -261,7 +261,19 @@ if(isset($_POST['gmact_id'])){
             echo('<input type="button" id="show_all" value="Show All" />');
              echo('<input type="button" id="hide_all" value="Hide All" />');
  */
-	
+	function sigFig($value, $digits)
+            {
+                if ($value == 0) {
+                    $decimalPlaces = $digits - 1;
+                } elseif ($value < 0) {
+                    $decimalPlaces = $digits - floor(log10($value * -1)) - 1;
+                } else {
+                    $decimalPlaces = $digits - floor(log10($value)) - 1;
+                }
+
+                $answer = round($value, $decimalPlaces);
+                return $answer;
+            }
 ?>
 
         <form  method="POST" action = "" id = "refresh_page">

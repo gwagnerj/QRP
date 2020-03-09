@@ -4,7 +4,8 @@
     
     $range_limit = 40;
     $stdev_limit = 15;
-    
+    $kahoot_wt = 0.15;
+    $high_kahoot = 1;
 ?>
 	 <!DOCTYPE html>
 	<html lang = "en">
@@ -206,6 +207,12 @@
         echo('SDEV');
 		echo("</th><th>");
         echo('Cohesivity');
+        echo("</th><th>");
+        echo('Cumulative Cohesivity');
+        echo("</th><th>");
+		echo('Kahoot Team Ave');
+        echo("</th><th>");
+		echo('Kahoot Scores');
 		echo("</th><th>");
 		echo('Team Score');
 		echo("</th></tr>\n");
@@ -213,45 +220,56 @@
 		 
 		  echo("<tbody>");
 		//
-		
+		// get the high individual score for Kahoot to set the 100% mark
+        // Get the team_id of all the teams in the game_prob_flag
+         
+
+         $stmt = $pdo->prepare("SELECT MAX(`kahoot_score`) AS high_kahoot FROM `Gameactivity`  WHERE gmact_id = :gmact_id ");
+			$stmt->execute(array(":gmact_id" => $gmact_id));
+             $row = $stmt->fetch(); 
+             $high_kahoot = $row['high_kahoot'] ;  
+            if($high_kahoot<=10){ //  did not do a kahoot
+                $kahoot_wt = 0.0;
+            } 
+            
 		// Get the team_id of all the teams in the game_prob_flag
           $stmt = $pdo->prepare("SELECT DISTINCT `team_id`  FROM `Gameactivity` WHERE gmact_id = :gmact_id ");
 			$stmt->execute(array(":gmact_id" => $gmact_id));
              $rows = $stmt->fetchALL(PDO::FETCH_ASSOC); 
-           //  print_r($row[0]);
+         
              
              foreach($rows as $row){
                  
              $team_ids =($row);
-               //  echo $row['team_id'];
-                // echo $Urow['team_id'];
-               //  echo $team_ids['team_id'];
-            
-             
-             
-             
-               // $team_ids = array_unique($row);
-      //         print_r($team_ids);
-                //  echo "team_id ".$team_id;
-                foreach ($team_ids as $team_id){
+             foreach ($team_ids as $team_id){
+                 if($kahoot_wt!=0.0){   
+                    $stmt2 = $pdo->prepare("SELECT AVG(`kahoot_score`) AS team_kahoot FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
+                        $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
+                        $row2 = $stmt2 -> fetch();
+                        $team_kahoot = round(($row2['team_kahoot']/$high_kahoot)*100,1);                
+                 } else {
+                     $team_kahoot = '';
+                 }
+
+                     
+                 $stmt2 = $pdo->prepare("SELECT AVG(`score`) AS avg_score FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
+                    $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
+                    $row2 = $stmt2 -> fetch();
+                    $team_score = $row2['avg_score'];
                     
+                    $stmt2 = $pdo->prepare("SELECT AVG(`team_cohesivity`) AS cum_cohesivity FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
+                    $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
+                    $row2 = $stmt2 -> fetch();
+                    $cum_cohesivity = $row2['cum_cohesivity'];
+                
+               
+                 $stmt2 = $pdo->prepare("SELECT `score` FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
+                    $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
+                    $row2 = $stmt2 -> fetchALL(PDO::FETCH_ASSOC);
                     
-             $stmt2 = $pdo->prepare("SELECT AVG(`score`) AS avg_score FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
-                $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
-                $row2 = $stmt2 -> fetch();
-                $team_score = $row2['avg_score'];
-                
-                $stmt2 = $pdo->prepare("SELECT AVG(`team_cohesivity`) AS cum_cohesivity FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
-                $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
-                $row2 = $stmt2 -> fetch();
-                $cum_cohesivity = $row2['cum_cohesivity'];
-            
-           
-             $stmt2 = $pdo->prepare("SELECT `score` FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
-                $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
-                $row2 = $stmt2 -> fetchALL(PDO::FETCH_ASSOC);
-                
-            
+                 $stmt2 = $pdo->prepare("SELECT `kahoot_score` FROM `Gameactivity` WHERE gmact_id = :gmact_id AND team_id = :team_id ");
+                    $stmt2->execute(array(":gmact_id" => $gmact_id, ":team_id" => $team_id));
+                    $row3 = $stmt2 -> fetchALL(PDO::FETCH_ASSOC);
               }   
             
             
@@ -261,7 +279,7 @@
                 echo($team_id);
                 echo("</td><td>");	
                
-                  echo($team_score);
+                  echo(round($team_score,1));
                 echo("</td><td>");	
                 
                  print('<span class="inlinebar1">');
@@ -302,10 +320,10 @@
                   $cohesivity =  $cohesivity-500;
                 }
                 echo ($cohesivity+0)/10;
-                
+                 echo("</td><td>");
                 $cum_cohesivity = ($cum_cohesivity*($counter-1)+ $cohesivity)/$counter;
                 // update the team_cohesivity in the Gameactivity table with the $cum_cohesivity
-                
+                  echo (round(($cum_cohesivity+0)/10,1));
                 $sql = "UPDATE `Gameactivity` 
 				SET team_cohesivity = :team_cohesivity
 				WHERE gmact_id = :gmact_id AND team_id = :team_id";
@@ -317,7 +335,19 @@
                 ));
                 
                  echo("</td><td>");
-                $weighted_teamscore = round($team_score*($cum_cohesivity/1000),1);
+                     echo($team_kahoot);
+                     if($team_kahoot==''){$team_kahoot = 0;}
+                 echo("</td><td>");
+                   print('<span class="inlinebar2">');
+                 
+                 foreach ($row3 as $k_score){
+                    $kahoot_score = round($k_score['kahoot_score']/$high_kahoot*100,1);
+                    echo $kahoot_score.', ' ;
+                }
+
+                 
+                 echo("</td><td>");
+                $weighted_teamscore = round($team_score*(1-$kahoot_wt)*($cum_cohesivity/1000)+$kahoot_wt*$team_kahoot,1);
                 echo $weighted_teamscore;    
                   
                   // upadate the team_score of the Gameactivity table  
@@ -331,12 +361,8 @@
                         ':gmact_id' => $gmact_id,
                     )); 
                    
-                   
-                   
-                   
                echo("</td></tr>\n");
             }
-            
             
             echo("</tbody>");
              echo("</table>");
@@ -365,7 +391,9 @@
 	<script>
 	    $(document).ready( function () {	
 		$(".inlinebar1").sparkline("html",{type: "bar", height: "70",chartRangeMax:"100", barWidth: "10", resize: true, barSpacing: "5", barColor: "blue"});
-	 /*	
+      	$(".inlinebar2").sparkline("html",{type: "bar", height: "70",chartRangeMax:"100", barWidth: "10", resize: true, barSpacing: "5", barColor: "indigo"});
+
+    /*	
     
         $(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
 		
