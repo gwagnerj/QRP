@@ -230,6 +230,7 @@
              $high_kahoot = $row['high_kahoot'] ;  
             if($high_kahoot<=10){ //  did not do a kahoot
                 $kahoot_wt = 0.0;
+                $high_kahoot =1;  // keep from getting a divide by zero error
             } 
             
 		// Get the team_id of all the teams in the game_prob_flag
