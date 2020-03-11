@@ -352,7 +352,8 @@
 	   if($row['game_prob_flag']== 0 && 
 		   (
 				    ( $users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3'] )||
-				   ($security =='stu_contrib' && $user_sponsor_id == $row['users_id']) ||
+				   //($security =='stu_contrib' && $user_sponsor_id == $row['users_id']) ||
+                   //  ($security =='stu_contrib' && $user_sponsor_id == $row['users_id']) ||
 				    ($security =='stu_contrib' && $users_id == $row['users_id']) ||
 				   ($security == 'grader' && $row2 !=false)||
 				   ($security == 'admin')||
@@ -609,8 +610,19 @@
 				echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="Base-case"></form>');
 				echo("&nbsp; ");
 				echo('<form action = "getGame.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Game"></form>');
-				echo("&nbsp; ");
+				
+                
+                if ($security == 'contrib' ||
+                    $security == 'admin'||
+                    $security == 'contrib'||
+                    $security == 'instruct' ||
+                    $security == 'TA'){
+                echo("&nbsp; ");
 				echo('<form action = "numericToMC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Make MC"></form>');
+
+                   }
+
+
 				
 			}
 		
