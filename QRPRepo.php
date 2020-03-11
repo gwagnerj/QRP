@@ -223,10 +223,14 @@
 			echo '<a href="QRhomeworkBypass.php" target = "_blank">Look at Active Problem </a>';
 			echo '&nbsp; &nbsp;&nbsp;';
 			echo '<a href="checkerBypass.php" target = "_blank">Solution Check Problem</b></a>';
+			echo '&nbsp; &nbsp;&nbsp;';}
+          
+
+// Put this in so students or TA's counld run game 11 March 2020 - may want to rethink this later ========================================
+
+          echo '<a href="QRGameMasterStart.php" >Game Master Screen</b></a>';
 			echo '&nbsp; &nbsp;&nbsp;';
-            echo '<a href="QRGameMasterStart.php" >Game Master Screen</b></a>';
-			echo '&nbsp; &nbsp;&nbsp;';
-		}
+		
 		
 		// check to see if the current user has sponsored anyone - if yes then allow them to suspend the them
 		$sql = 'SELECT * FROM `Users` WHERE `sponsor_id` = :users_id';
