@@ -311,7 +311,7 @@ session_start();
 						$sol=$soln[$j];
 					}	
 					
-					if(	abs(($soln[$j]-$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]]) {
+					if(	abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]]) {
 								
 								
 										

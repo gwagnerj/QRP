@@ -374,7 +374,7 @@
 						//	$sol=$soln[$j]; 
 							
 						
-						if(	abs(($soln[$j]-$resp[$resp_key[$j]])/$soln[$j])<= $tol[$tol_key[$j]]) {
+						if(	abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$soln[$j])<= $tol[$tol_key[$j]]) {
 							//echo ($tol[$tol_key[$j]]);
 							$corr[$corr_key[$j]]='Correct';
 							$score=$score+1;
