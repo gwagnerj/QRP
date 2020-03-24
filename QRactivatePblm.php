@@ -6,8 +6,9 @@ if (isset($_SESSION['username'])) {
 	$username=$_SESSION['username'];
 } else {
 	 $_SESSION['error'] = 'Session was lost -  please log in again';
-	header('Location: QRPRepo.php');
-	die();
+       echo  "<script type='text/javascript'>";
+        echo "window.close();";
+        echo "</script>";
 }
 
 
@@ -15,8 +16,9 @@ if (isset($_SESSION['username'])) {
 // Guardian: Make sure that problem_id is present
 if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
   $_SESSION['error'] = "Missing problem_id";
-  header('Location: QRPRepo.php');
- die();
+        echo  "<script type='text/javascript'>";
+        echo "window.close();";
+        echo "</script>";
 } else {
 
 	$prob_num=$_GET['problem_id'];	
@@ -38,8 +40,9 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 	$current_class_data = $stmt -> fetch();
 	if ($current_class_data == false){
 		$_SESSION['error'] = 'There are no current classes for this Instructor - Please Add a Class that you are Teaching';
-		 header('Location: Current_Class.php');
-		die();
+            echo  "<script type='text/javascript'>";
+            echo "window.close();";
+            echo "</script>";
 	} else {
 		
 		/* $currentclass_id = $current_class_data['currentclass_id'];	
@@ -58,8 +61,9 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 	// check to see if this is a new problem and they want the start over file issued
 	if ($problem_data['status']=='num issued'){
 		$_SESSION['error'] = 'The status of this problem is num issued and cannot be activated';
-	 	header( 'Location: QRPRepo.php' ) ;
-		die();
+       echo  "<script type='text/javascript'>";
+        echo "window.close();";
+        echo "</script>";
 	}
 
 
@@ -89,7 +93,7 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 		// echo($assign_id);
 		$assign_num = $Assign_data['assign_num'];
 		$alias_num = $Assign_data['alias_num'];
-
+         $currentclass_id = $Assign_data['currentclass_id'];
 		$assign_t_created = $Assign_data['assign_t_created'];
 		$pp_flag1 = $Assign_data['pp_flag1'];
 		$pp_flag2 = $Assign_data['pp_flag2'];
@@ -131,8 +135,9 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 	 
 	//echo('the problem was deactivated'.$assign_id);
 	 $_SESSION['sucess'] = 'the problem was deactivated';
-	 	header( 'Location: QRPRepo.php' ) ;
-		die();
+	       echo  "<script type='text/javascript'>";
+        echo "window.close();";
+        echo "</script>";
    }
 
 
@@ -156,8 +161,9 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 	if($exp_date > $class_exp_date){
 	$_SESSION['error']	= 'Expiration date of Assignment cannot exceed the expiration date on the class';
 		
-		header( 'Location: QRPRepo.php' ) ;
-		return; 
+       echo  "<script type='text/javascript'>";
+        echo "window.close();";
+        echo "</script>";
 	}
 
 
@@ -225,8 +231,9 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 		$check = $stmt -> fetch();
 		if ($check != false){
 			$_SESSION['error']	= 'Duplication error - problems must have distinct problem numbers for an assignment in a class';
-			header( 'Location: QRPRepo.php' ) ;
-			die();
+	       echo  "<script type='text/javascript'>";
+            echo "window.close();";
+            echo "</script>";
 		}
 		
  
@@ -271,8 +278,9 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				':sec_desig_6' => $sec_desig_6
 				));
 
-				header( 'Location: QRPRepo.php' ) ;
-			die();
+       echo  "<script type='text/javascript'>";
+        echo "window.close();";
+        echo "</script>";
 	
 	}
 	// We have a file and are trying to edit it- just update the entry
@@ -396,8 +404,9 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			':grader_id3' => $grader_id3
 			));
 			 $_SESSION['sucess'] = 'the problem was edited and remains active';
-			header( 'Location: QRPRepo.php' ) ;
-			return; 
+	       echo  "<script type='text/javascript'>";
+            echo "window.close();";
+            echo "</script>";
    }
    
  
@@ -440,13 +449,54 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			
 			?>
 				
+                	
 				
 				
+				
+		
+        
+        <!--		
+          	<div id ="current_class_dd">	
+				Course: </br>
+				<select name = "currentclass_id" id = "currentclass_id">
+				<option value = "" selected disabled hidden >  Class  </option> 
+				<?php
+					/* $sql = 'SELECT * FROM `CurrentClass` WHERE `iid` = :iid';
+					$stmt = $pdo->prepare($sql);
+					$stmt -> execute(array(':iid' => $iid));
+					while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
+						{  */?>
+						<option value="<?php// echo $row['currentclass_id']; ?>" ><?php //echo $row['name']; ?> </option>
+						<?php
+                        //}
+						?>
+				</select>
+				</div>
+				</br>	      
+				-->
+			
+
+
+            
 				<div id ="current_class_dd">	
 				Course: </br>
 				<select name = "currentclass_id" id = "currentclass_id">
-				<option value = "" selected disabled hidden >  Select Class  </option> 
+				
 				<?php
+                    if($activate_flag!=1){
+                        $sql = 'SELECT * FROM `CurrentClass` WHERE `iid` = :iid AND `currentclass_id` = :currentclass_id';
+                        $stmt = $pdo->prepare($sql);
+                        $stmt -> execute(array(':iid' => $iid, ':currentclass_id' => $currentclass_id));
+                        $row = $stmt->fetch();
+                        
+                        ?>
+						<option value="<?php echo $currentclass_id; ?>" ><?php echo $row['name']; ?> </option>
+						<?php
+                      
+                    } else {
+                    ?>
+                        <option value = "" selected disabled hidden >  Class  </option> 
+                    <?php
 					$sql = 'SELECT * FROM `CurrentClass` WHERE `iid` = :iid';
 					$stmt = $pdo->prepare($sql);
 					$stmt -> execute(array(':iid' => $iid));
@@ -455,7 +505,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 						<option value="<?php echo $row['currentclass_id']; ?>" ><?php echo $row['name']; ?> </option>
 						<?php
  							}
-						?>
+                    }?>
 				</select>
 				</div>
 				</br>	
@@ -525,9 +575,12 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			
 			<input type="hidden" name="Submitted" value="name" />
 			<p><input type = "submit"></p>
+        </form >
+        
+        
+		<form id = "close">
+            	<p><input type = "submit" name = "Close" Value = "Cancel and Close" id = "close_it"></p>
         </form>
-		
-		<a href="QRPRepo.php">Cancel - go back to Repository</a>
     </div>    
  
 	<?php
@@ -544,6 +597,12 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 	
 	
 	$(document).ready( function () {
+        
+        $("#close_it").click(function(){
+             window.close();
+        });
+        
+        
 		var sec_tot = 0;
 		var currentclass_name = '';
 		

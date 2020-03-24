@@ -1160,3 +1160,24 @@ WHERE
 		PRIMARY KEY (`gmact_id`),
 		CONSTRAINT FOREIGN KEY (`game_id`) REFERENCES `Game` (`game_id`) 
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+    
+    
+    CREATE TABLE IF NOT EXISTS `Exam` (
+  `exam_id` int(11) NOT NULL AUTO_INCREMENT,
+  `instr_last` varchar(50) NOT NULL,
+   `iid` int(11) NOT NULL,
+   `university` varchar(255) NOT NULL,
+   exam_num int,
+   alias_num int,
+   currentclass_id int,
+   problem_id int,
+   proctor_id1 int,
+   proctor_id2 int,
+   proctor_id3 int,
+   	`exp_date` DATETIME,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`exam_id`)
+  )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  
+  

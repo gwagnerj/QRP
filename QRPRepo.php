@@ -230,6 +230,11 @@
 
           echo '<a href="QRGameMasterStart.php" >Game Master Screen</b></a>';
 			echo '&nbsp; &nbsp;&nbsp;';
+            
+            echo('<form action = "QRExamStart.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Start Exam"></form>');
+
+          //     echo '<a href="QRExamStart.php?iid ='.$users_id.'" >Start an Exam</b></a>';
+			echo '&nbsp; &nbsp;&nbsp;';
 		
 		
 		// check to see if the current user has sponsored anyone - if yes then allow them to suspend the them
@@ -297,6 +302,8 @@
         echo('Class');
 		echo("</th><th>");
         echo('Asn');
+        echo("</th><th>");
+        echo('Exam');
 		echo("</th><th>");
          echo('pblm');
 		echo("</th><th>");
@@ -535,6 +542,30 @@
                        
 						//echo('<span style = "color: red;" > Active </br> Class# '.$row2["currentclass_id"].'</br> Asn '.$row2["assign_ass_num"].'</br> Pblm '.$row2["alias_num"] .'<br>  </span>');
 					}
+                    
+ 
+
+ 
+
+                   // if it is Staged for an exam by the user this user print staged for the status
+					$asstmnt = "SELECT Exam.exam_num AS exam_e_num, Exam.alias_num AS e_alias_num,Exam.currentclass_id as e_currentclass_id
+					FROM Exam 
+					WHERE (Exam.problem_id =". $row['problem_id']." AND Exam.iid=".$users_id.");";
+						
+					$stmt2e = $pdo->query($asstmnt);
+					 $row2e = $stmt2e->fetch(PDO::FETCH_ASSOC);
+					if($row2e == false){
+                         $staged_flag = 0;
+					} else {
+                        $staged_flag = 1;
+                       // if I turn it red the filter wont pick it up
+                       echo ('<br> Staged ');
+                       
+						//echo('<span style = "color: red;" > Active </br> Class# '.$row2["currentclass_id"].'</br> Asn '.$row2["assign_ass_num"].'</br> Pblm '.$row2["alias_num"] .'<br>  </span>');
+					}
+                    
+                    
+                    
 					// test to see if it is being used by other people and display in use
 					$usestmnt = "SELECT Assign.instr_last AS instr_last_nm 
 					FROM Assign 
@@ -570,14 +601,43 @@
                
             }
             
+              if ($staged_flag ==1){
+                
+                 // find the current class from the Currentclass table
+                 $stmnte = "SELECT CurrentClass.name AS class_name_e
+					FROM CurrentClass
+					WHERE (currentclass_id = ".$row2e['e_currentclass_id'].");";
+                 $stmt6e = $pdo->query($stmnte);
+                 $row6e = $stmt6e->fetch(PDO::FETCH_ASSOC);
+              
+                 $class_wordse = str_word_count($row6e['class_name_e'],1); // an array of the words
+                 foreach ($class_wordse as $class_word){
+                        echo(substr($class_word,0,4));
+                        echo(" ");
+                 }
+               
+            }
+            
            
              echo("</td><td>");
               if ($active_flag ==1){
                    echo ($row2["assign_ass_num"]);
               }
             echo("</td><td>");
+ 
+                 if ($staged_flag ==1){
+                   echo ($row2e["exam_e_num"]);
+              }
+
+
+ 
+             echo("</td><td>");
             if ($active_flag ==1){
                 echo ($row2["alias_num"]);
+            }
+            
+             if ($staged_flag ==1){
+                echo ($row2e["e_alias_num"]);
             }
             echo("</td><td>");
 			echo(htmlentities($row['nm_author']));
@@ -599,7 +659,7 @@
 			}
 			
 			if ($security != 'grader'){
-			echo('<form action = "QRactivatePblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "users_id" value = "'.$users_id.'"><input type = "submit" value ="Activate"></form>');
+			echo('<form action = "QRactivatePblm.php" method = "GET" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "users_id" value = "'.$users_id.'"><input type = "submit" value ="Activate"></form>');
 
 		//	echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$users_id.'">Act-deAct</a>');
 				
@@ -610,7 +670,9 @@
 				echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="Base-case"></form>');
 				echo("&nbsp; ");
 				echo('<form action = "getGame.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Game"></form>');
-				
+				echo("&nbsp; ");
+				echo('<form action = "stageExam.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Stage Exam"></form>');
+
                 
                 if ($security == 'contrib' ||
                     $security == 'admin'||
