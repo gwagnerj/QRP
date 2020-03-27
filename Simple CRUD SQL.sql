@@ -1180,4 +1180,40 @@ WHERE
   PRIMARY KEY (`exam_id`)
   )ENGINE=InnoDB DEFAULT CHARSET=utf8;
   
+      CREATE TABLE IF NOT EXISTS `Examtime` (
+		`examtime_id` int(11) NOT NULL AUTO_INCREMENT,
+		`exam_num` int(11) NOT NULL,
+		`iid` int(11) NOT NULL,
+        `currentclass_id` int(11) NOT NULL,
+		`globephase` INT(2) NOT NULL,
+        `work_time` INT(4),
+         `attempt_type` INT(2),
+          `num_attempts` INT(3),
+         `end_of_phase` TIMESTAMP DEFAULT 0,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		PRIMARY KEY (`examtime_id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+    
+  -- need to look at the Checker, some of this is already  (can we put the checkerid as a foriegn key and have it.  accomplished when we look at show in the repo
+  
+ CREATE TABLE IF NOT EXISTS `Examactivity` (
+		`examactivity_id` int(11) NOT NULL AUTO_INCREMENT,
+		`examtime_id` int(11) NOT NULL,
+        `problem_id` int(11) NOT NULL,
+        `name` VARCHAR(64),
+        `taker_id` int(11),
+        `iid` int(11) NOT NULL,
+		`pin` int(8) NOT NULL,
+		`dex` INT(4) NOT NULL,
+        `ans_last` DOUBLE,
+        `score` int(4),
+        `trynum` int(4),
+        `minutes` int(8),
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		PRIMARY KEY (`gameactivity_id`),
+		CONSTRAINT FOREIGN KEY (`game_id`) REFERENCES `Game` (`game_id`) 
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+    
   

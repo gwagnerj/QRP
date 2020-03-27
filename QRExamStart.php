@@ -10,9 +10,17 @@
       			header( 'Location: QRPRepo.php' ) ;
 				die();
 }
+
+// this is called from the main repo and this will collect initial data from instructor and proceed to QREStart.php
+
+
+
+
+
+
     
         
-		
+/* 		
 			$alias_num = $exam_num = $cclass_id = '';   
 			
 			
@@ -20,7 +28,7 @@
             $stmt = $pdo->prepare($sql_stmt);
             $stmt -> execute(array(':iid' => $iid));
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	
+	 */
      
 // this will be called form the main repo when the game master wants to run a game
 // this is just to get the game number and go on to QRGMaster.php with a post of the game number.
@@ -64,10 +72,10 @@ $_SESSION['counter']=0;  // this is for the score board
 
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
-<form id = "the_form" action = "QREStart.php" method = "POST">
+<form id = "the_form"  method = "POST" action = "QREStart.php" >
 	
     <div id ="current_class_dd">	
-				Course: </br>
+				Course: &nbsp;
 				<select name = "currentclass_id" id = "currentclass_id">
 				 <option value = "" selected disabled hidden > Select Course  </option> 
 				<?php
@@ -86,24 +94,44 @@ $_SESSION['counter']=0;  // this is for the score board
 				</select>
 		</div>
              </br>
-                <font color=#003399>Exam Number: </font>
+                <font color=#003399>Exam Number: &nbsp; </font>
                     
-                    <select id="exam_num" name = "exam_num" >
+                    <select id="exam_num" name = "exam_num" required >
                        <option value="0">- Select Exam -</option>
                     </select>
                 </br>	
     
+           </br>
+                <font color=#003399>Minutes for Exam: &nbsp; </font>
+           <input type = "number" name ="nom_time" id = "nom_time" min = "1", max = "300" value = "60" required > </input>
            
+          &nbsp;&nbsp; - this can be adjusted during the exam -
+           </br> </br>
            
-          <!--   <input type="hidden" id = "exam_num" name="exam_num" value="" >  -->
+                 <font color=#003399>Attempts for the problems? &nbsp; </font>
+                 <div>
+                   <input type = "radio" name ="attempt_type" id = "check_inf" value = "1" checked > </input>
+                       <label for "check_infin"> Check as they go - No limit </label>
+                 </div>
+                 </br>
+                 <div>
+                    <input type = "radio" name ="attempt_type" id = "check_limit" value = "2" > </input>
+                       <label for "check_limit"> No Feedback until they Submit.  Max number of Submits = 
+                        <input type = "number" name ="num_attempts" id = "num_attempts" min = "1", max = "50" value = "1" required > </input>
+                       
+                       
+                       
+                       </label>   
+                </div>
+         </br></br>
             
             
-       
+             <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
 			<p><input type = "submit" id = "submit_id"></p>
    
 	
 	</form>
-  <p style="font-size:150px;"></p>   
+  <p style="font-size:100px;"></p>   
     
 	<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
 	

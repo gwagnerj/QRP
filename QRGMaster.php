@@ -538,14 +538,7 @@
                     $('#defaultCountdown').countdown('resume');
                 }
                 
-                // https://hilios.github.io/jQuery.countdown/documentation.html       
-               
-/* 
-               function addaminute() {
-                   offset = offset+1;
-                    console.log ("offset = "+offset);
-                }
-  */
+  
                 $('#pause').click(pause);
                 $('#resume').click(resume);
             //    $('#addaminute').click(addaminute);
