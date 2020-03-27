@@ -2,7 +2,8 @@
 require_once "pdo.php";
 	session_start();
 
-
+// THis files is called from the QRExamstart.php.  The purpose of this module is to control the Examtime table which the student exam checkers read to see what phase the exam is in
+// THis file will also give a link to the backstage  to look at the progress of the studetns through another file looking at the examactivity table that the student exam checkers will be filling
     
     if (isset($_POST['currentclass_id'])) {
         $currentclass_id = htmlentities($_POST['currentclass_id']);
@@ -303,17 +304,17 @@ require_once "pdo.php";
     <!--   <p>Working Time: <input type="number" name="work_time" id="work_time" size=5 value=<?php echo($work_time);?>></p > -->
 	</form>
     
-  <!--  
-    <form  method="POST" action = "QRPGameBackStage.php" id = "backstage" target = "_blank">
+  
+    <form  method="POST" action = "QRExamBackStage.php" id = "backstage" target = "_blank">
    <p style="font-size:50px;"></p>
    
-   <p><input type="hidden" name="gmact_id" id="gmact_id" value=<?php echo($gmact_id);?> ></p>
+   <p><input type="hidden" name="examtime_id" id="examtime_id" value=<?php echo($examtime_id);?> ></p>
    
-  <p><input type = "submit" name = "backstage" value="Back Stage Game Data" id="backstage_submit" size="2" style = "width: 30%; background-color: green; color: white"/>  </p>  
+  <p><input type = "submit" name = "backstage" value="Back Stage Exam Data" id="backstage_submit" size="2" style = "width: 30%; background-color: green; color: white"/>  </p>  
   
   </form>
     
-    
+    <!--  
    
     
    <form  method="POST" action = "" id = "finish_form">
