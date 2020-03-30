@@ -20,6 +20,11 @@ require_once "pdo.php";
             header( 'Location: QRPRepo.php' ) ;
             die();
     }
+      if (isset($_POST['exam_code'])) {
+        $exam_code = htmlentities($_POST['exam_code']);
+      }
+    
+    
     
      if (isset($_POST['nom_time'])) {
         $work_time = htmlentities($_POST['nom_time']);
@@ -74,17 +79,17 @@ require_once "pdo.php";
                          $globephase = $row5['globephase'];
                         $work_time = $row5['work_time'];
                         $end_of_phase = $row5['end_of_phase'];
-                                
+                          $exam_code = $row5['exam_code'];       
                                     
 
 
                    } else {
                  
-                
+                        $exam_code = rand(100,9999);
                         // Create the table entry into the Gmact table from the values that were put in the Game table
                         
-                        $sql = 'INSERT INTO `Examtime` (exam_num, iid, currentclass_id, globephase, work_time,attempt_type, num_attempts)	
-                                    VALUES (:exam_num, :iid, :currentclass_id,:globephase ,:work_time, :attempt_type, :num_attempts)';
+                        $sql = 'INSERT INTO `Examtime` (exam_num, iid, currentclass_id, globephase, work_time,attempt_type, num_attempts, exam_code)	
+                                    VALUES (:exam_num, :iid, :currentclass_id,:globephase ,:work_time, :attempt_type, :num_attempts, :exam_code)';
                             $stmt = $pdo->prepare($sql);
                             $stmt -> execute(array(
                             ':exam_num' => $exam_num,
@@ -94,6 +99,7 @@ require_once "pdo.php";
                             ':work_time' => $work_time,
                             ':attempt_type' => $attempt_type,
                              ':num_attempts' => $num_attempts,
+                              ':exam_code' => $exam_code,
                             ));
                             
                             // get the examtime_id
@@ -258,7 +264,7 @@ require_once "pdo.php";
 <form  method="POST" action = "" id = "submit_form">
 
 
-
+ <h1> Exam Code = <?php echo $exam_code; ?></h1>
     <h2> Class: <?php echo $class_name; ?></h2>  
    <h2> Exam Number = <?php echo $exam_num; ?></h2>
     <h2> Current Phase = <?php echo $globephase; ?></h2>
@@ -294,7 +300,7 @@ require_once "pdo.php";
    <p><input type="hidden" name="nom_time" id="work_time" value=<?php echo($work_time);?> ></p>
       <p><input type="hidden" name="exam_num_here" id="exam_num"  value=<?php echo($exam_num);?> ></p>
    <p><input type="hidden" name="examtime_id" id="examtime_id"  value=<?php echo($examtime_id);?> ></p>
-   
+    <p><input type="hidden" name="exam_code" id="exam_code"  value=<?php echo($exam_code);?> ></p>
    
    
 	<p><input type="hidden" name="globephase" id="globephase" size=3 value=<?php echo($globephase);?> ></p>

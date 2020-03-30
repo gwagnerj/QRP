@@ -12,6 +12,15 @@ if(name_length<1){
 }
 var dex = sessionStorage.getItem('dex');
 var pin = sessionStorage.getItem('pin');
+var exam_flag = 0;
+exam_flag = sessionStorage.getItem('exam_flag');
+var exam_num =0;
+exam_num = sessionStorage.getItem('exam_num');
+var examactivity_id =0;
+examactivity_id = sessionStorage.getItem('examactivity_id');
+var exam_code =0;
+exam_code = sessionStorage.getItem('exam_code');
+console.log ('exam_flag: '+ exam_flag);
 var reflect_flag = sessionStorage.getItem('reflect_flag');
 var explore_flag = sessionStorage.getItem('explore_flag');
 var connect_flag = sessionStorage.getItem('connect_flag');
@@ -579,7 +588,14 @@ $(document).ready(function(){
 			// replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=dex
 //!!~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			//var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;                             
-			var newHref = '../QRP/QRChecker.php'+'?assign_num='+assign_num+'&cclass_id='+cclass_id+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid;
+			var newHref ='';
+           if (exam_flag == 1){
+
+                newHref = '../QRP/QRExamCheck.php'+'?exam_num='+exam_num+'&cclass_id='+cclass_id+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid+'&examactivity_id='+examactivity_id+'&problem_id='+problem_id+'&dex='+dex;
+
+           } else {               
+                newHref = '../QRP/QRChecker.php'+'?assign_num='+assign_num+'&cclass_id='+cclass_id+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid;
+           }
 			var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
 			//var oldHref = $('a').attr('href');
 
@@ -719,12 +735,17 @@ $(document).ready(function(){
 			$("#backbut").css('background-color','lightyellow')
 			
 			// go back to the input page for a different problem
-			$("#backbut").click(function(){
+			
+            
+            $("#backbut").click(function(){
 					// e.preventDefault();
 					// console.log("hello1");
-				
+				if(exam_flag==1){
+                    
+                    window.location.replace('../QRP/QRExam.php'+'?examactivity_id='+examactivity_id); // axam_num and examactivity
+                } else {
 					window.location.replace('../QRP/QRhomework.php'+'?assign_num='+assign_num+'&cclass_id='+cclass_id+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid+'&stu_name='+stu_name_back);
-					
+				}	
 				 });
 			
 
@@ -1053,7 +1074,21 @@ $(document).ready(function(){
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
-   
+        
+        
+          if ( exam_flag==1) {
+             var qrcode = new QRCode(document.getElementById("qrcode"), {
+                  
+                
+                  text: "https://QRProblems.org/QRP/QRExamCheck.php",
+                 
+                    width: 100,
+                    height: 100,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+        }
    
     // put the directions for the planning
  /*     
