@@ -75,7 +75,7 @@
                         die();     
                     }
                     
-              $sql = " SELECT `name` FROM `Currentclass` WHERE currentclass_id = :currentclass_id" ;
+              $sql = " SELECT `name` FROM `CurrentClass` WHERE currentclass_id = :currentclass_id" ;
                     $stmt = $pdo->prepare($sql);
                     $stmt -> execute(array(
                          ':currentclass_id' => $cclass_id,

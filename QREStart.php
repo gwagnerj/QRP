@@ -161,7 +161,7 @@ require_once "pdo.php";
     
     // in either case get the class and 
     
-            	$sql = 'SELECT name FROM `Currentclass` WHERE `currentclass_id` = :currentclass_id';
+            	$sql = 'SELECT name FROM `CurrentClass` WHERE `currentclass_id` = :currentclass_id';
 					$stmt = $pdo->prepare($sql);
 					$stmt -> execute(array(':currentclass_id' => $currentclass_id));
                     	$row = $stmt->fetch(PDO::FETCH_ASSOC);
