@@ -192,6 +192,21 @@ require_once "pdo.php";
                 ':examtime_id' => $examtime_id,
                 ));      
                
+               
+                $new_examtime_id = $examtime_id + 1000000;
+                $sql = "UPDATE `Examactivity` 
+				SET examtime_id = :new_examtime_id 
+				WHERE examtime_id = :examtime_id";
+                $stmt = $pdo->prepare($sql);
+                $stmt -> execute(array(
+                    
+                    ':examtime_id' => $examtime_id,
+                    ':new_examtime_id' => $new_examtime_id,
+                    
+                ));
+               
+               
+               
                header( 'Location: QRPRepo.php' ) ;
                 die();
               
@@ -249,15 +264,15 @@ require_once "pdo.php";
 
 
 
- <h1><font  style="font-size:300%; color:blue;"> <?php echo $stage;?> </font>
+ <h1><font  style="font-size:300%; color:blue;"> <?php echo $globephase;?> </font>
     	<div id="defaultCountdown" style="font-size:300%;color:red;"> </div></h1> 
 <div id = 'backstage_view'>
-    <iframe src="QRPGamePlayers.php?gmact_id=<?php echo($gmact_id);?>" style = "width:100%; height:700px;"></iframe>
+    <iframe src="QRPExamPlayers.php?gmact_id=<?php echo($gmact_id);?>" style = "width:100%; height:700px;"></iframe>
     
 </div>
 
 <div id = 'scorebrd'>
- <iframe src="QRPGameScoreBoard.php?gmact_id=<?php echo($gmact_id);?>" style = "width:100%; height:700px;"></iframe>
+ <iframe src="QRPExamScoreBoard.php?gmact_id=<?php echo($gmact_id);?>" style = "width:100%; height:700px;"></iframe>
 </div>
  -->
 

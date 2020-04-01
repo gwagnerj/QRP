@@ -89,7 +89,7 @@ session_start();
                     }
                     
                     if ($globephase !=1){
-                         $_SESSION['error'] = 'Exam is not yet in progress';
+                         $_SESSION['error'] = 'Exam is not in progress';
                         header("Location: QRExam.php?examactivity_id=".$examactivity_id
                         );
                         die();     
@@ -153,6 +153,7 @@ $pass = array(
     'cclass_id' => $cclass_id,
     'examactivity_id' => $examactivity_id,
     'cclass_name' => $cclass_name,
+    'examtime_id' => $examtime_id,
 );
 
 // echo ($pass['society_flag']);
@@ -187,6 +188,7 @@ echo '</script>';
 </head>
 
 <body>
+
 <div id = substitute_me>  </div>
 <?php  //iconv("Windows-1252", "UTF-8", include($htmlfilenm)); 
 			include($htmlfilenm);
@@ -197,7 +199,7 @@ $(document).ready(function(){
 		var dex = pass['dex'];
 		var problem = pass['problem_id'];
         var examactivity_id = pass['examactivity_id'];
-		var s_name = pass['stu_name'];
+		var stu_name = pass['stu_name'];
 		var pin = pass['pin'];
 		var iid = pass['iid'];
 		var assign_num = pass['assign_num'];
@@ -205,6 +207,7 @@ $(document).ready(function(){
         var exam_num = pass['exam_num'];
         var cclass_id = pass['cclass_id'];
         var cclass_name = pass['cclass_name'];
+        var examtime_id = pass['examtime_id'];
 		var statusFlag=true;
 			
 			
@@ -311,7 +314,7 @@ $(document).ready(function(){
                      		sessionStorage.setItem('cclass_name',cclass_name);
                      		sessionStorage.setItem('exam_num',exam_num);
                      		sessionStorage.setItem('assign_num',assign_num);
-                     		sessionStorage.setItem('s_name',s_name);
+                     		sessionStorage.setItem('stu_name',stu_name);
                      		sessionStorage.setItem('cclass_id',cclass_id);
                       		sessionStorage.setItem('alias_num',alias_num);
                             sessionStorage.setItem('problem_id',problem);
@@ -484,25 +487,56 @@ $(document).ready(function(){
 						
 						
 					}
-
-		   
-
-
-
 					
                 });
-		  
-		  
-		  
 		  
 			}
 			else{
 				
 				alert ('invalid user input dex = '+dex+' problem= '+problem);
 				
-				
+// this to the end of this script is from QRExamCheck to shut things down when the globephase changes from 1	
 			}
+    	// get the current phase
+				
+				console.log ('examtime_id = ',examtime_id);
+				
+                     var request;
+                function fetchPhase() {
+                    request = $.ajax({
+                        type: "POST",
+                        url: "fetchGPhase.php",
+                        data: "examtime_id="+examtime_id,
+                        success: function(data){
+                           try{
+                                var arrn = JSON.parse(data);
+                            }
+                            catch(err) {
+                                alert ('game data unavailable Data not found');
+                                alert (err);
+                                return;
+                            }
+                            
+                             var phase = arrn.phase;
+                            var end_of_phase = arrn.end_of_phase;
+                            	console.log ('phase = ',phase);
+                           if(phase != 1){  // submit away work time has eneded this is going to stop game and not back to the router
+                               $("#phase").attr('value', phase);
+                               SubmitAway(); 
+                            }
+                        }
+                    });
+                }
+                setInterval(function() {
+                    if (request) request.abort();
+                    fetchPhase();
+                }, 10000);
 
+                
+                     function SubmitAway() { 
+                        window.close();
+                       // document.getElementById('the_form').submit();
+                    }
 });
 
 </script>

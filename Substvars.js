@@ -173,20 +173,27 @@ $(document).ready(function(){
 		var reflections = "Reflections: Pick Any "+ choice ;
 	}
 	
-	 var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Course: "+cclass_name+"\xa0\xa0"+"Assignment: "+assign_num+"\xa0\xa0"+"Problem: "+alias_num+"\xa0\xa0"+"PIN: " + pin +"\xa0\xa0 - \xa0\xa0 "+ reflections);
-	  
+    var assignorexam = 'Assignment: ';
+    var showhide = 'show/hide: ';
+    if (exam_flag==1){assignorexam = 'Exam: ';showhide = '';}
+	// var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Course: "+cclass_name+"\xa0\xa0"+assignorexam+assign_num+"\xa0\xa0"+"Problem: "+alias_num+"\xa0\xa0"+"PIN: " + pin +"\xa0\xa0 - \xa0\xa0 "+ reflections);
+	 var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Course: "+cclass_name+"\xa0\xa0"+assignorexam+assign_num+"\xa0\xa0"+"Problem: "+alias_num+"\xa0\xa0"+"PIN: " + pin );
 	  var auth_field = (nm_author.length > 1 ? " by "+nm_author : "");
 	  var ref_field = (specif_ref.length > 1 ? " similar to\xa0"+specif_ref : "");
 	 var pp_txt = (pp1==2 ? ' Preliminary Estimates completed at '+time_pp1 :"")+(pp2==2 ? ' Planning Questions completed at '+time_pp2 :"")
 			+ (pp3==2 ? ' Preliminary MC completed at '+time_pp3 :"")+(pp4==2 ? ' Preliminary Supplemental completed at '+time_pp4 :"");
-	 var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0 Originally Contributed by\xa0"+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field+" \xa0\xa0|\xa0\xa0"  + pp_txt);
 	
+    if(exam_flag != 1){
+    var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0 Originally Contributed by\xa0"+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field+" \xa0\xa0|\xa0\xa0"  + pp_txt);
+	} else {
+      var Head_txt3 ='';  
+    }
 	
 	 $('p:first').before(Head_txt1,Head_txt3,'<hr>');
 	 
-	  
+	  if(exam_flag !=1){
 	  $('p:first').before('\xa0\xa0<img border=0 width=50 height=50 id="McKetta_head" src="./uploads/QRMcKetta.png"><hr>');
-
+      }
 	//put real tags in the document to manipulate
 	 
 		$(function(){
@@ -204,7 +211,7 @@ $(document).ready(function(){
 				$("#box0_start").nextUntil("#box0_end").wrapAll("<div id='Header_stuff'></div>");
 			
 			// put the button in the document	
-				$('p:first').before('<button id="backbut"> back </button>  show/hide: <button id="directionsbutton">directions</button> <button id="pblmbutton">pblm statement</button>  <button id="basecasebutton">base-case</button> <button id="reflectionbutton">Reflections</button>') ;
+				$('p:first').before('<button id="backbut"> back </button> '+showhide+' <button id="directionsbutton">directions</button> <button id="pblmbutton">pblm statement</button>  <button id="basecasebutton">base-case</button> <button id="reflectionbutton">Reflections</button>') ;
 				$('p:first').before('  <button id="refl" style = "height:17px">Reflect</button> <button id="expl" style = "height:17px">Explore</button>  <button id="conn" style = "height:17px">Connect</button> <button id="soci" style = "height:17px">Society</button>') ;
 				
 				$('#refl').hide();
@@ -214,7 +221,26 @@ $(document).ready(function(){
 				
 				// if(reflect_flag==1){$('#refl').show();}
 				// if(explore_flag==1){$('#expl').show();}
-				
+			
+
+            if ( exam_flag==1) {
+          /*   
+            var qrcode = new QRCode(document.getElementById("qrcode"), {
+                  text: "https://QRProblems.org/QRP/QRExamCheck.php",
+                    width: 100,
+                    height: 100,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+                 */
+       
+               $('#basecasebutton').hide(); 
+               $('#reflectionbutton').remove(); 
+               $('#pblmbutton').hide(); 
+                  $('#directionsbutton').hide(); 
+                console.log('removing buttons');
+        }	
 				
 				
 			// Search thru all of the document looking for the markups and put divs for those
@@ -601,11 +627,20 @@ $(document).ready(function(){
 
 
 			//selects the first anchor tag in the directions div and replaces it with the particular url
-			$('#directions a').prop('href', newHref);
-			$('#directions a').prop('target', '_blank');
+		
+            	
+             if (exam_flag == 1){   
+             
+               //  $('#directions a').text('QRExam')
+                 $('#directions').html('<p>QRExam <a href = '+oldHref+'>Link Exam Checker</a></p>')
+                    $('#directions a').prop('title', 'Exam Checker');
+               // console.log ('getting it right');
+             }
+            
 			// $("a".oldHref).prop('href', newHref);
 
-
+            $('#directions a').prop('href', newHref);
+			$('#directions a').prop('target', '_blank');
 
 			
  /* 
@@ -1076,19 +1111,7 @@ $(document).ready(function(){
         });
         
         
-          if ( exam_flag==1) {
-             var qrcode = new QRCode(document.getElementById("qrcode"), {
-                  
-                
-                  text: "https://QRProblems.org/QRP/QRExamCheck.php",
-                 
-                    width: 100,
-                    height: 100,
-                    colorDark : "#000000",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.H
-                });
-        }
+        
    
     // put the directions for the planning
  /*     
@@ -1104,7 +1127,7 @@ $(document).ready(function(){
           
            */
    }
-
+ 
 
    /*  
   

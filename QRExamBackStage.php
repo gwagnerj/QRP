@@ -165,15 +165,14 @@ if(isset($_POST['examtime_id'])){
         echo('problem 4');
         echo("</th><th>");
         echo('problem 5');
-        echo("</th><th>");
-        echo('problem 6');
+       
 		echo("</th></tr>\n");
 		 echo("</thead>");
 		 
 		  echo("<tbody>");
 		//
 
-/* 
+ 
 
 		
 		// Get the team_id of all the teams in the game_prob_flag
@@ -191,31 +190,30 @@ if(isset($_POST['examtime_id'])){
                   echo($row['pin']);
                   
                 echo "</td><td>";
-                echo($row['gameactivity_id']);
+                echo($row['examactivity_id']);
                
             
                  echo("</td><td>");
-                echo($row['problem_1']);
+                echo($row['pblm_1_score']);
             
               
                  echo("</td><td>");
-                echo($row['problem_2']);
+                echo($row['pblm_2_score']);
             
                  echo("</td><td>");
-                echo($row['problem_3']);
+                echo($row['pblm_3_score']);
             
                  echo("</td><td>");
-                echo($row['problem_4']);
+                echo($row['pblm_4_score']);
             
                  echo("</td><td>");
-                echo($row['problem_5']);
+                echo($row['pblm_5_score']);
             
-                 echo("</td><td>");
-                echo($row['problem_6']);
-             
-                 
-                 echo("</td><td>");
                
+                echo("</td></tr>\n");
+            }
+                 
+              
                
                // echo('<form action = "QRGameFixSum.php" method = "POST" target = "_blank"> <input type = "hidden" name = "gmact_id" value = "'.$row['gmact_id'].'"><input type = "hidden" name = "team_id" value =  "'.$row['team_id'].'"><input type = "submit" value ="Fix Team Sums"></form>');
 	          //   echo('<form action = "QRGameDeletePlayer.php" method = "POST" target = "_blank">  <input type = "hidden" name = "gameactivity_id" value = "'.$row['gameactivity_id'].'"><input type = "submit" value ="Delete Player"></form>');
@@ -227,10 +225,9 @@ if(isset($_POST['examtime_id'])){
 				// echo('<form action = "numericToMC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Make MC"></form>');
 				                
                     
-               echo("</td></tr>\n");
-            }
             
-      */       
+            
+           
             echo("</tbody>");
              echo("</table>");
              

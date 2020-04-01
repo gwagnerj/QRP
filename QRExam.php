@@ -33,7 +33,7 @@
     } elseif(isset($_GET['examactivity_id'])){
        $examactivity_id =  $_GET['examactivity_id'];
     } else {
-        $_SESSION['error'] = 'examactivity_id was lost in QRExam.php';
+       // $_SESSION['error'] = 'examactivity_id was lost in QRExam.php';
         header("Location: QRExamRegistration.php");
 		die();
         

@@ -179,7 +179,7 @@ session_start();
 			$row = $stmt -> fetch();
 			if ( $row === false ) {
 				$_SESSION['error'] = 'Bad value for problem_id';
-				header( 'Location: getGamePblmNum.php' ) ;
+				header( 'Location: QRExam.php' ) ;
 				return;
 			}	
 			$probData=$row;	
@@ -187,7 +187,7 @@ session_start();
 			$probStatus = $probData['status'];
 			if ($probStatus =='suspended'){
 				$_SESSION['error'] = 'problem has been suspended, check back later';
-				header( 'Location: getGamePblmNum.php' ) ;
+				header( 'Location: QRExam.php' ) ;
 				return;	
 			}
 				
@@ -233,7 +233,7 @@ session_start();
 			$row = $stmt -> fetch();
 			if ( $row === false ) {
 				$_SESSION['error'] = 'Bad value for problem_id';
-				header( 'Location: getGamePblmNum.php' ) ;
+				header( 'Location: QRExam.php' ) ;
 				return;
 			}	
 				$soln = array_slice($row,6,20); // this would mean the database table Qa would have the same structure - change the structure of the table and you break the code
@@ -307,7 +307,10 @@ session_start();
             $globephase = $row['globephase'];
             $attempt_type = $row['attempt_type'];
              $num_attempts = $row['num_attempts'];
-
+            if ($globephase != 1){
+                header('Location: QRExam.php');
+                return;    
+            }
      // keep track of the number of tries the student makes
 	// get the count from the examactivity table
     
@@ -374,7 +377,7 @@ session_start();
 									
 									$_SESSION['$wrongC'[$j]] = 0;
 									$wrongCount[$j]=0;
-									echo 'im here';
+									//echo 'im here';
 									//echo $_SESSION['wrongC'[$j]];
 								
 									
@@ -440,7 +443,7 @@ session_start();
 	<h3> Name: <?php echo($name);?> </h3>
     <h3> Exam Number: <?php echo($exam_num);?> </h3>
     <h3> PIN: <?php echo($pin);?> </h3>
-	
+	<h3> Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> </h3>
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
 
@@ -448,7 +451,7 @@ session_start();
 	<!--<p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
 
 	<?php
-
+    if($attempt_type ==1 || ($attempt_type ==2 && $count <= $num_attempts)){
 	if ($partsFlag[0]){ ?> 
 	<p> a): <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b>
 	
@@ -539,6 +542,7 @@ session_start();
 	<?php if (isset($_POST['pin']) and $changed[9] and @$wrongCount[9]>=$time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
+    }
 
 
 	$_SESSION['time']=time();
@@ -579,20 +583,20 @@ session_start();
 
 
 	<script>
-   /*  
+   
     
 		$(document).ready( function () {
                 
 				// get the current phase
-				var gmact_id = $("#gmact_id").val();
-				console.log ('gmact_id = ',gmact_id);
+				var examtime_id = $("#examtime_id").val();
+				console.log ('examtime_id = ',examtime_id);
 				
                      var request;
                 function fetchPhase() {
                     request = $.ajax({
                         type: "POST",
-                        url: "fetchPhase.php",
-                        data: "gmact_id="+gmact_id,
+                        url: "fetchGPhase.php",
+                        data: "examtime_id="+examtime_id,
                         success: function(data){
                            try{
                                 var arrn = JSON.parse(data);
@@ -606,7 +610,7 @@ session_start();
                              var phase = arrn.phase;
                             var end_of_phase = arrn.end_of_phase;
                             	console.log ('phase = ',phase);
-                           if(phase != 4){  // submit away work time has eneded this is going to stop game and not back to the router
+                           if(phase != 1){  // submit away work time has eneded this is going to stop game and not back to the router
                                $("#phase").attr('value', phase);
                                SubmitAway(); 
                             }
@@ -616,22 +620,17 @@ session_start();
                 setInterval(function() {
                     if (request) request.abort();
                     fetchPhase();
-                }, 1000);
+                }, 10000);
 
                 
-                
-                
-                
-      
-                
                      function SubmitAway() { 
-                  
-                        document.getElementById('the_form').submit();
+                        window.close();
+                       // document.getElementById('the_form').submit();
                     }
                 });
          
 
-          */
+         
 	</script>
 
 	</main>

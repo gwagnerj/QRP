@@ -104,37 +104,57 @@ if(isset($_POST['pin'])){
                                            if ($row['alias_num']==4){$problem_id4=$row['problem_id'];}
                                            if ($row['alias_num']==5){$problem_id5=$row['problem_id'];}
                                    }
-                        
+              // check to see if there is already an entry and they are trying to re-register then just read the Examactivity table
+                
+
+                $sql = " SELECT * FROM `Examactivity` WHERE iid = :iid AND exam_code = :exam_code AND currentclass_id = :currentclass_id AND pin = :pin AND examtime_id = :examtime_id"   ;
+                    $stmt = $pdo->prepare($sql);
+                    $stmt -> execute(array(
+                         ':exam_code' => $exam_code,
+                         ':iid' => $iid,
+                         ':currentclass_id' => $cclass_id,
+                         ':pin' => $pin,
+                         ':examtime_id' => $examtime_id,
+                    ));
+                    
+                    $row8 = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if($row8 != false){
+                            $examactivity_id = $row8['examactivity_id'];        
+                    } else {      
+                                    
                   // ----------------------- put the entry into the examactivity table for this user  ------------------------------------------------------
                                        
                                             
-                                          $sql = 'INSERT INTO `Examactivity` (examtime_id, iid, currentclass_id, name, work_time,exam_code, dex, pin, problem_id1, problem_id2, problem_id3, problem_id4, problem_id5,suspend_flag,minutes)	
-                                                    VALUES (:examtime_id, :iid, :currentclass_id,:name ,:work_time, :exam_code, :dex, :pin, :problem_id1, :problem_id2, :problem_id3, :problem_id4, :problem_id5,0,:work_time)';
-                                            $stmt = $pdo->prepare($sql);
-                                            $stmt -> execute(array(
-                                            ':examtime_id' => $examtime_id,
-                                            ':iid' => $iid,
-                                            ':currentclass_id' => $cclass_id,
-                                            ':name' => $stu_name,
-                                            ':work_time' => $work_time,
-                                            ':exam_code' => $exam_code,
-                                             ':dex' => $dex,
-                                              ':pin' => $pin,
-                                              ':problem_id1' => $problem_id1,
-                                              ':problem_id2' => $problem_id2,
-                                              ':problem_id3' => $problem_id3,
-                                              ':problem_id4' => $problem_id4,
-                                              ':problem_id5' => $problem_id5,
-                                              ':work_time' => $work_time,
-                                            ));
+                                  $sql = 'INSERT INTO `Examactivity` (examtime_id, iid, currentclass_id, name, work_time,exam_code, dex, pin, problem_id1, problem_id2, problem_id3, problem_id4, problem_id5,suspend_flag,minutes)	
+                                            VALUES (:examtime_id, :iid, :currentclass_id,:name ,:work_time, :exam_code, :dex, :pin, :problem_id1, :problem_id2, :problem_id3, :problem_id4, :problem_id5,0,:work_time)';
+                                    $stmt = $pdo->prepare($sql);
+                                    $stmt -> execute(array(
+                                    ':examtime_id' => $examtime_id,
+                                    ':iid' => $iid,
+                                    ':currentclass_id' => $cclass_id,
+                                    ':name' => $stu_name,
+                                    ':work_time' => $work_time,
+                                    ':exam_code' => $exam_code,
+                                     ':dex' => $dex,
+                                      ':pin' => $pin,
+                                      ':problem_id1' => $problem_id1,
+                                      ':problem_id2' => $problem_id2,
+                                      ':problem_id3' => $problem_id3,
+                                      ':problem_id4' => $problem_id4,
+                                      ':problem_id5' => $problem_id5,
+                                      ':work_time' => $work_time,
+                                    ));
+                                    
+                                    // get the examtime_id
+                               
+                                   $sql = "SELECT `examactivity_id` FROM `Examactivity` ORDER BY examactivity_id DESC LIMIT 1";
+                                   $stmt = $pdo->prepare($sql);
+                                   $stmt -> execute(); 
+                                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                                    $examactivity_id = $row['examactivity_id'];
                                             
-                                            // get the examtime_id
-                                       
-                                           $sql = "SELECT `examactivity_id` FROM `Examactivity` ORDER BY examactivity_id DESC LIMIT 1";
-                                           $stmt = $pdo->prepare($sql);
-                                           $stmt -> execute(); 
-                                            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                                            $examactivity_id = $row['examactivity_id'];
+                                            
+                              }
                                             $_SESSION['examactivity_id'] = $examactivity_id;
                                             $complete = 'QRExam.php';
                                             

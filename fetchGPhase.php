@@ -28,7 +28,7 @@ session_start();
 		}
 // echo ('globephase'.$row['globephase']); 
      
-	if (!empty($row['globephase'])){$resp_arr['globephase'] = $row['globephase']; }
+	if (!empty($row['globephase'])){$resp_arr['phase'] = $row['globephase']; }
 	if (!empty($row['end_of_phase'])){$resp_arr['end_of_phase'] = $row['end_of_phase']; }
 	
 	 echo json_encode($resp_arr);
