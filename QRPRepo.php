@@ -347,12 +347,15 @@
 	while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		
 		// needed to put this in for the grader criteria - copied from furthrer down on active
-		$asstmnt = "SELECT Assign.assign_num AS assign_ass_num 
-					FROM Assign 
-					WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid=".$user_sponsor_id.");";
-						
-					$stmt2 = $pdo->query($asstmnt);
-					 $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+               $sql = "SELECT assign_num FROM Assign WHERE prob_num = :prob_num AND iid = :iid";
+                $stmt8 = $pdo->prepare($sql);
+                $stmt8 -> execute(array(
+                     ':prob_num' => $row['problem_id'],
+                      ':iid' => $user_sponsor_id,
+                    ));
+                    $row2 = $stmt8->fetch(PDO::FETCH_ASSOC); 
+
+          
 		
 		
 		
@@ -522,12 +525,24 @@
 			}
 			
 			// if it is active for this user print active for the status
-					$asstmnt = "SELECT Assign.assign_num AS assign_ass_num, Assign.alias_num AS alias_num,Assign.currentclass_id as currentclass_id
+					$sql = "SELECT Assign.assign_num AS assign_ass_num, Assign.alias_num AS alias_num,Assign.currentclass_id as currentclass_id FROM Assign WHERE prob_num = :prob_num and iid = :iid";
+                    $stmt8 = $pdo->prepare($sql);
+                    $stmt8 -> execute(array(
+                     ':prob_num' => $row['problem_id'],
+                      ':iid' => $users_id,
+                    ));
+                    $row2 = $stmt8->fetch(PDO::FETCH_ASSOC); 
+                    
+                    
+                   /*  
+                    $asstmnt = "SELECT Assign.assign_num AS assign_ass_num, Assign.alias_num AS alias_num,Assign.currentclass_id as currentclass_id
 					FROM Assign 
 					WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid=".$users_id.");";
 						
 					$stmt2 = $pdo->query($asstmnt);
 					 $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+                      */
+                     
 					if($row2 == false){
 						if($status_update =='Circulated'){
 							echo('Circulated');
@@ -548,12 +563,24 @@
  
 
                    // if it is Staged for an exam by the user this user print staged for the status
-					$asstmnt = "SELECT Exam.exam_num AS exam_e_num, Exam.alias_num AS e_alias_num,Exam.currentclass_id as e_currentclass_id
+					$sql = "SELECT Exam.exam_num AS exam_e_num, Exam.alias_num AS e_alias_num,Exam.currentclass_id as e_currentclass_id FROM Exam WHERE problem_id = :problem_id AND iid = :iid";
+                   $stmt9 = $pdo->prepare($sql);
+                    $stmt9 -> execute(array(
+                     ':problem_id' => $row['problem_id'],
+                      ':iid' => $users_id,
+                    ));
+                    $row2e = $stmt9->fetch(PDO::FETCH_ASSOC); 
+/*                     
+                    $asstmnt = "SELECT Exam.exam_num AS exam_e_num, Exam.alias_num AS e_alias_num,Exam.currentclass_id as e_currentclass_id
 					FROM Exam 
 					WHERE (Exam.problem_id =". $row['problem_id']." AND Exam.iid=".$users_id.");";
-						
 					$stmt2e = $pdo->query($asstmnt);
+                    
+                 
 					 $row2e = $stmt2e->fetch(PDO::FETCH_ASSOC);
+     */                    
+                     
+                     
 					if($row2e == false){
                          $staged_flag = 0;
 					} else {
@@ -567,11 +594,22 @@
                     
                     
 					// test to see if it is being used by other people and display in use
-					$usestmnt = "SELECT Assign.instr_last AS instr_last_nm 
+				
+                $sql = "SELECT Assign.instr_last AS instr_last_nm FROM Assign WHERE prob_num = :problem_id AND iid <> :iid";
+                   $stmt5 = $pdo->prepare($sql);
+                    $stmt5 -> execute(array(
+                     ':problem_id' => $row['problem_id'],
+                      ':iid' => $users_id,
+                    ));
+/* 
+
+                $usestmnt = "SELECT Assign.instr_last AS instr_last_nm 
 					FROM Assign 
 					WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid <>".$users_id.");";
-						
 						$stmt5 = $pdo->query($usestmnt);
+                    */     
+                        
+                        
 						$i=1;
 						while ( $row5 = $stmt5->fetch(PDO::FETCH_ASSOC) ) {
 								if($i==1){
@@ -587,10 +625,20 @@
                 
                 // echo ($row2["currentclass_id"]);
                  // find the current class from the Currentclass table
-                 $stmnt = "SELECT CurrentClass.name AS class_name
+              
+                $sql = "SELECT CurrentClass.name AS class_name FROM CurrentClass WHERE currentclass_id = :currentclass_id";
+                  $stmt6 = $pdo->prepare($sql);
+                    $stmt6 -> execute(array(
+                     ':currentclass_id' => $row2['currentclass_id'],
+                    ));
+/* 
+              $stmnt = "SELECT CurrentClass.name AS class_name
 					FROM CurrentClass
 					WHERE (currentclass_id = ".$row2['currentclass_id'].");";
                  $stmt6 = $pdo->query($stmnt);
+                 
+                 */ 
+                 
                  $row6 = $stmt6->fetch(PDO::FETCH_ASSOC);
               
                  $class_words = str_word_count($row6['class_name'],1); // an array of the words
@@ -602,12 +650,23 @@
             }
             
               if ($staged_flag ==1){
-                
+
+                $sql = "SELECT CurrentClass.name AS class_name_e FROM CurrentClass WHERE currentclass_id = :currentclass_id";
+                $stmt6e = $pdo->prepare($sql);
+                    $stmt6e -> execute(array(
+                     ':currentclass_id' => $row2e['e_currentclass_id'],
+                    ));
+
+/* 
+
+
                  // find the current class from the Currentclass table
                  $stmnte = "SELECT CurrentClass.name AS class_name_e
 					FROM CurrentClass
 					WHERE (currentclass_id = ".$row2e['e_currentclass_id'].");";
                  $stmt6e = $pdo->query($stmnte);
+             */     
+                 
                  $row6e = $stmt6e->fetch(PDO::FETCH_ASSOC);
               
                  $class_wordse = str_word_count($row6e['class_name_e'],1); // an array of the words

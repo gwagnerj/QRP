@@ -227,7 +227,7 @@ session_start();
 			
 		
 			// Next check the Qa table and see which values have non null values - for those 
-			$probParts=2;
+			$probParts=0;
 			$stmt = $pdo->prepare("SELECT * FROM Qa where problem_id = :problem_id AND dex = :dex");
 			$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
 			$row = $stmt -> fetch();

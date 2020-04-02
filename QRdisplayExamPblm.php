@@ -442,7 +442,7 @@ $(document).ready(function(){
 						};
 					  }
 
-					  script.src = "Substvars.js";
+					  script.src = "SubstvarsExam.js";
 					  document.getElementsByTagName( "head" )[0].appendChild( script );
 					}
 
@@ -450,7 +450,7 @@ $(document).ready(function(){
 					
 		
 					// call the function...
-					loadScript("Substvars.js", function() {
+					loadScript("SubstvarsExam.js", function() {
 					//  alert('script ready!'); 
 					  	var imgPath = '';
 						var indexQRP = '';

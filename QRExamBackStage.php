@@ -256,7 +256,7 @@ if(isset($_POST['examtime_id'])){
 
         <form  method="POST" action = "" id = "refresh_page">
            <p style="font-size:50px;"></p>
-           page auto-refreshes every 5s
+           page auto-refreshes every 30s
            <p><input type="hidden" name="examtime_id"  value=<?php echo($examtime_id);?> ></p>
           <p><input type = "submit" name = "refresh" value="Refresh Page" id="refrsh_id" size="2" style = "width: 30%; background-color: blue; color: white"/> &nbsp &nbsp </p>  
        </form>  
@@ -281,12 +281,13 @@ if(isset($_POST['examtime_id'])){
             
             // auto refresh page 
             
-             setInterval("$('#refresh_page').submit()",5000);
+             setInterval("$('#refresh_page').submit()",30000);
           
             
 
                 $('#table_format').DataTable({
                         "order": [[ 0, 'dsc' ] ]
+                        "lengthMenu": [ 30, 50, 100 ],
                 });
 
 		// jQuery('#table_format').ddTableFilter();
