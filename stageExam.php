@@ -515,38 +515,44 @@ if(isset($_POST['Stage']) && $Exam_data==false){
 			
 			
 			// suggest a date as the end of the semester for the expiration date
+            
+          //  this function is from https://stackoverflow.com/questions/563406/add-days-to-javascript-date
+            
+            
+            Date.prototype.addDays = function(days) {
+             var date = new Date(this.valueOf());
+                date.setDate(date.getDate() + days);
+                return date;
+            }
+
+            var date = new Date();
+            
+            
+            
+            
 		
 		var m = 0;
 		var d = new Date();   // current date
+       
 		var minDate = d.toISOString(true).slice(0,10);
+        
+        
 		document.getElementById("exp_date").setAttribute("min", minDate);
 		
-		max_months = 6;
-		var max_date = new Date();
-		max_date.setMonth(max_date.getMonth() + max_months);
+		var max_months = 6;
+        
+		var max_date = new Date().addDays(max_months*30);
+	
+        
 		//console.log("Date after " + max_months + " months:", maxDate);
 		var maxDate = max_date.toISOString(true).slice(0,10);
 		document.getElementById("exp_date").setAttribute("max", maxDate);
 		
-		var n = d.getMonth()+1; // current Month
-		var y = d.getFullYear();
-		if (n==11){
-			m = 4;
-			yr = y+1;
-		} else if (n <=3) {
-			m=4;
-			yr = y;
-		} else if (n >= 7) {
-			m=11;
-			yr = y;
-		}	else {
-			m=7;
-			yr = y;
-		}
+		 
+         var date_val = new Date().addDays(7);
 		
-		d.setFullYear(yr, m, 15);  // change d to the end of the semester
-		var expDate = d.toISOString(true).slice(0,10);
-		document.getElementById("exp_date").value = expDate;
+		date_val = date_val.toISOString(true).slice(0,10);
+		document.getElementById("exp_date").value = date_val;
 	
 	} );
 	

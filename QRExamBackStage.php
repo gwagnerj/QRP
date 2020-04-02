@@ -286,8 +286,8 @@ if(isset($_POST['examtime_id'])){
             
 
                 $('#table_format').DataTable({
-                        "order": [[ 0, 'dsc' ] ]
-                        "lengthMenu": [ 30, 50, 100 ],
+                        "order": [[ 0, 'dsc' ] ],
+                        "lengthMenu": [ 30, 50, 100 ]
                 });
 
 		// jQuery('#table_format').ddTableFilter();

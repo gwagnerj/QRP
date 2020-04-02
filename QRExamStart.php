@@ -105,7 +105,6 @@ $_SESSION['counter']=0;  // this is for the score board
                 <font color=#003399>Minutes for Exam: &nbsp; </font>
            <input type = "number" name ="nom_time" id = "nom_time" min = "1", max = "300" value = "60" required > </input>
            
-          &nbsp;&nbsp; - this can be adjusted during the exam -
            </br> </br>
            
                  <font color=#003399>Attempts for the problems? &nbsp; </font>
