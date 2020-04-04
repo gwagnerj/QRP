@@ -437,13 +437,11 @@ session_start();
 
 	<body>
 	<header>
-	<h1>QRExam Checker</h1>
+	<h2>Quick Response Exam Checker</h2>
 	</header>
 	<main>
-	<h3> Name: <?php echo($name);?> </h3>
-    <h3> Exam Number: <?php echo($exam_num);?> </h3>
-    <h3> PIN: <?php echo($pin);?> </h3>
-	<h3> Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> </h3>
+	<h3> Name: <?php echo($name);?> &nbsp; &nbsp; Exam Number: <?php echo($exam_num);?>&nbsp; &nbsp;  PIN: <?php echo($pin);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h3>
+    
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
 

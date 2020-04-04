@@ -47,6 +47,7 @@ session_start();
 	
  
 	$stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
+
 	$stmt->execute(array(":problem_id" => $_POST['problem_id'], ":dex" => $_POST['index']));
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
 	//$row = $stmt -> fetch();

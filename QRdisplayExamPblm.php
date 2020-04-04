@@ -194,6 +194,15 @@ echo '</script>';
 			include($htmlfilenm);
 
  ?>
+ <!--
+-->
+ <div id = 'examchecker'>
+ <iframe src="QRExamCheck.php?exam_num=<?php echo($exam_num);?>&cclass_id=<?php echo($cclass_id);?>&alias_num=<?php echo($alias_num);?>&pin=<?php echo($pin);?>&iid=<?php echo($iid);?>&examactivity_id=<?php echo($examactivity_id);?>&problem_id=<?php echo($problem_id);?>&dex=<?php echo($dex);?>" style = "width:70%; height:50%;"></iframe>
+
+</div>
+
+
+
 <script>
 $(document).ready(function(){
 		var dex = pass['dex'];
@@ -537,6 +546,9 @@ $(document).ready(function(){
                         window.close();
                        // document.getElementById('the_form').submit();
                     }
+                    
+                    
+                    
 });
 
 </script>

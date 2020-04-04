@@ -185,7 +185,7 @@ $(document).ready(function(){
 	
   
 	
-	// $('p:first').before(Head_txt1,Head_txt3,'<hr>');
+	 $('p:first').before(Head_txt1,'<hr>');
 	 
 	
 	//put real tags in the document to manipulate
@@ -609,9 +609,9 @@ $(document).ready(function(){
 //!!~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			//var newHref = 'https://qrproblems.org/QRP/QRChecker.php'+'?problem_id='+problem_id+'&pin='+pin+'&iid='+iid;                             
 			var newHref ='';
-        
+        console.log('new day');
 
-                newHref = '../QRP/QRExamCheck.php'+'?exam_num='+exam_num+'&cclass_id='+cclass_id+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid+'&examactivity_id='+examactivity_id+'&problem_id='+problem_id+'&dex='+dex;
+           //     newHref = '../QRP/QRExamCheck.php'+'?exam_num='+exam_num+'&cclass_id='+cclass_id+'&alias_num='+alias_num+'&pin='+pin+'&iid='+iid+'&examactivity_id='+examactivity_id+'&problem_id='+problem_id+'&dex='+dex;
 
           
 			var oldHref = "[href="+$('#directions').find('a:first').attr('href')+"]";
@@ -624,15 +624,16 @@ $(document).ready(function(){
             
              
                //  $('#directions a').text('QRExam')
-                 $('#directions').html('<p>QRExam <a href = '+oldHref+'>Link Exam Checker</a></p>')
-                    $('#directions a').prop('title', 'Exam Checker');
+           //      $('#directions').html('<p>QRExam <a href = '+oldHref+'>Link Exam Checker</a></p>')
+            //        $('#directions a').prop('title', 'Exam Checker');
                // console.log ('getting it right');
              
             
 			// $("a".oldHref).prop('href', newHref);
 
-            $('#directions a').prop('href', newHref);
-			$('#directions a').prop('target', '_blank');
+         //   $('#directions a').prop('href', newHref);
+		//	$('#directions a').prop('target', '_blank');
+            $('#directions').hide();
 
 			
  /* 
