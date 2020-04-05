@@ -26,13 +26,28 @@ session_start();
         header("Location: QRExamRegistration.php");
         die();    
     }
-    if(isset($_POST['problem_id'])&& isset($_POST['examactivity_id'])){
+   
+
+
+
+
+   if(isset($_POST['problem_id'])&& isset($_POST['examactivity_id'])){
         $problem_id = $_POST['problem_id'];
-        $_SESSION['error'] = 'Problem Not Selected';
+        $_SESSION['problem_ios'] = $problem_id;
+    
+    }elseif(isset($_SESSION['problem_ios'])){
+    
+        $problem_id = $_SESSION['problem_ios'];
+    
+    
     } else  {
-     header("Location: QRExam.php?examactivity_id=".$examactivity_id
+      $_SESSION['error'] = 'Problem Not Selected';
+
+
+   header("Location: QRExam.php?examactivity_id=".$examactivity_id
         );
         die();   
+         
     }  
           
  // initialize some vars
@@ -173,6 +188,16 @@ echo '</script>';
 <head>
 <meta charset="UTF-8">
 
+
+
+
+
+
+
+
+
+
+
 <link rel="icon" type="image/png" href="McKetta.png" >
 
 <title>QRExam</title> 
@@ -189,9 +214,14 @@ echo '</script>';
 
 <body>
 
+<form method = "POST" Action = "">
+         <input type="hidden" id = "problem_id" name="problem_id" value="<?php echo ($problem_id)?>" >
+
+</form>
+
 <div id = substitute_me>  </div>
-<?php  //iconv("Windows-1252", "UTF-8", include($htmlfilenm)); 
-			include($htmlfilenm);
+<?php  iconv("Windows-1252", "UTF-8", include($htmlfilenm)); 
+			// include($htmlfilenm);
 
  ?>
  <!--

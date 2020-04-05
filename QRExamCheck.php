@@ -342,7 +342,7 @@ session_start();
 	// get the count from the examactivity table
     
     
- if($oldresp_flag ==0 || $get_flag ==0){
+ if($oldresp_flag ==0 || $get_flag ==0){ // if we are comiong from an external file and we already have some correct responses we keep those
     if(is_null($count)){
 		$count = 1;
 
