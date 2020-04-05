@@ -115,11 +115,21 @@ session_start();
 	  return;   
     }
     $_SESSION['dex'] = $dex;
-      
+      $get_flag = 0;
       if (isset($_POST['examactivity_id'])){
         $examactivity_id = $_POST['examactivity_id'];
+        
+        
+        
+        
         } elseif($_GET['examactivity_id']){
-         $examactivity_id = $_GET['examactivity_id'];
+        
+                $get_flag =1; // coming in from an external file
+                
+               $examactivity_id = $_GET['examactivity_id'];
+
+
+ 
         } elseif(isset($_SESSION['examactivity_id'])){
          $examactivity_id = $_SESSION['examactivity_id'];
         } else{
@@ -149,12 +159,14 @@ session_start();
 			$score = 0;
 			$PScore = 0;
 			$partsFlag = array();
-			$resp = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0,'sumb'=>0,'sumlast'=>0);
+			$resp = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
 			//$resp = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
-			$corr = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"",'sumb'=>"",'sumlast'=>"");
+			$corr = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
+     		$corr_num = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
+
 			$unit = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
-			$tol=array('a'=>0.02,'b'=>0.02,'c'=>0.02,'d'=>0.02,'e'=>0.02,'f'=>0.02,'g'=>0.02,'h'=>0.02,'i'=>0.02,'j'=>0.02,'sumb'=>0.02,'sumlast'=>0.02);
-			$ansFormat=array('ans_a' =>"",'ans_b' =>"",	'ans_c' =>"",'ans_d' =>"",'ans_e' =>"",'ans_f' =>"",	'ans_g' =>"",'ans_h' =>"",'ans_i' =>"",'ans_j'=>"" ,'ans_sumb'=>"",'ans_sumlast'=>"");
+			$tol=array('a'=>0.02,'b'=>0.02,'c'=>0.02,'d'=>0.02,'e'=>0.02,'f'=>0.02,'g'=>0.02,'h'=>0.02,'i'=>0.02,'j'=>0.02);
+			$ansFormat=array('ans_a' =>"",'ans_b' =>"",	'ans_c' =>"",'ans_d' =>"",'ans_e' =>"",'ans_f' =>"",	'ans_g' =>"",'ans_h' =>"",'ans_i' =>"",'ans_j'=>"");
 			
 			
 			$hintLimit = 3;
@@ -295,11 +307,26 @@ session_start();
             $problem_id3 = $row['problem_id3'];
             $problem_id4 = $row['problem_id4'];
             $problem_id5 = $row['problem_id5'];
-            if($problem_id == $problem_id1){$response_key = 'response_pblm1'; $problem_score_key = 'pblm_1_score'; $trynum_pblm = 'trynum_pblm1'; $count = $row['trynum_pblm1'];}
-            if($problem_id == $problem_id2){$response_key = 'response_pblm2'; $problem_score_key = 'pblm_2_score'; $trynum_pblm = 'trynum_pblm2'; $count = $row['trynum_pblm2'];}
-            if($problem_id == $problem_id3){$response_key = 'response_pblm3'; $problem_score_key = 'pblm_3_score'; $trynum_pblm = 'trynum_pblm3'; $count = $row['trynum_pblm3'];}
-            if($problem_id == $problem_id4){$response_key = 'response_pblm4'; $problem_score_key = 'pblm_4_score'; $trynum_pblm = 'trynum_pblm4'; $count = $row['trynum_pblm4'];}
-            if($problem_id == $problem_id5){$response_key = 'response_pblm5'; $problem_score_key = 'pblm_5_score'; $trynum_pblm = 'trynum_pblm5'; $count = $row['trynum_pblm5'];}
+            if($problem_id == $problem_id1){$response_key = 'response_pblm1'; $problem_score_key = 'pblm_1_score'; $trynum_pblm = 'trynum_pblm1'; $count = $row['trynum_pblm1'];$response = $row['response_pblm1'];}
+            if($problem_id == $problem_id2){$response_key = 'response_pblm2'; $problem_score_key = 'pblm_2_score'; $trynum_pblm = 'trynum_pblm2'; $count = $row['trynum_pblm2'];$response = $row['response_pblm2'];}
+            if($problem_id == $problem_id3){$response_key = 'response_pblm3'; $problem_score_key = 'pblm_3_score'; $trynum_pblm = 'trynum_pblm3'; $count = $row['trynum_pblm3'];$response = $row['response_pblm3'];}
+            if($problem_id == $problem_id4){$response_key = 'response_pblm4'; $problem_score_key = 'pblm_4_score'; $trynum_pblm = 'trynum_pblm4'; $count = $row['trynum_pblm4'];$response = $row['response_pblm4'];}
+            if($problem_id == $problem_id5){$response_key = 'response_pblm5'; $problem_score_key = 'pblm_5_score'; $trynum_pblm = 'trynum_pblm5'; $count = $row['trynum_pblm5'];$response = $row['response_pblm5'];}
+            
+
+            $response = explode(",",$response);
+         //  print_r('response array 1 =  '.$response[0]);
+          $oldresp_flag = 0;
+          for ($j=0; $j<=9; $j++) {
+               if ($response[$j]==1){
+                   $resp[$resp_key[$j]]=$soln[$j];
+                   $oldresp_flag = 1;
+               //    echo ($soln[$j]);
+               //       echo ('  resp is: '. $resp[$resp_key[$j]]);
+               } 
+           }
+          //   echo ('  oldresp_flag : '. $oldresp_flag);
+         //     echo ('  get_flag : '. $get_flag);
   
              $stmt = $pdo->prepare("SELECT *  FROM `Examtime` WHERE examtime_id = :examtime_id");
 			$stmt->execute(array(":examtime_id" => $examtime_id));
@@ -315,7 +342,7 @@ session_start();
 	// get the count from the examactivity table
     
     
-    
+ if($oldresp_flag ==0 || $get_flag ==0){
     if(is_null($count)){
 		$count = 1;
 
@@ -346,7 +373,7 @@ session_start();
 	
 		
 	//}	 
-		For ($j=0; $j<=9; $j++) {
+		for ($j=0; $j<=9; $j++) {
 			if($partsFlag[$j]) {
 					//If ($soln[$j]>((1-$tol[$tol_key[$j]])*$resp[$resp_key[$j]]) and ($soln[$j]<((1+$tol[$tol_key[$j]]))*($resp[$resp_key[$j]]))) //if the correct value is within the response plus or minus the tolerance
 								
@@ -359,7 +386,7 @@ session_start();
 					if(	abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]]) {
 								
 								
-										
+										$corr_num[$corr_key[$j]]=1;
 										$corr[$corr_key[$j]]='Correct';
 										$score=$score+1;
 										$_SESSION['$wrongC'[$j]] = 0;
@@ -387,6 +414,7 @@ session_start();
 									
 									$wrongCount[$j] = ($_SESSION['wrongC'[$j]]);
 									//$_SESSION['wrongC'[$j]] = $wrongCount[$j];
+                                    $corr_num[$corr_key[$j]]=0;
 									$corr[$corr_key[$j]]='';
 								//	echo ($wrongCount[$j]);
 								}
@@ -394,6 +422,7 @@ session_start();
 								{
 									$wrongCount[$j] = ($_SESSION['wrongC'[$j]])+1;
 									$_SESSION['wrongC'[$j]] = $wrongCount[$j];
+                                        $corr_num[$corr_key[$j]]=0;
 										$corr[$corr_key[$j]]='Not Correct';
 									//	echo ($wrongCount[$j]);	
 								}
@@ -404,13 +433,63 @@ session_start();
 		
 		$PScore=$score/$probParts*100;  
 	
+    /* 
+    
+     $sql = "SELECT *  FROM `Examactivity` WHERE examactivity_id = :examactivity_id";
+         $stmt = $pdo->prepare($sql);
+         $stmt->execute(array(":examactivity_id" => $examactivity_id));
+			$row = $stmt -> fetch();
+          
+           
+            if($response_key =='response_pblm1'){$response = $row['response_pblm1'];} 
+            if($response_key =='response_pblm2'){$response = $row['response_pblm2'];}
+            if($response_key =='response_pblm3'){$response = $row['response_pblm3'];}
+            if($response_key =='response_pblm4'){$response = $row['response_pblm4'];}
+            if($response_key =='response_pblm5'){$response = $row['response_pblm5'];}
+            
+             echo('response_key '.$response_key);
+         // $response = $row['.$response_key.'];
+           print_r($response);
+           $response = explode(",",$response);
+           for ($j=0; $j<=9; $j++) {
+               if ($response[$response_key[$j]]==1){
+                   $resp[$resp_key[$j]]=$soln[$j];
+                   echo ($soln[$j]);
+                   
+               } 
+           }
+  
+     */
+    
+    
+    
+    
 		$_SESSION['points']=$score; // this will cause problems if running multiple browser windows on the same machine - testing on localhost
-		
-           $stmt = $pdo->prepare("UPDATE `Examactivity` SET ".$problem_score_key." = :score,".$trynum_pblm." = :trynum_pblm WHERE examactivity_id = :examactivity_id ");
-			$stmt->execute(array(":examactivity_id" => $examactivity_id, ":score" => $PScore, ":trynum_pblm" => $count));
-		
-		
-		
+		$corr_num_st = implode(",",$corr_num);
+        
+      
+           $stmt = $pdo->prepare("UPDATE `Examactivity` SET ".$trynum_pblm." = :trynum_pblm,".$response_key." = :response_key WHERE examactivity_id = :examactivity_id ");
+			$stmt->execute(array(
+            ":examactivity_id" => $examactivity_id,
+            ":trynum_pblm" => $count,
+             ":response_key" => $corr_num_st, 
+            ));
+	
+     
+    }
+  
+ 
+       
+         
+         
+         
+         
+         
+         
+         
+         
+
+	
 		
 	?>
 	</table>
@@ -545,8 +624,8 @@ session_start();
 
 	$_SESSION['time']=time();
 	?>
-
-	<p><input type = "submit" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy">Score:  <?php echo (round($PScore)) ?>%</font></b></p>
+<!--Score:  <?php echo (round($PScore)) ?>%-->
+	<p><input type = "submit" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p>
 			<p><font color=#003399> </font><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
             <input type = "number" hidden name = "pin"  value = <?php echo ($pin); ?> > </input>
 			<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
