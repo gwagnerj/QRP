@@ -125,8 +125,8 @@ if(isset($_POST['pin'])){
                   // ----------------------- put the entry into the examactivity table for this user  ------------------------------------------------------
                                        
                                             
-                                  $sql = 'INSERT INTO `Examactivity` (examtime_id, iid, currentclass_id, name, work_time,exam_code, dex, pin, problem_id1, problem_id2, problem_id3, problem_id4, problem_id5,suspend_flag,minutes)	
-                                            VALUES (:examtime_id, :iid, :currentclass_id,:name ,:work_time, :exam_code, :dex, :pin, :problem_id1, :problem_id2, :problem_id3, :problem_id4, :problem_id5,0,:work_time)';
+                                  $sql = 'INSERT INTO `Examactivity` (examtime_id, iid, currentclass_id, name, work_time,exam_code, dex, pin, problem_id1, problem_id2, problem_id3, problem_id4, problem_id5,suspend_flag,extend_time_flag,minutes)	
+                                            VALUES (:examtime_id, :iid, :currentclass_id,:name ,:work_time, :exam_code, :dex, :pin, :problem_id1, :problem_id2, :problem_id3, :problem_id4, :problem_id5,0,0,:work_time)';
                                     $stmt = $pdo->prepare($sql);
                                     $stmt -> execute(array(
                                     ':examtime_id' => $examtime_id,

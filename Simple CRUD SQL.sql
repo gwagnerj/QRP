@@ -1196,6 +1196,11 @@ WHERE
 		PRIMARY KEY (`examtime_id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
     
+    
+    	ALTER TABLE `Examactivity` 
+	ADD `extend_time_flag` INT(2) NOT NULL  AFTER `suspend_flag`
+    
+    
   -- need to look at the Checker, some of this is already  (can we put the checkerid as a foriegn key and have it.  accomplished when we look at show in the repo
   
  CREATE TABLE IF NOT EXISTS `Examactivity` (
@@ -1210,7 +1215,8 @@ WHERE
         `exam_code` int(11) NOT NULL,
         `currentclass_id` int(11) NOT NULL,
         `work_time` INT(4),
-        `suspend_flag` INT(2),
+        `suspend_flag` INT(2) NOT NULL,
+        `extend_time_flag` INT(2),
        `problem_id1` int(11) NOT NULL,
         `problem_id2` int(11) NOT NULL,
         `problem_id3` int(11) NOT NULL,

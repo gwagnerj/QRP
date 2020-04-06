@@ -113,12 +113,11 @@
 	<h2>Quick Response Exam Back Stage</h2>
     </header>
    
-   <form  method="POST" action = "" id = "refresh_page">
    
     <h2>Points Assignment: </h2>
     (Refresh to Get Totals)
     <p>
-    &nbsp; &nbsp;Problem 1:  a:<input type = "number" size = "2" max = "100" min = "0" name = "p1a" value = "<?php if(isset($_POST['p1a'])){echo($_POST['p1a']);}else{echo(0);}?>" ></input> &nbsp;
+    &nbsp;&nbsp;Problem 1:  a:<input type = "number" size = "2" max = "100" min = "0" name = "p1a" value = "<?php if(isset($_POST['p1a'])){echo($_POST['p1a']);}else{echo(0);}?>" ></input> &nbsp;
                b:<input type = "number" size = "2" max = "100" min = "0" name = "p1b" value = "<?php if(isset($_POST['p1b'])){echo($_POST['p1b']);}else{echo(0);}?>"></input> &nbsp;
                c:<input type = "number" size = "2" max = "100" min = "0" name = "p1c" value = "<?php if(isset($_POST['p1c'])){echo($_POST['p1c']);}else{echo(0);}?>" ></input> &nbsp;
                d:<input type = "number" size = "2" max = "100" min = "0" name = "p1d" value = "<?php if(isset($_POST['p1d'])){echo($_POST['p1d']);}else{echo(0);}?>" ></input> &nbsp;
@@ -243,9 +242,8 @@ if(isset($_POST['examtime_id'])){
 		echo('name');
         echo("</th><th>");
 		echo('pin');
-         
-
-       
+          echo("</th><th>");
+		echo('Extend t');
          echo("</th><th>");
         echo('Correct 1');
 		echo("</th><th>");
@@ -294,7 +292,18 @@ if(isset($_POST['examtime_id'])){
                   echo($row['pin']);
                   echo("</td><td>");
                   
+                //  echo('toggle');
+                   
+              
+                
+                  if($row['extend_time_flag']==1){echo('<p>yes</p>');} 
+                    echo('<form action = "QRExamEditExaminee.php" method = "POST" target = "_blank" > <input type = "hidden" name = "examactivity_id" value = "'.$row['examactivity_id'].'"><input type = "submit" name = "edit" value ="Edit"></form>');
+                   // echo('examactivity_id = '.$row['examactivity_id']);
+               //   echo('<input type = "checkbox" '.$checked.' name ="'.$row['examactivity_id'].'"></input>');
+ //--------------------------------------------------------------------------------------------------------fix this-------------------------------------                 
                   
+                  
+                    echo("</td><td>");	
                   print('<span class="inlinebar1">');
                 echo($row['response_pblm1']);
                    print('</span>');
@@ -507,9 +516,25 @@ if(isset($_POST['examtime_id'])){
                 $answer = round($value, $decimalPlaces);
                 return $answer;
             }
+       
+
+
+
+       if ( isset($_SESSION['error']) ) {
+			echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
+			unset($_SESSION['error']);
+		}
+		if ( isset($_SESSION['success']) ) {
+			echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
+			unset($_SESSION['success']);
+		}       
+            
+            
+            
 ?>
        
-       
+        <form  method="POST" action = "" id = "refresh_page">
+  
        
        <p style="font-size:10px;"></p>
            page auto-refreshes every 30s
