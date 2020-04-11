@@ -229,9 +229,10 @@
 // Put this in so students or TA's counld run game 11 March 2020 - may want to rethink this later ========================================
 
           echo '<a href="QRGameMasterStart.php" >Game Master Screen</b></a>';
-			echo '&nbsp; &nbsp;&nbsp;';
-            
-            echo('<form action = "QRExamStart.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Start Exam"></form>');
+			echo '</p>';
+            echo ('<style> form {display:inline}</style>');
+            echo('<form action = "QRExamStart.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Start Exam"></form> &nbsp;');
+            echo('<form action = "QRExamRetrieve.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Retrieve Exam Results"></form>');
 
           //     echo '<a href="QRExamStart.php?iid ='.$users_id.'" >Start an Exam</b></a>';
 			echo '&nbsp; &nbsp;&nbsp;';
