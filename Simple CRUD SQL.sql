@@ -1244,4 +1244,11 @@ WHERE
 		PRIMARY KEY (`examactivity_id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
     
-  
+  	ALTER TABLE `Examactivity` 
+	ADD `country` VARCHAR(64) AFTER `minutes`,
+    ADD `city` VARCHAR(64) AFTER `country`;
+    
+    
+    
+    
+    

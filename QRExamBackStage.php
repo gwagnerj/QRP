@@ -112,7 +112,7 @@
 	<header>
 	<h2>Quick Response Exam Back Stage</h2>
     </header>
-   
+     <form  method="POST" action = "" id = "refresh_page">
    
     <h2>Points Assignment: </h2>
     (Refresh to Get Totals)
@@ -533,7 +533,7 @@ if(isset($_POST['examtime_id'])){
             
 ?>
        
-        <form  method="POST" action = "" id = "refresh_page">
+      
   
        
        <p style="font-size:10px;"></p>
@@ -575,7 +575,7 @@ if(isset($_POST['examtime_id'])){
             
 
                 $('#table_format').DataTable({
-                        "order": [[ 0, 'dsc' ] ],
+                        "order": [[ 1, 'asc' ] ],
                         "lengthMenu": [ 30, 50, 100 ]
                 });
 

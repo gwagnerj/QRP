@@ -121,12 +121,72 @@ if(isset($_POST['pin'])){
                     if($row8 != false){
                             $examactivity_id = $row8['examactivity_id'];        
                     } else {      
-                                    
-                  // ----------------------- put the entry into the examactivity table for this user  ------------------------------------------------------
+                   
+/* 
+                   
+
+                        function getUserIpAddr(){
+                            if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+                                //ip from share internet
+                                $ip = $_SERVER['HTTP_CLIENT_IP'];
+                            }elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+                                //ip pass from proxy
+                                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                            }else{
+                                $ip = $_SERVER['REMOTE_ADDR'];
+                            }
+                            return $ip;
+                        }
+
+                           $IPaddress = getUserIpAddr();
+                     
+
+
+                     
+                            //echo 'User Real IP - '.getUserIpAddr();
+                       
+                      function ip_details($IPaddress) 
+                        {
+                            $json       = file_get_contents("http://ipinfo.io/{$IPaddress}");
+                            $details    = json_decode($json);
+                            return $details;
+                        }
+
+                    
+
+                        $details    =   ip_details("$IPaddress");
+
+                        //echo $details->city;   
+                        // echo $details->country;  
+                        //echo $details->org;      
+                        //echo $details->hostname; 
+
+                            $country =  $details->country;  
+                            $city =  $details->city;  
+                            
+                            
+                            
+                        Another way:
+
+                   
+                    $ip=$_SERVER['REMOTE_ADDR'];
+                  //  echo var_export(unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$ip)));
+                    $ip =  var_export(unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$ip)));                   
+                            
+                            
+                            
+                            
+                            
+                            
+
+ */
+
+
+                // ----------------------- put the entry into the examactivity table for this user  ------------------------------------------------------
                                        
                                             
                                   $sql = 'INSERT INTO `Examactivity` (examtime_id, iid, currentclass_id, name, work_time,exam_code, dex, pin, problem_id1, problem_id2, problem_id3, problem_id4, problem_id5,suspend_flag,extend_time_flag,minutes)	
-                                            VALUES (:examtime_id, :iid, :currentclass_id,:name ,:work_time, :exam_code, :dex, :pin, :problem_id1, :problem_id2, :problem_id3, :problem_id4, :problem_id5,0,0,:work_time)';
+                                            VALUES (:examtime_id, :iid, :currentclass_id,:name ,:work_time, :exam_code, :dex, :pin, :problem_id1, :problem_id2, :problem_id3, :problem_id4, :problem_id5,0,0,:extend_time)';
                                     $stmt = $pdo->prepare($sql);
                                     $stmt -> execute(array(
                                     ':examtime_id' => $examtime_id,
@@ -142,7 +202,8 @@ if(isset($_POST['pin'])){
                                       ':problem_id3' => $problem_id3,
                                       ':problem_id4' => $problem_id4,
                                       ':problem_id5' => $problem_id5,
-                                      ':work_time' => $work_time,
+                                       ':extend_time' => $work_time,
+                                     
                                     ));
                                     
                                     // get the examtime_id
@@ -225,6 +286,11 @@ if(isset($_POST['pin'])){
 	}
  
 ?>
+
+
+
+
+
 
 <form autocomplete="off" method="POST" id = "the_form" action = "<?php echo($complete);?>" >
 	
@@ -350,8 +416,28 @@ $("#iid").change(function(){
 				})
 			})
 		});
-        
+  
 
+  
+            function ipLookUp () {
+              $.ajax('http://ip-api.com/json')
+              .then(
+                  function success(response) {
+                      console.log('User\'s Location Data is ', response);
+                      console.log('User\'s Country', response.country);
+                        console.log('User\'s City', response.city);
+                          console.log('User\'s Region', response.region);
+                  },
+
+                  function fail(data, status) {
+                      console.log('Request failed.  Returned status of',
+                                  status);
+                  }
+              );
+            }
+          
+            
+            ipLookUp ();
 
 	/* 
     

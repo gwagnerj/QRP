@@ -102,7 +102,7 @@ $_SESSION['counter']=0;  // this is for the score board
 				</select>
 		</div>
              </br>
-                <font color=#003399>Exam Code: &nbsp; </font>
+                <font color=#003399>Exam Code (latest on top of list): &nbsp; </font>
                     
                     <select id="exam_code" name = "exam_code" required >
                        <option value="0">- Select Exam -</option>

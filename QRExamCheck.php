@@ -179,10 +179,10 @@ session_start();
 			$corr_key=array_keys($corr);
 			$ansFormat_key=array_keys($ansFormat);
 			
-			$time_sleep1 = 2;  // time delay in seconds
+			$time_sleep1 = 10;  // time delay in seconds
 			$time_sleep1_trip = 5;  // number of trials it talkes to trip the time delay
 			$time_sleep2 = 10;  // additional time if hit the next limit
-			$time_sleep2_trip = 10;	
+			$time_sleep2_trip = 30;	
 			
 			// see if the problem has been suspended	
 				
@@ -460,7 +460,7 @@ session_start();
            }
   
      */
-    
+  
     
     
     
@@ -475,7 +475,27 @@ session_start();
              ":response_key" => $corr_num_st, 
             ));
 	
-     
+    
+    
+    
+    // time delay on total tries for the problem
+    
+    
+          $tot_count_trip1 = $probParts*3;
+            $sleep_on_tot1 = 5;
+            $tot_count_trip2 = $probParts*5;
+             $sleep_on_tot1 = 30;
+            if($count>$tot_count_trip1 && $count<=$tot_count_trip2){
+                sleep( $sleep_on_tot1);
+            } elseif ($count>$tot_count_trip1) {
+                 sleep( $sleep_on_tot1);
+            }    
+            
+            
+            
+            
+            
+            
     }
   
  

@@ -90,10 +90,46 @@
      }
 
 
+  
+        $stmt = $pdo->prepare("SELECT *  FROM `Examactivity` WHERE examtime_id = :examtime_id ORDER BY `pin` ASC ");
+			$stmt->execute(array(":examtime_id" => $examtime_id));
+             $row1 = $stmt->fetch(PDO::FETCH_ASSOC); 
+             
+             
+         
+             
+            if (strlen($row1['response_pblm1'] ) > 0) {
+            
+               $pblm1_flag =1;
+            } else{
+                  $pblm1_flag =0 ;
+            }
+            
+              if (strlen($row1['response_pblm2']) >0 ) {
+                 $pblm2_flag =1;
+            } else{
+                  $pblm2_flag =0;
+            }  
+   
+               if (strlen($row1['response_pblm3']) >0 ) {
+                 $pblm3_flag =1;
+            } else{
+                  $pblm3_flag =0;
+            }  
+            
+            
+               if (strlen($row1['response_pblm4']) >0 ) {
+                 $pblm4_flag =1;
+            } else{
+                  $pblm4_flag =0;
+            }  
 
-
-
-
+ 
+               if (strlen($row1['response_pblm5']) >0 ) {
+                 $pblm5_flag =1;
+            } else{
+                  $pblm5_flag =0;
+            }  
 
 
 
@@ -314,6 +350,9 @@
 		echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
 		unset($_SESSION['success']);
 	}
+    
+  
+    
    
 	 echo ('<table id="table_format" style = "text-align:center" class = "a" border="1" >'."\n");	
 		 echo("<thead>");
@@ -325,29 +364,27 @@
           echo("</th><th>");
 		//echo('Extend t');
       //  echo("</th><th>");
-        echo('Correct 1');
-		echo("</th><th>");
-        echo('Correct 2');
-		echo("</th><th>");
-         echo('Correct 3');
-		echo("</th><th>");
-        echo('Correct 4');
-        echo("</th><th>");
-        echo('Correct 5');
-         echo("</th><th>");   
-        echo('P 1');
-        echo('</br>');
-        // echo('<font font-size = "1"> a b c d e f g h i j </font>');
-		echo("</th><th>");
-        echo('P 2');
-		echo("</th><th>");
-         echo('P 3');
-		echo("</th><th>");
-        echo('P 4');
-        echo("</th><th>");
-        echo('P 5');
        
-          echo("</th><th>");
+        if($pblm1_flag ==1){echo('Correct 1'); echo("</th><th>");}
+        if($pblm2_flag ==1){echo('Correct 2'); echo("</th><th>");}
+        if($pblm3_flag ==1){echo('Correct 3'); echo("</th><th>");}
+        if($pblm4_flag ==1){echo('Correct 4'); echo("</th><th>");}
+        if($pblm5_flag ==1){echo('Correct 5'); echo("</th><th>");}
+        
+        if($pblm1_flag ==1){echo('Pts 1'); echo("</th><th>");}
+        if($pblm2_flag ==1){echo('Pts 2'); echo("</th><th>");}
+        if($pblm3_flag ==1){echo('Pts 3'); echo("</th><th>");}
+        if($pblm4_flag ==1){echo('Pts 4'); echo("</th><th>");}
+        if($pblm5_flag ==1){echo('Pts 5'); echo("</th><th>");}
+       
+        if($pblm1_flag ==1){echo('Try 1'); echo("</th><th>");}
+        if($pblm2_flag ==1){echo('Try 2'); echo("</th><th>");}
+        if($pblm3_flag ==1){echo('Try 3'); echo("</th><th>");}
+        if($pblm4_flag ==1){echo('Try 4'); echo("</th><th>");}
+        if($pblm5_flag ==1){echo('Try 5'); echo("</th><th>");}
+
+
+
         echo('Total');
 		echo("</th></tr>\n");
 		 echo("</thead>");
@@ -386,52 +423,29 @@
                     echo("</td><td>");	
                      */
                     
-                    
-                  print('<span class="inlinebar1">');
-                echo($row['response_pblm1']);
-                   print('</span>');
-                 echo("</td><td>");
-                 
-                   print('<span class="inlinebar1">');
-                echo($row['response_pblm2']);
-                   print('</span>');
-                 echo("</td><td>");
-                 
-                  print('<span class="inlinebar1">');
-                  echo($row['response_pblm3']);
-                   print('</span>');
-                 echo("</td><td>");
-                 
-                 
-                   print('<span class="inlinebar1">');
-                echo($row['response_pblm4']);
-                   print('</span>');
-                 echo("</td><td>");
-                 
-                   print('<span class="inlinebar1">');
-                echo($row['response_pblm5']);
-                   print('</span>');
-                 echo("</td><td>");
-                echo($row['pblm_1_score']);
-              
-                 echo("</td><td>");
-                 
-                echo($row['pblm_2_score']);
-              
-                 echo("</td><td>");
+                if ($pblm1_flag == 1){  print('<span class="inlinebar1">');  echo($row['response_pblm1']);   print('</span>');   echo("</td><td>");}
+                if ($pblm2_flag == 1){  print('<span class="inlinebar1">');  echo($row['response_pblm2']);   print('</span>');   echo("</td><td>");}
+                if ($pblm3_flag == 1){  print('<span class="inlinebar1">');  echo($row['response_pblm3']);   print('</span>');   echo("</td><td>");}
+                if ($pblm4_flag == 1){  print('<span class="inlinebar1">');  echo($row['response_pblm4']);   print('</span>');   echo("</td><td>");}
+                if ($pblm5_flag == 1){  print('<span class="inlinebar1">');  echo($row['response_pblm5']);   print('</span>');   echo("</td><td>");}
+               
+                if ($pblm1_flag == 1){   echo($row['pblm_1_score']);    echo("</td><td>");}
+                if ($pblm2_flag == 1){    echo($row['pblm_2_score']);    echo("</td><td>");}
+                if ($pblm3_flag == 1){    echo($row['pblm_3_score']);     echo("</td><td>");}
+                if ($pblm4_flag == 1){    echo($row['pblm_4_score']);     echo("</td><td>");}
+                if ($pblm5_flag == 1){   echo($row['pblm_5_score']);    echo("</td><td>");}
+               
+                        
+                if ($pblm1_flag == 1){   echo($row['trynum_pblm1']);    echo("</td><td>");}
+                if ($pblm2_flag == 1){    echo($row['trynum_pblm2']);    echo("</td><td>");}
+                if ($pblm3_flag == 1){    echo($row['trynum_pblm3']);     echo("</td><td>");}
+                if ($pblm4_flag == 1){    echo($row['trynum_pblm4']);     echo("</td><td>");}
+                if ($pblm5_flag == 1){   echo($row['trynum_pblm5']);    echo("</td><td>");}
+               
+               
                 
-                echo($row['pblm_3_score']);
+             
               
-                 echo("</td><td>");
-                  
-                echo($row['pblm_4_score']);
-              
-                 echo("</td><td>");
-                  
-                echo($row['pblm_5_score']);
-              
-                 echo("</td><td>");
-                 
                  
               
                  
@@ -545,7 +559,7 @@
               <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
                 <p><input type="hidden" name="delete_flag"  value="1" ></p>
         
-             <p><input type = "submit" name = "close" value="Delete Data and Exit (cannot be undone)" id="close_id" size="2" style = "width: 40%; background-color: red; color: white"/> &nbsp &nbsp </p>
+             <p><input type = "submit" name = "close" value="Delete Data and Exit (cannot be undone)"  size="2" style = "width: 40%; background-color: red; color: white"/> &nbsp &nbsp </p>
         </form>
 
 	<script>
@@ -567,13 +581,16 @@
             // auto refresh page 
             
            
-          
-            
+                   
+              /*       
 
                 $('#table_format').DataTable({
-                        "order": [[ 0, 'dsc' ] ],
-                        "lengthMenu": [ 30, 50, 100 ]
+                        "order": [[ 1, 'asc' ] ],
+                        "lengthMenu": [ 30, 50, 100 ],
+                       
+                    
                 });
+                 */
 
 		// jQuery('#table_format').ddTableFilter();
 		} );
