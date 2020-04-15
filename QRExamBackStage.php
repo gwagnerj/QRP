@@ -266,7 +266,8 @@ if(isset($_POST['examtime_id'])){
         echo('P 4');
         echo("</th><th>");
         echo('P 5');
-       
+          echo("</th><th>");
+            echo('Location');
           echo("</th><th>");
         echo('Total');
 		echo("</th></tr>\n");
@@ -454,6 +455,8 @@ if(isset($_POST['examtime_id'])){
                 
               
                 echo("</td><td>");
+                   echo($row['city'].', '.$row['region'].', '.$row['country']);
+                  echo("</td><td>");
                  
                 $total_score = $points_1+$points_2+$points_3+$points_4+$points_5;
 
