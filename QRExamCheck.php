@@ -480,7 +480,7 @@ session_start();
     
     // time delay on total tries for the problem
     
-    
+    /* 
           $tot_count_trip1 = $probParts*3;
             $sleep_on_tot1 = 5;
             $tot_count_trip2 = $probParts*5;
@@ -491,7 +491,7 @@ session_start();
                  sleep( $sleep_on_tot1);
             }    
             
-            
+             */
             
             
             

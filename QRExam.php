@@ -110,6 +110,7 @@
 <title>QRExam</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> 
 
 </head>
 
@@ -188,8 +189,88 @@
 	
 
 <script>
-   
+  
+ function ipLookUp () {
+             
+   /*       
+         $.get("https://ipinfo.io/json", function (response) {
+    $("#ip").html("IP: " + response.ip);
+    $("#address").html("Location: " + response.city + ", " + response.region);
+    $("#details").html(JSON.stringify(response, null, 4));
+}, "jsonp");
+         
+          */
+         
+         
+         
 
+             $.ajax('https://ipinfo.io/json')
+              .then(
+                  function success(response) {
+                      console.log('User\'s Location Data is ', response);
+                      console.log('User\'s Country', response.country);
+                      console.log('User\'s City', response.city);
+                      console.log('User\'s Region', response.region);
+                        var country = response.country
+                        var region = response.region
+                        var city = response.city
+                        var examactivity_id = $("#get_examactivity_id").val();
+                         console.log('User\'s Region', region);
+                           console.log('examactivity_id: ', examactivity_id);
+                           // make an AJAX call to put this infor in the examactivity table
+
+                      if (typeof examactivity_id != "undefined") {
+
+                                $.ajax({
+                                method: "post",
+                                url: "putExamLocation.php",
+                                data: {
+                                    country :country,
+                                    region :region,
+                                    city :city,
+                                    examactivity_id :examactivity_id
+                                }
+                            }).done();
+
+                     }
+                    
+                 
+
+                  function fail(data, status) {
+                      console.log('Request failed.  Returned status of',
+                                  status);
+                  }
+                }
+             );
+              
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+/* 
    function ipLookUp () {
               $.ajax('http://ip-api.com/json')
               .then(
@@ -231,7 +312,7 @@
              );
               
             }
-            
+             */
           
        
               

@@ -1246,10 +1246,10 @@ WHERE
     
   	ALTER TABLE `Examactivity` 
 	ADD `country` VARCHAR(64) AFTER `minutes`,
-    ADD `city` VARCHAR(64) AFTER `country`;
+    ADD `region` VARCHAR(64) AFTER `country`,
+    ADD `city` VARCHAR(64) AFTER `region`;
     
-    	ALTER TABLE `Examactivity` 
-	ADD `region` VARCHAR(64) AFTER `country`;
-    
+   	ALTER TABLE `Examactivity` 
+	ADD `extend_time_flag` INT(2) AFTER `suspend_flag`;
     
     
