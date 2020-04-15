@@ -417,28 +417,54 @@ $("#iid").change(function(){
 			})
 		});
   
-
-  
-            function ipLookUp () {
+/* 
+  function ipLookUp () {
               $.ajax('http://ip-api.com/json')
               .then(
                   function success(response) {
                       console.log('User\'s Location Data is ', response);
                       console.log('User\'s Country', response.country);
-                        console.log('User\'s City', response.city);
-                          console.log('User\'s Region', response.region);
-                  },
+                      console.log('User\'s City', response.city);
+                      console.log('User\'s Region', response.region);
+                        var country = response.country
+                        var region = response.region
+                        var city = response.city
+                        var examactivity_id = $("#examactivity_id").val();
+                         console.log('User\'s Region', region);
+                           console.log('examactivity_id: ', examactivity_id);
+                           // make an AJAX call to put this infor in the examactivity table
+
+
+
+
+
+                        $.ajax({
+                        method: "post",
+                        url: "putExamLocation.php",
+                        data: {
+                            country :country,
+                            region :region,
+                            city :city,
+                            examactivity_id :examactivity_id
+                        }
+                    }).done();
+
+
+                    
+                 
 
                   function fail(data, status) {
                       console.log('Request failed.  Returned status of',
                                   status);
                   }
-              );
+                }
+             );
+              
             }
-          
             
-            ipLookUp ();
-
+              
+              ipLookUp ();
+          */
 	/* 
     
     // already been through and worked a problem and now getting another one all of the input fields should be defined just need another problem

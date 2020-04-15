@@ -1248,7 +1248,8 @@ WHERE
 	ADD `country` VARCHAR(64) AFTER `minutes`,
     ADD `city` VARCHAR(64) AFTER `country`;
     
-    
+    	ALTER TABLE `Examactivity` 
+	ADD `region` VARCHAR(64) AFTER `country`;
     
     
     
