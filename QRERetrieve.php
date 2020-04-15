@@ -383,14 +383,15 @@
         if($pblm4_flag ==1){echo('Try 4'); echo("</th><th>");}
         if($pblm5_flag ==1){echo('Try 5'); echo("</th><th>");}
 
-
-
+      
+         echo('Location');
+           echo "</th><th>";
         echo('Total');
 		echo("</th></tr>\n");
 		 echo("</thead>");
 		 
 		  echo("<tbody>");
-		//
+		
 
  
 
@@ -448,42 +449,17 @@
               
                  
               
-                 
+               
+                echo($row['city'].', '.$row['region'].', '.$row['country']);
+                  echo "</td><td>";
                 $total_score = $row['pblm_1_score']+$row['pblm_2_score']+$row['pblm_3_score']+$row['pblm_4_score']+$row['pblm_5_score'];
 
                  echo($total_score);
                
                 echo("</td></tr>\n");
-           
-            // now update the examactivity table with the scores
-        /*         $sql = "UPDATE `Examactivity` SET pblm_1_score = :pblm_1_score, pblm_2_score = :pblm_2_score , pblm_3_score = :pblm_3_score, pblm_4_score = :pblm_4_score, pblm_5_score = :pblm_5_score WHERE examactivity_id = :examactivity_id ";
-             $stmt = $pdo->prepare($sql);
-			$stmt->execute(array(
-            ":examactivity_id" => $row['examactivity_id'],
-            ":pblm_1_score" => $points_1,
-            ":pblm_2_score" => $points_2,
-            ":pblm_3_score" => $points_3,
-            ":pblm_4_score" => $points_4,
-            ":pblm_5_score" => $points_5,
-            ));
-             */
-            
-
-           }
-                 
-              
-               
-               // echo('<form action = "QRGameFixSum.php" method = "POST" target = "_blank"> <input type = "hidden" name = "gmact_id" value = "'.$row['gmact_id'].'"><input type = "hidden" name = "team_id" value =  "'.$row['team_id'].'"><input type = "submit" value ="Fix Team Sums"></form>');
-	          //   echo('<form action = "QRGameDeletePlayer.php" method = "POST" target = "_blank">  <input type = "hidden" name = "gameactivity_id" value = "'.$row['gameactivity_id'].'"><input type = "submit" value ="Delete Player"></form>');
-             //    echo('<form action = "QRGameEditPlayer.php" method = "POST" target = "_blank"> <input type = "hidden" name = "gameactivity_id" value = "'.$row['gameactivity_id'].'"><input type = "submit" value ="Edit Player Data"></form>');
-
-                // echo("&nbsp; ");
-				// echo('<form action = "getGame.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Game"></form>');
-				// echo("&nbsp; ");
-				// echo('<form action = "numericToMC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Make MC"></form>');
-				                
+        
                     
-            
+             }
             
            
             echo("</tbody>");
