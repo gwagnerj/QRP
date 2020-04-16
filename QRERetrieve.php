@@ -99,7 +99,7 @@
          
              
             if (strlen($row1['response_pblm1'] ) > 0) {
-            
+                
                $pblm1_flag =1;
             } else{
                   $pblm1_flag =0 ;
@@ -465,10 +465,498 @@
             echo("</tbody>");
              echo("</table>");
              
-             
-
- 
-
+       // would be  nice to have another table where we get the input values and the answers for the pins that have taken the exam_code
+       
+         echo("</br>");
+           if ($pblm1_flag == 1){echo('Problem_id = '.$row1['problem_id1']); echo("</th><th>"); 
+                echo ('<table id="table_format3" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
+                 echo("<thead>");
+                $sql = "SELECT nv_1, nv_2, nv_3, nv_4 FROM Problem WHERE problem_id = :problem_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id1'] ));
+                 $row_n = $stmt->fetch(PDO::FETCH_ASSOC); 
+                echo("<th>");
+                 echo('pin');
+                echo("</th><th>");
+                echo($row_n['nv_1']);
+                echo("</th><th>");
+                 echo($row_n['nv_2']);
+                echo("</th><th>");
+                 echo($row_n['nv_3']);
+                echo("</th><th>");
+                 echo($row_n['nv_4']);
+                 echo("</th><th>");
+                 echo(' &nbsp; ');
+               echo("</th><th>");
+                 echo(' a) ');
+               echo("</th><th>");
+                 echo(' b) ');
+               echo("</th><th>");
+                 echo(' c) ');
+               echo("</th><th>");
+                 echo(' d) ');
+               echo("</th><th>");
+                 echo(' e) ');
+               echo("</th><th>");
+                 echo(' f) ');
+               echo("</th><th>");
+                 echo(' g) ');
+               echo("</th><th>");
+                 echo(' h) ');
+               echo("</th><th>");
+                 echo(' i) ');
+               echo("</th><th>");
+                 echo(' j) ');
+              echo("</th></tr>\n");
+                echo("</thead>");
+                 echo("<tbody>");
+                 
+               $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id1'], ":examtime_id" => $examtime_id ));
+                 $row_vs = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                foreach($row_vs as $row_v){
+                        echo "<tr><td>";
+                         echo($row_v['pin']);
+                        echo("</td><td>");	
+                        echo($row_v['v_1']);
+                        echo("</td><td>");	
+                        echo($row_v['v_2']);
+                        echo("</td><td>");	                    
+                        echo($row_v['v_3']);
+                        echo("</td><td>");
+                        echo($row_v['v_4']);
+                        echo("</td>");
+                }
+                
+               $sql = "SELECT Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j FROM Qa INNER JOIN Examactivity ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id1'], ":examtime_id" => $examtime_id ));
+                 $row_as = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                foreach($row_as as $row_a){
+                       
+                        echo "<td>";
+                         echo(' &nbsp; ');
+                       echo "</td><td>";
+                         echo($row_a['ans_a']);
+                        echo "</td><td>";
+                         echo($row_a['ans_b']);
+                        echo "</td><td>";
+                         echo($row_a['ans_c']);
+                        echo "</td><td>";
+                         echo($row_a['ans_d']);
+                        echo "</td><td>";
+                         echo($row_a['ans_e']);
+                        echo "</td><td>";
+                         echo($row_a['ans_f']);
+                        echo "</td><td>";
+                         echo($row_a['ans_g']);
+                        echo "</td><td>";
+                         echo($row_a['ans_h']);
+                        echo "</td><td>";
+                         echo($row_a['ans_i']);
+                        echo "</td><td>";
+                         echo($row_a['ans_j']);
+                        echo("</td></tr>");
+                }
+              
+                echo("</tbody>");
+                echo("</table>");
+        }
+        
+          echo("</br>");
+           if ($pblm1_flag == 2){echo('Problem_id = '.$row1['problem_id2']); echo("</th><th>"); 
+                echo ('<table id="table_format2" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
+                 echo("<thead>");
+                $sql = "SELECT nv_1, nv_2, nv_3, nv_4 FROM Problem WHERE problem_id = :problem_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id2'] ));
+                 $row_n = $stmt->fetch(PDO::FETCH_ASSOC); 
+                echo("<th>");
+                 echo('pin');
+                echo("</th><th>");
+                echo($row_n['nv_1']);
+                echo("</th><th>");
+                 echo($row_n['nv_2']);
+                echo("</th><th>");
+                 echo($row_n['nv_3']);
+                echo("</th><th>");
+                 echo($row_n['nv_4']);
+                 echo("</th><th>");
+                 echo(' &nbsp; ');
+               echo("</th><th>");
+                 echo(' a) ');
+               echo("</th><th>");
+                 echo(' b) ');
+               echo("</th><th>");
+                 echo(' c) ');
+               echo("</th><th>");
+                 echo(' d) ');
+               echo("</th><th>");
+                 echo(' e) ');
+               echo("</th><th>");
+                 echo(' f) ');
+               echo("</th><th>");
+                 echo(' g) ');
+               echo("</th><th>");
+                 echo(' h) ');
+               echo("</th><th>");
+                 echo(' i) ');
+               echo("</th><th>");
+                 echo(' j) ');
+              echo("</th></tr>\n");
+                echo("</thead>");
+                 echo("<tbody>");
+                 
+               $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id2'], ":examtime_id" => $examtime_id ));
+                 $row_vs = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                foreach($row_vs as $row_v){
+                        echo "<tr><td>";
+                         echo($row_v['pin']);
+                        echo("</td><td>");	
+                        echo($row_v['v_1']);
+                        echo("</td><td>");	
+                        echo($row_v['v_2']);
+                        echo("</td><td>");	                    
+                        echo($row_v['v_3']);
+                        echo("</td><td>");
+                        echo($row_v['v_4']);
+                        echo("</td>");
+                }
+                
+               $sql = "SELECT Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j FROM Qa INNER JOIN Examactivity ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id2'], ":examtime_id" => $examtime_id ));
+                 $row_as = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                foreach($row_as as $row_a){
+                       
+                        echo "<td>";
+                         echo(' &nbsp; ');
+                       echo "</td><td>";
+                         echo($row_a['ans_a']);
+                        echo "</td><td>";
+                         echo($row_a['ans_b']);
+                        echo "</td><td>";
+                         echo($row_a['ans_c']);
+                        echo "</td><td>";
+                         echo($row_a['ans_d']);
+                        echo "</td><td>";
+                         echo($row_a['ans_e']);
+                        echo "</td><td>";
+                         echo($row_a['ans_f']);
+                        echo "</td><td>";
+                         echo($row_a['ans_g']);
+                        echo "</td><td>";
+                         echo($row_a['ans_h']);
+                        echo "</td><td>";
+                         echo($row_a['ans_i']);
+                        echo "</td><td>";
+                         echo($row_a['ans_j']);
+                        echo("</td></tr>");
+                }
+              
+                echo("</tbody>");
+                 echo("</table>");
+        }
+        
+         echo("</br>");
+           if ($pblm1_flag == 3){echo('Problem_id = '.$row1['problem_id3']); echo("</th><th>"); 
+                echo ('<table id="table_format2" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
+                 echo("<thead>");
+                $sql = "SELECT nv_1, nv_2, nv_3, nv_4 FROM Problem WHERE problem_id = :problem_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id3'] ));
+                 $row_n = $stmt->fetch(PDO::FETCH_ASSOC); 
+                echo("<th>");
+                 echo('pin');
+                echo("</th><th>");
+                echo($row_n['nv_1']);
+                echo("</th><th>");
+                 echo($row_n['nv_2']);
+                echo("</th><th>");
+                 echo($row_n['nv_3']);
+                echo("</th><th>");
+                 echo($row_n['nv_4']);
+                 echo("</th><th>");
+                 echo(' &nbsp; ');
+               echo("</th><th>");
+                 echo(' a) ');
+               echo("</th><th>");
+                 echo(' b) ');
+               echo("</th><th>");
+                 echo(' c) ');
+               echo("</th><th>");
+                 echo(' d) ');
+               echo("</th><th>");
+                 echo(' e) ');
+               echo("</th><th>");
+                 echo(' f) ');
+               echo("</th><th>");
+                 echo(' g) ');
+               echo("</th><th>");
+                 echo(' h) ');
+               echo("</th><th>");
+                 echo(' i) ');
+               echo("</th><th>");
+                 echo(' j) ');
+              echo("</th></tr>\n");
+                echo("</thead>");
+                 echo("<tbody>");
+                 
+               $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id3'], ":examtime_id" => $examtime_id ));
+                 $row_vs = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                foreach($row_vs as $row_v){
+                        echo "<tr><td>";
+                         echo($row_v['pin']);
+                        echo("</td><td>");	
+                        echo($row_v['v_1']);
+                        echo("</td><td>");	
+                        echo($row_v['v_2']);
+                        echo("</td><td>");	                    
+                        echo($row_v['v_3']);
+                        echo("</td><td>");
+                        echo($row_v['v_4']);
+                        echo("</td>");
+                }
+                
+               $sql = "SELECT Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j FROM Qa INNER JOIN Examactivity ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id3'], ":examtime_id" => $examtime_id ));
+                 $row_as = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                foreach($row_as as $row_a){
+                       
+                        echo "<td>";
+                         echo(' &nbsp; ');
+                       echo "</td><td>";
+                         echo($row_a['ans_a']);
+                        echo "</td><td>";
+                         echo($row_a['ans_b']);
+                        echo "</td><td>";
+                         echo($row_a['ans_c']);
+                        echo "</td><td>";
+                         echo($row_a['ans_d']);
+                        echo "</td><td>";
+                         echo($row_a['ans_e']);
+                        echo "</td><td>";
+                         echo($row_a['ans_f']);
+                        echo "</td><td>";
+                         echo($row_a['ans_g']);
+                        echo "</td><td>";
+                         echo($row_a['ans_h']);
+                        echo "</td><td>";
+                         echo($row_a['ans_i']);
+                        echo "</td><td>";
+                         echo($row_a['ans_j']);
+                        echo("</td></tr>");
+                }
+              
+                echo("</tbody>");
+                 echo("</table>");
+        }
+        
+         echo("</br>");
+           if ($pblm1_flag == 4){echo('Problem_id = '.$row1['problem_id4']); echo("</th><th>"); 
+                echo ('<table id="table_format2" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
+                 echo("<thead>");
+                $sql = "SELECT nv_1, nv_2, nv_3, nv_4 FROM Problem WHERE problem_id = :problem_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id4'] ));
+                 $row_n = $stmt->fetch(PDO::FETCH_ASSOC); 
+                echo("<th>");
+                 echo('pin');
+                echo("</th><th>");
+                echo($row_n['nv_1']);
+                echo("</th><th>");
+                 echo($row_n['nv_2']);
+                echo("</th><th>");
+                 echo($row_n['nv_3']);
+                echo("</th><th>");
+                 echo($row_n['nv_4']);
+                 echo("</th><th>");
+                 echo(' &nbsp; ');
+               echo("</th><th>");
+                 echo(' a) ');
+               echo("</th><th>");
+                 echo(' b) ');
+               echo("</th><th>");
+                 echo(' c) ');
+               echo("</th><th>");
+                 echo(' d) ');
+               echo("</th><th>");
+                 echo(' e) ');
+               echo("</th><th>");
+                 echo(' f) ');
+               echo("</th><th>");
+                 echo(' g) ');
+               echo("</th><th>");
+                 echo(' h) ');
+               echo("</th><th>");
+                 echo(' i) ');
+               echo("</th><th>");
+                 echo(' j) ');
+              echo("</th></tr>\n");
+                echo("</thead>");
+                 echo("<tbody>");
+                 
+               $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id4'], ":examtime_id" => $examtime_id ));
+                 $row_vs = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                foreach($row_vs as $row_v){
+                        echo "<tr><td>";
+                         echo($row_v['pin']);
+                        echo("</td><td>");	
+                        echo($row_v['v_1']);
+                        echo("</td><td>");	
+                        echo($row_v['v_2']);
+                        echo("</td><td>");	                    
+                        echo($row_v['v_3']);
+                        echo("</td><td>");
+                        echo($row_v['v_4']);
+                        echo("</td>");
+                }
+                
+               $sql = "SELECT Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j FROM Qa INNER JOIN Examactivity ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id4'], ":examtime_id" => $examtime_id ));
+                 $row_as = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                foreach($row_as as $row_a){
+                       
+                        echo "<td>";
+                         echo(' &nbsp; ');
+                       echo "</td><td>";
+                         echo($row_a['ans_a']);
+                        echo "</td><td>";
+                         echo($row_a['ans_b']);
+                        echo "</td><td>";
+                         echo($row_a['ans_c']);
+                        echo "</td><td>";
+                         echo($row_a['ans_d']);
+                        echo "</td><td>";
+                         echo($row_a['ans_e']);
+                        echo "</td><td>";
+                         echo($row_a['ans_f']);
+                        echo "</td><td>";
+                         echo($row_a['ans_g']);
+                        echo "</td><td>";
+                         echo($row_a['ans_h']);
+                        echo "</td><td>";
+                         echo($row_a['ans_i']);
+                        echo "</td><td>";
+                         echo($row_a['ans_j']);
+                        echo("</td></tr>");
+                }
+              
+                echo("</tbody>");
+                 echo("</table>");
+        }
+        
+        
+         echo("</br>");
+           if ($pblm1_flag == 5){echo('Problem_id = '.$row1['problem_id5']); echo("</th><th>"); 
+                echo ('<table id="table_format2" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
+                 echo("<thead>");
+                $sql = "SELECT nv_1, nv_2, nv_3, nv_4 FROM Problem WHERE problem_id = :problem_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id5'] ));
+                 $row_n = $stmt->fetch(PDO::FETCH_ASSOC); 
+                echo("<th>");
+                 echo('pin');
+                echo("</th><th>");
+                echo($row_n['nv_1']);
+                echo("</th><th>");
+                 echo($row_n['nv_2']);
+                echo("</th><th>");
+                 echo($row_n['nv_3']);
+                echo("</th><th>");
+                 echo($row_n['nv_4']);
+                 echo("</th><th>");
+                 echo(' &nbsp; ');
+               echo("</th><th>");
+                 echo(' a) ');
+               echo("</th><th>");
+                 echo(' b) ');
+               echo("</th><th>");
+                 echo(' c) ');
+               echo("</th><th>");
+                 echo(' d) ');
+               echo("</th><th>");
+                 echo(' e) ');
+               echo("</th><th>");
+                 echo(' f) ');
+               echo("</th><th>");
+                 echo(' g) ');
+               echo("</th><th>");
+                 echo(' h) ');
+               echo("</th><th>");
+                 echo(' i) ');
+               echo("</th><th>");
+                 echo(' j) ');
+              echo("</th></tr>\n");
+                echo("</thead>");
+                 echo("<tbody>");
+                 
+               $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id5'], ":examtime_id" => $examtime_id ));
+                 $row_vs = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                foreach($row_vs as $row_v){
+                        echo "<tr><td>";
+                         echo($row_v['pin']);
+                        echo("</td><td>");	
+                        echo($row_v['v_1']);
+                        echo("</td><td>");	
+                        echo($row_v['v_2']);
+                        echo("</td><td>");	                    
+                        echo($row_v['v_3']);
+                        echo("</td><td>");
+                        echo($row_v['v_4']);
+                        echo("</td>");
+                }
+                
+               $sql = "SELECT Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j FROM Qa INNER JOIN Examactivity ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id5'], ":examtime_id" => $examtime_id ));
+                 $row_as = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                foreach($row_as as $row_a){
+                       
+                        echo "<td>";
+                         echo(' &nbsp; ');
+                       echo "</td><td>";
+                         echo($row_a['ans_a']);
+                        echo "</td><td>";
+                         echo($row_a['ans_b']);
+                        echo "</td><td>";
+                         echo($row_a['ans_c']);
+                        echo "</td><td>";
+                         echo($row_a['ans_d']);
+                        echo "</td><td>";
+                         echo($row_a['ans_e']);
+                        echo "</td><td>";
+                         echo($row_a['ans_f']);
+                        echo "</td><td>";
+                         echo($row_a['ans_g']);
+                        echo "</td><td>";
+                         echo($row_a['ans_h']);
+                        echo "</td><td>";
+                         echo($row_a['ans_i']);
+                        echo "</td><td>";
+                         echo($row_a['ans_j']);
+                        echo("</td></tr>");
+                }
+              
+                echo("</tbody>");
+                 echo("</table>");
+        }
+        
+        
+        
+        
+        
 	function sigFig($value, $digits)
             {
                 if ($value == 0) {
