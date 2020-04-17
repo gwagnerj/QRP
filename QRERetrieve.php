@@ -464,11 +464,14 @@
            
             echo("</tbody>");
              echo("</table>");
+         // would be  nice to have another table where we get the input values and the answers for the pins that have taken the exam_code     
              
-       // would be  nice to have another table where we get the input values and the answers for the pins that have taken the exam_code
-       
-         echo("</br>");
-           if ($pblm1_flag == 1){echo('Problem_id = '.$row1['problem_id1']); echo("</th><th>"); 
+
+
+             echo("</br>");
+               echo("</br>");
+   
+     if ($pblm1_flag == 1){echo('Problem 1 with Problem_id = '.$row1['problem_id1']); echo("</th><th>"); 
                 echo ('<table id="table_format3" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
                  echo("<thead>");
                 $sql = "SELECT nv_1, nv_2, nv_3, nv_4 FROM Problem WHERE problem_id = :problem_id";
@@ -476,55 +479,20 @@
                  $stmt->execute(array(":problem_id" => $row1['problem_id1'] ));
                  $row_n = $stmt->fetch(PDO::FETCH_ASSOC); 
                 echo("<th>");
+                echo('name');
+                echo("</th><th>");
                  echo('pin');
                 echo("</th><th>");
-                echo($row_n['nv_1']);
-                echo("</th><th>");
-                 echo($row_n['nv_2']);
-                echo("</th><th>");
-                 echo($row_n['nv_3']);
-                echo("</th><th>");
-                 echo($row_n['nv_4']);
+                 if(!is_null($row_n['nv_1'] )){ echo($row_n['nv_1']); echo("</th><th>");}
+               
+                 if(!is_null($row_n['nv_2'] )){ echo($row_n['nv_2']); echo("</th><th>");}
               
-              echo("</th></tr>\n");
-                echo("</thead>");
-                 echo("<tbody>");
+                 if(!is_null($row_n['nv_3'] )){ echo($row_n['nv_3']); echo("</th><th>");}
+               
+                 if(!is_null($row_n['nv_4'] )){ echo($row_n['nv_4']); echo("</th><th>");}
                  
-               $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin";
-                 $stmt = $pdo->prepare($sql);
-                 $stmt->execute(array(":problem_id" => $row1['problem_id1'], ":examtime_id" => $examtime_id ));
-                 $row_vs = $stmt->fetchALL(PDO::FETCH_ASSOC); 
-              
-                 $sql = "SELECT Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j, Examactivity.pin FROM Qa INNER JOIN Examactivity ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
-                 $stmt = $pdo->prepare($sql);
-                 $stmt->execute(array(":problem_id" => $row1['problem_id1'], ":examtime_id" => $examtime_id ));
-                 $row_as = $stmt->fetchALL(PDO::FETCH_ASSOC); 
-
-
-              foreach($row_vs as $row_v){
-                        echo "<tr><td>";
-                         echo($row_v['pin']);
-                        echo("</td><td>");	
-                        echo($row_v['v_1']);
-                        echo("</td><td>");	
-                        echo($row_v['v_2']);
-                        echo("</td><td>");	                    
-                        echo($row_v['v_3']);
-                        echo("</td><td>");
-                        echo($row_v['v_4']);
-                        echo("</td></tr>");
-                        } 
-                        
-                         echo("</tbody>");
-                        echo("</table>");
-                    echo(' </br> ');
-
-                    echo ('<table id="table_format3" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
-                    echo("<thead>");
-                 
-                       echo("<th>");
-                 echo(' pin ');
-               echo("</th><th>");
+                 echo(' &nbsp;&nbsp; ');
+                  echo("</th><th>");
                  echo(' a) ');
                echo("</th><th>");
                  echo(' b) ');
@@ -547,96 +515,80 @@
                  echo("</th></tr>\n");
                 echo("</thead>");
                  echo("<tbody>");
-
-                      
-                    foreach($row_as as $row_a){
+                 
+                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
+                   FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
+                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id1'], ":examtime_id" => $examtime_id ));
+                 $row_ss = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                  foreach($row_ss as $row_s){
+                        echo "<tr><td>";
+                         echo($row_s['name']);
+                        echo("</td><td>");	
+                        echo($row_s['pin']);
+                        echo("</td><td>");	
+                        if(!is_null($row_s['v_1'])){echo($row_s['v_1']); echo("</td><td>");}
+                        if(!is_null($row_s['v_2'])){echo($row_s['v_2']); echo("</td><td>");}
+                        if(!is_null($row_s['v_3'])){echo($row_s['v_3']); echo("</td><td>");}
+                       if(!is_null($row_s['v_4'])){echo($row_s['v_4']); echo("</td><td>");}
                        
-                        echo "<td>";
-                         echo( $row_a['pin']);
+                       echo( '&nbsp;&nbsp;');
                        echo "</td><td>";
-                         echo($row_a['ans_a']);
+                         if($row_s['ans_a']< 1.1e43){ echo($row_s['ans_a']);}
                         echo "</td><td>";
-                         echo($row_a['ans_b']);
+                         if($row_s['ans_b']< 1.1e43){ echo($row_s['ans_b']);}
                         echo "</td><td>";
-                         echo($row_a['ans_c']);
+                        if($row_s['ans_c']< 1.1e43){ echo($row_s['ans_c']);}
                         echo "</td><td>";
-                         echo($row_a['ans_d']);
+                        if($row_s['ans_d']< 1.1e43){ echo($row_s['ans_d']);}
                         echo "</td><td>";
-                         echo($row_a['ans_e']);
+                        if($row_s['ans_e']< 1.1e43){ echo($row_s['ans_e']);}
                         echo "</td><td>";
-                         echo($row_a['ans_f']);
+                        if($row_s['ans_f']< 1.1e43){ echo($row_s['ans_f']);}
                         echo "</td><td>";
-                         echo($row_a['ans_g']);
+                         if($row_s['ans_g']< 1.1e43){ echo($row_s['ans_g']);}
                         echo "</td><td>";
-                         echo($row_a['ans_h']);
+                          if($row_s['ans_h']< 1.1e43){ echo($row_s['ans_h']);}
                         echo "</td><td>";
-                         echo($row_a['ans_i']);
+                        if($row_s['ans_i']< 1.1e43){ echo($row_s['ans_i']);}
                         echo "</td><td>";
-                         echo($row_a['ans_j']);
+                      if($row_s['ans_j']< 1.1e43){ echo($row_s['ans_j']);}
                         echo("</td></tr>");
-                     }
-                echo("</tbody>");
+
+                    } 
+                
+                  echo("</tbody>");
                 echo("</table>");
-        }
-            echo("</br>");
-            
-           if ($pblm2_flag == 1){echo('Problem_id = '.$row1['problem_id2']); echo("</th><th>"); 
-                echo ('<table id="table_format_2" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
+
+     }
+        
+    
+             echo("</br>");
+               echo("</br>");
+   
+     if ($pblm2_flag == 1){echo('Problem 2 with Problem_id = '.$row1['problem_id2']); echo("</th><th>"); 
+                echo ('<table id="table_format3" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
                  echo("<thead>");
                 $sql = "SELECT nv_1, nv_2, nv_3, nv_4 FROM Problem WHERE problem_id = :problem_id";
                  $stmt = $pdo->prepare($sql);
                  $stmt->execute(array(":problem_id" => $row1['problem_id2'] ));
                  $row_n = $stmt->fetch(PDO::FETCH_ASSOC); 
                 echo("<th>");
+                echo('name');
+                echo("</th><th>");
                  echo('pin');
                 echo("</th><th>");
-                echo($row_n['nv_1']);
-                echo("</th><th>");
-                 echo($row_n['nv_2']);
-                echo("</th><th>");
-                 echo($row_n['nv_3']);
-                echo("</th><th>");
-                 echo($row_n['nv_4']);
+                 if(!is_null($row_n['nv_1'] )){ echo($row_n['nv_1']); echo("</th><th>");}
+               
+                 if(!is_null($row_n['nv_2'] )){ echo($row_n['nv_2']); echo("</th><th>");}
               
-              echo("</th></tr>\n");
-                echo("</thead>");
-                 echo("<tbody>");
+                 if(!is_null($row_n['nv_3'] )){ echo($row_n['nv_3']); echo("</th><th>");}
+               
+                 if(!is_null($row_n['nv_4'] )){ echo($row_n['nv_4']); echo("</th><th>");}
                  
-               $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin";
-                 $stmt = $pdo->prepare($sql);
-                 $stmt->execute(array(":problem_id" => $row1['problem_id2'], ":examtime_id" => $examtime_id ));
-                 $row_vs = $stmt->fetchALL(PDO::FETCH_ASSOC); 
-              
-                 $sql = "SELECT Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j, Examactivity.pin FROM Qa INNER JOIN Examactivity ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
-                 $stmt = $pdo->prepare($sql);
-                 $stmt->execute(array(":problem_id" => $row1['problem_id2'], ":examtime_id" => $examtime_id ));
-                 $row_as = $stmt->fetchALL(PDO::FETCH_ASSOC); 
-
-
-              foreach($row_vs as $row_v){
-                        echo "<tr><td>";
-                         echo($row_v['pin']);
-                        echo("</td><td>");	
-                        echo($row_v['v_1']);
-                        echo("</td><td>");	
-                        echo($row_v['v_2']);
-                        echo("</td><td>");	                    
-                        echo($row_v['v_3']);
-                        echo("</td><td>");
-                        echo($row_v['v_4']);
-                        echo("</td></tr>");
-                        } 
-                        
-                         echo("</tbody>");
-                        echo("</table>");
-                    echo(' </br> ');
-
-                    echo ('<table id="table_format3" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
-                    echo("<thead>");
-                 
-                       echo("<th>");
-                 echo(' pin ');
-               echo("</th><th>");
+                 echo(' &nbsp;&nbsp; ');
+                  echo("</th><th>");
                  echo(' a) ');
                echo("</th><th>");
                  echo(' b) ');
@@ -659,97 +611,80 @@
                  echo("</th></tr>\n");
                 echo("</thead>");
                  echo("<tbody>");
-
-                      
-                    foreach($row_as as $row_a){
+                 
+                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
+                   FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
+                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id2'], ":examtime_id" => $examtime_id ));
+                 $row_ss = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                  foreach($row_ss as $row_s){
+                        echo "<tr><td>";
+                         echo($row_s['name']);
+                        echo("</td><td>");	
+                        echo($row_s['pin']);
+                        echo("</td><td>");	
+                        if(!is_null($row_s['v_1'])){echo($row_s['v_1']); echo("</td><td>");}
+                        if(!is_null($row_s['v_2'])){echo($row_s['v_2']); echo("</td><td>");}
+                        if(!is_null($row_s['v_3'])){echo($row_s['v_3']); echo("</td><td>");}
+                       if(!is_null($row_s['v_4'])){echo($row_s['v_4']); echo("</td><td>");}
                        
-                        echo "<td>";
-                         echo( $row_a['pin']);
+                       echo( '&nbsp;&nbsp;');
                        echo "</td><td>";
-                         echo($row_a['ans_a']);
+                         if($row_s['ans_a']< 1.1e43){ echo($row_s['ans_a']);}
                         echo "</td><td>";
-                         echo($row_a['ans_b']);
+                         if($row_s['ans_b']< 1.1e43){ echo($row_s['ans_b']);}
                         echo "</td><td>";
-                         echo($row_a['ans_c']);
+                        if($row_s['ans_c']< 1.1e43){ echo($row_s['ans_c']);}
                         echo "</td><td>";
-                         echo($row_a['ans_d']);
+                        if($row_s['ans_d']< 1.1e43){ echo($row_s['ans_d']);}
                         echo "</td><td>";
-                         echo($row_a['ans_e']);
+                        if($row_s['ans_e']< 1.1e43){ echo($row_s['ans_e']);}
                         echo "</td><td>";
-                         echo($row_a['ans_f']);
+                        if($row_s['ans_f']< 1.1e43){ echo($row_s['ans_f']);}
                         echo "</td><td>";
-                         echo($row_a['ans_g']);
+                         if($row_s['ans_g']< 1.1e43){ echo($row_s['ans_g']);}
                         echo "</td><td>";
-                         echo($row_a['ans_h']);
+                          if($row_s['ans_h']< 1.1e43){ echo($row_s['ans_h']);}
                         echo "</td><td>";
-                         echo($row_a['ans_i']);
+                        if($row_s['ans_i']< 1.1e43){ echo($row_s['ans_i']);}
                         echo "</td><td>";
-                         echo($row_a['ans_j']);
+                      if($row_s['ans_j']< 1.1e43){ echo($row_s['ans_j']);}
                         echo("</td></tr>");
-                     }
-                echo("</tbody>");
+
+                    } 
+                
+                  echo("</tbody>");
                 echo("</table>");
-        }
-               
-            echo("</br>");
-            
-           if ($pblm3_flag == 1){echo('Problem_id = '.$row1['problem_id3']); echo("</th><th>"); 
-                echo ('<table id="table_format_3" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
+
+     }
+
+
+             echo("</br>");
+               echo("</br>");
+   
+     if ($pblm3_flag == 1){echo('Problem 3 with Problem_id = '.$row1['problem_id3']); echo("</th><th>"); 
+                echo ('<table id="table_format3" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
                  echo("<thead>");
                 $sql = "SELECT nv_1, nv_2, nv_3, nv_4 FROM Problem WHERE problem_id = :problem_id";
                  $stmt = $pdo->prepare($sql);
                  $stmt->execute(array(":problem_id" => $row1['problem_id3'] ));
                  $row_n = $stmt->fetch(PDO::FETCH_ASSOC); 
                 echo("<th>");
+                echo('name');
+                echo("</th><th>");
                  echo('pin');
                 echo("</th><th>");
-                echo($row_n['nv_1']);
-                echo("</th><th>");
-                 echo($row_n['nv_2']);
-                echo("</th><th>");
-                 echo($row_n['nv_3']);
-                echo("</th><th>");
-                 echo($row_n['nv_4']);
+                 if(!is_null($row_n['nv_1'] )){ echo($row_n['nv_1']); echo("</th><th>");}
+               
+                 if(!is_null($row_n['nv_2'] )){ echo($row_n['nv_2']); echo("</th><th>");}
               
-              echo("</th></tr>\n");
-                echo("</thead>");
-                 echo("<tbody>");
+                 if(!is_null($row_n['nv_3'] )){ echo($row_n['nv_3']); echo("</th><th>");}
+               
+                 if(!is_null($row_n['nv_4'] )){ echo($row_n['nv_4']); echo("</th><th>");}
                  
-               $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin";
-                 $stmt = $pdo->prepare($sql);
-                 $stmt->execute(array(":problem_id" => $row1['problem_id3'], ":examtime_id" => $examtime_id ));
-                 $row_vs = $stmt->fetchALL(PDO::FETCH_ASSOC); 
-              
-                 $sql = "SELECT Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j, Examactivity.pin FROM Qa INNER JOIN Examactivity ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
-                 $stmt = $pdo->prepare($sql);
-                 $stmt->execute(array(":problem_id" => $row1['problem_id3'], ":examtime_id" => $examtime_id ));
-                 $row_as = $stmt->fetchALL(PDO::FETCH_ASSOC); 
-
-
-              foreach($row_vs as $row_v){
-                        echo "<tr><td>";
-                         echo($row_v['pin']);
-                        echo("</td><td>");	
-                        echo($row_v['v_1']);
-                        echo("</td><td>");	
-                        echo($row_v['v_2']);
-                        echo("</td><td>");	                    
-                        echo($row_v['v_3']);
-                        echo("</td><td>");
-                        echo($row_v['v_4']);
-                        echo("</td></tr>");
-                        } 
-                        
-                         echo("</tbody>");
-                        echo("</table>");
-                    echo(' </br> ');
-
-                    echo ('<table id="table_format3" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
-                    echo("<thead>");
-                 
-                       echo("<th>");
-                 echo(' pin ');
-               echo("</th><th>");
+                 echo(' &nbsp;&nbsp; ');
+                  echo("</th><th>");
                  echo(' a) ');
                echo("</th><th>");
                  echo(' b) ');
@@ -772,97 +707,80 @@
                  echo("</th></tr>\n");
                 echo("</thead>");
                  echo("<tbody>");
-
-                      
-                    foreach($row_as as $row_a){
+                 
+                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
+                   FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
+                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id3'], ":examtime_id" => $examtime_id ));
+                 $row_ss = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                  foreach($row_ss as $row_s){
+                        echo "<tr><td>";
+                         echo($row_s['name']);
+                        echo("</td><td>");	
+                        echo($row_s['pin']);
+                        echo("</td><td>");	
+                        if(!is_null($row_s['v_1'])){echo($row_s['v_1']); echo("</td><td>");}
+                        if(!is_null($row_s['v_2'])){echo($row_s['v_2']); echo("</td><td>");}
+                        if(!is_null($row_s['v_3'])){echo($row_s['v_3']); echo("</td><td>");}
+                       if(!is_null($row_s['v_4'])){echo($row_s['v_4']); echo("</td><td>");}
                        
-                        echo "<td>";
-                         echo( $row_a['pin']);
+                       echo( '&nbsp;&nbsp;');
                        echo "</td><td>";
-                         echo($row_a['ans_a']);
+                         if($row_s['ans_a']< 1.1e43){ echo($row_s['ans_a']);}
                         echo "</td><td>";
-                         echo($row_a['ans_b']);
+                         if($row_s['ans_b']< 1.1e43){ echo($row_s['ans_b']);}
                         echo "</td><td>";
-                         echo($row_a['ans_c']);
+                        if($row_s['ans_c']< 1.1e43){ echo($row_s['ans_c']);}
                         echo "</td><td>";
-                         echo($row_a['ans_d']);
+                        if($row_s['ans_d']< 1.1e43){ echo($row_s['ans_d']);}
                         echo "</td><td>";
-                         echo($row_a['ans_e']);
+                        if($row_s['ans_e']< 1.1e43){ echo($row_s['ans_e']);}
                         echo "</td><td>";
-                         echo($row_a['ans_f']);
+                        if($row_s['ans_f']< 1.1e43){ echo($row_s['ans_f']);}
                         echo "</td><td>";
-                         echo($row_a['ans_g']);
+                         if($row_s['ans_g']< 1.1e43){ echo($row_s['ans_g']);}
                         echo "</td><td>";
-                         echo($row_a['ans_h']);
+                          if($row_s['ans_h']< 1.1e43){ echo($row_s['ans_h']);}
                         echo "</td><td>";
-                         echo($row_a['ans_i']);
+                        if($row_s['ans_i']< 1.1e43){ echo($row_s['ans_i']);}
                         echo "</td><td>";
-                         echo($row_a['ans_j']);
+                      if($row_s['ans_j']< 1.1e43){ echo($row_s['ans_j']);}
                         echo("</td></tr>");
-                     }
-                echo("</tbody>");
+
+                    } 
+                
+                  echo("</tbody>");
                 echo("</table>");
-        }
-        
-           echo("</br>");
-            
-           if ($pblm4_flag == 1){echo('Problem_id = '.$row1['problem_id4']); echo("</th><th>"); 
-                echo ('<table id="table_format_2" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
+
+     }
+
+
+             echo("</br>");
+               echo("</br>");
+   
+     if ($pblm4_flag == 1){echo('Problem 4 with Problem_id = '.$row1['problem_id4']); echo("</th><th>"); 
+                echo ('<table id="table_format3" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
                  echo("<thead>");
                 $sql = "SELECT nv_1, nv_2, nv_3, nv_4 FROM Problem WHERE problem_id = :problem_id";
                  $stmt = $pdo->prepare($sql);
                  $stmt->execute(array(":problem_id" => $row1['problem_id4'] ));
                  $row_n = $stmt->fetch(PDO::FETCH_ASSOC); 
                 echo("<th>");
+                echo('name');
+                echo("</th><th>");
                  echo('pin');
                 echo("</th><th>");
-                echo($row_n['nv_1']);
-                echo("</th><th>");
-                 echo($row_n['nv_2']);
-                echo("</th><th>");
-                 echo($row_n['nv_3']);
-                echo("</th><th>");
-                 echo($row_n['nv_4']);
+                 if(!is_null($row_n['nv_1'] )){ echo($row_n['nv_1']); echo("</th><th>");}
+               
+                 if(!is_null($row_n['nv_2'] )){ echo($row_n['nv_2']); echo("</th><th>");}
               
-              echo("</th></tr>\n");
-                echo("</thead>");
-                 echo("<tbody>");
+                 if(!is_null($row_n['nv_3'] )){ echo($row_n['nv_3']); echo("</th><th>");}
+               
+                 if(!is_null($row_n['nv_4'] )){ echo($row_n['nv_4']); echo("</th><th>");}
                  
-               $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin";
-                 $stmt = $pdo->prepare($sql);
-                 $stmt->execute(array(":problem_id" => $row1['problem_id4'], ":examtime_id" => $examtime_id ));
-                 $row_vs = $stmt->fetchALL(PDO::FETCH_ASSOC); 
-              
-                 $sql = "SELECT Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j, Examactivity.pin FROM Qa INNER JOIN Examactivity ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
-                 $stmt = $pdo->prepare($sql);
-                 $stmt->execute(array(":problem_id" => $row1['problem_id4'], ":examtime_id" => $examtime_id ));
-                 $row_as = $stmt->fetchALL(PDO::FETCH_ASSOC); 
-
-
-              foreach($row_vs as $row_v){
-                        echo "<tr><td>";
-                         echo($row_v['pin']);
-                        echo("</td><td>");	
-                        echo($row_v['v_1']);
-                        echo("</td><td>");	
-                        echo($row_v['v_2']);
-                        echo("</td><td>");	                    
-                        echo($row_v['v_3']);
-                        echo("</td><td>");
-                        echo($row_v['v_4']);
-                        echo("</td></tr>");
-                        } 
-                        
-                         echo("</tbody>");
-                        echo("</table>");
-                    echo(' </br> ');
-
-                    echo ('<table id="table_format3" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
-                    echo("<thead>");
-                 
-                       echo("<th>");
-                 echo(' pin ');
-               echo("</th><th>");
+                 echo(' &nbsp;&nbsp; ');
+                  echo("</th><th>");
                  echo(' a) ');
                echo("</th><th>");
                  echo(' b) ');
@@ -885,98 +803,81 @@
                  echo("</th></tr>\n");
                 echo("</thead>");
                  echo("<tbody>");
-
-                      
-                    foreach($row_as as $row_a){
+                 
+                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
+                   FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
+                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id4'], ":examtime_id" => $examtime_id ));
+                 $row_ss = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                  foreach($row_ss as $row_s){
+                        echo "<tr><td>";
+                         echo($row_s['name']);
+                        echo("</td><td>");	
+                        echo($row_s['pin']);
+                        echo("</td><td>");	
+                        if(!is_null($row_s['v_1'])){echo($row_s['v_1']); echo("</td><td>");}
+                        if(!is_null($row_s['v_2'])){echo($row_s['v_2']); echo("</td><td>");}
+                        if(!is_null($row_s['v_3'])){echo($row_s['v_3']); echo("</td><td>");}
+                       if(!is_null($row_s['v_4'])){echo($row_s['v_4']); echo("</td><td>");}
                        
-                        echo "<td>";
-                         echo( $row_a['pin']);
+                       echo( '&nbsp;&nbsp;');
                        echo "</td><td>";
-                         echo($row_a['ans_a']);
+                         if($row_s['ans_a']< 1.1e43){ echo($row_s['ans_a']);}
                         echo "</td><td>";
-                         echo($row_a['ans_b']);
+                         if($row_s['ans_b']< 1.1e43){ echo($row_s['ans_b']);}
                         echo "</td><td>";
-                         echo($row_a['ans_c']);
+                        if($row_s['ans_c']< 1.1e43){ echo($row_s['ans_c']);}
                         echo "</td><td>";
-                         echo($row_a['ans_d']);
+                        if($row_s['ans_d']< 1.1e43){ echo($row_s['ans_d']);}
                         echo "</td><td>";
-                         echo($row_a['ans_e']);
+                        if($row_s['ans_e']< 1.1e43){ echo($row_s['ans_e']);}
                         echo "</td><td>";
-                         echo($row_a['ans_f']);
+                        if($row_s['ans_f']< 1.1e43){ echo($row_s['ans_f']);}
                         echo "</td><td>";
-                         echo($row_a['ans_g']);
+                         if($row_s['ans_g']< 1.1e43){ echo($row_s['ans_g']);}
                         echo "</td><td>";
-                         echo($row_a['ans_h']);
+                          if($row_s['ans_h']< 1.1e43){ echo($row_s['ans_h']);}
                         echo "</td><td>";
-                         echo($row_a['ans_i']);
+                        if($row_s['ans_i']< 1.1e43){ echo($row_s['ans_i']);}
                         echo "</td><td>";
-                         echo($row_a['ans_j']);
+                      if($row_s['ans_j']< 1.1e43){ echo($row_s['ans_j']);}
                         echo("</td></tr>");
-                     }
-                echo("</tbody>");
+
+                    } 
+                
+                  echo("</tbody>");
                 echo("</table>");
-        } 
-        
-        
-            echo("</br>");
-            
-           if ($pblm5_flag == 1){echo('Problem_id = '.$row1['problem_id5']); echo("</th><th>"); 
-                echo ('<table id="table_format_2" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
+
+     }
+
+
+
+             echo("</br>");
+               echo("</br>");
+   
+     if ($pblm5_flag == 1){echo('Problem 5 with Problem_id = '.$row1['problem_id5']); echo("</th><th>"); 
+                echo ('<table id="table_format5" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
                  echo("<thead>");
                 $sql = "SELECT nv_1, nv_2, nv_3, nv_4 FROM Problem WHERE problem_id = :problem_id";
                  $stmt = $pdo->prepare($sql);
                  $stmt->execute(array(":problem_id" => $row1['problem_id5'] ));
                  $row_n = $stmt->fetch(PDO::FETCH_ASSOC); 
                 echo("<th>");
+                echo('name');
+                echo("</th><th>");
                  echo('pin');
                 echo("</th><th>");
-                echo($row_n['nv_1']);
-                echo("</th><th>");
-                 echo($row_n['nv_2']);
-                echo("</th><th>");
-                 echo($row_n['nv_3']);
-                echo("</th><th>");
-                 echo($row_n['nv_4']);
+                 if(!is_null($row_n['nv_1'] )){ echo($row_n['nv_1']); echo("</th><th>");}
+               
+                 if(!is_null($row_n['nv_2'] )){ echo($row_n['nv_2']); echo("</th><th>");}
               
-              echo("</th></tr>\n");
-                echo("</thead>");
-                 echo("<tbody>");
+                 if(!is_null($row_n['nv_3'] )){ echo($row_n['nv_3']); echo("</th><th>");}
+               
+                 if(!is_null($row_n['nv_4'] )){ echo($row_n['nv_4']); echo("</th><th>");}
                  
-               $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin";
-                 $stmt = $pdo->prepare($sql);
-                 $stmt->execute(array(":problem_id" => $row1['problem_id5'], ":examtime_id" => $examtime_id ));
-                 $row_vs = $stmt->fetchALL(PDO::FETCH_ASSOC); 
-              
-                 $sql = "SELECT Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j, Examactivity.pin FROM Qa INNER JOIN Examactivity ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
-                 $stmt = $pdo->prepare($sql);
-                 $stmt->execute(array(":problem_id" => $row1['problem_id5'], ":examtime_id" => $examtime_id ));
-                 $row_as = $stmt->fetchALL(PDO::FETCH_ASSOC); 
-
-
-              foreach($row_vs as $row_v){
-                        echo "<tr><td>";
-                         echo($row_v['pin']);
-                        echo("</td><td>");	
-                        echo($row_v['v_1']);
-                        echo("</td><td>");	
-                        echo($row_v['v_2']);
-                        echo("</td><td>");	                    
-                        echo($row_v['v_3']);
-                        echo("</td><td>");
-                        echo($row_v['v_4']);
-                        echo("</td></tr>");
-                        } 
-                        
-                         echo("</tbody>");
-                        echo("</table>");
-                    echo(' </br> ');
-
-                    echo ('<table id="table_format3" class = "table_form" style = "text-align:center" class = "a" border="1" >'."\n");	
-                    echo("<thead>");
-                 
-                       echo("<th>");
-                 echo(' pin ');
-               echo("</th><th>");
+                 echo(' &nbsp;&nbsp; ');
+                  echo("</th><th>");
                  echo(' a) ');
                echo("</th><th>");
                  echo(' b) ');
@@ -999,37 +900,57 @@
                  echo("</th></tr>\n");
                 echo("</thead>");
                  echo("<tbody>");
-
-                      
-                    foreach($row_as as $row_a){
+                 
+                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
+                   FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
+                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
+                 $stmt = $pdo->prepare($sql);
+                 $stmt->execute(array(":problem_id" => $row1['problem_id5'], ":examtime_id" => $examtime_id ));
+                 $row_ss = $stmt->fetchALL(PDO::FETCH_ASSOC); 
+                  foreach($row_ss as $row_s){
+                        echo "<tr><td>";
+                         echo($row_s['name']);
+                        echo("</td><td>");	
+                        echo($row_s['pin']);
+                        echo("</td><td>");	
+                        if(!is_null($row_s['v_1'])){echo($row_s['v_1']); echo("</td><td>");}
+                        if(!is_null($row_s['v_2'])){echo($row_s['v_2']); echo("</td><td>");}
+                        if(!is_null($row_s['v_3'])){echo($row_s['v_3']); echo("</td><td>");}
+                       if(!is_null($row_s['v_4'])){echo($row_s['v_4']); echo("</td><td>");}
                        
-                        echo "<td>";
-                         echo( $row_a['pin']);
+                       echo( '&nbsp;&nbsp;');
                        echo "</td><td>";
-                         echo($row_a['ans_a']);
+                         if($row_s['ans_a']< 1.1e43){ echo($row_s['ans_a']);}
                         echo "</td><td>";
-                         echo($row_a['ans_b']);
+                         if($row_s['ans_b']< 1.1e43){ echo($row_s['ans_b']);}
                         echo "</td><td>";
-                         echo($row_a['ans_c']);
+                        if($row_s['ans_c']< 1.1e43){ echo($row_s['ans_c']);}
                         echo "</td><td>";
-                         echo($row_a['ans_d']);
+                        if($row_s['ans_d']< 1.1e43){ echo($row_s['ans_d']);}
                         echo "</td><td>";
-                         echo($row_a['ans_e']);
+                        if($row_s['ans_e']< 1.1e43){ echo($row_s['ans_e']);}
                         echo "</td><td>";
-                         echo($row_a['ans_f']);
+                        if($row_s['ans_f']< 1.1e43){ echo($row_s['ans_f']);}
                         echo "</td><td>";
-                         echo($row_a['ans_g']);
+                         if($row_s['ans_g']< 1.1e43){ echo($row_s['ans_g']);}
                         echo "</td><td>";
-                         echo($row_a['ans_h']);
+                          if($row_s['ans_h']< 1.1e43){ echo($row_s['ans_h']);}
                         echo "</td><td>";
-                         echo($row_a['ans_i']);
+                        if($row_s['ans_i']< 1.1e43){ echo($row_s['ans_i']);}
                         echo "</td><td>";
-                         echo($row_a['ans_j']);
+                      if($row_s['ans_j']< 1.1e43){ echo($row_s['ans_j']);}
                         echo("</td></tr>");
-                     }
-                echo("</tbody>");
+
+                    } 
+                
+                  echo("</tbody>");
                 echo("</table>");
-        }
+
+     }
+
+     
+     
+  
         
         
 	function sigFig($value, $digits)

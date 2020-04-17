@@ -1253,3 +1253,6 @@ WHERE
 	ADD `extend_time_flag` INT(2) AFTER `suspend_flag`;
     
     
+    
+    
+    
