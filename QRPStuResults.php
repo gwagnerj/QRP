@@ -391,7 +391,8 @@ while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		// });
 	
 	$('#table_format3').DataTable({
-	 "lengthMenu": [ 30, 50, 100 ]
+	 "lengthMenu": [ 30, 50, 100 ],
+     "order": [[ 2, 'asc' ] ]
 	});  
 	});
 	
