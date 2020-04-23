@@ -207,7 +207,21 @@ echo '</script>';
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 <script type="text/javascript" charset="utf-8" src="qrcode.js"></script>
 
+<style>
+#water_mark {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 1;
+}
 
+#examchecker {
+  position: relative;
+  left: 0px;
+  top: 0px;
+  z-index: 1;
+}
+</style>
 
 
 </head>
@@ -218,6 +232,13 @@ echo '</script>';
          <input type="hidden" id = "problem_id" name="problem_id" value="<?php echo ($problem_id)?>" >
 
 </form>
+  <!-- <div style="background-image: url('Water_Mark_for_exam.png');">  -->
+   
+<img id = "water_mark" src="Water_Mark_for_exam_trans_bckgrnd.png" >
+
+  
+
+
 
 <div id = substitute_me>  </div>
 <?php  iconv("Windows-1252", "UTF-8", include($htmlfilenm)); 
@@ -235,7 +256,21 @@ echo '</script>';
 
 <script>
 $(document).ready(function(){
-		var dex = pass['dex'];
+		
+        
+        // disable right mouse click copy and copy paste  From https://www.codingbot.net/2017/03/disable-copy-paste-mouse-right-click-using-javascript-jquery-css.html
+            //Disable cut copy paste
+            $('body').bind('cut copy paste', function (e) {
+                e.preventDefault();
+            });
+            
+            //Disable mouse right click
+            $("body").on("contextmenu",function(e){
+                return false;
+            });
+        
+        
+        var dex = pass['dex'];
 		var problem = pass['problem_id'];
         var examactivity_id = pass['examactivity_id'];
 		var stu_name = pass['stu_name'];
