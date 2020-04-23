@@ -341,7 +341,7 @@
 	 Problem.hint_f as hint_f,Problem.hint_g as hint_g,Problem.hint_h as hint_h, Problem.hint_i as hint_i, Problem.hint_j as hint_j, Problem.video_clip as video_clip, Problem.simulation as simulation, Problem.demonstration_directions as demo_directions,
 	 Problem.activity_directions as activity_directions, Problem.computation_name as computation_name, Problem.allow_clone as allow_clone, Problem.allow_edit as allow_edit, Problem.parent as parent, Problem.children as children, Problem.orig_contr_id as orig_contr_id,
 	Problem.edit_id1 as edit_id1, Problem.edit_id2 as edit_id2, Problem.edit_id3 as edit_id3
-	FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id";
+	FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id ORDER BY problem_id DESC";
 
 
 	$stmt = $pdo->query($qstmnt);

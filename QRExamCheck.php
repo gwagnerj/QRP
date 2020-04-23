@@ -478,7 +478,7 @@ session_start();
     
     
     
-    // time delay on total tries for the problem
+    // time delay on total tries for the problem - try this in the JS
     
     /* 
           $tot_count_trip1 = $probParts*3;
@@ -544,7 +544,7 @@ session_start();
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
 
-	<form autocomplete="off" method="POST" >
+	<form autocomplete="off" id = "check_form" method="POST" >
 	<!--<p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
 
 	<?php
@@ -645,17 +645,25 @@ session_start();
 	$_SESSION['time']=time();
 	?>
 <!--Score:  <?php echo (round($PScore)) ?>%-->
-	<p><input type = "submit" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p>
+	<p><input type = "submit" id = "check_submit" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p>
 			<p><font color=#003399> </font><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
             <input type = "number" hidden name = "pin"  value = <?php echo ($pin); ?> > </input>
 			<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden" id = "exam_num" name="exam_num" size=3 value="<?php echo (htmlentities($exam_num))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="<?php echo (htmlentities($stop_time))?>"  ></p>
              <input type="hidden" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
-
+             <input type="hidden" id = "count_tot" name="count_tot" value="<?php echo ($count)?>" >
+            <input type="hidden" id = "prob_parts" name="prob_parts" value="<?php echo ($probParts)?>" >
 	</form>
 
-	<p> Count: <?php echo ($count) ?> </p>
+	
+    
+    <p> Count: <?php echo ($count) ?>  <span id ="t_delay_message"></span></p>
+   <p> <span id ="t_delay_limits"> time delay - 5s at count > <?php echo (3*$probParts) ?>, 30s at count > <?php echo (5*$probParts) ?> </span> </p>
+    
+    
+    
+    
 	<form action="StopExam.php" method="POST" id = "the_form">
 		    <input type="hidden" name="name"  value="<?php echo ($name)?>" >
             <input type="hidden" name="pin" value="<?php echo ($pin)?>" >
@@ -667,7 +675,7 @@ session_start();
             <input type="hidden" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
             <input type="hidden" name="globephase" id = "globephase" >
             <input type="hidden" name="iid" value="<?php echo ($iid)?>" >
-        
+           
         <p><input type="hidden" id = "pblm_score" name="pblm_score" size=3 value="<?php echo($PScore)?>"  
     <hr>
 	<p><b><font Color="red">Finished:</font></b></p>
@@ -688,6 +696,14 @@ session_start();
 				var examtime_id = $("#examtime_id").val();
 				console.log ('examtime_id = ',examtime_id);
 				
+                
+                
+                
+                
+                
+                
+                
+                
                      var request;
                 function fetchPhase() {
                     request = $.ajax({
@@ -718,6 +734,67 @@ session_start();
                     if (request) request.abort();
                     fetchPhase();
                 }, 10000);
+
+
+                // Delay if they take to many total attempts
+
+                    
+                        
+                            var count_tot = $("#count_tot").val();
+                            var prob_parts = $("#prob_parts").val();
+                            console.log ("count_tot = "+count_tot);
+                             console.log ("prob_parts = "+prob_parts);
+                          
+                            
+
+                            var check_form = document.getElementById("check_form"), check_submit = document.getElementById("check_submit");
+                            check_form.onsubmit = function() {
+                                return false;
+                            }
+
+                            check_submit.onclick = function() {
+                            
+                                 if (count_tot > 5*prob_parts){
+                                        $("#t_delay_message").text(" 30s time delay limit exceeded");
+                                      setTimeout(function() {
+                                              check_form.submit();
+                                         }, 30000);
+                                           return false;
+                                  } else if (count_tot > 3*prob_parts){
+                                      $("#t_delay_message").text(" 5s time delay limit exceeded");
+                                      setTimeout(function() {
+                                              check_form.submit();
+                                         }, 5000);
+                                           return false; 
+                                  } else {
+                                      
+                                      check_form.submit();
+                                      return false; 
+                                  }
+                            }       
+                                 
+                                 
+                                 
+                                 
+                                 
+                               
+
+/* 
+                          if (count_tot > 3*prob_parts){
+                                
+                               var delayInMilliseconds = 1000; //1 second
+
+                            setTimeout(function() {
+                              //your code to be executed after 1 second
+                            }, delayInMilliseconds); 
+                                
+                                
+                            }
+                         */
+                        
+                  
+
+
 
                 
                      function SubmitAway() { 
