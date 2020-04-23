@@ -760,8 +760,14 @@ $(document).ready(function(){
 				
 	
 			// color the back botton a little different
-			$("#backbut").css('background-color','lightyellow')
-			
+			$("#backbut").css({"background-color":"lightyellow",
+              "position": "relative",
+              "left": "0px",
+              "top": "0px",
+            "z-index": "1"});
+              
+              console.log('buttons');
+			// $("#backbut").css('z-index', '1')
 			// go back to the input page for a different problem
 			
             
