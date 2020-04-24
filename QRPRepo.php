@@ -703,7 +703,7 @@
 			echo(htmlentities($row['nm_author']));
 			
 			echo("</td><td>"); 
-			if($row['username']==$username || $security=='admin' || ($security == 'contrib' && $row['allow_edit'] == 2) || ($security == 'contrib') || $users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3']){
+			if($row['username']==$username || $security=='admin' || ($security == 'contrib' && $row['allow_edit'] == 2) || (($security == 'contrib') && ($users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3']))){
 				echo('<form action = "editpblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Edit"></form>');
 			}
 			if($row['username']==$username || $security=='admin'){
