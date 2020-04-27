@@ -451,14 +451,16 @@
 			}
 			
 			echo("</td><td>");
-				
-				
+			
+
+            echo('<a target = "_blank" href="QRPStuResults.php?problem_id='.$row['problem_id'].'">Show</a> ');            
+			/* 	
 				if ($tot_attempt ==0){
 					echo(' ');	
 				} else {
 						echo('<a target = "_blank" href="QRPStuResults.php?problem_id='.$row['problem_id'].'">Show</a> ');
 				}
-				
+				 */
 				// if it is clonable and the user is a contributor or admin then put up a clone botton
 				if (($security == 'contrib' || $security == 'admin') && $row['allow_clone'] ==1){
 							echo('<form action = "clone.php" method = "POST"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Clone"></form>');
