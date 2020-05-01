@@ -340,22 +340,26 @@ session_start();
             }
      // keep track of the number of tries the student makes
 	// get the count from the examactivity table
-    
-    
- if($oldresp_flag ==0 || $get_flag ==0){ // if we are comiong from an external file and we already have some correct responses we keep those
-    if(is_null($count)){
-		$count = 1;
+  
+   if(is_null($count)){   // first time no tries initialise count and wrong count
+		$count = 0;
 
 		for ($j=0;$j<=9;$j++){
 					$wrongCount[$j]=0;
 					$_SESSION['wrongC'[$j]]=$wrongCount[$j]; 
 				}
 		
-		$count=2;
-	}else{
-        $count = $count + 1;
+		
 	}
+
+
+
+
+  
     
+ if( $get_flag ==0){ // if we are comming in from this file
+ 
+     $count = $count + 1;
 
 
     
@@ -543,6 +547,8 @@ session_start();
     
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
+    <font size = "2"> Get_Flag: <?php echo ($get_flag) ?> </font>
+      <font size = "2"> oldresp_flag: <?php echo ($oldresp_flag) ?> </font>
 
 	<form autocomplete="off" id = "check_form" method="POST" >
 	<!--<p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
