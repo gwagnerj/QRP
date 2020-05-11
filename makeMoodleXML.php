@@ -32,7 +32,7 @@ if(isset($_POST['iid'])){
         echo "</script>";
 }
 
-	
+	$dex = 2;
 
 
  $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
@@ -43,17 +43,80 @@ if(isset($_POST['iid'])){
 //echo($data['title']);
 
 
-$dex = 2;
+
     $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
 	$stmt->execute(array(":problem_id" => $_POST['problem_id'], ":dex" => $dex));
-	$row = $stmt->fetch(PDO::FETCH_ASSOC);
+	$row = $stmt->fetch();
 
     $stmt = $pdo->prepare("SELECT * FROM Qa where problem_id = :problem_id AND dex = :dex");
 	$stmt->execute(array(":problem_id" => $_POST['problem_id'], ":dex" => $dex));
-	$row_ans = $stmt->fetch(PDO::FETCH_ASSOC);
+	$row_ans = $stmt->fetch();
 
-
-
+// read in the names of the variables for the problem
+    $nv = 0;  // number of non-null variables
+   for ($i = 0; $i <= 13; $i++) {
+    
+        if($pblm_data['nv_'.($i+1)]!='Null'){
+            $nvar[$i]=$pblm_data['nv_'.($i+1)];
+            $nv++;
+           echo($nvar[$i]." ");
+        }  
+        if($row['v_'.($i+1)]!='Null'){
+         $vari[$i] = $row['v_'.($i+1)];
+          echo($vari[$i]." ");
+        } 
+      
+   }
+   echo $nv;
+   
+   /* 
+    for ($i = 0; $i <= 13; $i++) {
+    
+        if($pblm_data['nv_'.($i+1)]!='Null'){
+            $nvar[$i]=$pblm_data['nv_'.($i+1)];
+            $nv++;
+           echo($nvar[$i]." ");
+       }
+   }
+    */
+   
+  // Read in the tolerances, units  and answers for parts of problem
+   $i = 0;
+   for ($m = 'a'; $m<='j'; $m++){
+     $tol[$i] = $pblm_data['tol_'.($m)];
+      
+      if($pblm_data['units_'.($m)]!='Null'){
+        $units[$i] = $pblm_data['units_'.($m)];
+      }
+      $ans[$i]= $row_ans['ans_'.$m];
+      
+      
+    // echo ($units[$i]." ");
+   // echo ($tol[$i]." ");
+    $i++;
+   }
+   
+   // read in the answers for the variables
+  
+/* 
+  for ($i = ){
+       
+       
+       
+   }
+   
+    */
+   
+   
+   
+   
+/* 
+  $bc_var = Array(15);
+    $x = "";
+    $nvar = new Array(15);
+    $vari = new Array(15);
+    $oNvar = new Array(15);
+ */
 
 
 $xml_file_name = substr($pblm_data['htmlfilenm'], 0, strrpos($pblm_data['htmlfilenm'], "."));
@@ -83,7 +146,7 @@ echo $parsed; // (result = dog)
 
         // Set the content type to be XML, so that the browser will   recognise it as XML.
      //   header( "content-type: application/xml; charset=ISO-8859-15" );
-        header( "content-type: application/xml; charset=ISO-utf-8" );
+     //   header( "content-type: application/xml; charset=ISO-utf-8" );
 
         // "Create" the document.
       //  $xml = new DOMDocument( "1.0", "ISO-8859-15" );
