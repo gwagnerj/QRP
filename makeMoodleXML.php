@@ -56,31 +56,25 @@ if(isset($_POST['iid'])){
     $nv = 0;  // number of non-null variables
    for ($i = 0; $i <= 13; $i++) {
     
-        if($pblm_data['nv_'.($i+1)]!='Null'){
+        if($pblm_data['nv_'.($i+1)]!='Null'&& $row['v_'.($i+1)]!='Null' ){
             $nvar[$i]=$pblm_data['nv_'.($i+1)];
             $nv++;
-           echo($nvar[$i]." ");
-        }  
-        if($row['v_'.($i+1)]!='Null'){
-         $vari[$i] = $row['v_'.($i+1)];
-          echo($vari[$i]." ");
-        } 
+          // echo($nvar[$i]." ");
+            $vari[$i] = $row['v_'.($i+1)];
+         // echo($vari[$i]." ");
+          
+            $pattern[$i]= '/##'.$nvar[$i].'.+?##/';
+         // echo ($pattern[$i]);
+         }
+        
       
    }
-   echo $nv;
+   //echo $nv;
    
-   /* 
-    for ($i = 0; $i <= 13; $i++) {
-    
-        if($pblm_data['nv_'.($i+1)]!='Null'){
-            $nvar[$i]=$pblm_data['nv_'.($i+1)];
-            $nv++;
-           echo($nvar[$i]." ");
-       }
-   }
-    */
+  
    
   // Read in the tolerances, units  and answers for parts of problem
+  $last_part = 0;
    $i = 0;
    for ($m = 'a'; $m<='j'; $m++){
      $tol[$i] = $pblm_data['tol_'.($m)];
@@ -88,35 +82,29 @@ if(isset($_POST['iid'])){
       if($pblm_data['units_'.($m)]!='Null'){
         $units[$i] = $pblm_data['units_'.($m)];
       }
-      $ans[$i]= $row_ans['ans_'.$m];
-      
+     
+    
+        $ans[$i]= $row_ans['ans_'.$m];
+       if($row_ans['ans_'.$m]<1.2e43){
+           $last_part = $i+1;
+            $MOE[$i]= $tol[$i]/1000 * $ans[$i];
+            $ans_pattern[$i] = "{1:NUMERICAL:=".$ans[$i].":".$MOE[$i]."}";
+     // echo($ans_pattern[$i]);
+     }
       
     // echo ($units[$i]." ");
    // echo ($tol[$i]." ");
     $i++;
    }
-   
+  // echo('last part = '.$last_part);
    // read in the answers for the variables
   
-/* 
-  for ($i = ){
-       
-       
-       
-   }
-   
-    */
+
    
    
    
    
-/* 
-  $bc_var = Array(15);
-    $x = "";
-    $nvar = new Array(15);
-    $vari = new Array(15);
-    $oNvar = new Array(15);
- */
+
 
 
 $xml_file_name = substr($pblm_data['htmlfilenm'], 0, strrpos($pblm_data['htmlfilenm'], "."));
@@ -125,28 +113,23 @@ $xml_file_name = $xml_file_name.'.xml';
 $htmlfilenm = "uploads/".$pblm_data['htmlfilenm'];
 
 
-// this next function came from stack overflow https://stackoverflow.com/questions/5696412/how-to-get-a-substring-between-two-strings-in-php
+// this next function modified from stack overflow https://stackoverflow.com/questions/5696412/how-to-get-a-substring-between-two-strings-in-php
 function get_string_between($string, $start, $end){
     $string = ' ' . $string;
     $ini = strpos($string, $start);
     if ($ini == 0) return '';
     $ini += strlen($start);
-    $len = strpos($string, $end, $ini) - $ini;
+    if (strpos($string, $end)!=false){
+        $len = strpos($string, $end, $ini) - $ini;
+    } else {$len = strlen($string)-$ini;}
     return substr($string, $ini, $len);
 }
 
-
-/* 
-$fullstring = 'this is my [tag]dog[/tag]';
-$parsed = get_string_between($fullstring, '[tag]', '[/tag]');
-
-echo $parsed; // (result = dog)
- */
+    
 
 
         // Set the content type to be XML, so that the browser will   recognise it as XML.
-     //   header( "content-type: application/xml; charset=ISO-8859-15" );
-     //   header( "content-type: application/xml; charset=ISO-utf-8" );
+       //   header( "content-type: application/xml; charset=ISO-utf-8" );
 
         // "Create" the document.
       //  $xml = new DOMDocument( "1.0", "ISO-8859-15" );
@@ -227,17 +210,155 @@ echo $parsed; // (result = dog)
               $xml_questiontext->setAttribute( "format", "html" );
               
                 
-              $html_stem = get_string_between(file_get_contents($htmlfilenm),'t==','p==');  // I think this will always be OK
-              $html_q_a = get_string_between(file_get_contents($htmlfilenm),'a==p','p==b');  // what if part a is not numerical we need to check using the answers  also these should be an array
-              $html_q_b = get_string_between(file_get_contents($htmlfilenm),'a==p','p==b'); // what if part b does not exist of is the last one
+              $html_stem = get_string_between(file_get_contents($htmlfilenm),'t==','p==');  
+              $htmlQuestions = "p==".get_string_between(file_get_contents($htmlfilenm),'p==','==t'); 
+              $html_reflections = get_string_between(file_get_contents($htmlfilenm),'w==','==w'); 
+               
+               // substitute all of the variables into the stem // note - we would also need to substitute in if the vars are in the questions
+                for( $i=0;$i<$nv;$i++){
+                    $html_stem = preg_replace($pattern[$i],$vari[$i],$html_stem);
 
+                }
+                $m='a';
+                $q='b';
+                $html_question = '';
+                for( $i=0;$i<$last_part;$i++){
+                    if($ans[$i]<1.2e43){
+                       // if($i != $last_part-1){
+                          $string1= $m."==p";
+                          
+                          $string2 = 'p=='.$q;
+                        
+                          $html_q[$i] = trim(get_string_between($htmlQuestions,$string1,$string2));
+                           
+                            // just in case there are some variables in the questions we need to substitute for them
+                           for( $j=0;$j<$nv;$j++){
+                                    $html_q[$i] = preg_replace($pattern[$j],$vari[$j],$html_q[$i]);
+                                }
+                            // now add the questions and answer pattern to the stem for the complete 
+                            
+                            $html_question = $html_question.$m.")&nbsp;".$html_q[$i].'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$ans_pattern[$i]."<br><br>";
+                        $m++;
+                        $q++;
+                      //  } 
+                    }
+                }
+              // get rid of alll the paragraph formatting in the question block with a regular expression
+           // $html_question = preg_replace('/<p\b[^>]*>(.*?)<\/p>/i', '', htmlentities($html_question));
+           
+           
+          
+            
+            
+           // $html_question = preg_replace('/<p\b[^>]*>(.*?)<\/p>/i', '', $result['title']);
+            // echo ('we should have stripped the paragraphs out '.$html_question);
+             // now add the stem
+              $html_question = $html_stem.'<br>'.$html_question;
+              $html_question = strip_tags($html_question,'<br>,<img>,<sub>,<sup>,</sub></sup>');
+         
+         // need to take care of the images     
+         
+              $dom = new DOMDocument();
+               $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html_question);
+
+              // $dom->loadHTML($html_question,LIBXML_HTML_NODEFDTD);
+                $images = $dom->getElementsByTagName('img');
+              //   C:\xampp\htdocs\QRP\uploads\p529_0_hydroelectric Pump Storage_files
+              
+            
+                foreach ($images as $image) {
+                   
+                 $src = $image->getAttribute('src');
+                
+                 $src = 'uploads/'.$src;
+                 
+                 // $src = urldecode(str_replace('/','\\', $src));  // comment this out when not on the local system
+         
+                 $src = urldecode($src);
+                 // echo('source of image is '.$src);
+                     $type = pathinfo($src, PATHINFO_EXTENSION);
+                
+                    //  $new_src = base64_encode(file_get_contents($src));
+                      $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+                    //  echo ($base64);
+                            
+                      $image->setAttribute("src", $base64); 
+                       
+                      $html_question = $dom->saveHTML();
+                    //echo substr($dom->saveHTML(), 12, -15); // the star of this operation
+                     // $html_question = $dom->load(WTF);
+                     //  $html_question = $dom->loadHTML('wtf');
+ 
+                 //  echo '<pre>' . htmlspecialchars($dom->saveHTML()) . '</pre>';
+                    
+
+
+
+
+                //    $dom ->SaveHtml();
+                //  $html = '<html>....</html>';
+                 //   $dom = new DOMDocument();
+                //    $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
+                //    $images = $dom->getElementsByTagName('img');
+                //    foreach ($images as $image) {
+                //            $src = $image->getAttribute('src');
+                //            $type = pathinfo($src, PATHINFO_EXTENSION);
+                //            $data = file_get_contents($src);
+                 
+                         
+                    }
+                   // $html = $dom->saveHTML();
+                  
+                  
+                  
+                  
+                 
+                  
+                  
+                  
+                  
+                  
+                   // echo('encoded image : '.$new_src);
+                    
+                     
+                 /*  
+                 */
+                
+                // $new_src = 'image/products/newimage.jpg';
+               //  $image->setAttribute('src', $new_src);
+              //   $image->setAttribute('data-src', $old_src);
+                
+                 
+              //  $data['description'] = $dom->saveHTML();
+             
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+         //   $html_q_a = get_string_between(file_get_contents($htmlfilenm),'a==p','p==b');  // what if part a is not numerical we need to check using the answers  also these should be an array
+          //    $html_q_b = get_string_between(file_get_contents($htmlfilenm),'a==p','p==b'); // what if part b does not exist of is the last one
+        //     echo($html_q_a);
+             
+           
+             
+             
+             
              $xml_text1 = $xml->createElement( "text");
              
                $xml_questiontext->appendChild( $xml_text1 );
           
                      $xml_text1->appendChild(
-                      $xml->createCDATASection($html_stem." x is equal to 5 and y is equal to 4.&nbsp; <br>Determine the value of :<br>a) x +y&nbsp;{2:NUMERICAL:=9.0:0.1#Feedback for correct answer 9}.<br><br>b)
-                  x - y&nbsp;&nbsp;{2:NUMERICAL:=-1.0:0.1#Feedback for correct answer 1}.<br>")
+                      $xml->createCDATASection($html_question)
                     );
                      
            
@@ -265,13 +386,6 @@ echo $parsed; // (result = dog)
          $xml_quiz->appendChild( $xml_question1 );
 
          
-/* 
-           $xml_info = $xml->createElement( "info");
-          
-            // Append category and info to question.
-            $xml_question->appendChild( $xml_category );
-            $xml_question->appendChild( $xml_info );
- */
 
 
 
