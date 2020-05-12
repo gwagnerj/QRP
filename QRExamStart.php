@@ -46,6 +46,22 @@ $_SESSION['counter']=0;  // this is for the score board
 <title>QRExam Start</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+   .outer {
+  width: 100%;
+  margin: 0 auto;
+ 
+}
+
+.inner {
+  margin-left: 50px;
+ 
+} 
+
+
+</style>
+
+
 
 </head>
 
@@ -107,22 +123,113 @@ $_SESSION['counter']=0;  // this is for the score board
            
            </br> </br>
            
-                 <font color=#003399>Attempts for the problems? &nbsp; </font>
-                 <div>
-                   <input type = "radio" name ="attempt_type" id = "check_inf" value = "1" checked > </input>
-                       <label for "check_infin"> Check as they go - No limit </label>
-                 </div>
-                 </br>
-                 <div>
-                    <input type = "radio" name ="attempt_type" id = "check_limit" value = "2" > </input>
-                       <label for "check_limit"> No Feedback until they Submit.  Max number of Submits = 
-                        <input type = "number" name ="num_attempts" id = "num_attempts" min = "1", max = "50" value = "1" required > </input>
-                       
-                       
-                       
-                       </label>   
+                 <font color=#003399>Attempts per Problem: &nbsp; </font>
+                
+                  <div  class = "outer" >
+                     <div  class = "inner" >
+
+
+                            <div>
+                               <input type = "radio" name ="attempt_type" id = "check_inf" value = "1" checked > </input>
+                                   <label for "check_infin"> Check as they go - No limit </label>
+                             </div>
+                             </br>
+                             <div>
+                                <input type = "radio" name ="attempt_type" id = "check_limit" value = "2" > </input>
+                                   <label for "check_limit"> No Feedback until they Submit.  Max number of Submits = 
+                                    <input type = "number" name ="num_attempts" id = "num_attempts" min = "1", max = "50" value = "1" required > </input>
+                                   </label>   
+                            </div>
+                      </div>  
+                    </div>   
+                            
+                            
+         </br></br>
+                      <font color=#003399>Checker Availibility: &nbsp; </font>
+                 <div  class = "outer" >
+                     <div  class = "inner" >
+                     <div>
+                       <input type = "radio" name ="attempt_avail" id = "check_avail" value = "1" checked > </input>
+                           <label for "check_avail"> Always On </label>
+                     </div>
+                       </br>
+                     <div  >
+                        <input type = "radio" name ="attempt_avail" id = "check_avail" value = "2" > </input>
+                           <label for "check_avail"> On After  
+                            <input    type = "number" name ="on_after" id = "on_after" min = "1", max = "999" value = "1" required  > min</input>
+                           
+                           </label>   
+                    </div>
+                      </br>
+                     <div>
+                        <input type = "radio" name ="attempt_avail" id = "check_avail" value = "3" > </input>
+                           <label for "check_avail"> Off After  
+                            <input type = "number" name ="off_after" id = "off_after" min = "1", max = "999" value = "30" required > min </input>
+                           
+                           </label>  
+                           
+                    </div>
+                    </br>
+                     <div>
+                        <input type = "radio" name ="attempt_avail" id = "check_avail" value = "4" > </input>
+                           <label for "check_avail"> Repeating: On   
+                            <input type = "number" name ="on_repeat" id = "on_repeat" min = "1", max = "999" value = "5" required > min then Off &nbsp; </input>
+                             <input type = "number" name ="off_repeat" id = "off_repeat" min = "1", max = "999" value = "15" required > min </input>
+                           </label>   
+                    </div>
+                    
+                    </div>
                 </div>
          </br></br>
+               
+         
+                      <font color=#003399>Exam Versions: &nbsp; </font>
+                 
+                   <div  class = "outer" >
+                     <div  class = "inner" >
+                 
+                             <div>
+                               <input type = "radio" name ="exam_version" id = "exam_version" value = "1" checked > </input>
+                                   <label for "exam_version"> Different for Every Examinee </label>
+                             </div>
+                               </br>
+                             <div  >
+                                <input type = "radio" name ="exam_version" id = "exam_version" value = "2" > </input>
+                                   <label for "exam_version">   
+                                    <input    type = "number" name ="num_versions" id = "num_versions" min = "1", max = "999" value = "4" required  > min</input>
+                                   
+                                   </label>   
+                            </div>
+                            
+                       </div>
+                   </div>
+                  </br>
+               
+                      <font color=#003399>Exam Timing: &nbsp; </font>
+                 
+                   <div  class = "outer" >
+                     <div  class = "inner" >
+                 
+                             <div>
+                               <input type = "radio" name ="exam_timing" id = "exam_timing" value = "1" checked > </input>
+                                   <label for "exam_timing"> Synchonous (everyone takes the exam at the same time) </label>
+                             </div>
+                               </br>
+                             <div  >
+                                <input type = "radio" name ="exam_timing" id = "exam_timing" value = "2" > </input>
+                                   <label for "exam_timing"> Asynchronous:  Exam Window Opens on:    
+                                    <input type = "date" name ="open_e_window_d" id = "open_e_window_d" value="<?php  date_default_timezone_set('America/Indiana/Indianapolis'); echo date('Y-m-d');  ?>"  ></input>&nbsp; at: &nbsp;
+                                      <input type = "time" name ="open_e_window_t" id = "open_e_window_t" value="<?php echo date('H:i'); ?>"> </input> 
+                                   </br>
+                                    &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;and Closes on: &nbsp; </input>
+                                     <input type = "date" name ="close_e_window_d" id = "close_e_window-d" value="<?php $time_now = date('Y-m-d'); echo (string)$time_now; ?>"  ></input>&nbsp; at: &nbsp;
+                                      <input type = "time" name ="close_e_window_t" id = "close_e_window_t" value="<?php echo date('H:i',strtotime("+3 hours")); ?>"> </input> 
+                           </label>   
+                            </div>
+                            
+                       </div>
+                   </div>
+                  </br> 
             
             
              <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
@@ -139,9 +246,32 @@ $_SESSION['counter']=0;  // this is for the score board
 	
 	
 	$(document).ready( function () {
+      
+
+ /*
+      var start_def = new Date();
+       start_time = start_def.getTime();
+           document.getElementById("open_e_window_t").defaultValue = start_time;
+    // set the date for the open window to default to right now
+    
+    
+      Date.prototype.toDateInputValue = (function() {
+            var local = new Date(this);
+                    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+                    return local.toJSON().slice(0,10);
+                });
+    
+    
+    
+            $('#open_e_window').val(new Date().toDateInputValue());
         
+     
+        */
+       
+       
+       
 		
-		var currentclass_name = '';
+		var currentclass_name = "";
 		
 			$("#currentclass_id").change(function(){
             var	 currentclass_id = $("#currentclass_id").val();
