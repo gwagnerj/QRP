@@ -1,5 +1,5 @@
 <?php
- header( "content-type: application/xml; charset=ISO-utf-8" );
+ //header( "content-type: application/xml; charset=ISO-utf-8" );
      // Set the content type to be XML, so that the browser will   recognise it as XML.
 
 require_once "pdo.php";
@@ -82,11 +82,11 @@ if(isset($_POST['iid'])){
     $xml_file_name = $xml_file_name.'.xml';
 
     $htmlfilenm = "uploads/".$pblm_data['htmlfilenm'];
-
+/* 
     $html_stem = get_string_between(file_get_contents($htmlfilenm),'t==','p==');  
     $htmlQuestions = "p==".get_string_between(file_get_contents($htmlfilenm),'p==','==t'); 
     $html_reflections = get_string_between(file_get_contents($htmlfilenm),'w==','==w'); 
-    
+     */
     
   //-----------------------------------------------------creating header for HTML file -------------------------------
       
@@ -107,8 +107,11 @@ if(isset($_POST['iid'])){
             $xml_question->setAttribute( "type", "category" );
             $xml_category = $xml->createElement( "category"); 
             $xml_question->appendChild( $xml_category );
-           
-            $xml_text = $xml->createElement( "text","\$course\$/top/CategoryName"); 
+             $cat_name = '\$course\$/top/CategoryName/'.$pblm_data['title'];
+            
+            
+          // $xml_text = $xml->createElement( "text","\$course\$/top/CategoryName"); 
+              $xml_text = $xml->createElement( "text",$cat_name); 
              $xml_category->appendChild( $xml_text );
             
             
@@ -128,7 +131,6 @@ if(isset($_POST['iid'])){
              $xml_question->appendChild( $xml_category );
            
                       // the catagory name should be the problem title
-           $cat_name = '\$course\$/top/CategoryName/'.$pblm_data['title'];
            
           //  $xml_text = $xml->createElement( "text","\$course\$/top/CategoryName/Testing XML up1"); 
              $xml_text = $xml->createElement( "text", $cat_name); 
@@ -145,7 +147,7 @@ if(isset($_POST['iid'])){
  
    
    //--------------------------------big Loop---------------------------------------------------------------------------------------------------
-  for($dex=2; $dex<=4; $dex++){
+  for($dex=101; $dex<=151; $dex++){
       
     $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
 	$stmt->execute(array(":problem_id" => $_POST['problem_id'], ":dex" => $dex));
@@ -163,7 +165,10 @@ if(isset($_POST['iid'])){
     
         if($row['v_'.($i+1)]!='Null' ){
             $vari[$i] = $row['v_'.($i+1)];
-         // echo ($pattern[$i]);
+           
+       //    echo ('dex '.$dex);
+       //  echo ('vari '.$vari[$i]);
+       //   echo ('pattern for input variable '.$pattern[$i]);
         }
     }
    
@@ -202,10 +207,17 @@ if(isset($_POST['iid'])){
              
              $xml_questiontext = $xml->createElement( "questiontext" );
               $xml_questiontext->setAttribute( "format", "html" );
-              
-                
-
+        
+                $html_stem = get_string_between(file_get_contents($htmlfilenm),'t==','p==');  
+                $htmlQuestions = "p==".get_string_between(file_get_contents($htmlfilenm),'p==','==t'); 
+                $html_reflections = get_string_between(file_get_contents($htmlfilenm),'w==','==w'); 
+            
+            
                
+            $dom = new DOMDocument();
+             //$dom->encoding = 'utf-8';
+           // $dom->formatOutput = true;   
+                 
                // substitute all of the variables into the stem // note - we would also need to substitute in if the vars are in the questions
                 for( $i=0;$i<$nv;$i++){
                     $html_stem = preg_replace($pattern[$i],$vari[$i],$html_stem);
@@ -240,26 +252,26 @@ if(isset($_POST['iid'])){
          
          // need to take care of the images     
          
-              $dom = new DOMDocument();
-               $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html_question);
-
-                $images = $dom->getElementsByTagName('img');
+                 $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html_question);
             
+                $images = $dom->getElementsByTagName('img');
+             
                 foreach ($images as $image) {
                      $src = $image->getAttribute('src');
                      $src = 'uploads/'.$src;
                      
-                     // $src = urldecode(str_replace('/','\\', $src));  // comment this out when not on the local system
+                    
              
                      $src = urldecode($src);
                      $type = pathinfo($src, PATHINFO_EXTENSION);
                      $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
                      $image->setAttribute("src", $base64); 
                      $html_question = $dom->saveHTML();
-                         
+                     
                }
    
              
+              
              $xml_text1 = $xml->createElement( "text");
              
              $xml_questiontext->appendChild( $xml_text1 );
@@ -267,8 +279,8 @@ if(isset($_POST['iid'])){
               $xml_text1->appendChild(
                       $xml->createCDATASection($html_question)
                     );
-                    
-           $xml_question->appendChild( $xml_questiontext );
+                
+          // $xml_question->appendChild( $xml_questiontext );
             $xml_question1->appendChild( $xml_questiontext );
            
             $xml_feedback = $xml->createElement( "generalfeedback" );
@@ -286,23 +298,36 @@ if(isset($_POST['iid'])){
             $xml_question1->appendChild( $xml_idnumber );
             
          $xml_quiz->appendChild( $xml_question1 );
-        
-         // $xml_quiz->appendChild( $xmlCDATA );
-          
+   
           $xml->appendChild( $xml_quiz );
         
-     
+    // $xml_document = $xml->saveXML();
 
+      
+       
+       
       }
-
+      
+       $xml->save('uploads/'.$xml_file_name);
+ //print $xml->saveXML();
 
    // Parse the XML.
-        print $xml->saveXML();
+   
+   
+   echo('<a href = "uploads/'.$xml_file_name.'?dummy = dummy" download> download file</a>');
+    echo('<br> <br><br>After downloading the file, close this browser window');
+   
+ ?> 
+
+
+
+
+  
+  
+ 
          
-        // $xmlData  = $xml->saveXML();
-        $xml->save($xml_file_name);
-
-
+  
+   
 
 
 
