@@ -446,49 +446,7 @@ $(document).ready(function(){
 								});
 					});
 					
-				/* 	// try this as a separate script below
-					// comes from https://stackoverflow.com/questions/6985507/one-time-page-refresh-after-first-page-load on reloading the page to get rid of the sometimes error of varaibles not being substituted in
-					window.onload = function() {
-						if(!window.location.hash) {
-							window.location = window.location + '#loaded';
-							window.location.reload();
-						}
-					}
-						 */	
 					
-						// in this case we are using the php to load the function so we do not need to replace the substitute me with the JQ
-					
-			/* 		
-					$('#substitute_me').load("uploads/"+openup, 'document', function () {
-												// call the function...
-												loadScript("Substvars.js", function() {
-													//  alert('script ready!'); 
-													var imgPath = '';
-													var indexQRP = '';
-													var addPath = "uploads/";
-													//	alert(addPath);
-													
-													// for each image in the document slip in the qrp subdirectory designation into the path to get the correct path to the image
-													$('img').each(function(){
-														
-														imgPath = $(this).prop('src');
-															console.log('imagepath before',imgPath);
-														//		alert (imgPath);
-															//referrer.toLowerCase().indexOf
-														indexQRP = imgPath.toLowerCase().indexOf('/qrp/')+5;
-														console.log('indexofQRP',indexQRP);
-														imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
-														console.log('imagepath',imgPath);
-														
-														$(this).prop('src', imgPath);
-												
-													});
-												});
-											}).html();
-
-		 */
-				
-				
 				// window.location.href="uploads/"+openup;
 						} else {
 				
@@ -501,11 +459,6 @@ $(document).ready(function(){
 						
 						
 					}
-
-		   
-
-
-
 					
 		  });
 		  
