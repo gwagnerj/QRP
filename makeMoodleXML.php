@@ -1,5 +1,5 @@
 <?php
-//header( "content-type: application/xml; charset=ISO-utf-8" );
+ header( "content-type: application/xml; charset=ISO-utf-8" );
      // Set the content type to be XML, so that the browser will   recognise it as XML.
 
 require_once "pdo.php";
@@ -69,11 +69,25 @@ if(isset($_POST['iid'])){
          }
    }
    //echo $nv;
+   
+   //read taolerances into array
    $i = 0;
     for ($m = 'a'; $m<='j'; $m++){
         $tol[$i] = $pblm_data['tol_'.($m)];
         $i++;
     }
+    
+    
+    $xml_file_name = substr($pblm_data['htmlfilenm'], 0, strrpos($pblm_data['htmlfilenm'], "."));
+    $xml_file_name = $xml_file_name.'.xml';
+
+    $htmlfilenm = "uploads/".$pblm_data['htmlfilenm'];
+
+    $html_stem = get_string_between(file_get_contents($htmlfilenm),'t==','p==');  
+    $htmlQuestions = "p==".get_string_between(file_get_contents($htmlfilenm),'p==','==t'); 
+    $html_reflections = get_string_between(file_get_contents($htmlfilenm),'w==','==w'); 
+    
+    
   //-----------------------------------------------------creating header for HTML file -------------------------------
       
 
@@ -130,8 +144,8 @@ if(isset($_POST['iid'])){
         $xml_quiz->appendChild( $xml_question );
  
    
-   
-  for($dex=2; $dex<3; $dex++){
+   //--------------------------------big Loop---------------------------------------------------------------------------------------------------
+  for($dex=2; $dex<=4; $dex++){
       
     $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
 	$stmt->execute(array(":problem_id" => $_POST['problem_id'], ":dex" => $dex));
@@ -141,15 +155,8 @@ if(isset($_POST['iid'])){
 	$stmt->execute(array(":problem_id" => $_POST['problem_id'], ":dex" => $dex));
 	$row_ans = $stmt->fetch();
 
- 
-    $xml_file_name = substr($pblm_data['htmlfilenm'], 0, strrpos($pblm_data['htmlfilenm'], "."));
-    $xml_file_name = $xml_file_name.'.xml';
 
-    $htmlfilenm = "uploads/".$pblm_data['htmlfilenm'];
-
-
-
-//------------------------------------Get index specific data---------------------------- 
+//------------------------------------Get index specific data ---------------------------- 
    // Read in the value for the input variables
    
     for ($i = 0; $i <= $nv; $i++) {
@@ -160,7 +167,7 @@ if(isset($_POST['iid'])){
         }
     }
    
-  // set the answer and margin of error into a pattern
+  // set the answer and margin of error into a ans_pattern
    $last_part = 0;
    $i = 0;
    for ($m = 'a'; $m<='j'; $m++){
@@ -190,16 +197,14 @@ if(isset($_POST['iid'])){
             $xml_comment = $xml->createComment('this is my comment'); 
              $xml_question1->appendChild( $xml_comment );
             
-             $xml_comment = $xml->createComment($pblm_data['title']); 
+             $xml_comment = $xml->createComment('version - '.$version); 
              $xml_question1->appendChild( $xml_comment );
              
              $xml_questiontext = $xml->createElement( "questiontext" );
               $xml_questiontext->setAttribute( "format", "html" );
               
                 
-              $html_stem = get_string_between(file_get_contents($htmlfilenm),'t==','p==');  
-              $htmlQuestions = "p==".get_string_between(file_get_contents($htmlfilenm),'p==','==t'); 
-              $html_reflections = get_string_between(file_get_contents($htmlfilenm),'w==','==w'); 
+
                
                // substitute all of the variables into the stem // note - we would also need to substitute in if the vars are in the questions
                 for( $i=0;$i<$nv;$i++){
@@ -286,16 +291,16 @@ if(isset($_POST['iid'])){
           
           $xml->appendChild( $xml_quiz );
         
-        // Parse the XML.
-        print $xml->saveXML();
-         
-        // $xmlData  = $xml->saveXML();
-            $xml->save($xml_file_name);
+     
 
       }
 
 
-
+   // Parse the XML.
+        print $xml->saveXML();
+         
+        // $xmlData  = $xml->saveXML();
+        $xml->save($xml_file_name);
 
 
 
