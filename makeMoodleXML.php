@@ -248,10 +248,10 @@ if(isset($_POST['iid'])){
            
              // now add the stem
               $html_question = $html_stem.'<br>'.$html_question;
-              $html_question = strip_tags($html_question,'<br>,<img>,<sub>,<sup>,</sub></sup>');  // strip out the tags except the ones in the secound argument
+          //    $html_question = strip_tags($html_question,'<br>,<img>,<sub>,<sup>,</sub></sup>');  // strip out the tags except the ones in the secound argument
          
          // need to take care of the images     
-         
+                libxml_use_internal_errors(true); // this gets rid of the warnig that the p tag isn't closed explicitly
                  $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html_question);
             
                 $images = $dom->getElementsByTagName('img');
@@ -309,7 +309,7 @@ if(isset($_POST['iid'])){
       }
       
        $xml->save('uploads/'.$xml_file_name);
- //print $xml->saveXML();
+// print $xml->saveXML();
 
    // Parse the XML.
    
