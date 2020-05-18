@@ -3,8 +3,10 @@
      // Set the content type to be XML, so that the browser will   recognise it as XML.
 
 require_once "pdo.php";
+require_once "simple_html_dom.php";
 session_start();
 
+echo ('	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>');
 
 // This is the make a Moodle XML file of the problem
 
@@ -64,6 +66,12 @@ if(isset($_POST['iid'])){
         if($pblm_data['nv_'.($i+1)]!='Null' ){
             $nvar[$i]=$pblm_data['nv_'.($i+1)];
             $nv++;
+            $pattern_for_var_image[$i] = '/##'.$nvar[$i].',img##/';
+     
+            $pattern_for_var_img_sub[$i] = 's__'.$nvar[$i].',img__s';
+            $pattern_for_var_img_sub2[$i] = 'x__'.$nvar[$i].',img__x';
+          //   echo ($pattern_for_var_image[$i]);
+          //    echo ($pattern_for_var_img_sub[$i]);
             $pattern[$i]= '/##'.$nvar[$i].'.+?##/';
          // echo ($pattern[$i]);
          }
@@ -147,7 +155,7 @@ if(isset($_POST['iid'])){
  
    
    //--------------------------------big Loop---------------------------------------------------------------------------------------------------
-  for($dex=101; $dex<=151; $dex++){
+  for($dex=101; $dex<=150; $dex++){
       
     $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
 	$stmt->execute(array(":problem_id" => $_POST['problem_id'], ":dex" => $dex));
@@ -208,24 +216,91 @@ if(isset($_POST['iid'])){
              $xml_questiontext = $xml->createElement( "questiontext" );
               $xml_questiontext->setAttribute( "format", "html" );
         
-                $html_stem = get_string_between(file_get_contents($htmlfilenm),'t==','p==');  
-                $htmlQuestions = "p==".get_string_between(file_get_contents($htmlfilenm),'p==','==t'); 
-                $html_reflections = get_string_between(file_get_contents($htmlfilenm),'w==','==w'); 
+        
+        
+        
+                $html_file = file_get_contents($htmlfilenm);
+              //  print($html_file);  
+             
+                        
+
+
+
+             
+                     //(<img)(.+)(img__s)(.+)>\d.
+          // $pattern_for_var_image[$i] = '/(<img)(.+?)__s'.$nvar[$i].',img__s(.+?)>'.vari[$j].'/gs';
+               
+               // first protect all of the images that could be a variable images and put a temporary code for them
+                
+                for( $i=0;$i<$nv;$i++){
+                    $html_file = preg_replace($pattern_for_var_image[$i],$pattern_for_var_img_sub[$i],$html_file);
+                } 
+                
+              // print($html_file);  
+                
+                
+                
+                
+                 // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+               for( $i=0;$i<$nv;$i++){
+                    $html_file = preg_replace($pattern[$i],$vari[$i],$html_file);
+                }
+               // print($html_file);  
+                // now take care of the varaible images 
+                for( $i=0;$i<$nv;$i++){
             
+                   $image_match_pattern = '/('.'(img)(.+?)s__'.$nvar[$i].',img__s(.+?)'.substr($vari[$i], strpos($vari[$i], "_") + 1).'(?=<\/span>)){1}/s';
+                   
+                   //s__equ,img__s(.+?)1(?=<\/span>)
+                   $image_match_pattern_sub = '(img)(.+?)x__'.$nvar[$i].',img__x(.+?)'.substr($vari[$i], strpos($vari[$i], "_") + 1).'(?=<\/span>)';
+    //               echo('image match pattern: '.$image_match_pattern);
+    //            echo('<br> WTF </br> &nbsp; ');
+                   if(preg_match($image_match_pattern,$html_file)){
+                        
+                        // replace the markup in the image
+                      // $pattern_for_var_img_sub2[$i] = 'x__'.$nvar[$i].',img__x';
+                         $pattern_to_protect = '/'.$pattern_for_var_img_sub[$i].'(.+?)'.substr($vari[$i], strpos($vari[$i], "_") + 1).'(?=<\/span>)/s';
+                         $pattern_to_protect_sub = $pattern_for_var_img_sub2[$i].substr($vari[$i], strpos($vari[$i], "_") + 1);
+        //                  echo('pattern to protect '.$pattern_to_protect);
+        //                  echo('</br>');
+                      //  echo('&nbsp; replace with <br>');
+                       //   echo($pattern_for_var_img_sub2[$i]);
+                     //   echo('yeah <br>');
+                        
+                     //   $html_file = preg_replace($pattern_to_protect,$pattern_to_protect_sub,$html_file);
+                       //  $html_file = preg_replace($image_match_pattern,$image_match_pattern_sub,$html_file);
+                       
+                    } 
+                }
+                // get rid of all images that have the old sub pattern
+               /*  
+                 for( $i=0;$i<$nv;$i++){
+                        $html_file = preg_replace('/(<img)(.+)__s'.$nvar[$i].'img__s(.+)>'.$vari[$i].'/s','',$html_file);
+                 }
+         */
+        // print($html_file);       
+                $html_stem = get_string_between($html_file,'t==','p==');  
+                $htmlQuestions = "p==".get_string_between($html_file,'p==','==t'); 
+                $html_reflections = get_string_between($html_file,'w==','==w'); 
+                
+            // looking for variable images 
             
+            /* 
+            
+             for( $i=0;$i<$nv;$i++){
+                    $html_stem = preg_replace($pattern[$i],$vari[$i],$html_stem);
+
+                }
+            */ 
                
             $dom = new DOMDocument();
              //$dom->encoding = 'utf-8';
            // $dom->formatOutput = true;   
                  
-               // substitute all of the variables into the stem // note - we would also need to substitute in if the vars are in the questions
-                for( $i=0;$i<$nv;$i++){
-                    $html_stem = preg_replace($pattern[$i],$vari[$i],$html_stem);
-
-                }
+                
                 $m='a';
                 $q='b';
-                $html_question = '';
+                $html_question = '<! doctype html>';
                 for( $i=0;$i<$last_part;$i++){
                     if($ans[$i]<1.2e43){
                        // if($i != $last_part-1){
@@ -233,10 +308,7 @@ if(isset($_POST['iid'])){
                           $string2 = 'p=='.$q;
                           $html_q[$i] = trim(get_string_between($htmlQuestions,$string1,$string2));
                           
-                            // just in case there are some variables in the questions we need to substitute for them
-                           for( $j=0;$j<$nv;$j++){
-                                    $html_q[$i] = preg_replace($pattern[$j],$vari[$j],$html_q[$i]);
-                                }
+                          
                             // now add the questions and answer pattern to the stem for the complete 
                             $html_question = $html_question.$m.")&nbsp;".$html_q[$i].'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$ans_pattern[$i]."<br><br>";
                         $m++;
@@ -250,14 +322,23 @@ if(isset($_POST['iid'])){
               $html_question = $html_stem.'<br>'.$html_question;
           //    $html_question = strip_tags($html_question,'<br>,<img>,<sub>,<sup>,</sub></sup>');  // strip out the tags except the ones in the secound argument
          
-         // need to take care of the images     
+         // need to take care of the images  for the xml Moodle document this means replacing the image reference with an encoded embedded image   
                 libxml_use_internal_errors(true); // this gets rid of the warnig that the p tag isn't closed explicitly
                  $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html_question);
-            
-                $images = $dom->getElementsByTagName('img');
+  
+               $images = $dom->getElementsByTagName('img');
              
                 foreach ($images as $image) {
-                     $src = $image->getAttribute('src');
+                   /*  
+                    if (preg_match("/s__/i", $html_question)) {
+                        echo "A match was found.";
+                    } else {
+                        echo "A match was not found.";
+                    }
+
+
+ */
+                    $src = $image->getAttribute('src');
                      $src = 'uploads/'.$src;
                      
                     
@@ -270,6 +351,60 @@ if(isset($_POST['iid'])){
                      
                }
    
+  // echo($html_question);
+  $simp_htm_doc = new simple_html_dom();
+    $simp_htm_doc->load($html_question);
+    
+ 
+    $captions = $simp_htm_doc -> find('.MsoCaption');
+    // $images = $simp_htm_doc -> prev_sibling(find('.MsoCaption'));
+   // $num_captions = count($captions);
+   // echo('$num_captions:  '.$num_captions);
+    
+    //for ($j=0; $j<$num_captions;$j++){
+    
+    foreach($captions as $caption){
+        $caption_text =$caption->plaintext;
+        $caption_text = preg_split("/(,|s__|__s)/",$caption_text);
+        $caption_value = trim(trim($caption_text[1])."_".trim($caption_text[3]));
+        
+        $image = $caption->prev_sibling();
+        
+       
+           $keep_image = 0;        
+          for( $i=0;$i<$nv;$i++){
+                //  echo('  vari[$i] = '.$vari[$i]);
+                    if($vari[$i] == $caption_value){
+                    //    echo('___________________________________yes________________________________________');
+                     $keep_image = 1;
+                    }
+                }
+                    
+               if($keep_image == 0)  {   
+                  // echo ('delete image');
+                   $image->outertext = '';
+                   
+               }   
+              //  echo('  caption_value = '.$caption_value);
+               
+              $caption->outertext='';
+       
+     
+       
+       
+       
+       
+    }
+  
+ // echo($simp_htm_doc);
+
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+   
              
               
              $xml_text1 = $xml->createElement( "text");
@@ -277,10 +412,11 @@ if(isset($_POST['iid'])){
              $xml_questiontext->appendChild( $xml_text1 );
           
               $xml_text1->appendChild(
-                      $xml->createCDATASection($html_question)
+                    //  $xml->createCDATASection($html_question)
+                       $xml->createCDATASection($simp_htm_doc)
                     );
                 
-          // $xml_question->appendChild( $xml_questiontext );
+          
             $xml_question1->appendChild( $xml_questiontext );
            
             $xml_feedback = $xml->createElement( "generalfeedback" );
@@ -301,27 +437,31 @@ if(isset($_POST['iid'])){
    
           $xml->appendChild( $xml_quiz );
         
-    // $xml_document = $xml->saveXML();
+     $xml_document = $xml->saveXML();
 
-      
+    
        
        
       }
       
+                 
+      
        $xml->save('uploads/'.$xml_file_name);
-// print $xml->saveXML();
+ //print $xml->saveXML();
 
    // Parse the XML.
    
+  
+     
    
-   echo('<a href = "uploads/'.$xml_file_name.'?dummy = dummy" download> download file</a>');
+  echo('<a href = "uploads/'.$xml_file_name.'?dummy = dummy" download> download file</a>');
     echo('<br> <br><br>After downloading the file, close this browser window');
    
- ?> 
+  
 
 
 
-
+ ?>
   
   
  
