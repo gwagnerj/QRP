@@ -82,10 +82,7 @@ if (isset($_POST['progress'])) {
 
 
 if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
-	
 	$_SESSION['error'] = 'error occured in controller - progress not set';
-	
-	
 	header("Location: QRhomework.php");
 	die();
 	
@@ -190,9 +187,6 @@ if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 			$_SESSION['activity_id'] = $activity_row['activity_id'];
 				
 				
-				
-				
-				
 				// so the logic is read from the assignment table and if say pre-problem 1 was assigned put it in the activity table
 				// then read from the activity table if say proproblem 1 is not 1 then move on but if it is one we need to display the pre problem.  once preproblem 1 is done that will write a 2 to the activity table 
 				// so if pre problem 1 is ero that should mean it was never assigned.  If preproblem 1 (pp1) is 1 that means it is assined and undone.  If pp1 is 2 that means it 
@@ -228,20 +222,13 @@ if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 						."&time_pp4=".$activity_row['time_pp4']
 						);
 						die();
-
 				}
 				
 			// this problem has pre-problem assigned
 				
 				header("Location: QRdisplayPre.php");
 				die();
-				
-				
-			
-			
 		}
-		
-		
 	}
 	
 }
