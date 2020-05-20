@@ -3,7 +3,7 @@ require_once "pdo.php";
 require_once "simple_html_dom.php";
 // this bit of code takes a problem from an microsoft office conversion to html of a QRproblem and replaces the text makup with actual html divs with id's that can be searched. 
 
-$problem_id = 531;
+$problem_id = 520;
 
  $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
     $stmt = $pdo->prepare($sql);
@@ -19,7 +19,11 @@ $problem_id = 531;
   $html->load_file($htmlfilenm); 
 //echo($html);
   // echo $html->plaintext;
-   
+$run_before = $html->find('#quote', 0);  
+$run_before2 = $html->find('#old_unspecified', 0);  
+
+if ($run_before == false && $run_before2 == false) {
+    
    $tags = $html->find('p');
    $html = str_replace($html->find('p' , 0),'<div id = "quote">'.$html->find('p' , 0),$html);
  
@@ -127,9 +131,46 @@ $problem_id = 531;
      echo($html);
      
      
-     
+     // save the html in the new format with the div tags
      
     $str = $html->save();
     $html->save($htmlfilenm);
+    
+    
+   // get the reflections as separate text pieces
+   
+   $reflect = $html->find('#reflect',0)->innertext;
+   $explore = $html->find('#explore',0)->innertext;
+     $connect = $html->find('#connect',0)->innertext;
+   $society = $html->find('#society',0)->innertext;
+   
+
+   // update the problem table so that the reflections are stored
+
+    $sql = "UPDATE `Problem` 
+				SET 
+                    `reflect` = :reflect,
+                    `explore` = :explore,
+                    `connec_t` = :connect,
+                    `society` = :society
+				WHERE problem_id = :problem_id";
+                
+                
+                $stmt = $pdo->prepare($sql);
+                $stmt -> execute(array(
+                   
+                     ':reflect' => $reflect,
+                     ':explore' => $explore,
+                     ':connect' => $connect,
+                     ':society' => $society,
+                     ':problem_id' => $problem_id
+                ));
+
+} 
+
+ else {
+    
+    echo('this script has already converted this document');
+} 
 
 ?>
