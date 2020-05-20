@@ -1253,6 +1253,13 @@ WHERE
 	ADD `extend_time_flag` INT(2) AFTER `suspend_flag`;
     
     
-    
+    	
+	ALTER TABLE Problem 
+		 ADD `reflect` TEXT AFTER `solnaux`,
+		 ADD `explore` TEXT AFTER `reflect`,
+         ADD `connec_t` TEXT AFTER `explore`,
+         ADD `society` TEXT AFTER `connec_t`;
+		 
+		  
     
     
