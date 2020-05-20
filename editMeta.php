@@ -164,9 +164,36 @@
 			}
 		}
 		
+		if ( isset($_POST['explore']))  {
+			$sql = "UPDATE Problem SET explore = :explore WHERE problem_id = :problem_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(
+							':explore' => htmlentities($_POST['explore']),
+							':problem_id' => $problem_id));
+		}
 		
-		
-		
+		if ( isset($_POST['connect']))  {
+			$sql = "UPDATE Problem SET connec_t = :connect WHERE problem_id = :problem_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(
+							':connect' => htmlentities($_POST['connect']),
+							':problem_id' => $problem_id));
+		}
+        
+        if ( isset($_POST['reflect']))  {
+			$sql = "UPDATE Problem SET reflect = :reflect WHERE problem_id = :problem_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(
+							':reflect' => htmlentities($_POST['reflect']),
+							':problem_id' => $problem_id));
+		}
+		if ( isset($_POST['society']))  {
+			$sql = "UPDATE Problem SET society = :society WHERE problem_id = :problem_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->execute(array(
+							':society' => htmlentities($_POST['society']),
+							':problem_id' => $problem_id));
+		}
 	
 	}
 	
@@ -203,6 +230,10 @@
 	}
 	.short {
     width: 60px;
+	}
+    .text_box {
+    width: 800px;
+     height: 100px;
 	}
 	</style>
 	
@@ -294,9 +325,11 @@
 		 </table>
 		 
 		
-		<p>
-
-
+		<h3> HTML for Reflections:</h3>
+	<p>Explore:</p> <textarea  name="explore" id = "explore" class = "text_box" ><?php echo( $row['explore']); ?></textarea>
+    <p>Connect:</p> <textarea  name="connect" id = "connect" class = "text_box" ><?php echo( $row['connec_t']); ?></textarea>
+    <p>Society:</p> <textarea  name="society" id = "society" class = "text_box" ><?php echo( $row['society']); ?></textarea>
+    <p>Reflect:</p> <textarea  name="reflect" id = "reflect" class = "text_box" ><?php echo( $row['reflect']); ?></textarea>
 		<p><hr></p>
 		<input type="hidden" name="problem_id" value="<?= $problem_id ?>">
 		<p><input type="submit" value="Update" id="Update_btn"/>
