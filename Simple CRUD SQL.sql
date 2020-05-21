@@ -1260,6 +1260,32 @@ WHERE
          ADD `connec_t` TEXT AFTER `explore`,
          ADD `society` TEXT AFTER `connec_t`;
 		 
-		  
-    
+         
+         
+        CREATE TABLE IF NOT EXISTS `Assigntime` (
+		`assigntime_id` int(11) NOT NULL AUTO_INCREMENT,
+		`assign_num` int(11) NOT NULL,
+		`iid` int(11) NOT NULL,
+        `currentclass_id` int(11) NOT NULL,
+        `work_time_per_problem` INT(4),
+         `attempt_type` INT(2),
+          `max_attempts_per_problem` INT(3),
+          `window_opens` DATETIME,
+         `window_closes`  DATETIME,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		PRIMARY KEY (`assigntime_id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+          
+	
+         
+        CREATE TABLE IF NOT EXISTS `Resp` (
+		`resp_id` int(11) NOT NULL AUTO_INCREMENT,
+        `activity_id` int(11) NOT NULL, 
+		`resp_value` DOUBLE NOT NULL,
+        `part_name` VARCHAR(2),
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		PRIMARY KEY (`resp_id`),
+        CONSTRAINT FOREIGN KEY (`activity_id`) REFERENCES `Activity` (`activity_id`))
+        ENGINE=InnoDB DEFAULT CHARSET=utf8;   
     
