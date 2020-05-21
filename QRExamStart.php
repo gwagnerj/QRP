@@ -144,7 +144,11 @@ $_SESSION['counter']=0;  // this is for the score board
                     </div>   
                             
                             
-         </br></br>
+         </br>
+         <hr>
+         Nothing below this line is currently active.
+         <hr>
+         </br>
                       <font color=#003399>Checker Availibility: &nbsp; </font>
                  <div  class = "outer" >
                      <div  class = "inner" >
