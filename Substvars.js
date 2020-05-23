@@ -21,12 +21,10 @@ examactivity_id = sessionStorage.getItem('examactivity_id');
 var exam_code =0;
 exam_code = sessionStorage.getItem('exam_code');
 console.log ('exam_flag: '+ exam_flag);
-var reflect_flag = sessionStorage.getItem('reflect_flag');
-var explore_flag = sessionStorage.getItem('explore_flag');
-var connect_flag = sessionStorage.getItem('connect_flag');
-var society_flag = sessionStorage.getItem('society_flag');
-console.log ('society_flag: '+ society_flag);
-var choice = sessionStorage.getItem('ref_choice');
+
+
+// preproblem stuff also probably handle in server
+/* 
 var pp1 = sessionStorage.getItem('pp1');
 var pp2 = sessionStorage.getItem('pp2');
 var pp3 = sessionStorage.getItem('pp3');
@@ -37,19 +35,16 @@ var time_pp3 = sessionStorage.getItem('time_pp3');
 var time_pp4 = sessionStorage.getItem('time_pp4');
 var MC_flag = false;
 
-// console.log ('reflect_flag is ',reflect_flag);
-// console.log ('explore_flag is ',explore_flag);
-// console.log ('connect_flag is ',connect_flag);
-// console.log ('society_flag is ',society_flag);
-
-var iid = sessionStorage.getItem('iid');
+ */
+// will probably handle this is the server also
+/* var iid = sessionStorage.getItem('iid');
 var assign_num = sessionStorage.getItem('assign_num');
 var alias_num = sessionStorage.getItem('alias_num');
 var cclass_id = sessionStorage.getItem('cclass_id');
 var cclass_name = sessionStorage.getItem('cclass_name');
 var title = sessionStorage.getItem('title');
 var static_flag = sessionStorage.getItem('static_flag');
-
+ 
 
 var contrib_last = sessionStorage.getItem('contrib_last');
 if (contrib_last == null || contrib_last == "null") {contrib_last = " ";}
@@ -83,47 +78,9 @@ for (i=1;i<15;i++){
 	
 	
 }
+*/
 
 
-
-
-
-/* // read in the basecase values for the variables
-var bc_var = Array(15);
-var x = "";
-for (i=1;i<15;i++){
-	 x = "bc_"+sessionStorage.getItem('nv_1');
-}
-
-var x = "bc_"+sessionStorage.getItem('nv_1');
-var bc_var1 = sessionStorage.getItem(x);
-
-x = "bc_"+sessionStorage.getItem('nv_2');
-var bc_var2 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_3');
-var bc_var3 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_4');
-var bc_var4 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_5');
-var bc_var5 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_6');
-var bc_var6 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_7');
-var bc_var7 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_8');
-var bc_var8 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_9');
-var bc_var9 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_10');
-var bc_var10 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_11');
-var bc_var11 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_12');
-var bc_var12 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_13');
-var bc_var13 = sessionStorage.getItem(x);
-x = "bc_"+sessionStorage.getItem('nv_14');
-var bc_var14 = sessionStorage.getItem(x);
 
  */
 // This is the Multiple choice stuff called from numericToMC.php for making questions you can print outerHTML
@@ -151,64 +108,13 @@ if (MC_flag != null ){
 // setting up the beginning markup with a REgular expression the g performs a global match - find all matches without stopping
 // this should find all of the strings like v== and u== and the sEndMU finds the strings like ==v and ==U
 
-var sBeginMU = "[k-zK-Z]\=\=";
-var oBeginMU = new RegExp(sBeginMU,"g");
-
-var sEndMU = "\=\=[k-zK-Z]";
-var oEndMU = new RegExp(sEndMU,"g");
 
 
 $(document).ready(function(){
 	
-	if(reflect_flag==1 || explore_flag == 1 || connect_flag == 1 || society_flag == 1) {
-	var reflections = "Required Reflections: "+(reflect_flag==1 ? ' reflect ' : "")+(explore_flag==1 ? ' explore ' : "")
-			+ (connect_flag==1 ? ' connect ' :"")+(society_flag==1 ? ' society ' :"");
-		
-	} else if (choice == 0 || choice == "null" || choice == "NULL" ) {
-		var reflections ="";
-		
-		
-	} else {
-		
-		var reflections = "Reflections: Pick Any "+ choice ;
-	}
 	
-    var assignorexam = 'Assignment: ';
-    var showhide = 'show/hide: ';
-    if (exam_flag==1){assignorexam = 'Exam: ';showhide = '';}
-	// var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Course: "+cclass_name+"\xa0\xa0"+assignorexam+assign_num+"\xa0\xa0"+"Problem: "+alias_num+"\xa0\xa0"+"PIN: " + pin +"\xa0\xa0 - \xa0\xa0 "+ reflections);
-	 var Head_txt1 = $("<p></p>").text("Name: " + stu_name + "\xa0\xa0"+"Course: "+cclass_name+"\xa0\xa0"+assignorexam+assign_num+"\xa0\xa0"+"Problem: "+alias_num+"\xa0\xa0"+"PIN: " + pin );
-	  var auth_field = (nm_author.length > 1 ? " by "+nm_author : "");
-	  var ref_field = (specif_ref.length > 1 ? " similar to\xa0"+specif_ref : "");
-	 var pp_txt = (pp1==2 ? ' Preliminary Estimates completed at '+time_pp1 :"")+(pp2==2 ? ' Planning Questions completed at '+time_pp2 :"")
-			+ (pp3==2 ? ' Preliminary MC completed at '+time_pp3 :"")+(pp4==2 ? ' Preliminary Supplemental completed at '+time_pp4 :"");
-	
-    if(exam_flag != 1){
-    var Head_txt3 = $("<p></p>").text(" Score: ______  rtn Code _____________-______ \xa0\xa0 Originally Contributed by\xa0"+contrib_first+"\xa0"+contrib_last+" from\xa0"+contrib_university+ref_field+ auth_field+" \xa0\xa0|\xa0\xa0"  + pp_txt);
-	} else {
-      var Head_txt3 ='';  
-    }
-	
-	 $('p:first').before(Head_txt1,Head_txt3,'<hr>');
-	 
-	  if(exam_flag !=1){
-	  $('p:first').before('\xa0\xa0<img border=0 width=50 height=50 id="McKetta_head" src="./uploads/QRMcKetta.png"><hr>');
-      }
-	//put real tags in the document to manipulate
 	 
 		$(function(){
-			
-			// put a div in that starts from the start of the document and includes the buttons and heder stuff
-		
-				$(".WordSection1").prepend('<div id="box0_start">');
-				 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			 // put the end of the div before the closing markup tag 
-				  if( current_content.indexOf("v==") !=-1) {
-				 $(this).closest('p').before('<div id="box0_end">');
-			  }
-			});
-				$("#box0_start").nextUntil("#box0_end").wrapAll("<div id='Header_stuff'></div>");
 			
 			// put the button in the document	
 				$('p:first').before('<button id="backbut"> back </button> '+showhide+' <button id="directionsbutton">directions</button> <button id="pblmbutton">pblm statement</button>  <button id="basecasebutton">base-case</button> <button id="reflectionbutton">Reflections</button>') ;
@@ -218,337 +124,7 @@ $(document).ready(function(){
 				$('#expl').hide();
 				$('#conn').hide();
 				$('#soci').hide();
-				
-				// if(reflect_flag==1){$('#refl').show();}
-				// if(explore_flag==1){$('#expl').show();}
-			
-
-            if ( exam_flag==1) {
-          /*   
-            var qrcode = new QRCode(document.getElementById("qrcode"), {
-                  text: "https://QRProblems.org/QRP/QRExamCheck.php",
-                    width: 100,
-                    height: 100,
-                    colorDark : "#000000",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.H
-                });
-                 */
-       
-               $('#basecasebutton').hide(); 
-               $('#reflectionbutton').remove(); 
-               $('#pblmbutton').hide(); 
-                  $('#directionsbutton').hide(); 
-                console.log('removing buttons');
-        }	
-				
-				
-			// Search thru all of the document looking for the markups and put divs for those
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			   // put in a div element at the start of the markup
-			  if( current_content.indexOf("v==") !=-1) {
-				  $(this).closest('p').before('<div id="box1-start">');
-			  }
-			 // put the end of the div after the closing markup tag 
-				  if( current_content.indexOf("==v") !=-1) {
-				  
-				 $(this).closest('p').after('<div id="box1-end">');
-			  }
-			});
-			// put all the content between the tags in a div
-
-			$("#box1-start").nextUntil("#box1-end").wrapAll("<div id='directions'></div>");
-			
-
-			// Search thru all of the document looking for the markups and put divs for those
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			   // put in a div element at the start of the markup
-			  if( current_content.indexOf("t==") !=-1) {
-				  $(this).closest('p').before('<div id="box2-start">');
-			  }
-			 // put the end of the div after the closing markup tag 
-				  if( current_content.indexOf("==t") !=-1) {
-				  
-				 $(this).closest('p').after('<div id="box2-end">');
-			  }
-			});
-			// put all the content between the tags in a div
-
-			$("#box2-start").nextUntil("#box2-end").wrapAll("<div id='problem'></div>");
-
-
-			// Search thru all of the document looking for the markups and put divs for those
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			   // put in a div element at the start of the markup
-			  if( current_content.indexOf("x==") !=-1) {
-				  $(this).closest('p').before('<div id="box3-start">');
-			  }
-			 // put the end of the div after the closing markup tag 
-				  if( current_content.indexOf("==u") !=-1) {
-				  
-				 $(this).closest('p').after('<div id="box3-end">');
-			  }
-			});
-			// put all the content between the tags in a div
-
-			$("#box3-start").nextUntil("#box3-end").wrapAll("<div id='old_basecase'></div>");
-			 $("#old_basecase").hide();
-
-	
-	
-	
-	
-	
-	// Search thru all of the document looking for the markups for the questions and put thm in a div 
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			   // put in a div element at the start of the markup
-			  if( current_content.indexOf("p==a==p") !=-1) {
-				  $(this).closest('p').before('<div id="boxa-start">');
-			  }
-			 // put the end of the div before the next one or after the current one if the next one does not exist 
-				  if( current_content.indexOf("p==b==p") !=-1) {
-				  
-				 $(this).closest('p').before('<div id="boxa-end">');
-			  } else if( current_content.indexOf("p==a==p") !=-1) {
-				  $(this).closest('p').after('<div id="boxa-end">');
-			  }
-			});
-			// put all the content between the tags in a div
-
-			$("#boxa-start").nextUntil("#boxa-end").wrapAll("<div id='parta'></div>");
-
-// Search thru all of the document looking for the markups for the questions and put thm in a div 
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			  if( current_content.indexOf("p==b==p") !=-1) {
-				  $(this).closest('p').before('<div id="boxb-start">');
-			  }
-				  if( current_content.indexOf("p==c==p") !=-1) {
-				 $(this).closest('p').before('<div id="boxb-end">');
-			  } else if( current_content.indexOf("p==b==p") !=-1) {
-				  $(this).closest('p').after('<div id="boxb-end">');
-			  }
-			});
-			$("#boxb-start").nextUntil("#boxb-end").wrapAll("<div id='partb'></div>");
-
-
-// Search thru all of the document looking for the markups for the questions and put thm in a div 
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			  if( current_content.indexOf("p==c==p") !=-1) {
-				  $(this).closest('p').before('<div id="boxc-start">');
-			  }
-				  if( current_content.indexOf("p==d==p") !=-1) {
-				 $(this).closest('p').before('<div id="boxc-end">');
-			  } else if( current_content.indexOf("p==c==p") !=-1) {
-				  $(this).closest('p').after('<div id="boxc-end">');
-			  }
-			});
-			$("#boxc-start").nextUntil("#boxc-end").wrapAll("<div id='partc'></div>");
-
-// Search thru all of the document looking for the markups for the questions and put thm in a div 
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			  if( current_content.indexOf("p==d==p") !=-1) {
-				  $(this).closest('p').before('<div id="boxd-start">');
-			  }
-				  if( current_content.indexOf("p==e==p") !=-1) {
-				 $(this).closest('p').before('<div id="boxd-end">');
-			  } else if( current_content.indexOf("p==d==p") !=-1) {
-				  $(this).closest('p').after('<div id="boxd-end">');
-			  }
-			});
-			$("#boxd-start").nextUntil("#boxd-end").wrapAll("<div id='partd'></div>");
-
-// Search thru all of the document looking for the markups for the questions and put thm in a div 
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			  if( current_content.indexOf("p==e==p") !=-1) {
-				  $(this).closest('p').before('<div id="boxe-start">');
-			  }
-				  if( current_content.indexOf("p==f==p") !=-1) {
-				 $(this).closest('p').before('<div id="boxe-end">');
-			  } else if( current_content.indexOf("p==e==p") !=-1) {
-				  $(this).closest('p').after('<div id="boxe-end">');
-			  }
-			});
-			$("#boxe-start").nextUntil("#boxe-end").wrapAll("<div id='parte'></div>");
-
-// Search thru all of the document looking for the markups for the questions and put thm in a div 
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			  if( current_content.indexOf("p==f==p") !=-1) {
-				  $(this).closest('p').before('<div id="boxf-start">');
-			  }
-				  if( current_content.indexOf("p==g==p") !=-1) {
-				 $(this).closest('p').before('<div id="boxf-end">');
-			  } else if( current_content.indexOf("p==f==p") !=-1) {
-				  $(this).closest('p').after('<div id="boxf-end">');
-			  }
-			});
-			$("#boxf-start").nextUntil("#boxf-end").wrapAll("<div id='partf'></div>");
-
-// Search thru all of the document looking for the markups for the questions and put thm in a div 
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			  if( current_content.indexOf("p==g==p") !=-1) {
-				  $(this).closest('p').before('<div id="boxg-start">');
-			  }
-				  if( current_content.indexOf("p==h==p") !=-1) {
-				 $(this).closest('p').before('<div id="boxg-end">');
-			  } else if( current_content.indexOf("p==g==p") !=-1) {
-				  $(this).closest('p').after('<div id="boxg-end">');
-			  }
-			});
-			$("#boxg-start").nextUntil("#boxg-end").wrapAll("<div id='partg'></div>");
-
-// Search thru all of the document looking for the markups for the questions and put thm in a div 
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			  if( current_content.indexOf("p==h==p") !=-1) {
-				  $(this).closest('p').before('<div id="boxh-start">');
-			  }
-				  if( current_content.indexOf("p==i==p") !=-1) {
-				 $(this).closest('p').before('<div id="boxh-end">');
-			  } else if( current_content.indexOf("p==h==p") !=-1) {
-				  $(this).closest('p').after('<div id="boxh-end">');
-			  }
-			});
-			$("#boxh-start").nextUntil("#boxh-end").wrapAll("<div id='parth'></div>");
-
-// Search thru all of the document looking for the markups for the questions and put thm in a div 
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			  if( current_content.indexOf("p==i==p") !=-1) {
-				  $(this).closest('p').before('<div id="boxi-start">');
-			  }
-				  if( current_content.indexOf("p==j==p") !=-1) {
-				 $(this).closest('p').before('<div id="boxi-end">');
-			  } else if( current_content.indexOf("p==i==p") !=-1) {
-				  $(this).closest('p').after('<div id="boxi-end">');
-			  }
-			});
-			$("#boxi-start").nextUntil("#boxi-end").wrapAll("<div id='parti'></div>");
-
-// Search thru all of the document looking for the markups for the questions and put thm in a div 
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			  if( current_content.indexOf("p==j==p") !=-1) {
-					$(this).closest('p').before('<div id="boxj-start">');
-					$(this).closest('p').after('<div id="boxj-end">');
-			 }
-			  
-			});
-			$("#boxj-start").nextUntil("#boxj-end").wrapAll("<div id='partj'></div>");
-
-
-			// Search thru all of the document looking for the markups and put divs for those
-			 $( "p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			   // put in a div element at the start of the markup
-			  if( current_content.indexOf("w==") !=-1) {
-				  $(this).closest('p').before('<div id="box4-start">');
-			  }
-			 // put the end of the div after the closing markup tag 
-				  if( current_content.indexOf("==w") !=-1) {
-				  
-				 $(this).closest('p').after('<div id="box4-end">');
-			  }
-			});
-			// put all the content between the tags in a div
-
-			$("#box4-start").nextUntil("#box4-end").wrapAll("<div id='reflections'></div>");
-
-			// Search thru the reflections and put a div for the first one i) Reflect
-			 $( "#Reflections p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			   // put in a div element at the start of the markup
-			  if( current_content.indexOf("i) Reflect") !=-1) {
-				  $(this).closest('p').before('<div id="box5-start">');
-			  }
-			 // put the end of the div after the closing markup tag 
-				  if( current_content.indexOf("ii) Explore") !=-1) {
-				  
-				 $(this).closest('p').before('<div id="box5-end">');
-				 
-				 // try adding a text box to in this before box5-end
-				 
-			  }
-			});
-			
-			// put all the content between the tags in a div
-
-			$("#box5-start").nextUntil("#box5-end").wrapAll("<div id='reflect'></div>");
-
-			// Search thru the reflections and put a div for the first one ii) Explore
-			 $( "#Reflections p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			   // put in a div element at the start of the markup
-			  if( current_content.indexOf("ii) Explore") !=-1) {
-				  $(this).closest('p').before('<div id="box6-start">');
-			  }
-			 // put the end of the div after the closing markup tag 
-				  if( current_content.indexOf("iii) Connect") !=-1) {
-				  
-				 $(this).closest('p').before('<div id="box6-end">');
-			  }
-			});
-			// put all the content between the tags in a div
-
-			$("#box6-start").nextUntil("#box6-end").wrapAll("<div id='explor'></div>");
-
-			// Search thru the reflections and put a div for the first one iii) Connect
-			 $( "#Reflections p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			  
-			  // put in a div element at the start of the markup
-			  if( current_content.indexOf("iii) Connect") !=-1) {
-				  $(this).closest('p').before('<div id="box7-start">');
-			  }
-			 // put the end of the div after the closing markup tag 
-				  if( current_content.indexOf("iv) S") !=-1) {
-				  
-				 $(this).closest('p').before('<div id="box7-end">');
-			  }
-			});
-			// put all the content between the tags in a div
-
-			$("#box7-start").nextUntil("#box7-end").wrapAll("<div id='connec'></div>");
-
-
-			// Search thru the reflections and put a div for the first one iv) S (left it as this so it could be changed to just society instead of safety and society
-			 $( "#Reflections p" ).each(function( index ) {
-			   var current_content =  $(this).text();
-			   // put in a div element at the start of the markup
-			  if( current_content.indexOf("iv) S") !=-1) {
-				  $(this).closest('p').before('<div id="box8-start">');
-			  }
-			
-			// put the end of the div after the closing markup tag 
-			 
-			// $("p:last").before('<div id="box8-end">');
-
-
-			 if( current_content.indexOf("iv) S") !=-1) {
-				  
-				 $(this).closest('p').after('<div id="box8-end">');
-			 }
-			 
-				 
-			});
-			// put all the content between the tags in a div
-
-			$("#box8-start").nextUntil("#box4-end").wrapAll("<div id='societ'></div>");
-
-
-
-
-
-
+/* 
 			  // Cloning the problem statement to get the basecase
 
 			  var problem_st = document.getElementById('problem');
@@ -559,57 +135,11 @@ $(document).ready(function(){
 				
 			   $('#basecase').prepend('<h2>Base-Case</h2>');
 				$('#reflections').prepend('<h2>Reflections</h2>');
-
+ */
 			// build arrays for the values and names
 			
 			
 	
-
-
-			// Search thru all of the paragraphs in the problem statement or reflections looking for the image markups 
-			var numPara_tot = document.getElementsByTagName('p').length
-			var numPara_basecase = document.getElementById('basecase').getElementsByTagName('p').length
-			var numPara = numPara_tot - numPara_basecase;
-
-			for (i=0;i<numPara;i++){
-				// if the caption exists get the title of it
-				var xxx = document.querySelectorAll('p')[i].outerHTML;
-				
-				var yyy = xxx.indexOf('MsoCaption');
-				
-				if (yyy!= -1){
-							var capNum = xxx.indexOf("</p>");
-						
-							var figNum = xxx.slice(capNum-2,capNum).trim();
-							
-
-							var indexStart = xxx.indexOf("##");
-							var indexEnd = xxx.indexOf(",img",indexStart);
-							var cap_var_title = xxx.slice(indexStart+2,indexEnd)+'_'+figNum;
-							var found = false;
-							
-							// for each caption test it against the variable values if one is the same delete the caption but if there is not one delete the caption
-							// and the paragraph above it which should contain the figure
-							
-							for (j=1;j<15;j++){
-								if(cap_var_title == vari[j]){
-									found = true
-									document.querySelectorAll('p')[i].hidden = true;
-								}
-							}	
-								if (found){
-									
-									found = false;
-								} else	{
-									//set the caption to hidden and the previous paragraph to hidden
-									
-									document.querySelectorAll('p')[i].hidden = true;
-									document.querySelectorAll('p')[i-1].hidden = true;
-									
-								}
-				}
-				
-			}	
 
 			// replace the url from whatever is there to qrproblems.org/QRP/QRChecker.php?problem_id=problem_id&=dex
 //!!~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -628,112 +158,11 @@ $(document).ready(function(){
 
 			//selects the first anchor tag in the directions div and replaces it with the particular url
 		
-            	
-             if (exam_flag == 1){   
-             
-               //  $('#directions a').text('QRExam')
-                 $('#directions').html('<p>QRExam <a href = '+oldHref+'>Link Exam Checker</a></p>')
-                    $('#directions a').prop('title', 'Exam Checker');
-               // console.log ('getting it right');
-             }
-            
+          
 			// $("a".oldHref).prop('href', newHref);
 
             $('#directions a').prop('href', newHref);
 			$('#directions a').prop('target', '_blank');
-
-			
- /* 
-			var value_array_bc=[];
-
-			for (i=0;i<14;i++){
-				var j = i+1;
-				var nm_elem = 'bc_var'+j
-				 
-				 value_array_bc = value_array_bc.concat(eval(nm_elem));
-			 
-			}
-  */
-			// Search thru all of the paragraphs in the basecase  looking for the image markups 
-
-			for (i=numPara+1;i<numPara_tot;i++){
-				// if the caption exists get the title of it
-				var xxx = document.querySelectorAll('p')[i].outerHTML;
-				
-				var yyy = xxx.indexOf('MsoCaption');
-				
-				if (yyy!= -1){
-							var capNum = xxx.indexOf("</p>");
-						
-							var figNum = xxx.slice(capNum-2,capNum).trim();
-							
-
-							var indexStart = xxx.indexOf("##");
-							var indexEnd = xxx.indexOf(",img",indexStart);
-							var cap_var_title = xxx.slice(indexStart+2,indexEnd)+'_'+figNum;
-							var found = false;
-							
-							// for each caption test it against the variable values if one is the same delete the caption but if there is not one delete the caption
-							// and the paragraph above it which should contain the figure
-							
-							for (j=0;j<14;j++){
-								if(cap_var_title == value_array_bc[j]){
-									found = true
-									document.querySelectorAll('p')[i].hidden = true;
-								}
-							}	
-								if (found){
-									
-									found = false;
-								} else	{
-									//set the caption to hidden and the previous paragraph to hidden
-								//	console.log('im here');
-									
-									document.querySelectorAll('p')[i].hidden = true;
-									document.querySelectorAll('p')[i-1].hidden = true;
-									
-								}
-				}
-				
-			}	
-
- // replace the variables in the problem statement and reflections---------------------------------------------------------------------------------------------------
-
-		for (i = 1;i<15;i++){
-			if(vari[i] !=null){
-				 $('#problem').html(function(){
-				   return $(this).html().replace(oNvar[i],'<span class ="var'+i+'">'+vari[i]+'</span>' ); });
-				
-				 $('#reflections').html(function(){
-				   return $(this).html().replace(oNvar[i],'<span class ="var'+i+'">'+vari[i]+'</span>' ); });
-				   
-				 $('#basecase').html(function(){
-					return $(this).html().replace(oNvar[i],'<span class ="bc_var'+i+'">'+bc_var[i]+'</span>' ); });
-				
-				}
-			}
-			   
-	
-			 
-			 
-			  // now get rid of the markup
-			  
-			   $("p").html(function(){
-			   return $(this).html().replace(oBeginMU,"" ); }); 
-				$("p").html(function(){
-			   return $(this).html().replace("p==","" ); });
-				$("p").html(function(){
-			   return $(this).html().replace("P==","" ); });
-				$("p").html(function(){
-			   return $(this).html().replace("==p",")" ); });
-			  $("p").html(function(){
-			   return $(this).html().replace("==P",")" ); });
-			  $("p").html(function(){
-			  return $(this).html().replace(oEndMU,"" ); });
-
-
-
-
 
 
 			// this is to change the color of the buttons depending on the state
@@ -919,7 +348,7 @@ $(document).ready(function(){
 						bgcolor6 = $(this).css('backgroundColor');
 						$(this).css("background-color", "lightgray");
 					}
-					$("#explor").toggle();
+					$("#explore").toggle();
 					$('.nex-text-div2').toggle();
 				 });
 
@@ -932,7 +361,7 @@ $(document).ready(function(){
 						bgcolor7 = $(this).css('backgroundColor');
 						$(this).css("background-color", "lightgray");
 					}
-					$("#connec").toggle();
+					$("#connect").toggle();
 					$('.nex-text-div3').toggle();
 				 });
 			$('#soci').click(function(e){
@@ -944,7 +373,7 @@ $(document).ready(function(){
 						bgcolor8 = $(this).css('backgroundColor');
 						$(this).css("background-color", "lightgray");
 					}
-					$("#societ").toggle();
+					$("#society").toggle();
 					$('.nex-text-div4').toggle();
 				 });
 
@@ -1017,7 +446,6 @@ $(document).ready(function(){
 			});
 			
 			
-			
 			//resize the textbox
 			
 			 $('#reflect_box').on('input propertychange keyup change', function(){ this.rows = this.value.match(/\n/g).length + 1 });
@@ -1028,17 +456,13 @@ $(document).ready(function(){
 
 // if we are sent a 0 or 1 for the PIN we should display just the base-case without directions headers or 
 	
-	// console.log('dex is ', dex);
-	//  console.log('static_flag is ', static_flag);
 			if (dex =='1' || static_flag == 'true'){
 			//	 console.log('index is ', index);
 				$('#directions').hide();
-				 $('#Header_stuff').hide();	
+				
 				$('#reflections').show();	
                 
                 if (dex == '1'){
-					
-					// $('#Header_stuff').show();	
 					
 					$('.nex-text-div').hide();
 					$('.nex-text-div2').hide();
@@ -1109,36 +533,6 @@ $(document).ready(function(){
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
-        
-        
-        
-   
-    // put the directions for the planning
- /*     
-      $("#exp_date").replaceWith("<p><font size = 3> Planning Stage - After reading the statement and making any preliminary diagrams try to answer the following: </font></p>");
-      //  $("#exp_date").append("<font size = 2><ol> <li>What principles and equations will I need?</li><li>Do I need information not in the problem statment?</li><li>Are there assumptions/basis/that would make the solution easier?</li><li>Are there tables or diagrams I can create to keep track of the information?</li><li>Which part will be the most difficult?</li></ol></font>");
-       
-
-       $(":button").remove();
-        $("#reflections").hide();
-          $("#pblmbutton").remove();
-           $("#reflectionbutton").remove();
-          $("#backbut").css('background-color','blue')
-          
-           */
-   }
- 
-
-   /*  
-  
-    $("#exp_date").append("<p><font size = 3> Planning Stage - After reading the statement and making any preliminary diagrams try to answer the following:
-</p> <p>  What other tables / diagrams will be useful </p> <p> What Principles or equations will I need   </font></p>");
-
-    
-    	
-     */    
-         
-      
     
  });
  
