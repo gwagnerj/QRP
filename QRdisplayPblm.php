@@ -1,7 +1,23 @@
 <?php
 require_once "pdo.php";
+require_once "simple_html_dom.php";
 session_start();
-
+/* 
+function clean($text){
+    
+   $lines = explode("\n", $text); 
+    foreach($lines as $idx => $line) {
+        if ( '&nbsp;' === trim($line) ) {
+            // If the text in the given line is &nbsp; then replace this line 
+            // with and emty character
+            $lines[$idx] = str_replace('&nbsp;', '', $lines[$idx]);
+            
+        }
+    } 
+    $text = implode("\n",$lines);
+    
+}
+ */
 
 // this strips out the get parameters so they are not in the url - its is not really secure data but I would rather not having people messing with them
 // if they do not what they are doing
@@ -93,46 +109,74 @@ session_start();
 
 	}
 // can do the same as above ot the rest of the varaibles but won't unless I have trouble
-if (isset($_GET['reflect_flag'])){$reflect_flag = $_GET['reflect_flag'];} else {$reflect_flag = '';}
-if (isset($_GET['explore_flag'])){$explore_flag = $_GET['explore_flag'];} else {$explore_flag = '';}
-if (isset($_GET['connect_flag'])){$connect_flag = $_GET['connect_flag'];} else {$connect_flag = '';}
-if (isset($_GET['society_flag'])){$society_flag = $_GET['society_flag'];} else {$society_flag = '';}
+if (isset($_GET['reflect_flag'])){$reflect_flag = $_GET['reflect_flag'];} elseif(isset($_SESSION['reflect_flag'])){$reflect_flag = $_SESSION['reflect_flag'];} else {$reflect_flag = '';}
+if (isset($_GET['explore_flag'])){$explore_flag = $_GET['explore_flag'];} elseif(isset($_SESSION['explore_flag'])){$explore_flag = $_SESSION['explore_flag'];} else {$explore_flag = '';}
+if (isset($_GET['connect_flag'])){$connect_flag = $_GET['connect_flag'];} elseif(isset($_SESSION['connect_flag'])){$connect_flag = $_SESSION['connect_flag'];} else {$connect_flag = '';}
+if (isset($_GET['society_flag'])){$society_flag = $_GET['society_flag'];} elseif(isset($_SESSION['society_flag'])){$society_flag = $_SESSION['society_flag'];} else {$society_flag = '';}
+if (isset($_GET['choice'])){$choice = $_GET['choice'];} elseif(isset($_SESSION['choice'])){$choice = $_SESSION['choice'];} else {$choice = '';}
 
- $sql = "SELECT `htmlfilenm` FROM Problem WHERE problem_id = :problem_id";
+
+ $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':problem_id' => $problem_id));
-	$data = $stmt -> fetch();
+	$pblm_data = $stmt -> fetch();
 	// need to put some error checking here
-		$rows=$data;
+	//	$rows=$data;
 
 
-$htmlfilenm = "uploads/".$rows['htmlfilenm'];
+$htmlfilenm = "uploads/".$pblm_data['htmlfilenm'];
+
+// read in the names of the variables for the problem
+    $nv = 0;  // number of non-null variables
+   for ($i = 0; $i <= 13; $i++) {
+        if($pblm_data['nv_'.($i+1)]!='Null' ){
+            $nvar[$i]=$pblm_data['nv_'.($i+1)];
+            $nv++;
+         }
+   }
+  /*  
+   //read tolerances into array
+   $i = 0;
+    for ($m = 'a'; $m<='j'; $m++){
+        $tol[$i] = $pblm_data['tol_'.($m)];
+        $i++;
+    }
+ */
+       
+    $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
+	$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
+	$row = $stmt->fetch();
+    
+     $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
+	$stmt->execute(array(":problem_id" => $problem_id, ":dex" => 1));
+	$BC_row = $stmt->fetch();
+/* 
+    $stmt = $pdo->prepare("SELECT * FROM Qa where problem_id = :problem_id AND dex = :dex");
+	$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
+	$row_ans = $stmt->fetch();
+
+ */
+   // Read in the value for the input variables
+   
+    for ($i = 0; $i <= $nv; $i++) {
+        if($row['v_'.($i+1)]!='Null' ){
+            $vari[$i] = $row['v_'.($i+1)];
+            $BC_vari[$i] = $BC_row['v_'.($i+1)];
+            $pattern[$i]= '/##'.$nvar[$i].'.+?##/';
+        }
+    }
+   
 
 
 
 // passing my php varables into the js varaibles needed for the script below
+/* 
 $pass = array(
-    'dex' => $dex,
-    'problem_id' => $problem_id,
-    'stu_name' => $stu_name,
-	'pin' => $pin,
-	'iid' => $iid,
-	// 'assign_num' => $assign_num,
-	// 'alias_num' => $alias_num,
+    
 	'reflect_flag' => $reflect_flag,
 	'explore_flag' => $explore_flag,  // these are set in 
 	'connect_flag' => $connect_flag,
-	'society_flag' => $society_flag,
-	'choice' => $_GET['choice'],
-	
-	'pp1' => $_GET['pp1'],
-	'pp2' => $_GET['pp2'],
-	'pp3' => $_GET['pp3'],
-	'pp4' => $_GET['pp4'],
-	'time_pp1' => $_GET['time_pp1'],
-	'time_pp2' => $_GET['time_pp2'],
-	'time_pp3' => $_GET['time_pp3'],
-	'time_pp4' => $_GET['time_pp4'],
+	'society_flag' => $society_flag
 );
 
 // echo ($pass['society_flag']);
@@ -141,356 +185,165 @@ echo '<script>';
 echo 'var pass = ' . json_encode($pass) . ';';
 echo '</script>';
   
-  
+   */
  
  // 
 
 ?>
-
-<!DOCTYPE html>
+<!DOCTYPE html >
 <html lang = "en">
 <head>
 <meta charset="UTF-8">
 
 <link rel="icon" type="image/png" href="McKetta.png" >
-
+<!--
 <title>QRHomework</title> 
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
+
+-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 <script type="text/javascript" charset="utf-8" src="qrcode.js"></script>
+<style>
+#base_case{
+   background-color: lightblue;  
+}
 
 
-
-
+</style>
 </head>
 
 <body>
-<div id = substitute_me>  </div>
-<?php  //iconv("Windows-1252", "UTF-8", include($htmlfilenm)); 
-			include($htmlfilenm);
 
- ?>
+<form id = "" name = "">
+
+</form>
+<!-- <div id = substitute_me>  </div> -->
+
+
+<?php  
+ 
+ 	  $html = new simple_html_dom();
+      $html->load_file($htmlfilenm);
+      $header_stuff = new simple_html_dom();
+      $header_stuff -> load_file('problem_header_stuff.html');
+      // subbing in the header
+       $header_stuff ->find('#stu_name',0)->innertext = $stu_name;
+       $header_stuff ->find('#course',0)->innertext = ' Material Balances ';
+      
+      
+      echo ($header_stuff);
+       $directions = '';
+    // $directions = $html->find('#directions',0);
+      $problem = $html->find('#problem',0);
+       $base_case = $html->find('#problem',0); 
+    
+     if($choice >0 ){$reflect_flag = $connect_flag = $explore_flag = $society_flag = 1;}
+    
+    if ($reflect_flag ==1){$reflect = $html->find('#reflect',0).'<textarea id = "reflect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$reflect = '';}
+    if ($connect_flag ==1){$connect = $html->find('#connect',0).'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$connect = '';}
+    if ($explore_flag ==1){$explore = $html->find('#explore',0).'<textarea id = "explore_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$explore = '';}
+    if ($society_flag ==1){$society = $html->find('#society',0).'<textarea id = "society_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$society = '';}
+    
+  
+     
+     
+     
+    
+      for( $i=0;$i<$nv;$i++){
+            $problem = preg_replace($pattern[$i],$vari[$i],$problem);
+            $base_case = preg_replace($pattern[$i],$BC_vari[$i],$base_case);
+        }
+        
+        
+       $base_case = preg_replace('/<div id="problem">/','<div id="BC_problem">',$base_case);
+         $base_case = preg_replace('/<div id="questions">/','<div id="BC_questions">',$base_case);
+         
+         foreach(range('a' , 'j') as $m){
+             $let_pattern = 'part'.$m;
+              $base_case = preg_replace('/<div id="'.$let_pattern.'">/','<div id="BC_'.$let_pattern.'">',$base_case);
+             
+         }
+        
+       $this_html = $directions.$problem.'<hr>'.'<div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>'.'<hr><div id = "reflections">'.$reflect.$explore.$connect.$society.'</div>';
+
+ 
+   // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+       for( $i=0;$i<$nv;$i++){
+            $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+        }
+       
+       
+    
+   $dom = new DOMDocument();
+   libxml_use_internal_errors(true); // this gets rid of the warnig that the p tag isn't closed explicitly
+       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $this_html);
+       $images = $dom->getElementsByTagName('img');
+     
+        foreach ($images as $image) {
+          
+            $src = $image->getAttribute('src');
+             $src = 'uploads/'.$src;
+     
+             $src = urldecode($src);
+             $type = pathinfo($src, PATHINFO_EXTENSION);
+             $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+             $image->setAttribute("src", $base64); 
+             $this_html = $dom->saveHTML();
+       }
+  
+   echo $this_html; 
+   
+   //   echo ($html); 
+  
+  ?>
+  <!--
+   <div id = 'examchecker'>
+   <iframe src="QRExamCheck.php?exam_num=<?php echo($exam_num);?>&cclass_id=<?php echo($cclass_id);?>&alias_num=<?php echo($alias_num);?>&pin=<?php echo($pin);?>&iid=<?php echo($iid);?>&examactivity_id=<?php echo($examactivity_id);?>&problem_id=<?php echo($problem_id);?>&dex=<?php echo($dex);?>" style = "width:70%; height:50%;"></iframe>
+
+ -->
 <script>
-$(document).ready(function(){
-		var dex = pass['dex'];
-		var problem = pass['problem_id'];
-		var s_name = pass['stu_name'];
-		var pin = pass['pin'];
-		var iid = pass['iid'];
-		var assign_num = pass['assign_num'];
-		var alias_num = pass['alias_num'];
-		var reflect_flag = pass['reflect_flag'];
-		var explore_flag = pass['explore_flag'];
-		var connect_flag = pass['connect_flag'];
-		var society_flag = pass['society_flag'];
-		var choice = pass['choice']; 
-		var pp1 = pass['pp1'];
-		var pp2 = pass['pp2'];
-		var pp3 = pass['pp3'];
-		var pp4 = pass['pp4'];
-		var time_pp1 = pass['time_pp1'];
-		var time_pp2 = pass['time_pp2'];
-		var time_pp3 = pass['time_pp3'];
-		var time_pp4 = pass['time_pp4'];
-		var statusFlag=true;
+ $(document).ready(function(){
+
+  $('#basecasebutton').click(function(){
+        $("#base_case").toggle();
+     });
+
+     $('#problembutton').click(function(){
+        $("#problem").toggle();
+     });
+       $('#reflectionsbutton').click(function(){
+        $("#reflections").toggle();
+     });
+    // color the back botton a little different
+			$("#backbutton").css({"background-color":"lightyellow",
+           /*  
+              "position": "relative",
+              "left": "0px",
+              "top": "0px",
+            "z-index": "1"
+             */
+            });
+              
+             // console.log('buttons');
+			// $("#backbut").css('z-index', '1')
+			// go back to the input page for a different problem
 			
-			
-		if($.trim(problem) != '' && problem > 0 && problem < 100000 && dex>=1 && dex<=200){
-	// alert(1);
-	
-				 $.post('fetchpblminput.php', {problem_id : problem, index : dex }, function(data){
-					
-					try{
-						var arr = JSON.parse(data);
-					}
-					catch(err) {
-						alert ('problem data unavailable');
-					}
+          
+            $("#backbutton").click(function(){
+		  			
+                    // e.preventDefault();
+					// console.log("hello1");
 				
-				// Get the html file name from the database
-					
-					var openup = arr.htmlfilenm;
-					
-					openup = escape(openup);
-					
-					// openup = "'"+openup+"'";
-					
-					// alert(openup);
-					//console.log (arr);
-					var game = arr.game_prob_flag;
-					var status = arr.status;
-					var prob_num = arr.problem_id;
-					var contrib_first = arr.first;
-					var contrib_last = arr.last;
-					var contrib_university = arr.university;
-					var static_f = false;
-					
-					
-				
-// next just put the substvars. js script in here but have it use the $('#substitute_me').load("uploads/"+openup+".html");  or something similar  THis should replace the stuff up
-// in the html part of this document and then operate on it with the script file form the substvars stuff.  I need to get rid of all of the localstorage stuff from both this script and the one from substvars
-// The substvars script will should be elliminated from all future uploaded html problem files.
-			
-			//	console.log (openup);
-			
-		//	$('#substitute_me').load("uploads/"+openup, 'document').html();
-			
-			// now change the source of the images so that they are loaded properly
-			//console.log('wtf');
-				
-				
-				
-				
-				
-				
-				
-				// have to put uploads/ in front of file 
-
-					sessionStorage.setItem('contrib_first',contrib_first);
-					sessionStorage.setItem('contrib_last',contrib_last);
-					sessionStorage.setItem('contrib_university',contrib_university);
-					sessionStorage.setItem('nm_author',arr.nm_author);
-					sessionStorage.setItem('specif_ref',arr.specif_ref);
-					
-					console.log(contrib_last);
-					var contrib_last2 = sessionStorage.getItem('contrib_last');
-					console.log('contrib_last 2',contrib_last2);
-				//	console.log('arr', arr);
-					if (status !== 'suspended'){
-							
-							sessionStorage.setItem('MC_flag','false');
-							sessionStorage.setItem('nv_1',arr.nv_1);
-							sessionStorage.setItem(arr.nv_1,arr.v_1);
-							sessionStorage.setItem('nv_2',arr.nv_2);
-							sessionStorage.setItem(arr.nv_2,arr.v_2);
-							sessionStorage.setItem('nv_3',arr.nv_3);
-							sessionStorage.setItem(arr.nv_3,arr.v_3);
-							sessionStorage.setItem('nv_4',arr.nv_4);
-							sessionStorage.setItem(arr.nv_4,arr.v_4);
-							sessionStorage.setItem('nv_5',arr.nv_5);
-							sessionStorage.setItem(arr.nv_5,arr.v_5);
-							sessionStorage.setItem('nv_6',arr.nv_6);
-							sessionStorage.setItem(arr.nv_6,arr.v_6);
-							sessionStorage.setItem('nv_7',arr.nv_7);
-							sessionStorage.setItem(arr.nv_7,arr.v_7);
-							sessionStorage.setItem('nv_8',arr.nv_8);
-							sessionStorage.setItem(arr.nv_8,arr.v_8);
-							sessionStorage.setItem('nv_9',arr.nv_9);
-							sessionStorage.setItem(arr.nv_9,arr.v_9);
-							sessionStorage.setItem('nv_10',arr.nv_10);
-							sessionStorage.setItem(arr.nv_10,arr.v_10);
-							sessionStorage.setItem('nv_11',arr.nv_11);
-							sessionStorage.setItem(arr.nv_11,arr.v_11);
-							sessionStorage.setItem('nv_12',arr.nv_12);
-							sessionStorage.setItem(arr.nv_12,arr.v_12);
-							sessionStorage.setItem('nv_13',arr.nv_13);
-							sessionStorage.setItem(arr.nv_13,arr.v_13);
-							sessionStorage.setItem('nv_14',arr.nv_14);
-							sessionStorage.setItem(arr.nv_14,arr.v_14);
-							
-							
-							sessionStorage.setItem('title',arr.title);
-							/* sessionStorage.setItem('stu_name',s_name);
-							sessionStorage.setItem('problem_id',problem);
-							sessionStorage.setItem('dex',dex);
-							sessionStorage.setItem('pin',pin);
-							sessionStorage.setItem('iid',iid); */
-							sessionStorage.setItem('reflect_flag',reflect_flag);
-							sessionStorage.setItem('explore_flag',explore_flag);
-							sessionStorage.setItem('connect_flag',connect_flag);
-							sessionStorage.setItem('society_flag',society_flag);
-							sessionStorage.setItem('choice',choice);
-							sessionStorage.setItem('static_flag',static_f);
-							sessionStorage.setItem('pp1',pp1);
-							sessionStorage.setItem('pp2',pp2);
-							sessionStorage.setItem('pp3',pp3);
-							sessionStorage.setItem('pp4',pp4);
-							sessionStorage.setItem('time_pp1',time_pp1);
-							sessionStorage.setItem('time_pp2',time_pp2);
-							sessionStorage.setItem('time_pp3',time_pp3);
-							sessionStorage.setItem('time_pp4',time_pp4);
-					
-					
-				 } else {
-					
-						alert('This problem is temporarily suspended, please check back later.');
-						//window.location.href="QRhomework.php";
-						
-						statusFlag=false;
-						//return;
-					
-
-				 }
-
-					 
-					
-		  });
-		  
-		  // get the basecase data
-		   $.post('fetchpblminput.php', {problem_id : problem, index : 1 }, function(data){
-					
-					var arr2 = JSON.parse(data);
-				// Get the html file name from the database
-					
-				//	var openup = arr.htmlfilenm;
-				
-				var openup = arr2.htmlfilenm;		
-				//	alert(openup);
-				
-			//	alert (openup);
-				if (openup == null){
-					
-				alert('problem not present');
-				return;
-					
-				}
-				
-				
-				var game = arr2.game_prob_flag;
-					
-				//	Set up the basecase values into the local variables
-					if (statusFlag){
-						if (game==0){
-							
-							var x = "bc_"+arr2.nv_1;
-							sessionStorage.setItem(x,arr2.v_1);
-							
-							x = "bc_"+arr2.nv_2;
-							sessionStorage.setItem(x,arr2.v_2);
-							
-							x = "bc_"+arr2.nv_3;
-							sessionStorage.setItem(x,arr2.v_3);
-								x = "bc_"+arr2.nv_4;
-							sessionStorage.setItem(x,arr2.v_4);
-							x = "bc_"+arr2.nv_5;
-							sessionStorage.setItem(x,arr2.v_5);
-							x = "bc_"+arr2.nv_6;
-							sessionStorage.setItem(x,arr2.v_6);
-								x = "bc_"+arr2.nv_7;
-							sessionStorage.setItem(x,arr2.v_7);
-							x = "bc_"+arr2.nv_8;
-							sessionStorage.setItem(x,arr2.v_8);
-							x = "bc_"+arr2.nv_9;
-							sessionStorage.setItem(x,arr2.v_9);
-								x = "bc_"+arr2.nv_10;
-							sessionStorage.setItem(x,arr2.v_10);
-							x = "bc_"+arr2.nv_11;
-							sessionStorage.setItem(x,arr2.v_11);
-							x = "bc_"+arr2.nv_12;
-							sessionStorage.setItem(x,arr2.v_12);
-								x = "bc_"+arr2.nv_13;
-							sessionStorage.setItem(x,arr2.v_13);
-							x = "bc_"+arr2.nv_14;
-							sessionStorage.setItem(x,arr2.v_14);
-							
-							/* sessionStorage.setItem('title',arr2.title);
-							sessionStorage.setItem('stu_name',s_name);
-							sessionStorage.setItem('problem_id',problem);
-							sessionStorage.setItem('index',inde); */
-						
-					// redirect the browser to the problem file
-					
-				// alert (statusFlag);
-
-				// should run the php in the model to test the user input make sure the instructor ID or last name is vaiid and create and entry in the temp table if there 
-				// isnt one and read the status if there is one and put it in the hidden html or get it via Json and AJAX
-				
-			// load the external javascript file to make the magic happen
-			// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 		
-				
-				function loadScript( url, callback ) {
-					  var script = document.createElement( "script" )
-					  script.type = "text/javascript";
-					  if(script.readyState) {  // only required for IE <9
-						script.onreadystatechange = function() {
-						  if ( script.readyState === "loaded" || script.readyState === "complete" ) {
-							script.onreadystatechange = null;
-							callback();
-						  }
-						};
-					  } else {  //Others
-						script.onload = function() {
-						  callback();
-						};
-					  }
-
-					  script.src = "Substvars.js";
-					  document.getElementsByTagName( "head" )[0].appendChild( script );
-					}
-
-					
-					
-		
-					// call the function...
-					loadScript("Substvars.js", function() {
-					//  alert('script ready!'); 
-					  	var imgPath = '';
-						var indexQRP = '';
-						var addPath = "uploads/";
-					//	alert(addPath);
-								$('img').each(function(){
-									
-									imgPath = $(this).prop('src');
-										console.log('imagepath before',imgPath);
-								//		alert (imgPath);
-										//referrer.toLowerCase().indexOf
-									indexQRP = imgPath.toLowerCase().indexOf('/qrp/')+5;
-									console.log('indexofQRP',indexQRP);
-									imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
-									console.log('imagepath',imgPath);
-									
-									$(this).prop('src', imgPath);
-								
-								});
-					});
-					
-					
-				// window.location.href="uploads/"+openup;
-						} else {
-				
-					alert('not a homework problem');
-						} 
-					} else {
-						
-					// alert('This problem is temporarily suspended, please check back later on2.');
-								return;
-						
-						
-					}
-					
-		  });
-		  
-		  
-		  
-		  
-			}
-			else{
-				
-				alert ('invalid user input');
-				
-				
-			}
-
-});
-
-</script>
-<script>
-
-	$(document).ready(function(){
-		
-		
-		// comes from https://stackoverflow.com/questions/6985507/one-time-page-refresh-after-first-page-load on reloading the page to get rid of the sometimes error of varaibles not being substituted in
-					window.onload = function() {
-						if(!window.location.hash) {
-							window.location = window.location + '#loaded';
-							window.location.reload();
-						}
-					} 
+                     window.location.replace('QRhomework.php'); // would like to put some parameters here instead of relying on session (like below)
+                  //  window.location.replace('../QRP/QRExam.php'+'?examactivity_id='+examactivity_id); // axam_num and examactivity
+              	
+				 });
+ 
+ });
 
 
-	 });
 </script>
 
  
