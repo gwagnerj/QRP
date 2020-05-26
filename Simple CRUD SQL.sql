@@ -1288,4 +1288,18 @@ WHERE
 		PRIMARY KEY (`resp_id`),
         CONSTRAINT FOREIGN KEY (`activity_id`) REFERENCES `Activity` (`activity_id`))
         ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+        
+        
+        ALTER TABLE tableName CHANGE `oldcolname` `newcolname` datatype(length);
+        
+        ALTER TABLE `Activity` 
+		 CHANGE `help_coins_used` `progress` INT(2);
+         
+        ALTER TABLE Activity 
+		 CHANGE `assist_coins_gained`  `completed_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+    
+     ALTER TABLE Activity 
+		 CHANGE `completed_at` `last_updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+    
+    
     
