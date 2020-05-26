@@ -5,11 +5,12 @@
 	echo $_SESSION['error']	;
 	unset($_SESSION['error']);
 	}
-	// this is the normal place to start for students checking their homework and goes the the QRcontroller.  Can also come from the rtnCode.php or the back button on QRdisplay.php
+	// this is the normal place to start for students checking their homework and goes the the QRcontroller.  Can also come from the rtnCode.php or the back button on QRdisplay.php  This will
+    
 	$alias_num = $problem_id = $assign_num = $cclass_id ='';
 	
 	$_SESSION['progress']=0;
-	$_SESSION['checker']=0;  // tells where the getiid where to come back to here or the checker
+
 	$stu_name = '';
 	$problem_id= '';
 	$index='';
@@ -19,8 +20,11 @@
 	
  
 	// first time thru set scriptflag to zero - this will turn to 1 if the script ran
-	if (!isset($sc_flag)){$sc_flag=0;}
-			
+//	if (!isset($sc_flag)){$sc_flag=0;}
+	
+    if(isset($_GET['activity_id'])){
+		$activity_id = htmlentities($_GET['activity_id']);
+	}  else {$activity_id = '';}    
 
 	// if Get is set then it is coming from rtncode.php and may wnat another problem
 	
@@ -177,6 +181,7 @@
 										'explore_flag' => $row3['explore_flag'],
 										'reflect_flag' => $row3['reflect_flag'],
 										'connect_flag' => $row3['connect_flag'],
+                                        'activity_id' => $activity_id,
 										'ref_choice' => $row3['ref_choice']
 																				
 									);
@@ -222,7 +227,7 @@
 			$pin = '';
 			$last = '';
 			$first = '';
-			$alias_num = $assign_num = $cclass_id = '';
+			$alias_num = $assign_num = $cclass_id = $activity_id = '';
 		//	session_destroy();
 			
 		}
@@ -306,11 +311,7 @@
 			<font color=#003399>Course: </font>
 			
 			<?php
-			//$cclass_id = 2;
-			//$cclass_name = 'Particle Technology';
-			//echo ('cclass_id: ');
 			
-			//echo $cclass_id;
 			
 					if (strlen($iid)>0 && strlen($cclass_id)>0 && strlen($cclass_name)>0 && strlen($assign_num)>0 ){
 						echo ('<input type = "hidden" name = "cclass_id" id = "have_cclass_id" value = "'.$cclass_id.'"></input>'); 
@@ -332,7 +333,7 @@
 		</br>
 		<font color=#003399>Assignment Number: </font>
 			<?php
-			//$assign_num = 1;
+			
 			if (strlen($iid)>0 && strlen($cclass_id)>0 && strlen($cclass_name)>0 && strlen($assign_num)>0 ){
 				echo ('<input type = "hidden" name = "assign_num" id = "have_assign_num" value = "'.$assign_num.'"></input>'); 
 				echo $assign_num;
@@ -435,7 +436,6 @@
 				}).done(function(activeass){
 					activeass = JSON.parse(activeass);
 					 	 $('#assign_num').empty();
-						
 				
 					n = activeass.length;
 						$('#assign_num').append("<option selected disabled hidden>  </option>") ;
@@ -502,7 +502,7 @@
 						$(form).appendTo('body').submit();
 					}
 				});
-		
+		var activity_id = pass['activity_id'];
 		var dex = pass['dex'];
 		var problem = pass['problem_id'];
 		var s_name = pass['stu_name'];
@@ -534,7 +534,7 @@
 		sessionStorage.setItem('ref_choice',ref_choice);
 	
 	var file = "QRcontroller.php";
-	 $.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid, assign_num: assign_num, alias_num: alias_num, cclass_id: cclass_id });
+ $.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid, assign_num: assign_num, alias_num: alias_num, cclass_id: cclass_id });
 	
 	  
 		 

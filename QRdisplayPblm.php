@@ -1,23 +1,10 @@
 <?php
 require_once "pdo.php";
 require_once "simple_html_dom.php";
+include 'phpqrcode/qrlib.php'; 
 session_start();
-/* 
-function clean($text){
-    
-   $lines = explode("\n", $text); 
-    foreach($lines as $idx => $line) {
-        if ( '&nbsp;' === trim($line) ) {
-            // If the text in the given line is &nbsp; then replace this line 
-            // with and emty character
-            $lines[$idx] = str_replace('&nbsp;', '', $lines[$idx]);
-            
-        }
-    } 
-    $text = implode("\n",$lines);
-    
-}
- */
+                        
+
 
 // this strips out the get parameters so they are not in the url - its is not really secure data but I would rather not having people messing with them
 // if they do not what they are doing
@@ -31,83 +18,58 @@ function clean($text){
             $_GET = $_SESSION['got'];
             unset($_SESSION['got']);
         }
-
+    }
         //use the $_GET vars here..
     
 
 //  Set the varaibles to the Get Parameters or if they do not exist try the session variables if those don't exist error back to QRhomework
 
 
-	if(isset($_GET['problem_id'])) {
-			$problem_id = htmlentities($_GET['problem_id']);
-		}else if(isset($_SESSION['problem_id'])) {
-			$problem_id = htmlentities($_SESSION['problem_id']);
+	if(isset($_GET['activity_id'])) {
+			$activity_id = htmlentities($_GET['activity_id']);
+            
+		}else if(isset($_SESSION['activity_id'])) {
+			$activity_id = htmlentities($_SESSION['activity_id']);
 		} else {
-			$_SESSION['error'] = 'problem_id is not being read into the diplay error 30';
+			$_SESSION['error'] = 'activity_id is not being read into the diplay error 30';
 			header("Location: QRhomework.php");
 			die();
 	} 
-
-	if(isset($_GET['dex'])) {
-			$dex = htmlentities($_GET['dex']);
-		}else if(isset($_SESSION['dex'])) {
-			$dex = htmlentities($_SESSION['dex']);
-		} else {
-			$_SESSION['error'] = 'dex is not being read into the diplay error 31';
-			header("Location: QRhomework.php");
-			die();
-	} 
-
-	if(isset($_GET['pin'])) {
-			$pin = htmlentities($_GET['pin']);
-		}else if(isset($_SESSION['pin'])) {
-			$pin = htmlentities($_SESSION['pin']);
-		} else {
-			$_SESSION['error'] = 'pin is not being read into the diplay error 32';
-			header("Location: QRhomework.php");
-			die();
-	} 
-	/* 
-	if(isset($_GET['assign_num'])) {
-			$assign_num = htmlentities($_GET['assign_num']);
-		}else if(isset($_SESSION['assign_num'])) {
-			$assign_num = htmlentities($_SESSION['assign_num']);
-		} else {
-			$_SESSION['error'] = 'assign_num is not being read into the diplay error 33';
-			header("Location: QRhomework.php");
-			return;
-	} 
-	if(isset($_GET['alias_num'])) {
-			$alias_num = htmlentities($_GET['alias_num']);
-		}else if(isset($_SESSION['alias_num'])) {
-			$alias_num = htmlentities($_SESSION['alias_num']);
-		} else {
-			$_SESSION['error'] = 'alias_num is not being read into the diplay error 34';
-			header("Location: QRhomework.php");
-			return;
-	} 
- */
-	if(isset($_GET['iid'])) {
-			$iid = htmlentities($_GET['iid']);
-		}else if(isset($_SESSION['iid'])) {
-			$iid = htmlentities($_SESSION['iid']);
-		} else {
-			$_SESSION['error'] = 'iid is not being read into the diplay error 35';
-			header("Location: QRhomework.php");
-			die();
-	} 
-
-	if(isset($_GET['stu_name'])) {
-			$stu_name = htmlentities($_GET['stu_name']);
-		}else if(isset($_SESSION['stu_name'])) {
-			$stu_name = htmlentities($_SESSION['stu_name']);
-		} else {
-			$_SESSION['error'] = 'stu_name is not being read into the diplay error 34';
-			header("Location: QRhomework.php");
-			die();
-	} 
-
-	}
+    $_SESSION['activity_id'] = $activity_id;
+    // echo('activity_id: '.$activity_id);
+	//  Get all of the required info from the Activity Table
+    
+    $sql = 'SELECT * FROM Activity WHERE activity_id = :activity_id';
+     $stmt = $pdo->prepare($sql);
+     $stmt->execute(array(':activity_id' => $activity_id));
+     $activity_data = $stmt -> fetch();
+        
+     $problem_id = $activity_data['problem_id'];   
+     $iid = $activity_data['iid'];   
+     $pin = $activity_data['pin'];   
+     $stu_name = $activity_data['stu_name'];   
+     $currentclass_id = $activity_data['currentclass_id'];   
+     $instr_last = $activity_data['instr_last'];   
+     $university = $activity_data['university'];   
+     $dex = $activity_data['dex'];  
+     $alias_num = $activity_data['alias_num'];  
+      $assign_id = $activity_data['assign_id'];  
+     
+     $sql = 'SELECT name FROM Currentclass WHERE currentclass_id = :currentclass_id';
+     $stmt = $pdo->prepare($sql);
+     $stmt->execute(array(':currentclass_id' => $currentclass_id));
+     $class_data = $stmt -> fetch();
+     $class_name = $class_data['name'];
+     
+      $sql = 'SELECT * FROM Assign WHERE assign_id = :assign_id AND prob_num = :problem_id';
+     $stmt = $pdo->prepare($sql);
+     $stmt->execute(array(':assign_id' => $assign_id,
+     ':problem_id' => $problem_id));
+     $assign_data = $stmt -> fetch();
+     $assignment_num = $assign_data['assign_num'];
+      $alias_num = $assign_data['alias_num'];    
+         
+	
 // can do the same as above ot the rest of the varaibles but won't unless I have trouble
 if (isset($_GET['reflect_flag'])){$reflect_flag = $_GET['reflect_flag'];} elseif(isset($_SESSION['reflect_flag'])){$reflect_flag = $_SESSION['reflect_flag'];} else {$reflect_flag = '';}
 if (isset($_GET['explore_flag'])){$explore_flag = $_GET['explore_flag'];} elseif(isset($_SESSION['explore_flag'])){$explore_flag = $_SESSION['explore_flag'];} else {$explore_flag = '';}
@@ -120,11 +82,45 @@ if (isset($_GET['choice'])){$choice = $_GET['choice'];} elseif(isset($_SESSION['
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':problem_id' => $problem_id));
 	$pblm_data = $stmt -> fetch();
+    $contrib_id = $pblm_data['users_id'];
+    $nm_author = $pblm_data['nm_author'];
+    $specif_ref = $pblm_data['specif_ref'];
+    $htmlfilenm = $pblm_data['htmlfilenm'];
+   // echo('htmlfilenm: '.$htmlfilenm);
+    
+$sql = "SELECT * FROM Users WHERE users_id = :users_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(':users_id' => $contrib_id));
+	$contrib_data = $stmt -> fetch();
+    $contrib_first = $contrib_data['first'];   
+    $contrib_last = $contrib_data['last'];
+    $contrib_univ = $contrib_data['university'];
+    
 	// need to put some error checking here
 	//	$rows=$data;
 
+// Make the QRcode
+        $qrchecker_text =  'https://www.qrproblems.org/QRP/QRChecker.php?problem_id='.$problem_id.'&pin='.$pin; 
+                        //  https://www.qrproblems.org/QRP/QRChecker.php?assign_num=1&cclass_id=16&alias_num=2&pin=34&iid=1        
+        $path = 'uploads/'; 
+        $file = "temp2 png"; 
+          
+        // $ecc stores error correction capability('L') 
+        $ecc = 'M'; 
+        $pixel_size = 2; 
+        $frame_size = 1; 
+          
+        // Generates QR Code and Stores it in directory given 
+          QRcode::png($qrchecker_text, 'uploads/'.$file, $ecc, $pixel_size, $frame_size); 
+         // QRcode::png($text); 
+        // Displaying the stored QR code from directory 
+      //  echo ("<right><img src='uploads/".$file."'></right>");
+      $qrcode = "<right><img src='".$file."'></right>"; 
+     
+                        
 
-$htmlfilenm = "uploads/".$pblm_data['htmlfilenm'];
+
+$htmlfilenm = "uploads/".$htmlfilenm;
 
 // read in the names of the variables for the problem
     $nv = 0;  // number of non-null variables
@@ -166,8 +162,13 @@ $htmlfilenm = "uploads/".$pblm_data['htmlfilenm'];
         }
     }
    
+$pass = array(
 
-
+    'activity_id' => $activity_id
+    );
+    echo '<script>';
+    echo 'var pass = ' . json_encode($pass) . ';';
+    echo '</script>';
 
 // passing my php varables into the js varaibles needed for the script below
 /* 
@@ -206,6 +207,7 @@ echo '</script>';
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 <script type="text/javascript" charset="utf-8" src="qrcode.js"></script>
 <style>
+
 #base_case{
    background-color: lightblue;  
 }
@@ -216,10 +218,12 @@ echo '</script>';
 
 <body>
 
-<form id = "" name = "">
+
+<!--
+<form id = "" name = "">.'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>'
 
 </form>
-<!-- <div id = substitute_me>  </div> -->
+ <div id = substitute_me>  </div> -->
 
 
 <?php  
@@ -230,9 +234,15 @@ echo '</script>';
       $header_stuff -> load_file('problem_header_stuff.html');
       // subbing in the header
        $header_stuff ->find('#stu_name',0)->innertext = $stu_name;
-       $header_stuff ->find('#course',0)->innertext = ' Material Balances ';
-      
-      
+       $header_stuff ->find('#course',0)->innertext = $class_name;
+       $header_stuff ->find('#course',0)->innertext = $class_name;
+       $header_stuff ->find('#assignment_num',0)->innertext = $assignment_num;
+       $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
+       $header_stuff ->find('#contributor_name',0)->innertext = $contrib_first.' '.$contrib_last;
+       $header_stuff ->find('#university',0)->innertext = $contrib_univ;
+      if (strlen($nm_author)>1){$header_stuff ->find('#nm_author',0)->innertext = ' based on a problem by: '.$nm_author;}
+      if (strlen($specif_ref)>1){$header_stuff ->find('#specif_ref',0)->innertext = ' reference: '.$specif_ref;}
+
       echo ($header_stuff);
        $directions = '';
     // $directions = $html->find('#directions',0);
@@ -242,11 +252,15 @@ echo '</script>';
      if($choice >0 ){$reflect_flag = $connect_flag = $explore_flag = $society_flag = 1;}
     
     if ($reflect_flag ==1){$reflect = $html->find('#reflect',0).'<textarea id = "reflect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$reflect = '';}
-    if ($connect_flag ==1){$connect = $html->find('#connect',0).'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$connect = '';}
+    if($connect_flag ==1 && isset($pblm_data['connect'])){$connect = $pblm_data['connect'].'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';
+    } elseif ($connect_flag ==1){$connect = $html->find('#connect',0).'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';
+    }else {$connect = '';}
+
+   // if ($connect_flag ==1){$connect = $html->find('#connect',0).'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$connect = '';}
     if ($explore_flag ==1){$explore = $html->find('#explore',0).'<textarea id = "explore_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$explore = '';}
     if ($society_flag ==1){$society = $html->find('#society',0).'<textarea id = "society_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$society = '';}
     
-  
+    
      
      
      
@@ -266,7 +280,7 @@ echo '</script>';
              
          }
         
-       $this_html = $directions.$problem.'<hr>'.'<div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>'.'<hr><div id = "reflections">'.$reflect.$explore.$connect.$society.'</div>';
+       $this_html = $qrcode.$directions.$problem.'<hr>'.'<div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>'.'<hr><div id = "reflections">'.$reflect.$explore.$connect.$society.'</div>';
 
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
@@ -294,7 +308,7 @@ echo '</script>';
        }
   
    echo $this_html; 
-   
+   unlink('uploads/temp2 png');
    //   echo ($html); 
   
   ?>
@@ -305,6 +319,9 @@ echo '</script>';
  -->
 <script>
  $(document).ready(function(){
+    
+    var activity_id = pass['activity_id']; 
+     
 
   $('#basecasebutton').click(function(){
         $("#base_case").toggle();
@@ -336,7 +353,7 @@ echo '</script>';
                     // e.preventDefault();
 					// console.log("hello1");
 				
-                     window.location.replace('QRhomework.php'); // would like to put some parameters here instead of relying on session (like below)
+                     window.location.replace('QRhomework.php?activity_id='+activity_id); // would like to put some parameters here instead of relying on session (like below)
                   //  window.location.replace('../QRP/QRExam.php'+'?examactivity_id='+examactivity_id); // axam_num and examactivity
               	
 				 });

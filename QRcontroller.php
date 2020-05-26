@@ -2,6 +2,20 @@
 require_once "pdo.php";
 session_start();
 
+if (isset($_POST['activity_id'])){
+	$activity_id = $_POST['activity_id'];
+}elseif(isset($_GET['activity_id'])){
+	$activity_id = $_GET['activity_id'];
+} elseif(isset($_SESSION['activity_id'])){
+	$activity_id = $_SESSION['activity_id'];
+} else {
+	
+	$_SESSION['error'] = 'problem ID not set';
+}
+
+
+
+
 if (isset($_POST['problem_id'])){
 	$problem_id = $_POST['problem_id'];
 }elseif(isset($_GET['problem_id'])){
@@ -163,7 +177,7 @@ if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 				':pin' =>$pin
 				));
 				$activity_row =$stmt ->fetch();		
-			
+                $activity_id = $activity_row['activity_id'];
 			
 			}  
 			
@@ -199,27 +213,9 @@ if (!isset($_POST['progress']) && !isset($_SESSION['progress'])) {
 						$problem_id = abs($problem_id);
 				
 					// echo('<a href="QRhomework.php?problem_id='.$problem_id.'&pin='.$pin.'&iid='.$iid.'&stu_name='.$stu_name.'"><b> Return to Main Screen</b></a>');
+// ------------------------------------------send the display problem the activity_id ---------------------------------------------------------------------------------------------------------------						
+						header("Location: QRdisplayPblm.php?activity_id=".$activity_id
 						
-						header("Location: QRdisplayPblm.php?problem_id=".$problem_id
-						."&pin=".$pin
-						."&dex=".$dex
-						."&stu_name=".$stu_name
-						."&iid=".$iid
-						."&assign_num=".$assign_num
-						."&alias_num=".$alias_num
-						."&reflect_flag=".$assn_row['reflect_flag']
-						."&explore_flag=".$assn_row['explore_flag']
-						."&connect_flag=".$assn_row['connect_flag']
-						."&society_flag=".$assn_row['society_flag']
-						."&choice=".$assn_row['ref_choice']
-						."&pp1=".$pp1
-						."&pp2=".$pp2
-						."&pp3=".$pp3
-						."&pp4=".$pp4
-						."&time_pp1=".$activity_row['time_pp1']
-						."&time_pp2=".$activity_row['time_pp2']
-						."&time_pp3=".$activity_row['time_pp3']
-						."&time_pp4=".$activity_row['time_pp4']
 						);
 						die();
 				}
