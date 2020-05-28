@@ -97,7 +97,7 @@ $sql = "SELECT * FROM Users WHERE users_id = :users_id";
 	//	$rows=$data;
 
 // Make the QRcode
-        $qrchecker_text =  'https://www.qrproblems.org/QRP/QRChecker.php?problem_id='.$problem_id.'&pin='.$pin; 
+        $qrchecker_text =  'https://www.qrproblems.org/QRP/QRChecker2.php?activity_id='.$activity_id; 
                         //  https://www.qrproblems.org/QRP/QRChecker.php?assign_num=1&cclass_id=16&alias_num=2&pin=34&iid=1        
         $path = 'uploads/'; 
         $file = "temp2 png"; 
@@ -112,10 +112,7 @@ $sql = "SELECT * FROM Users WHERE users_id = :users_id";
          // QRcode::png($text); 
         // Displaying the stored QR code from directory 
       //  echo ("<right><img src='uploads/".$file."'></right>");
-      $qrcode = "<right><img src='".$file."'></right>"; 
-     
-                        
-
+      $qrcode = "<span id = 'qrcode_id'><right><img src='".$file."'></right></span>"; 
 
 $htmlfilenm = "uploads/".$htmlfilenm;
 
@@ -127,14 +124,6 @@ $htmlfilenm = "uploads/".$htmlfilenm;
             $nv++;
          }
    }
-  /*  
-   //read tolerances into array
-   $i = 0;
-    for ($m = 'a'; $m<='j'; $m++){
-        $tol[$i] = $pblm_data['tol_'.($m)];
-        $i++;
-    }
- */
        
     $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
 	$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
@@ -143,12 +132,7 @@ $htmlfilenm = "uploads/".$htmlfilenm;
      $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
 	$stmt->execute(array(":problem_id" => $problem_id, ":dex" => 1));
 	$BC_row = $stmt->fetch();
-/* 
-    $stmt = $pdo->prepare("SELECT * FROM Qa where problem_id = :problem_id AND dex = :dex");
-	$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
-	$row_ans = $stmt->fetch();
 
- */
    // Read in the value for the input variables
    
     for ($i = 0; $i <= $nv; $i++) {
@@ -251,9 +235,7 @@ $pass = array(
          }
        // $checker_text = '<div id = "checker" <iframe src = "QRChecker2.php?activity_id='.$activity_id.'" style ="width:90%; height:50%;"></iframe></div>';
        // echo (' checker_text: '.$checker_text);
-       $this_html = $qrcode.$directions.$problem.'<hr>';
-       
-      
+       $this_html ='<hr>'.$qrcode.$directions.$problem.'<hr>';
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
@@ -320,6 +302,8 @@ $pass = array(
     
     var activity_id = pass['activity_id']; 
      var stu_name = pass['stu_name']; 
+     
+     $('#qrcode_id').hide();
 
   $('#basecasebutton').click(function(){
         $("#base_case").toggle();
@@ -330,6 +314,7 @@ $pass = array(
      });
        $('#checkerbutton').click(function(){
         $("#checker").toggle();
+         $("#qrcode_id").toggle();
      });
        $('#reflectionsbutton').click(function(){
         $("#reflections").toggle();

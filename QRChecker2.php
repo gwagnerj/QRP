@@ -218,13 +218,13 @@ session_start();
      // keep track of the number of tries the student makes
 	// get the count from the activity table __________________________________________can get this from the resp table eventually _____________________________-
   
-   if($count_tot == 0){   // first time no tries initialise count and wrong count
+ /*   if($count_tot == 0){   // first time no tries initialise count and wrong count
 		for ($j=0;$j<=9;$j++){
-					$wrongCount[$j]=0;
+				//	$wrongCount[$j]=0;
 				//	$_SESSION['wrongC'[$j]]=$wrongCount[$j]; 
                   
 				}
-	}
+	} */
     
      if( $get_flag ==0){ // if we are comming in from this file on a post
     // get the old repsonses from the response table check to see which ones have changed and 
@@ -241,6 +241,19 @@ session_start();
             $resp_data = $stmt -> fetch();
             $old_resp[$i] = $resp_data['resp_value'];
             $resp[$v]=(float)$_POST[$v]+0.0;
+            // now get the counts for all of the previous tries from the table
+           $sql = 'SELECT COUNT(`resp_value`) FROM `Resp` WHERE `activity_id` = :activity_id AND `part_name` = :part_name';
+                 $stmt = $pdo->prepare($sql);
+                  $stmt ->execute(array(
+                ':activity_id' => $activity_id,
+                ':part_name' => $v
+            ));
+             $count_data = $stmt -> fetchColumn();
+             $wrongCount[$i] = $count_data;
+           
+            
+        
+            
              // $_SESSION['old_resp'[$i]] = $resp[$v];  // reset the old resp so that we have 
             if($resp[$v]==$old_resp[$i]){
                 $changed[$i]= false;
@@ -283,14 +296,14 @@ session_start();
                                     $corr_num[$corr_key[$j]]=1;
                                     $corr[$corr_key[$j]]='Correct';
                                     $score=$score+1;
-                                    $_SESSION['$wrongC'[$j]] = 0;
-                                    $wrongCount[$j]=0;
+ //                                   $_SESSION['$wrongC'[$j]] = 0;
+ //                                   $wrongCount[$j]=0;
                                             
                             }
                 else  // got it wrong or did not attempt
                 {
                     
-                        
+  /*                        
                     if(!(isset($_SESSION['wrongC'[$j]])))  // needs initialized
                     {
                         
@@ -300,20 +313,21 @@ session_start();
                         //echo $_SESSION['wrongC'[$j]];
                     
                         
-                    }
-                    elseif ($resp[$resp_key[$j]]==0)  // did not attempt it
+                   }
+   */
+                    if ($resp[$resp_key[$j]]==0)  // did not attempt it
                     {
                         
-                        $wrongCount[$j] = ($_SESSION['wrongC'[$j]]);
-                        //$_SESSION['wrongC'[$j]] = $wrongCount[$j];
+   //                     $wrongCount[$j] = ($_SESSION['wrongC'[$j]]);
+  //                      $_SESSION['wrongC'[$j]] = $wrongCount[$j];
                         $corr_num[$corr_key[$j]]=0;
                         $corr[$corr_key[$j]]='';
                     //	echo ($wrongCount[$j]);
                     }
                     else  // response is equal to zero so probably did not answer (better to use POST value I suppose - fix later
                     {
-                        $wrongCount[$j] = ($_SESSION['wrongC'[$j]])+1;
-                        $_SESSION['wrongC'[$j]] = $wrongCount[$j];
+                        $wrongCount[$j] = $wrongCount[$j]+1;
+ //                       $_SESSION['wrongC'[$j]] = $wrongCount[$j];
                             $corr_num[$corr_key[$j]]=0;
                             $corr[$corr_key[$j]]='Not Correct';
                         //	echo ($wrongCount[$j]);	
@@ -321,6 +335,10 @@ session_start();
                 }		
 			}
 		}
+     
+     
+     
+     
      
 		
 		$PScore=$score/$probParts*100; 
@@ -383,8 +401,7 @@ session_start();
 	<h2>Quick Response Exam Checker</h2>
 	</header>
 	<main>
-	<h3> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  PIN: <?php echo($pin);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h3>
-    
+	<h3> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h3>
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
     
@@ -489,7 +506,7 @@ session_start();
 
 	
 	?>
-Score:  <?php echo (round($PScore)) ?>%
+Score:  <?php echo (round($PScore)) ?>% &nbsp;&nbsp;&nbsp; Count: <?php echo ($count_tot) ?>  <span id ="t_delay_message"></span>
 	<p><input type = "submit" id = "check_submit" name = "check" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p>
              <input type="hidden" name="activity_id" value="<?php echo ($activity_id)?>" >
               <input type="hidden" id = "prob_parts" value="<?php echo ($probParts)?>" >
@@ -499,11 +516,11 @@ Score:  <?php echo (round($PScore)) ?>%
 
 	
     
-    <p> Count: <?php echo ($count_tot) ?>  <span id ="t_delay_message"></span></p>
+    
    <p> <span id ="t_delay_limits"> time delay - 5s at count > <?php echo (3*$probParts) ?>, 30s at count > <?php echo (5*$probParts) ?> </span> </p>
     
     
-    
+     <!--
     
 	<form action="StopExam.php" method="POST" id = "the_form">
 		    <input type="hidden" name="name"  value="<?php echo ($name)?>" >
@@ -520,13 +537,13 @@ Score:  <?php echo (round($PScore)) ?>%
         <p><input type="hidden" id = "pblm_score" name="pblm_score" size=3 value="<?php echo($PScore)?>"  
     <hr>
 	<p><b><font Color="red">Finished:</font></b></p>
-	  <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
+	 <input type="hidden" name="score" value=<?php echo ($score) ?> />
 	   <?php $_SESSION['score'] = round($PScore);  ?>
 	 <b><input type="submit" value="Finished" name="score" style = "width: 30%; background-color:yellow "></b>
 	 <p><br> </p>
 	 <hr>
 	</form>
-
+ -->
 
 	<script>
    
