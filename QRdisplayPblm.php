@@ -284,7 +284,7 @@ $pass = array(
   ?>
   <!--   -->
    <div id = 'checker'>
-   <iframe src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe>
+   <iframe src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
  <?php
   $this_html = '<div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>'.'<hr><div id = "reflections">'.$reflect.$explore.$connect.$society.'</div>';
   // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
@@ -327,6 +327,9 @@ $pass = array(
 
      $('#problembutton').click(function(){
         $("#problem").toggle();
+     });
+       $('#checkerbutton').click(function(){
+        $("#checker").toggle();
      });
        $('#reflectionsbutton').click(function(){
         $("#reflections").toggle();
