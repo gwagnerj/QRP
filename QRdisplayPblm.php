@@ -8,7 +8,7 @@ session_start();
 
 // this strips out the get parameters so they are not in the url - its is not really secure data but I would rather not having people messing with them
 // if they do not what they are doing
-
+/* 
  if (!empty($_GET)) {
         $_SESSION['got'] = $_GET;
         header('Location: QRdisplayPblm.php');
@@ -19,24 +19,21 @@ session_start();
             unset($_SESSION['got']);
         }
     }
+     */
         //use the $_GET vars here..
     
 
 //  Set the varaibles to the Get Parameters or if they do not exist try the session variables if those don't exist error back to QRhomework
 
-
 	if(isset($_GET['activity_id'])) {
-			$activity_id = htmlentities($_GET['activity_id']);
+			$activity_id = $_GET['activity_id'];
             
-		}else if(isset($_SESSION['activity_id'])) {
-			$activity_id = htmlentities($_SESSION['activity_id']);
 		} else {
 			$_SESSION['error'] = 'activity_id is not being read into the diplay error 30';
 			header("Location: QRhomework.php");
 			die();
 	} 
-    $_SESSION['activity_id'] = $activity_id;
-    // echo('activity_id: '.$activity_id);
+ 
 	//  Get all of the required info from the Activity Table
     
     $sql = 'SELECT * FROM Activity WHERE activity_id = :activity_id';
@@ -163,32 +160,14 @@ $htmlfilenm = "uploads/".$htmlfilenm;
     }
    
 $pass = array(
-
+    'stu_name' => $stu_name,
     'activity_id' => $activity_id
     );
     echo '<script>';
     echo 'var pass = ' . json_encode($pass) . ';';
     echo '</script>';
 
-// passing my php varables into the js varaibles needed for the script below
-/* 
-$pass = array(
-    
-	'reflect_flag' => $reflect_flag,
-	'explore_flag' => $explore_flag,  // these are set in 
-	'connect_flag' => $connect_flag,
-	'society_flag' => $society_flag
-);
 
-// echo ($pass['society_flag']);
-//die();
-echo '<script>';
-echo 'var pass = ' . json_encode($pass) . ';';
-echo '</script>';
-  
-   */
- 
- // 
 
 ?>
 <!DOCTYPE html >
@@ -219,11 +198,6 @@ echo '</script>';
 <body>
 
 
-<!--
-<form id = "" name = "">.'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>'
-
-</form>
- <div id = substitute_me>  </div> -->
 
 
 <?php  
@@ -259,10 +233,6 @@ echo '</script>';
    // if ($connect_flag ==1){$connect = $html->find('#connect',0).'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$connect = '';}
     if ($explore_flag ==1){$explore = $html->find('#explore',0).'<textarea id = "explore_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$explore = '';}
     if ($society_flag ==1){$society = $html->find('#society',0).'<textarea id = "society_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$society = '';}
-    
-    
-     
-     
      
     
       for( $i=0;$i<$nv;$i++){
@@ -279,19 +249,19 @@ echo '</script>';
               $base_case = preg_replace('/<div id="'.$let_pattern.'">/','<div id="BC_'.$let_pattern.'">',$base_case);
              
          }
-        
-       $this_html = $qrcode.$directions.$problem.'<hr>'.'<div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>'.'<hr><div id = "reflections">'.$reflect.$explore.$connect.$society.'</div>';
-
+       // $checker_text = '<div id = "checker" <iframe src = "QRChecker2.php?activity_id='.$activity_id.'" style ="width:90%; height:50%;"></iframe></div>';
+       // echo (' checker_text: '.$checker_text);
+       $this_html = $qrcode.$directions.$problem.'<hr>';
+       
+      
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
             $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
         }
-       
-       
     
    $dom = new DOMDocument();
-   libxml_use_internal_errors(true); // this gets rid of the warnig that the p tag isn't closed explicitly
+   libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $this_html);
        $images = $dom->getElementsByTagName('img');
      
@@ -312,16 +282,44 @@ echo '</script>';
    //   echo ($html); 
   
   ?>
-  <!--
-   <div id = 'examchecker'>
-   <iframe src="QRExamCheck.php?exam_num=<?php echo($exam_num);?>&cclass_id=<?php echo($cclass_id);?>&alias_num=<?php echo($alias_num);?>&pin=<?php echo($pin);?>&iid=<?php echo($iid);?>&examactivity_id=<?php echo($examactivity_id);?>&problem_id=<?php echo($problem_id);?>&dex=<?php echo($dex);?>" style = "width:70%; height:50%;"></iframe>
-
- -->
+  <!--   -->
+   <div id = 'checker'>
+   <iframe src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe>
+ <?php
+  $this_html = '<div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>'.'<hr><div id = "reflections">'.$reflect.$explore.$connect.$society.'</div>';
+  // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+       for( $i=0;$i<$nv;$i++){
+            $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+        }
+    
+   $dom = new DOMDocument();
+   libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
+       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $this_html);
+       $images = $dom->getElementsByTagName('img');
+     
+        foreach ($images as $image) {
+          
+            $src = $image->getAttribute('src');
+             $src = 'uploads/'.$src;
+     
+             $src = urldecode($src);
+             $type = pathinfo($src, PATHINFO_EXTENSION);
+             $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+             $image->setAttribute("src", $base64); 
+             $this_html = $dom->saveHTML();
+       }
+  
+   echo $this_html; 
+ //  unlink('uploads/temp2 png');
+ 
+ 
+ ?>
+ 
 <script>
  $(document).ready(function(){
     
     var activity_id = pass['activity_id']; 
-     
+     var stu_name = pass['stu_name']; 
 
   $('#basecasebutton').click(function(){
         $("#base_case").toggle();
@@ -333,6 +331,8 @@ echo '</script>';
        $('#reflectionsbutton').click(function(){
         $("#reflections").toggle();
      });
+     
+     $('#questions').prepend('<p> Questions for '+stu_name+':</p>')
     // color the back botton a little different
 			$("#backbutton").css({"background-color":"lightyellow",
            /*  

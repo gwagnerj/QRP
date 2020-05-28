@@ -98,7 +98,7 @@
 		  return;
 		}
 		
-		// Check toi see if I typed in the code
+		// Check to see if I typed in the code
 		$dispAns=substr($pin,0,7);
 
 			if($dispAns=="McKetta" ){

@@ -8,218 +8,213 @@
 	// this is the normal place to start for students checking their homework and goes the the QRcontroller.  Can also come from the rtnCode.php or the back button on QRdisplay.php  This will
     
 	$alias_num = $problem_id = $assign_num = $cclass_id ='';
-	
-	$_SESSION['progress']=0;
-
+	$progress = 0;
 	$stu_name = '';
 	$problem_id= '';
 	$index='';
 	$pin='';
 	$iid='';
 	$instr_last='';
-	
  
 	// first time thru set scriptflag to zero - this will turn to 1 if the script ran
 //	if (!isset($sc_flag)){$sc_flag=0;}
 	
-    if(isset($_GET['activity_id'])){
-		$activity_id = htmlentities($_GET['activity_id']);
-	}  else {$activity_id = '';}    
+    if(isset($_GET['activity_id']) || isset($_POST['activity_id'])){
+		if(isset($_GET['activity_id'])){$activity_id = htmlentities($_GET['activity_id']);}
+        if(isset($_POST['activity_id'])){$activity_id = htmlentities($_POST['activity_id']);}
+        // get the information from the activity table
+       // most things will be the same except the problem_id, alias number and once they select a problem we need to 
+       // check the Activity table of send all of these to the controller or somekind of pass through file
 
-	// if Get is set then it is coming from rtncode.php and may wnat another problem
-	
-	if(isset($_GET['stu_name'])){
-		
-		$stu_name = htmlentities($_GET['stu_name']);
-	} elseif (isset($_SESSION['stu_name'])){
-		$stu_name = htmlentities($_SESSION['stu_name']);
-	}
-	
-	if(isset($_GET['problem_id'])){
-		$problem_id = htmlentities($_GET['problem_id']);
-	} 
-	
-	/* elseif (isset($_SESSION['problem_id'])){
-		$problem_id = htmlentities($_SESSION['problem_id']);
-	} */
-	
-	if(isset($_GET['pin'])){
-		$pin = htmlentities($_GET['pin']);
-	} elseif (isset($_SESSION['pin'])){
-		$pin = htmlentities($_SESSION['pin']);
-	}
-	if(isset($_GET['assign_num'])){
-		$assign_num = htmlentities($_GET['assign_num']);
-	} elseif(isset($_SESSION['assign_num'])){
-		 	$assign_num = htmlentities($_SESSION['assign_num']);
-	} 
-	
-	if(isset($_GET['iid'])){
-		$iid = htmlentities($_GET['iid']);
-	} elseif (isset($_SESSION['iid'])){
-		$iid = htmlentities($_SESSION['iid']);
-	}
-	if(isset($_SESSION['cclass_id'])){
-		$cclass_id = $_SESSION['cclass_id'];
-	} else {
-		$cclass_id = '';
-	}
-	
-	if(isset($_SESSION['cclass_name'])){
-		$cclass_name = $_SESSION['cclass_name'];
-	} else {
-		$cclass_name = '';
-	}
-		if(isset($_SESSION['assign_num'])){
-		$assign_num = $_SESSION['assign_num'];
-	} else {
-		$assign_num = '';
-	}
-	
+
+       $sql = 'SELECT * FROM `Activity` WHERE `activity_id` = :activity_id';
+        $stmt = $pdo->prepare($sql);
+         $stmt->execute(array(':activity_id' => $activity_id));
+         $activity_data = $stmt -> fetch();
+         $iid = $activity_data['iid'];   
+         $pin = $activity_data['pin'];   
+         $stu_name = $activity_data['stu_name'];   
+         $cclass_id = $activity_data['currentclass_id']; 
+         $currentclass_id = $activity_data['currentclass_id'];            
+        // $instr_last = $activity_data['instr_last'];   
+        // $university = $activity_data['university'];   
+         $dex = $activity_data['dex'];  
+         $alias_num = $activity_data['alias_num'];  
+         $assign_id = $activity_data['assign_id'];  
+         $progess = $activity_data['progress'];  
+         // $problem_id = $activity_data['problem_id'];  
+        
+        $sql = 'SELECT name FROM Currentclass WHERE currentclass_id = :currentclass_id';
+         $stmt = $pdo->prepare($sql);
+         $stmt->execute(array(':currentclass_id' => $currentclass_id));
+         $class_data = $stmt -> fetch();
+         $class_name = $class_data['name'];
+         $cclass_name = $class_data['name'];
+         
+        $sql = 'SELECT `assign_num` FROM Assign WHERE assign_id = :assign_id AND iid = :iid AND currentclass_id = :currentclass_id';
+         $stmt = $pdo->prepare($sql);
+         $stmt->execute(array(':assign_id' => $assign_id,
+                    ':iid' => $iid,
+                     ':currentclass_id' => $cclass_id,
+         ));
+         $assign_data = $stmt -> fetch();
+         $assign_num = $assign_data['assign_num'];
+        
+         
+      } 
+        // this is the first time through if we do not have an activity_id - The activity is unique for a particular student for a particular problem
+        $activity_id = '';
+      
+    
+    
 	if(isset($_POST['stu_name'])){
 		$stu_name = htmlentities($_POST['stu_name']);
-		$_SESSION['stu_name']=$stu_name;
 	} 
+    
+   
+    
 // Go get the problem id from the Assignment table
-	if(isset($_POST['submit'])&& isset($_POST['assign_num'])&& isset($_POST['alias_num'])&& isset($_POST['iid']) && isset($_POST['cclass_id']) ){
-		$assign_num = htmlentities($_POST['assign_num']);
+	if(isset($_POST['submit'])&& isset($_POST['assign_num'])&& isset($_POST['alias_num'])&& isset($_POST['iid']) && isset($_POST['cclass_id']) && isset($_POST['pin'])) {
+        $assign_num = htmlentities($_POST['assign_num']);
 		$alias_num = htmlentities($_POST['alias_num']);
 		$cclass_id = htmlentities($_POST['cclass_id']);
 		$iid = htmlentities($_POST['iid']);
-		$_SESSION['assign_num'] = $assign_num;
-		$_SESSION['cclass_id'] = $cclass_id;
-		//$_SESSION['alias_num'] = $alias_num;
-		$sql = " SELECT * FROM `Assign` WHERE iid = $iid AND assign_num = $assign_num AND alias_num = $alias_num AND currentclass_id = $cclass_id"   ;
-				$stmt = $pdo->query($sql);
-				$row = $stmt->fetch(PDO::FETCH_ASSOC);
-				if ( $row == false) {
-					$_SESSION['ERROR'] = 'No Problem found for these Input Values';
-				} else {
-					$problem_id = $row['prob_num'];
-					$_SESSION['problem_id']=$problem_id;
-					// get the name of the current class from the CurrentClass table
-					$sql = "SELECT * FROM `CurrentClass` WHERE currentclass_id = $cclass_id";
-					$stmt = $pdo->query($sql);
-					$row = $stmt->fetch(PDO::FETCH_ASSOC);
-					if ( $row == false) {
-						$cclass_name = "";
-					} else {
-							$cclass_name = $row['name'];
-							$_SESSION['cclass_name'] = $cclass_name;
-					}
-				}
-	
-	//	$problem_id = htmlentities($_POST['problem_id']);
-	//		$_SESSION['problem_id']=$problem_id;
-	} elseif(isset($_POST['submit'])) {
-		//$_SESSION['cclass_id'] = $_SESSION['cclass_name'] = '';
+        $pin = htmlentities($_POST['pin']);
+
+// need to get the info from the assignment table so I can check to see if we already have an activity Id for this
+        $sql = 'SELECT * FROM `Assign` WHERE `currentclass_id` = :cclass_id  AND `iid`=:iid  AND `assign_num` = :assign_num AND `alias_num` = :alias_num';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array(':cclass_id' => $cclass_id,
+                                ':iid' => $iid,
+                                ':assign_num' => $assign_num,
+                                ':alias_num' => $alias_num,
+         ));
+         $assign_data = $stmt -> fetch();
+         
+         $problem_id = $assign_data['prob_num'];
+          $assign_id = $assign_data['assign_id'];   
+        
+        // check to see if we already have activity if we do we can get the activity id and move on to controller
+       $sql = 'SELECT `activity_id` FROM `Activity` WHERE `problem_id` = :problem_id AND `currentclass_id` = :cclass_id AND `pin` = :pin AND `iid`=:iid AND `assign_id` = :assign_id ';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array(':problem_id' => $problem_id,
+                                ':cclass_id' => $cclass_id,
+                                ':pin' => $pin,
+                                ':iid' => $iid,
+                                ':assign_id' => $assign_id
+         ));
+         $activity_data = $stmt -> fetch();
+         $activity_id = $activity_data['activity_id'];
+      //   echo (" activity_data (already have value):  ".$activity_id); //__________________________________________________________________________
+         
+         if(strlen($activity_id)< 1){
+           
+           // make a new entry in the activity table 
+           
+           if ($pin>10000 or $pin<0){
+                 $_SESSION['error']='Your PIN should be between 1 and 10000.';	
+            } else {
+                $dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
+            }
+					
+            // get the name of the current class from the CurrentClass table
+            $sql = "SELECT * FROM `CurrentClass` WHERE currentclass_id = :cclass_id";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(array(
+                    ':cclass_id' => $cclass_id,
+                    ));        
+                 $currentclass_data = $stmt -> fetch();
+                 $cclass_name = $currentclass_data['name'];
+             
+             // get the info on the instructor from the Users table
+            
+                $sql = "SELECT `last` FROM `Users` WHERE users_id = :iid";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute(array(
+                        ':iid' => $iid,
+                        ));        
+                     $users_data = $stmt -> fetch();
+                     $instr_last = $users_data['last'];
+                    
+
+                        // go the controller
+                    /* 
+                    
+                        // We are going transfer the variables that we have so far - iid, pin, problem_id, to js and that script will put these in local session varaibles for the subsequent
+                        // files - this will allow the student to pull up muliple sessions in different tabs of the same browser
+                        $pass = array(
+                            'dex' => $_SESSION['dex'],
+                            'problem_id' => $_SESSION['problem_id'],
+                            'stu_name' => $_SESSION['stu_name'],
+                            'pin' => $_SESSION['pin'],
+                            'iid' => $_SESSION['iid'],
+                            'assign_num' => $_SESSION['assign_num'],
+                            'alias_num' => $alias_num,
+                            'cclass_id' => $cclass_id,
+                            'cclass_name' => $cclass_name,
+                            'society_flag' => $row3['society_flag'],
+                            'explore_flag' => $row3['explore_flag'],
+                            'reflect_flag' => $row3['reflect_flag'],
+                            'connect_flag' => $row3['connect_flag'],
+                            'activity_id' => $activity_id,
+                            'ref_choice' => $row3['ref_choice']
+                                                                    
+                        );
+                
+                        echo '<script>';
+                        echo 'var pass = ' . json_encode($pass) . ';';
+                        echo '</script>';
+                     */
+                    // check the activity table and see if there is an entry if not make a new entry and go to the controller
+
+                         
+                        $sql = 'INSERT INTO Activity (problem_id, pin, iid, dex,     assign_id,  instr_last, university, pp1, pp2, pp3, pp4, post_pblm1, post_pblm2, post_pblm3, score, progress, stu_name, alias_num, currentclass_id, count_tot)	
+                                             VALUES (:problem_id, :pin, :iid, :dex, :assign_id, :instr_last,:university,:pp1,:pp2,:pp3,:pp4,:post_pblm1,:post_pblm2,:post_pblm3, :score,:progress, :stu_name, :alias_num, :cclass_id, :count_tot)';
+                        $stmt = $pdo->prepare($sql);
+                        $stmt -> execute(array(
+                        ':problem_id' => $problem_id,
+                        ':pin' => $pin,
+                        ':iid' => $iid,
+                        ':dex' => $dex,
+                       ':assign_id' => $assign_id,
+                       ':instr_last' => $instr_last,
+                        ':university' => $assign_data['university'],
+                        ':pp1' => $assign_data['pp_flag1'],
+                        ':pp2' => $assign_data['pp_flag2'],
+                        ':pp3' => $assign_data['pp_flag3'],
+                        ':pp4' => $assign_data['pp_flag4'],
+                        ':post_pblm1' => $assign_data['postp_flag1'],
+                        ':post_pblm2' => $assign_data['postp_flag2'],
+                        ':post_pblm3' => $assign_data['postp_flag3'],
+                        ':score' => 0,
+                        ':progress' => 1,
+                        ':stu_name' => $stu_name,
+                        ':alias_num' => $alias_num,
+                        ':cclass_id' => $cclass_id,
+                         ':count_tot' => 0
+                        ));
+                                    
+                          $sql = 'SELECT `activity_id` FROM `Activity` WHERE `problem_id` = :problem_id AND `currentclass_id` = :cclass_id AND `pin` = :pin AND `iid`=:iid AND `assign_id` = :assign_id ';
+                            $stmt = $pdo->prepare($sql);
+                            $stmt->execute(array(':problem_id' => $problem_id,
+                                ':cclass_id' => $cclass_id,
+                                ':pin' => $pin,
+                                ':iid' => $iid,
+                                ':assign_id' => $assign_id
+                                ));
+                                $activity_row =$stmt ->fetch();		
+                                $activity_id = $activity_row['activity_id'];
+                  //   echo (" activity_data (new value):  ".$activity_id;     
+         }   
+
+          header("Location: QRcontroller.php?activity_id=".$activity_id);
+			return; 
+		
+     } elseif(isset($_POST['submit'])) {
+		
 		 $_SESSION['error']='The Class, Assignment, Problem and instructor ID are all Required';
-		}
-	if(isset($_POST['pin'])){
-		$pin = htmlentities($_POST['pin']);
-		if ($pin>10000 or $pin<0){
-				$_SESSION['error']='Your PIN should be between 1 and 10000.';	
-			} else {
-				$_SESSION['pin']=$pin;
-				$dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
-				$_SESSION['dex'] = $dex;
-			}
-	} else {
-		//$_SESSION['error']='Your PIN is Required';
 	}
-
-	if(isset($_POST['iid'])){
-		$iid = htmlentities($_POST['iid']);
-		
-		$_SESSION['iid']=$iid;
-		
-				$sql = " SELECT 'user_id' FROM Users WHERE users_id = $iid" ;
-					$stmt = $pdo->query($sql);
-					if($stmt->rowCount()){
-						$sql2 = " SELECT 'iid' FROM Assign WHERE iid = $iid" ;
-						$stmt2 = $pdo->query($sql2);
-						if($stmt2->rowCount()){
-							// put this in so that if a negative problem_id is put in we go right  to the problem
-								$pos_problem_id = abs($problem_id);
-								// check to see that we have an active assignment for that problem by that instructor
-								$sql3 = "SELECT * FROM Assign WHERE iid=:iid AND prob_num=$pos_problem_id" ;
-								$stmt3 = $pdo->prepare($sql3);
-								$stmt3->execute(array(':iid' => $iid));
-								$row3 =$stmt3 ->fetch();
-			//if ( $activity_row === false ) {
-			/* 					
-								$stmt = "SELECT DISTINCT assign_num
-			FROM Assign 
-			WHERE currentclass_id ='".$currentclass_id."' ORDER BY assign_num DESC"; 
-			$stmt = $pdo->prepare($stmt);	
-			$stmt->execute();
-			$activeass = $stmt->fetchAll(PDO::FETCH_NUM);
-					 */			
-								
-								
-								
-								if($row3 != false){
-									// go the controller
-									$_SESSION['progress']=1;
-									$_POST['progress']=0;
-									$_POST['checker']=0; 
-								
-								
-									// We are going transfer the variables that we have so far - iid, pin, problem_id, to js and that script will put these in local session varaibles for the subsequent
-									// files - this will allow the student to pull up muliple sessions in different tabs of the same browser
-									$pass = array(
-										'dex' => $_SESSION['dex'],
-										'problem_id' => $_SESSION['problem_id'],
-										'stu_name' => $_SESSION['stu_name'],
-										'pin' => $_SESSION['pin'],
-										'iid' => $_SESSION['iid'],
-										'assign_num' => $_SESSION['assign_num'],
-										'alias_num' => $alias_num,
-										'cclass_id' => $cclass_id,
-										'cclass_name' => $cclass_name,
-										'society_flag' => $row3['society_flag'],
-										'explore_flag' => $row3['explore_flag'],
-										'reflect_flag' => $row3['reflect_flag'],
-										'connect_flag' => $row3['connect_flag'],
-                                        'activity_id' => $activity_id,
-										'ref_choice' => $row3['ref_choice']
-																				
-									);
-								// echo $row3['society_flag'];
-							// die();
-									echo '<script>';
-								//	echo 'console.log('.$pass.');';
-									
-									echo 'var pass = ' . json_encode($pass) . ';';
-									echo '</script>';
-								
-
-									//header("Location: QRcontroller.php");
-									//return; 
-									
-								} else {
-
-									$_SESSION['error']	='The Instructor with this ID has not made this problem active.';	
-								}									
-					
-					
-					
-						} else {
-							
-						$_SESSION['error']	='The Instructor for this ID has no active problems';	
-						}
-					
-					} else {
-					$_SESSION['error']	='The Instructor ID is not in the database.';	
-					}
-					
-					
-					} else {
-						
-					// $_SESSION['error']='The Instructor ID is Required';	
-						
-						
-					}
+    
 		if (isset($_POST['reset']))	{
 			
 			$iid = '';
@@ -231,7 +226,6 @@
 		//	session_destroy();
 			
 		}
-
 
 	?>
 <!DOCTYPE html>
@@ -274,6 +268,12 @@
 				<font color=#003399> Instructor: &nbsp; </font>
 				<?php 
 					// $iid=1;
+                   /*  
+                    echo (' iid: '.$iid);
+                    echo (' cclass_id: '.$cclass_id);
+                    echo (' cclass_name: '.$cclass_name);
+                    echo (' assign_num: '.$assign_num);
+                     */
 					if (strlen($iid)>0 && strlen($cclass_id)>0 && strlen($cclass_name)>0 && strlen($assign_num)>0 ){
 						
 						
@@ -480,7 +480,7 @@
 
 <script>
 
- 
+ /* 
 	// this is a function from 	https://stackoverflow.com/questions/19036684/jquery-redirect-with-post-data to post data and redirect without building a hidden form
 	 	$.extend(
 				{
@@ -534,10 +534,10 @@
 		sessionStorage.setItem('ref_choice',ref_choice);
 	
 	var file = "QRcontroller.php";
- $.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid, assign_num: assign_num, alias_num: alias_num, cclass_id: cclass_id });
+// $.redirectPost(file, { progress: "1", dex: dex, problem_id: problem, stu_name: s_name, pin: pin, iid: iid, assign_num: assign_num, alias_num: alias_num, cclass_id: cclass_id });
 	
 	  
-		 
+		  */
 </script>
 
 </body>
