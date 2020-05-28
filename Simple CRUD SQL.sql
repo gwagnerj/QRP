@@ -1301,5 +1301,6 @@ WHERE
      ALTER TABLE Activity 
 		 CHANGE `completed_at` `last_updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
     
-    
+    ALTER TABLE Activity 
+		 ADD `count_tot` INT AFTER `score`,
     
