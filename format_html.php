@@ -3,7 +3,7 @@ require_once "pdo.php";
 require_once "simple_html_dom.php";
 // this bit of code takes a problem from an microsoft office conversion to html of a QRproblem and replaces the text makup with actual html divs with id's that can be searched. 
 
-    for ($problem_id = 480; $problem_id <=500; $problem_id++){
+    for ($problem_id = 1; $problem_id <=99; $problem_id++){
         
      $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
         $stmt = $pdo->prepare($sql);
