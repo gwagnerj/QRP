@@ -66,13 +66,13 @@ session_start();
      $assignment_num = $assign_data['assign_num'];
       $alias_num = $assign_data['alias_num'];    
          
-	
-// can do the same as above ot the rest of the varaibles but won't unless I have trouble
-if (isset($_GET['reflect_flag'])){$reflect_flag = $_GET['reflect_flag'];} elseif(isset($_SESSION['reflect_flag'])){$reflect_flag = $_SESSION['reflect_flag'];} else {$reflect_flag = '';}
-if (isset($_GET['explore_flag'])){$explore_flag = $_GET['explore_flag'];} elseif(isset($_SESSION['explore_flag'])){$explore_flag = $_SESSION['explore_flag'];} else {$explore_flag = '';}
-if (isset($_GET['connect_flag'])){$connect_flag = $_GET['connect_flag'];} elseif(isset($_SESSION['connect_flag'])){$connect_flag = $_SESSION['connect_flag'];} else {$connect_flag = '';}
-if (isset($_GET['society_flag'])){$society_flag = $_GET['society_flag'];} elseif(isset($_SESSION['society_flag'])){$society_flag = $_SESSION['society_flag'];} else {$society_flag = '';}
-if (isset($_GET['choice'])){$choice = $_GET['choice'];} elseif(isset($_SESSION['choice'])){$choice = $_SESSION['choice'];} else {$choice = '';}
+	$reflect_flag = $assign_data['reflect_flag'];    
+    $explore_flag = $assign_data['explore_flag'];    
+    $connect_flag = $assign_data['connect_flag'];  
+    $society_flag = $assign_data['society_flag'];  
+    $ref_choice = $assign_data['ref_choice'];  
+    
+    
 
 
  $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
@@ -142,10 +142,20 @@ $htmlfilenm = "uploads/".$htmlfilenm;
             $pattern[$i]= '/##'.$nvar[$i].'.+?##/';
         }
     }
+   // see if we need a reflections button
+   if ($ref_choice!=0 || $reflect_flag !=0 || $explore_flag !=0 || $connect_flag !=0 || $society_flag !=0){
+     $reflection_button_flag = 1;  
+   } else {
+     $reflection_button_flag = 0; 
+   }
+   
+   
    
 $pass = array(
+    
     'stu_name' => $stu_name,
-    'activity_id' => $activity_id
+    'activity_id' => $activity_id,
+    'reflection_button_flag' => $reflection_button_flag
     );
     echo '<script>';
     echo 'var pass = ' . json_encode($pass) . ';';
@@ -182,8 +192,6 @@ $pass = array(
 <body>
 
 
-
-
 <?php  
  //  I'm using reading from the $html and buiding the file $this_html.  I had to build it in two parts because of putting the 
  //i-frame for the checker in the middle of the document
@@ -210,7 +218,7 @@ $pass = array(
       $problem = $html->find('#problem',0);
        $base_case = $html->find('#problem',0); 
     
-     if($choice >0 ){$reflect_flag = $connect_flag = $explore_flag = $society_flag = 1;}
+     if($ref_choice >0 ){$reflect_flag = $connect_flag = $explore_flag = $society_flag = 1;}
     
     if ($reflect_flag ==1){$reflect = $html->find('#reflect',0).'<textarea id = "reflect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$reflect = '';}
     if($connect_flag ==1 && isset($pblm_data['connect'])){$connect = $pblm_data['connect'].'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';
@@ -329,43 +337,7 @@ $pass = array(
        for( $i=0;$i<$nv;$i++){
             $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
         }
- /*    
-   $dom = new DOMDocument();
-   libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
-       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $this_html);
-       $images = $dom->getElementsByTagName('img');
-        foreach ($images as $image) {
-            $src = $image->getAttribute('src');
-             $src = 'uploads/'.$src;
-             $src = urldecode($src);
-             $type = pathinfo($src, PATHINFO_EXTENSION);
-             $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
-             $image->setAttribute("src", $base64); 
-             $this_html = $dom->saveHTML();
-       }
-       
-       // turn this_html back into and object that I can replace the varaible images on 
-       $this_html =str_get_html($this_html); 
-       $keep = 0;
-       $varImages = $this_html -> find('.var_image');
-       foreach($varImages as $varImage) {
-          $var_image_id = $varImage -> id;  
-          
-           for( $i=0;$i<$nv;$i++){
-              if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
-            } 
-            
-            If ($keep==0){
-                //  get rid of the caption and the image
-                   $varImage->find('.MsoNormal',0)->outertext = '';
-                   $varImage->find('.MsoCaption',0)->outertext = '';
-            } else {
-                 //  get rid of the caption 
-                $varImage->find('.MsoCaption',0)->outertext = '';
-            }
-             $keep = 0;
-        }
- */
+ 
   echo $this_html; 
    unlink('uploads/temp2 png');
   
@@ -382,6 +354,51 @@ $pass = array(
        for( $i=0;$i<$nv;$i++){
             $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
         }
+   // substitute for all of the varables, images and varaible images that might be in the reflections portion
+   
+   
+          // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+       for( $i=0;$i<$nv;$i++){
+            $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+        }
+         
+          $dom = new DOMDocument();
+   libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
+       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $this_html);
+       $images = $dom->getElementsByTagName('img');
+        foreach ($images as $image) {
+            $src = $image->getAttribute('src');
+             $src = 'uploads/'.$src;
+             $src = urldecode($src);
+             $type = pathinfo($src, PATHINFO_EXTENSION);
+             $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+             $image->setAttribute("src", $base64); 
+             $this_html = $dom->saveHTML();
+       }
+       
+       // turn base-case back into and simple_html_dom object that I can replace the varaible images on 
+       $this_html =str_get_html($this_html); 
+       $keep = 0;
+       $varImages = $this_html -> find('.var_image');
+       foreach($varImages as $varImage) {
+          $var_image_id = $varImage -> id;  
+          
+           for( $i=0;$i<$nv;$i++){
+              if(trim($var_image_id) == trim($BC_vari[$i])){$keep = 1;} 
+            } 
+            If ($keep==0){
+                //  get rid of the caption and the image
+                   $varImage->find('.MsoNormal',0)->outertext = '';
+                   $varImage->find('.MsoCaption',0)->outertext = '';
+            } else {
+                 //  get rid of the caption 
+                $varImage->find('.MsoCaption',0)->outertext = '';
+            }
+             $keep = 0;
+        } 
+         
+   
+   
    
   
    echo $this_html; 
@@ -395,6 +412,8 @@ $pass = array(
     
     var activity_id = pass['activity_id']; 
      var stu_name = pass['stu_name']; 
+     var reflection_button_flag = pass['reflection_button_flag'];
+     
      
      $('#qrcode_id').hide();
     $('#base_case').hide();
@@ -409,8 +428,13 @@ $pass = array(
         $("#checker").toggle();
          $("#qrcode_id").toggle();
      });
+      if(reflection_button_flag == 0){
+        $('#reflectionsbutton').hide();
+      }
        $('#reflectionsbutton').click(function(){
-        $("#reflections").toggle();
+            if(reflection_button_flag == 1){
+                $("#reflections").toggle();
+            }
      });
      
      $('#questions').prepend('<p> Questions for '+stu_name+':</p>')
