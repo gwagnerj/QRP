@@ -186,18 +186,13 @@ if(isset($_POST['iid'])){
             $xml_name = $xml->createElement( "name");
              $xml_text = $xml->createElement( "text", $version );
              $xml_name->appendChild( $xml_text );
-         
             $xml_question1->appendChild( $xml_name );
-
             $xml_comment = $xml->createComment('this is my comment'); 
              $xml_question1->appendChild( $xml_comment );
-            
              $xml_comment = $xml->createComment('version - '.$version); 
              $xml_question1->appendChild( $xml_comment );
-             
              $xml_questiontext = $xml->createElement( "questiontext" );
              $xml_questiontext->setAttribute( "format", "html" );
-        
         
              $html_file = file_get_contents($htmlfilenm);
                
@@ -208,8 +203,6 @@ if(isset($_POST['iid'])){
         } 
         
       // print($html_file);  
-        
-        
          // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
             $html_file = preg_replace($pattern[$i],$vari[$i],$html_file);
@@ -239,58 +232,48 @@ if(isset($_POST['iid'])){
             $html_reflections = get_string_between($html_file,'w==','==w'); 
             
         // looking for variable images 
+           
+    $dom = new DOMDocument();
+
         
-   
+    $m='a';
+    $q='b';
+    $html_question = '<! doctype html>';
+    for( $i=0;$i<$last_part;$i++){
+        if($ans[$i]<1.2e43){
+           // if($i != $last_part-1){
+          $string1= $m."==p";
+          $string2 = 'p=='.$q;
+          $html_q[$i] = trim(get_string_between($htmlQuestions,$string1,$string2));
            
-        $dom = new DOMDocument();
-
-            
-        $m='a';
-        $q='b';
-        $html_question = '<! doctype html>';
-        for( $i=0;$i<$last_part;$i++){
-            if($ans[$i]<1.2e43){
-               // if($i != $last_part-1){
-                  $string1= $m."==p";
-                  $string2 = 'p=='.$q;
-                  $html_q[$i] = trim(get_string_between($htmlQuestions,$string1,$string2));
-                   
-                   // now add the questions and answer pattern to the stem for the complete 
-                    $html_question = $html_question.$m.")&nbsp;".$html_q[$i].'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$ans_pattern[$i]."<br><br>";
-                $m++;
-                $q++;
-              //  } 
-            }
+           // now add the questions and answer pattern to the stem for the complete 
+          $html_question = $html_question.$m.")&nbsp;".$html_q[$i].'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$ans_pattern[$i]."<br><br>";
+          $m++;
+          $q++;
+          //  } 
         }
+    }
+     // now add the stem
+      $html_question = $html_stem.'<br>'.$html_question;
+      //    $html_question = strip_tags($html_question,'<br>,<img>,<sub>,<sup>,</sub></sup>');  // strip out the tags except the ones in the secound argument
      
-           
-             // now add the stem
-              $html_question = $html_stem.'<br>'.$html_question;
-          //    $html_question = strip_tags($html_question,'<br>,<img>,<sub>,<sup>,</sub></sup>');  // strip out the tags except the ones in the secound argument
-         
-         // need to take care of the images  for the xml Moodle document this means replacing the image reference with an encoded embedded image   
-        libxml_use_internal_errors(true); // this gets rid of the warnig that the p tag isn't closed explicitly
-         $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html_question);
-
-       $images = $dom->getElementsByTagName('img');
-     
-        foreach ($images as $image) {
-          
-            $src = $image->getAttribute('src');
-             $src = 'uploads/'.$src;
-     
-             $src = urldecode($src);
-             $type = pathinfo($src, PATHINFO_EXTENSION);
-             $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
-             $image->setAttribute("src", $base64); 
-             $html_question = $dom->saveHTML();
-             
-       }
+     // need to take care of the images  for the xml Moodle document this means replacing the image reference with an encoded embedded image   
+    libxml_use_internal_errors(true); // this gets rid of the warnig that the p tag isn't closed explicitly
+    $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html_question);
+    $images = $dom->getElementsByTagName('img');
+    foreach ($images as $image) {
+      
+        $src = $image->getAttribute('src');
+         $src = 'uploads/'.$src;
+         $src = urldecode($src);
+         $type = pathinfo($src, PATHINFO_EXTENSION);
+         $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+         $image->setAttribute("src", $base64); 
+         $html_question = $dom->saveHTML();
+    }
    
     $simp_htm_doc = new simple_html_dom();
     $simp_htm_doc->load($html_question);
-    
- 
     $captions = $simp_htm_doc -> find('.MsoCaption');
   
     foreach($captions as $caption){
@@ -299,63 +282,43 @@ if(isset($_POST['iid'])){
         $caption_value = trim(trim($caption_text[1])."_".trim($caption_text[3]));
         
         $image = $caption->prev_sibling();
-        
-       
-      $keep_image = 0;        
-      for( $i=0;$i<$nv;$i++){
-                if($vari[$i] == $caption_value){
-                 $keep_image = 1;
-                }
+        $keep_image = 0;        
+        for( $i=0;$i<$nv;$i++){
+            if($vari[$i] == $caption_value){
+             $keep_image = 1;
             }
+        }
                 
-           if($keep_image == 0)  {   
-               $image->outertext = '';
-           }   
-          $caption->outertext='';
+       if($keep_image == 0)  {   
+           $image->outertext = '';
+       }   
+       $caption->outertext='';
     }
 
 //-------------------------------write more xml-----------------------------------------------------------------------------------------------------------
-
               
-             $xml_text1 = $xml->createElement( "text");
-             
-             $xml_questiontext->appendChild( $xml_text1 );
-          
-              $xml_text1->appendChild(
-                       $xml->createCDATASection($simp_htm_doc)
-                    );
-          
-            $xml_question1->appendChild( $xml_questiontext );
-           
-            $xml_feedback = $xml->createElement( "generalfeedback" );
-            $xml_feedback->setAttribute( "format", "html" );
-           $xml_question1->appendChild( $xml_feedback );
-                          
-            $xml_penalty = $xml->createElement( "penalty","0.3333333" );
-            $xml_question1->appendChild( $xml_penalty );
-
-            $xml_hidden = $xml->createElement( "hidden","0" );
-            $xml_question1->appendChild( $xml_hidden );
- 
-            $xml_idnumber = $xml->createElement( "idnumber" );
-            $xml_question1->appendChild( $xml_idnumber );
-            
-         $xml_quiz->appendChild( $xml_question1 );
-   
-          $xml->appendChild( $xml_quiz );
-        
-     $xml_document = $xml->saveXML();
-       
+        $xml_text1 = $xml->createElement( "text");
+        $xml_questiontext->appendChild( $xml_text1 );
+        $xml_text1->appendChild(
+                   $xml->createCDATASection($simp_htm_doc)
+                );
+        $xml_question1->appendChild( $xml_questiontext );
+        $xml_feedback = $xml->createElement( "generalfeedback" );
+        $xml_feedback->setAttribute( "format", "html" );
+        $xml_question1->appendChild( $xml_feedback );
+        $xml_penalty = $xml->createElement( "penalty","0.3333333" );
+        $xml_question1->appendChild( $xml_penalty );
+        $xml_hidden = $xml->createElement( "hidden","0" );
+        $xml_question1->appendChild( $xml_hidden );
+        $xml_idnumber = $xml->createElement( "idnumber" );
+        $xml_question1->appendChild( $xml_idnumber );
+        $xml_quiz->appendChild( $xml_question1 );
+        $xml->appendChild( $xml_quiz );
+        $xml_document = $xml->saveXML();
       }
-      
-      
        $xml->save('uploads/'.$xml_file_name);
- //print $xml->saveXML();
-
-   // Parse the XML.
    
-   
-  echo('<a href = "uploads/'.$xml_file_name.'?dummy = dummy" download> download file</a>');
+    echo('<a href = "uploads/'.$xml_file_name.'?dummy = dummy" download> download file</a>');
     echo('<br> <br><br>After downloading the file, close this browser window');
    
 

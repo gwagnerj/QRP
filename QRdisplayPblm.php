@@ -185,6 +185,9 @@ $pass = array(
 
 
 <?php  
+ //  I'm using reading from the $html and buiding the file $this_html.  I had to build it in two parts because of putting the 
+ //i-frame for the checker in the middle of the document
+ 
  
  	  $html = new simple_html_dom();
       $html->load_file($htmlfilenm);
@@ -233,63 +236,153 @@ $pass = array(
               $base_case = preg_replace('/<div id="'.$let_pattern.'">/','<div id="BC_'.$let_pattern.'">',$base_case);
              
          }
-       // $checker_text = '<div id = "checker" <iframe src = "QRChecker2.php?activity_id='.$activity_id.'" style ="width:90%; height:50%;"></iframe></div>';
-       // echo (' checker_text: '.$checker_text);
-       $this_html ='<hr>'.$qrcode.$directions.$problem.'<hr>';
+         
+         // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+       for( $i=0;$i<$nv;$i++){
+            $problem = preg_replace($pattern[$i],$vari[$i],$problem);
+        }
+        
+        
+    // put the images into the problem statement part of the document     
+    $dom = new DOMDocument();
+   libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
+       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $problem);
+       $images = $dom->getElementsByTagName('img');
+        foreach ($images as $image) {
+            $src = $image->getAttribute('src');
+             $src = 'uploads/'.$src;
+             $src = urldecode($src);
+             $type = pathinfo($src, PATHINFO_EXTENSION);
+             $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+             $image->setAttribute("src", $base64); 
+             $problem = $dom->saveHTML();
+       }
+       
+       // turn problem back into and simple_html_dom object that I can replace the varaible images on 
+       $problem =str_get_html($problem); 
+       $keep = 0;
+       $varImages = $problem -> find('.var_image');
+       foreach($varImages as $varImage) {
+          $var_image_id = $varImage -> id;  
+          
+           for( $i=0;$i<$nv;$i++){
+              if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
+            } 
+            
+            If ($keep==0){
+                //  get rid of the caption and the image
+                   $varImage->find('.MsoNormal',0)->outertext = '';
+                   $varImage->find('.MsoCaption',0)->outertext = '';
+            } else {
+                 //  get rid of the caption 
+                $varImage->find('.MsoCaption',0)->outertext = '';
+            }
+             $keep = 0;
+        }
+     // repeat with the base_case
+     
+         // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+       for( $i=0;$i<$nv;$i++){
+            $base_case = preg_replace($pattern[$i],$vari[$i],$base_case);
+        }
+         
+          $dom = new DOMDocument();
+   libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
+       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $base_case);
+       $images = $dom->getElementsByTagName('img');
+        foreach ($images as $image) {
+            $src = $image->getAttribute('src');
+             $src = 'uploads/'.$src;
+             $src = urldecode($src);
+             $type = pathinfo($src, PATHINFO_EXTENSION);
+             $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+             $image->setAttribute("src", $base64); 
+             $base_case = $dom->saveHTML();
+       }
+       
+       // turn base-case back into and simple_html_dom object that I can replace the varaible images on 
+       $base_case =str_get_html($base_case); 
+       $keep = 0;
+       $varImages = $base_case -> find('.var_image');
+       foreach($varImages as $varImage) {
+          $var_image_id = $varImage -> id;  
+          
+           for( $i=0;$i<$nv;$i++){
+              if(trim($var_image_id) == trim($BC_vari[$i])){$keep = 1;} 
+            } 
+            If ($keep==0){
+                //  get rid of the caption and the image
+                   $varImage->find('.MsoNormal',0)->outertext = '';
+                   $varImage->find('.MsoCaption',0)->outertext = '';
+            } else {
+                 //  get rid of the caption 
+                $varImage->find('.MsoCaption',0)->outertext = '';
+            }
+             $keep = 0;
+        } 
+         
+         
+    // only include the document above the checker
+       $this_html ='<hr>'.$qrcode.$directions.$problem.'<hr> <div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>';
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
             $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
         }
-    
+ /*    
    $dom = new DOMDocument();
    libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $this_html);
        $images = $dom->getElementsByTagName('img');
-     
         foreach ($images as $image) {
-          
             $src = $image->getAttribute('src');
              $src = 'uploads/'.$src;
-     
              $src = urldecode($src);
              $type = pathinfo($src, PATHINFO_EXTENSION);
              $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
              $image->setAttribute("src", $base64); 
              $this_html = $dom->saveHTML();
        }
-  
-   echo $this_html; 
+       
+       // turn this_html back into and object that I can replace the varaible images on 
+       $this_html =str_get_html($this_html); 
+       $keep = 0;
+       $varImages = $this_html -> find('.var_image');
+       foreach($varImages as $varImage) {
+          $var_image_id = $varImage -> id;  
+          
+           for( $i=0;$i<$nv;$i++){
+              if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
+            } 
+            
+            If ($keep==0){
+                //  get rid of the caption and the image
+                   $varImage->find('.MsoNormal',0)->outertext = '';
+                   $varImage->find('.MsoCaption',0)->outertext = '';
+            } else {
+                 //  get rid of the caption 
+                $varImage->find('.MsoCaption',0)->outertext = '';
+            }
+             $keep = 0;
+        }
+ */
+  echo $this_html; 
    unlink('uploads/temp2 png');
-   //   echo ($html); 
+  
   
   ?>
   <!--   -->
    <div id = 'checker'>
    <iframe src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
  <?php
-  $this_html = '<div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>'.'<hr><div id = "reflections">'.$reflect.$explore.$connect.$society.'</div>';
+ 
+ // the document below the checker
+  $this_html = '<hr><div id = "reflections">'.$reflect.$explore.$connect.$society.'</div>';
   // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
             $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
         }
-    
-   $dom = new DOMDocument();
-   libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
-       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $this_html);
-       $images = $dom->getElementsByTagName('img');
-     
-        foreach ($images as $image) {
-          
-            $src = $image->getAttribute('src');
-             $src = 'uploads/'.$src;
-     
-             $src = urldecode($src);
-             $type = pathinfo($src, PATHINFO_EXTENSION);
-             $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
-             $image->setAttribute("src", $base64); 
-             $this_html = $dom->saveHTML();
-       }
+   
   
    echo $this_html; 
  //  unlink('uploads/temp2 png');
@@ -304,14 +397,14 @@ $pass = array(
      var stu_name = pass['stu_name']; 
      
      $('#qrcode_id').hide();
-
+    $('#base_case').hide();
+    
   $('#basecasebutton').click(function(){
         $("#base_case").toggle();
-     });
-
-     $('#problembutton').click(function(){
         $("#problem").toggle();
      });
+
+   
        $('#checkerbutton').click(function(){
         $("#checker").toggle();
          $("#qrcode_id").toggle();
