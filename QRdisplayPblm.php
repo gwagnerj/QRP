@@ -108,10 +108,10 @@ $sql = "SELECT * FROM Users WHERE users_id = :users_id";
         $frame_size = 1; 
           
         // Generates QR Code and Stores it in directory given 
-          QRcode::png($qrchecker_text, 'uploads/'.$file, $ecc, $pixel_size, $frame_size); 
+          QRcode::png($qrchecker_text, $file, $ecc, $pixel_size, $frame_size); 
          // QRcode::png($text); 
         // Displaying the stored QR code from directory 
-      //  echo ("<right><img src='uploads/".$file."'></right>");
+    
       $qrcode = "<span id = 'qrcode_id'><right><img src='".$file."'></right></span>"; 
 
 $htmlfilenm = "uploads/".$htmlfilenm;
@@ -211,10 +211,9 @@ $pass = array(
        $header_stuff ->find('#university',0)->innertext = $contrib_univ;
       if (strlen($nm_author)>1){$header_stuff ->find('#nm_author',0)->innertext = ' based on a problem by: '.$nm_author;}
       if (strlen($specif_ref)>1){$header_stuff ->find('#specif_ref',0)->innertext = ' reference: '.$specif_ref;}
-
+// could also store custom directions look fof them in the assignment table and substitute them in - maybe later
       echo ($header_stuff);
-       $directions = '';
-    // $directions = $html->find('#directions',0);
+      
       $problem = $html->find('#problem',0);
        $base_case = $html->find('#problem',0); 
     
@@ -331,7 +330,7 @@ $pass = array(
          
          
     // only include the document above the checker
-       $this_html ='<hr>'.$qrcode.$directions.$problem.'<hr> <div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>';
+       $this_html ='<hr>'.$qrcode.$problem.'<hr> <div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>';
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
@@ -339,8 +338,8 @@ $pass = array(
         }
  
   echo $this_html; 
-   unlink('uploads/temp2 png');
   
+ //  unlink('temp2 png');
   
   ?>
   <!--   -->
@@ -402,7 +401,7 @@ $pass = array(
    
   
    echo $this_html; 
- //  unlink('uploads/temp2 png');
+  // unlink('temp2 png');
  
  
  ?>
@@ -417,17 +416,19 @@ $pass = array(
      
      $('#qrcode_id').hide();
     $('#base_case').hide();
+    $('#directions').hide();
+    
     
   $('#basecasebutton').click(function(){
         $("#base_case").toggle();
         $("#problem").toggle();
      });
-
    
        $('#checkerbutton').click(function(){
         $("#checker").toggle();
          $("#qrcode_id").toggle();
      });
+     
       if(reflection_button_flag == 0){
         $('#reflectionsbutton').hide();
       }
@@ -435,6 +436,10 @@ $pass = array(
             if(reflection_button_flag == 1){
                 $("#reflections").toggle();
             }
+     });
+     
+     $('#directionsbutton').click(function(){
+        $("#directions").toggle();
      });
      
      $('#questions').prepend('<p> Questions for '+stu_name+':</p>')
