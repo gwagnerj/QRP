@@ -79,7 +79,6 @@ if(isset($_POST['iid'])){
         $i++;
     }
     
-    
     $xml_file_name = substr($pblm_data['htmlfilenm'], 0, strrpos($pblm_data['htmlfilenm'], "."));
     $xml_file_name = $xml_file_name.'.xml';
 
@@ -178,25 +177,25 @@ if(isset($_POST['iid'])){
 
   //--------------------------------make the xml specific for the problem index------------------------------------------------------------------------------------------      
            
-           $xml_question1 = $xml->createElement( "question");
+       $xml_question1 = $xml->createElement( "question");
 
-            // Set the attributes.
-            $xml_question1->setAttribute( "type", "cloze" );
-            $version = 'version_'.$dex;
-            $xml_name = $xml->createElement( "name");
-             $xml_text = $xml->createElement( "text", $version );
-             $xml_name->appendChild( $xml_text );
-            $xml_question1->appendChild( $xml_name );
-            $xml_comment = $xml->createComment('this is my comment'); 
-             $xml_question1->appendChild( $xml_comment );
-             $xml_comment = $xml->createComment('version - '.$version); 
-             $xml_question1->appendChild( $xml_comment );
-             $xml_questiontext = $xml->createElement( "questiontext" );
-             $xml_questiontext->setAttribute( "format", "html" );
-        
-             $html_file = file_get_contents($htmlfilenm);
-               
-           // first protect all of the images that could be a variable images and put a temporary code for them
+        // Set the attributes.
+        $xml_question1->setAttribute( "type", "cloze" );
+        $version = 'version_'.$dex;
+        $xml_name = $xml->createElement( "name");
+     $xml_text = $xml->createElement( "text", $version );
+     $xml_name->appendChild( $xml_text );
+        $xml_question1->appendChild( $xml_name );
+        $xml_comment = $xml->createComment('this is my comment'); 
+         $xml_question1->appendChild( $xml_comment );
+         $xml_comment = $xml->createComment('version - '.$version); 
+         $xml_question1->appendChild( $xml_comment );
+         $xml_questiontext = $xml->createElement( "questiontext" );
+         $xml_questiontext->setAttribute( "format", "html" );
+    
+         $html_file = file_get_contents($htmlfilenm);
+           
+       // first protect all of the images that could be a variable images and put a temporary code for them
             
         for( $i=0;$i<$nv;$i++){
             $html_file = preg_replace($pattern_for_var_image[$i],$pattern_for_var_img_sub[$i],$html_file);
