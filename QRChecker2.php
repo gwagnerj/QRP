@@ -67,12 +67,12 @@ session_start();
        
         
          
-			if ($progress == 4 ){  // first time through so initialize response and previous response to zero - student never saw this problem before - 
+			if ($progress == 4 || $progress == 5 ){  // first time through so initialize response and previous response to zero - student never saw this problem before - 
              
              $sql ='UPDATE `Activity` SET `progress` = :progress  WHERE activity_id = :activity_id';
                 $stmt = $pdo -> prepare($sql);
                 $stmt -> execute(array(
-                        ':progress' => 5,
+                        ':progress' => 6,
                         ':activity_id' => $activity_id
                      ));                  // progress of 5 loaded the checker for the problem
     
@@ -343,12 +343,23 @@ session_start();
 		
 		$PScore=$score/$probParts*100; 
     
-     $sql ='UPDATE `Activity` SET `score` = :score, `count_tot` = :count_tot WHERE activity_id = :activity_id';
+     $sql ='UPDATE `Activity` SET `score` = :score, `count_tot` = :count_tot, correct_a = :correct_a,correct_b = :correct_b,correct_c = :correct_c,correct_d = :correct_d,correct_e = :correct_e,correct_f = :correct_f,correct_g = :correct_g,correct_h = :correct_h,correct_i = :correct_i,correct_j = :correct_j
+                              WHERE activity_id = :activity_id';
         $stmt = $pdo -> prepare($sql);
         $stmt -> execute(array(
                 ':score' => $score,
                 ':count_tot' => $count_tot,
-                ':activity_id' => $activity_id
+                ':activity_id' => $activity_id,
+                ':correct_a' => $corr_num['a'],
+                ':correct_b' => $corr_num['b'],
+                ':correct_c' => $corr_num['c'],
+                ':correct_d' => $corr_num['d'],
+                ':correct_e' => $corr_num['e'],
+                ':correct_f' => $corr_num['f'],
+                ':correct_g' => $corr_num['g'],
+                ':correct_h' => $corr_num['h'],
+                ':correct_i' => $corr_num['i'],
+                ':correct_j' => $corr_num['j']
                  ));
     
     
@@ -383,7 +394,7 @@ session_start();
 	<head>
 	<link rel="icon" type="image/png" href="McKetta.png" />  
 	<meta Charset = "utf-8">
-	<title>QRExamCheck</title>
+	<title>QRChecker</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 		<link rel="stylesheet" type="text/css" href="jquery.countdown.css"> 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -398,7 +409,7 @@ session_start();
 
 	<body>
 	<header>
-	<h3>Quick Response Exam Checker</h3>
+	<h3>Quick Response Checker</h3>
 	</header>
 	<main>
 	<h4> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h4>
