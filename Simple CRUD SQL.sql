@@ -1304,3 +1304,26 @@ WHERE
     ALTER TABLE Activity 
 		 ADD `count_tot` INT AFTER `score`;
     
+      
+        CREATE TABLE IF NOT EXISTS `Bc_resp` (
+		`bc_resp_id` int(11) NOT NULL AUTO_INCREMENT,
+        `activity_id` int(11) NOT NULL, 
+		`resp_value` DOUBLE NOT NULL,
+        `part_name` VARCHAR(2),
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		PRIMARY KEY (`bc_resp_id`),
+        CONSTRAINT FOREIGN KEY (`activity_id`) REFERENCES `Activity` (`activity_id`))
+        ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+        
+        ALTER TABLE Activity 
+		 ADD `correct_a` int(2) AFTER `university`,
+		 ADD `correct_b` int(2) AFTER `correct_a`,
+         ADD `correct_c` int(2) AFTER `correct_b`,
+		 ADD `correct_d` int(2) AFTER `correct_c`,
+         ADD `correct_e` int(2) AFTER `correct_d`,
+		 ADD `correct_f` int(2) AFTER `correct_e`,
+         ADD `correct_g` int(2) AFTER `correct_f`,
+		 ADD `correct_h` int(2) AFTER `correct_g`,
+		 ADD `correct_i` int(2) AFTER `correct_h`,
+		 ADD `correct_j` int(2) AFTER `correct_i`;
+        
