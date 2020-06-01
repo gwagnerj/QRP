@@ -3,8 +3,6 @@ require_once "pdo.php";
 require_once "simple_html_dom.php";
 include 'phpqrcode/qrlib.php'; 
 session_start();
-                        
-
 
 // this strips out the get parameters so they are not in the url - its is not really secure data but I would rather not having people messing with them
 // if they do not what they are doing
@@ -98,10 +96,7 @@ $sql = "SELECT * FROM Users WHERE users_id = :users_id";
 
 // Make the QRcode
         $qrchecker_text =  'https://www.qrproblems.org/QRP/QRChecker2.php?activity_id='.$activity_id; 
-                        //  https://www.qrproblems.org/QRP/QRChecker.php?assign_num=1&cclass_id=16&alias_num=2&pin=34&iid=1        
-        $path = 'uploads/'; 
-        $file = "temp2 png"; 
-          
+        $file = 'uploads/temp2 png'; 
         // $ecc stores error correction capability('L') 
         $ecc = 'M'; 
         $pixel_size = 2; 
@@ -109,10 +104,28 @@ $sql = "SELECT * FROM Users WHERE users_id = :users_id";
           
         // Generates QR Code and Stores it in directory given 
           QRcode::png($qrchecker_text, $file, $ecc, $pixel_size, $frame_size); 
+         
+    
+      $qrcode = "<span id = 'qrcode_id'><right><img src='".$file."'></right></span>"; 
+      
+      // Make the QRcode for Base-case
+        $qrchecker_text_bc =  'https://www.qrproblems.org/QRP/QR_BC_Checker2.php?activity_id='.$activity_id; 
+                        
+        $file_bc = 'uploads/temp_bc png'; 
+          
+        // $ecc stores error correction capability('L') 
+        $ecc = 'M'; 
+        $pixel_size = 2; 
+        $frame_size = 1; 
+          
+        // Generates QR Code and Stores it in directory given 
+          QRcode::png($qrchecker_text_bc, $file_bc, $ecc, $pixel_size, $frame_size); 
          // QRcode::png($text); 
         // Displaying the stored QR code from directory 
     
-      $qrcode = "<span id = 'qrcode_id'><right><img src='".$file."'></right></span>"; 
+      $qrcode_bc = "<span id = 'qrcode_id_bc'><right><img src='".$file_bc."'></right></span>"; 
+      
+      
 
 $htmlfilenm = "uploads/".$htmlfilenm;
 
@@ -184,7 +197,9 @@ $pass = array(
 #base_case{
    background-color: lightblue;  
 }
-
+#BC_checker{
+   background-color: lightblue;  
+}
 
 </style>
 </head>
@@ -228,13 +243,32 @@ $pass = array(
     if ($explore_flag ==1){$explore = $html->find('#explore',0).'<textarea id = "explore_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$explore = '';}
     if ($society_flag ==1){$society = $html->find('#society',0).'<textarea id = "society_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$society = '';}
      
-    
+             // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+
       for( $i=0;$i<$nv;$i++){
             $problem = preg_replace($pattern[$i],$vari[$i],$problem);
             $base_case = preg_replace($pattern[$i],$BC_vari[$i],$base_case);
         }
+         // put in the special personalized variables into the problem statement
+         $stu_city = 'Angola';   // will read these from the tabel once we have a student login ---------------------
+         $stu_state = 'Indiana';
+         $stu_explode = explode(' ',$stu_name);
+         $stu_first = $stu_explode[0];
+         
+         $problem = preg_replace('/!!stu_name!!/',$stu_name,$problem);
+         $problem = preg_replace('/!!stu_university!!/',$university,$problem);
+         $problem = preg_replace('/!!stu_first!!/',$stu_first,$problem);
+         $problem = preg_replace('/!!stu_city!!/',$stu_city,$problem);
+         $problem = preg_replace('/!!stu_state!!/',$stu_state,$problem);
+         
+         $base_case = preg_replace('/!!stu_name!!/',$stu_name,$base_case);
+         $base_case = preg_replace('/!!stu_university!!/',$university,$base_case);
+         $base_case = preg_replace('/!!stu_first!!/',$stu_first,$base_case);
+         $base_case = preg_replace('/!!stu_city!!/',$stu_city,$base_case);
+         $base_case = preg_replace('/!!stu_state!!/',$stu_state,$base_case);
+         
         
-        
+     // add some markup to specific to the basecase since I just created it from the problem   
        $base_case = preg_replace('/<div id="problem">/','<div id="BC_problem">',$base_case);
          $base_case = preg_replace('/<div id="questions">/','<div id="BC_questions">',$base_case);
          
@@ -243,12 +277,15 @@ $pass = array(
               $base_case = preg_replace('/<div id="'.$let_pattern.'">/','<div id="BC_'.$let_pattern.'">',$base_case);
              
          }
-         
-         // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+/*          
        for( $i=0;$i<$nv;$i++){
-            $problem = preg_replace($pattern[$i],$vari[$i],$problem);
+            $problem = preg_replace($pattern[$i],$vari[$i],$problem); // I think I just did this on 10 lines above
         }
+      */   
+    
         
+
+     
         
     // put the images into the problem statement part of the document     
     $dom = new DOMDocument();
@@ -286,7 +323,7 @@ $pass = array(
             }
              $keep = 0;
         }
-     // repeat with the base_case
+  // repeat with the base_case ______________________________________________________________________
      
          // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
@@ -330,7 +367,7 @@ $pass = array(
          
          
     // only include the document above the checker
-       $this_html ='<hr>'.$qrcode.$problem.'<hr> <div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>';
+       $this_html ='<hr>'.$qrcode.$qrcode_bc.$problem.'<hr> <div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>';
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
@@ -345,6 +382,9 @@ $pass = array(
   <!--   -->
    <div id = 'checker'>
    <iframe src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
+      <div id = 'BC_checker'>
+   <iframe src="QR_BC_Checker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
+
  <?php
  
  // the document below the checker
@@ -412,22 +452,98 @@ $pass = array(
     var activity_id = pass['activity_id']; 
      var stu_name = pass['stu_name']; 
      var reflection_button_flag = pass['reflection_button_flag'];
+     var bc_display = false;
+     var qr_code = false;
      
-     
+     $('#qrcode_id_bc').hide();
      $('#qrcode_id').hide();
     $('#base_case').hide();
     $('#directions').hide();
-    
+    $('#BC_checker').hide();
     
   $('#basecasebutton').click(function(){
-        $("#base_case").toggle();
-        $("#problem").toggle();
+        if(bc_display == false){bc_display =true;}else{bc_display =false;}
+      
+            if(bc_display && qr_code){
+                    $("#problem").hide(); 
+                    $("#base_case").show();                        
+                    $("#checker").hide();
+                    $("#BC_checker").hide();
+                    $('#qrcode_id').hide();
+                    $('#qrcode_id_bc').show();
+            } else if(!bc_display && qr_code){
+                    $("#problem").show(); 
+                    $("#base_case").hide();                        
+                    $("#checker").hide();
+                    $("#BC_checker").hide();
+                    $('#qrcode_id').show();
+                    $('#qrcode_id_bc').hide();
+            }else if(bc_display && !qr_code){
+                    $("#problem").hide(); 
+                    $("#base_case").show();                        
+                    $("#checker").hide();
+                    $("#BC_checker").show();
+                    $('#qrcode_id').hide();
+                    $('#qrcode_id_bc').hide();
+            } else {
+                    $("#problem").show(); 
+                    $("#base_case").hide();                        
+                    $("#checker").show();
+                    $("#BC_checker").hide();
+                    $('#qrcode_id').hide();
+                    $('#qrcode_id_bc').hide();
+            }
+
+        
      });
    
-       $('#checkerbutton').click(function(){
-        $("#checker").toggle();
-         $("#qrcode_id").toggle();
-     });
+      
+     $('#checkerbutton').click(function(){
+        if(qr_code == false){qr_code =true;}else{qr_code =false;}
+        
+
+        if(bc_display && qr_code){
+                    $("#problem").hide(); 
+                    $("#base_case").show();                        
+                    $("#checker").hide();
+                    $("#BC_checker").hide();
+                    $('#qrcode_id').hide();
+                    $('#qrcode_id_bc').show();
+            } else if(!bc_display && qr_code){
+                    $("#problem").show(); 
+                    $("#base_case").hide();                        
+                    $("#checker").hide();
+                    $("#BC_checker").hide();
+                    $('#qrcode_id').show();
+                    $('#qrcode_id_bc').hide();
+            }else if(bc_display && !qr_code){
+                    $("#problem").hide(); 
+                    $("#base_case").show();                        
+                    $("#checker").hide();
+                    $("#BC_checker").show();
+                    $('#qrcode_id').hide();
+                    $('#qrcode_id_bc').hide();
+            } else {
+                    $("#problem").show(); 
+                    $("#base_case").hide();                        
+                    $("#checker").show();
+                    $("#BC_checker").hide();
+                    $('#qrcode_id').hide();
+                    $('#qrcode_id_bc').hide();
+            }
+
+    });
+
+
+
+/*                 
+        if (bc_display){
+         $("#qrcode_id_bc").toggle();
+        } else {
+           $("#qrcode_id").toggle();  
+        }
+        */
+   
      
       if(reflection_button_flag == 0){
         $('#reflectionsbutton').hide();
