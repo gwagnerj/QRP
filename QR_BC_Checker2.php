@@ -46,8 +46,14 @@ session_start();
      $dex = $activity_data['dex'];  
      $alias_num = $activity_data['alias_num'];  
      $assign_id = $activity_data['assign_id'];
-     $count_tot = $activity_data['count_tot']; 
+    // $count_tot = $activity_data['count_tot']; 
      $progress = $activity_data['progress']; 
+       
+        if (isset($_SESSION['count_tot'])){
+            $count_tot = $_SESSION['count_tot']; 
+        } else {
+           $count_tot = 0; 
+        }
      
      $sql = 'SELECT name FROM CurrentClass WHERE currentclass_id = :currentclass_id';
      $stmt = $pdo->prepare($sql);
@@ -55,69 +61,67 @@ session_start();
      $class_data = $stmt -> fetch();
      $class_name = $class_data['name'];
      
-      $sql = 'SELECT * FROM Assign WHERE assign_id = :assign_id AND prob_num = :problem_id';
+     $sql = 'SELECT * FROM Assign WHERE assign_id = :assign_id AND prob_num = :problem_id';
      $stmt = $pdo->prepare($sql);
      $stmt->execute(array(':assign_id' => $assign_id,
-     ':problem_id' => $problem_id));
+                          ':problem_id' => $problem_id));
      $assign_data = $stmt -> fetch();
      $assignment_num = $assign_data['assign_num'];
-      $alias_num = $assign_data['alias_num'];    
+     $alias_num = $assign_data['alias_num'];    
          
          
-			if ($progress == 4 ){  // first time through so initialize response and previous response to zero - student never saw this problem before - and is doing the basecase first
-             
-             $sql ='UPDATE `Activity` SET `progress` = :progress  WHERE activity_id = :activity_id';
-                $stmt = $pdo -> prepare($sql);
-                $stmt -> execute(array(
-                        ':progress' => 5,
-                        ':activity_id' => $activity_id
-                     ));                  // progress of 5 loaded the checker for the problem
-    
-    
-                for ($j=0;$j<=9;$j++){
-					$wrongCount[$j]=0;		// accumulates how many times they missed a part
-					//$_SESSION['wrongC'[$j]]=0; // temp  will try to do this from the resp table
-					$changed[$j]=false;		// 1 if they changed their response zero otherwise
-					$addCount[$j]=0;  // this is zero if they get it right and 1 if they get it wrong
-                    $old_resp[$j] = 0;
-               //     $_SESSION['oldresp'[$j]]=0;
-               }	
-                $resp = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
-               $get_flag=1;
-            } elseif ($progress == 6 ){  // worked on the specific problem now working BC if they have normal problem correct set BC response to solution for BC           
-                 
-                $j=0;
-                foreach(range('a','j') as $v){
-					// see which ones they got correct from the specific problem 
-                    $corr_spec_num[$j] = $activity_data['correct_'.$v];
-                    $wrongCount[$j]=0;		// accumulates how many times they missed a part
-					$changed[$j]=false;		// 1 if they changed their response zero otherwise
-					$addCount[$j]=0;  // this is zero if they get it right and 1 if they get it wrong
-                    $old_resp[$j] = 0;
-                $j++;
-               }	
-                $resp = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
-               $get_flag=1;
-            } elseif (!isset($_POST['activity_id'])){       // revisiting the problem
+        if ($progress == 4 ){  // first time through so initialize response and previous response to zero - student never saw this problem before - and is doing the basecase first
+         $sql ='UPDATE `Activity` SET `progress` = :progress  WHERE activity_id = :activity_id';
+            $stmt = $pdo -> prepare($sql);
+            $stmt -> execute(array(
+                    ':progress' => 5,
+                    ':activity_id' => $activity_id
+                 ));                  // progress of 5 loaded the checker for the problem
 
-                // get the values from the Bc_resp table from before
-                 
-                  foreach(range('a','j') as $v){
-                       $sql = 'SELECT `resp_value` FROM Bc_resp WHERE `activity_id` = :activity_id AND `part_name` = :part_name ORDER BY `resp_id` DESC LIMIT 1';
-                             $stmt = $pdo->prepare($sql);
-                              $stmt ->execute(array(
-                            ':activity_id' => $activity_id,
-                            ':part_name' => $v
-                        ));
-                        $resp_data = $stmt -> fetch();
-                        $resp[$v] = $resp_data['resp_value'];   
-                       // echo('resp'.$v.' = '.$resp[$v]);
-                  }
-                 $get_flag=1; 
-               
-            } else { 
-                $get_flag=0;  // checking - coming in on a normal post
-            }                
+
+            for ($j=0;$j<=9;$j++){
+                $wrongCount[$j]=0;		// accumulates how many times they missed a part
+                //$_SESSION['wrongC'[$j]]=0; // temp  will try to do this from the resp table
+                $changed[$j]=false;		// 1 if they changed their response zero otherwise
+                $addCount[$j]=0;  // this is zero if they get it right and 1 if they get it wrong
+                $old_resp[$j] = 0;
+           //     $_SESSION['oldresp'[$j]]=0;
+           }	
+            $resp = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
+           $get_flag=1;
+        } elseif ($progress == 6 ){  // worked on the specific problem now working BC if they have normal problem correct set BC response to solution for BC           
+            $j=0;
+            foreach(range('a','j') as $v){
+                // see which ones they got correct from the specific problem 
+                $corr_spec_num[$j] = $activity_data['correct_'.$v];
+                $wrongCount[$j]=0;		// accumulates how many times they missed a part
+                $changed[$j]=false;		// 1 if they changed their response zero otherwise
+                $addCount[$j]=0;  // this is zero if they get it right and 1 if they get it wrong
+                $old_resp[$j] = 0;
+            $j++;
+           }	
+            $resp = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
+           $get_flag=0;
+        } elseif (!isset($_POST['activity_id'])){       // revisiting the problem
+
+            // get the values from the Bc_resp table from before
+             
+            foreach(range('a','j') as $v){
+               $sql = 'SELECT `resp_value` FROM Bc_resp WHERE `activity_id` = :activity_id AND `part_name` = :part_name ORDER BY `resp_id` DESC LIMIT 1';
+                     $stmt = $pdo->prepare($sql);
+                      $stmt ->execute(array(
+                    ':activity_id' => $activity_id,
+                    ':part_name' => $v
+                ));
+                $resp_data = $stmt -> fetch();
+                $resp[$v] = $resp_data['resp_value'];   
+               // echo('resp'.$v.' = '.$resp[$v]);
+            }
+             $get_flag=1; 
+           
+        } else { 
+            $get_flag=0;  // checking - coming in on a normal post
+        }                
 			
 			$score = 0;
 			$PScore = 0;  // percent score
@@ -150,13 +154,12 @@ session_start();
 				
 			$stmt = $pdo->prepare("SELECT * FROM Problem where problem_id = :problem_id");
 			$stmt->execute(array(":problem_id" => $problem_id));
-			$row = $stmt -> fetch();
-			if ( $row === false ) {
+			$probData = $stmt -> fetch();
+			if ( $probData === false ) {
 				$_SESSION['error'] = 'Bad value for problem_id';
 				header( 'Location: QRExam.php' ) ;
 				return;
 			}	
-			$probData=$row;	
 			
 			$probStatus = $probData['status'];
 			if ($probStatus =='suspended'){
@@ -171,8 +174,6 @@ session_start();
                 $tol[$v] = $probData['tol_'.$v]*0.001;	
              }
 		
-			
-			
 			if (strlen($probData['hint_a'])>1){$hinta = $probData['hint_a'];$hintaPath="uploads/".$hinta;} else {$hintaPath ="uploads/default_hints.html";	}
 			if (strlen($probData['hint_b'])>1){$hintb = $probData['hint_b'];$hintbPath="uploads/".$hintb;} else {$hintbPath ="uploads/default_hints.html";	}
 			if (strlen($probData['hint_c'])>1){$hintc = $probData['hint_c'];$hintcPath="uploads/".$hintc;} else {$hintcPath ="uploads/default_hints.html";	}
@@ -184,10 +185,7 @@ session_start();
 			if (strlen($probData['hint_i'])>1){$hinti = $probData['hint_i'];$hintiPath="uploads/".$hinti;} else {$hintiPath ="uploads/default_hints.html";	}
 			if (strlen($probData['hint_j'])>1){$hintj = $probData['hint_j'];$hintjPath="uploads/".$hintj;} else {$hintjPath ="uploads/default_hints.html";	}
 					
-			$unit = array_slice($row,22,20);  // does the same thing but easier so long as the table always has the same structure
-			//print_r($unit);
-			
-			
+			$unit = array_slice($probData,22,20);  // does the same thing but easier so long as the table always has the same structure
 		
 			// Next check the Qa table and see which values have non null values - for those 
 			$probParts=0;
@@ -196,7 +194,7 @@ session_start();
 			$row = $stmt -> fetch();
 			if ( $row === false ) {
 				$_SESSION['error'] = 'Bad value for problem_id';
-				header( 'Location: QRExam.php' ) ;
+				header( 'Location: QRhomework.php' ) ;
 				return;
 			}	
 				$soln = array_slice($row,6,20); // this would mean the database table Qa would have the same structure - change the structure of the table and you break the code
@@ -211,28 +209,21 @@ session_start();
 				}
 			}
           
-         //   $response = explode(",",$response);
-         //  print_r('response array 1 =  '.$response[0]);
           $oldresp_flag = 0;
           for ($j=0; $j<=9; $j++) {
              if($corr_spec_num[$j]==1){ 
                     $resp[$resp_key[$j]]=$soln[$j];  
              }
-                   $oldresp_flag = 1;  
-               //    echo ($soln[$j]);
-               //       echo ('  resp is: '. $resp[$resp_key[$j]]);
-                
+             $oldresp_flag = 1;  
            }
-        
- 
     
-     if( $get_flag ==0){ // if we are comming in from this file on a post
+     if( $get_flag == 0 ){ // if we are comming in from this file on a post
     // get the old repsonses from the response table check to see which ones have changed and 
       $i =0;
       $changed_flag = false;
       foreach(range('a','j') as $v){
           if( $partsFlag[$i]){ 
-                $sql = 'SELECT `resp_value` FROM Bc_resp WHERE `activity_id` = :activity_id AND `part_name` = :part_name ORDER BY `resp_id` DESC LIMIT 1';
+                $sql = 'SELECT `resp_value` FROM Bc_resp WHERE `activity_id` = :activity_id AND `part_name` = :part_name ORDER BY `bc_resp_id` DESC LIMIT 1';
                  $stmt = $pdo->prepare($sql);
                   $stmt ->execute(array(
                 ':activity_id' => $activity_id,
@@ -240,7 +231,12 @@ session_start();
             ));
             $resp_data = $stmt -> fetch();
             $old_resp[$i] = $resp_data['resp_value'];
-            $resp[$v]=(float)$_POST[$v]+0.0;
+            
+            if(isset($_POST[$v])){
+                $resp[$v]=(float)$_POST[$v]+0.0;
+            } else {
+                 $resp[$v]= '';
+            }
             // now get the counts for all of the previous tries from the table
            $sql = 'SELECT COUNT(`resp_value`) FROM `Bc_resp` WHERE `activity_id` = :activity_id AND `part_name` = :part_name';
                  $stmt = $pdo->prepare($sql);
@@ -274,12 +270,9 @@ session_start();
       
       if ($changed_flag){
             $count_tot++;
+            $_SESSION['count_tot'] = $count_tot;
       }
-    
-    
-   
 		
-	//}	 
 		for ($j=0; $j<=9; $j++) {
 			if($partsFlag[$j] ) {
 					//If ($soln[$j]>((1-$tol[$tol_key[$j]])*$resp[$resp_key[$j]]) and ($soln[$j]<((1+$tol[$tol_key[$j]]))*($resp[$resp_key[$j]]))) //if the correct value is within the response plus or minus the tolerance
@@ -356,15 +349,7 @@ session_start();
 		$corr_num_st = implode(",",$corr_num);
          */
         
-     /*  
-           $stmt = $pdo->prepare("UPDATE `Examactivity` SET ".$trynum_pblm." = :trynum_pblm,".$response_key." = :response_key WHERE examactivity_id = :examactivity_id ");
-			$stmt->execute(array(
-            ":examactivity_id" => $examactivity_id,
-            ":trynum_pblm" => $count,
-             ":response_key" => $corr_num_st, 
-            ));
-	
-     */
+     
     
     
     // time delay on total tries for the problem - try this in the JS
@@ -410,6 +395,14 @@ session_start();
 	<!--<p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
 
 	<?php
+  /*  
+   echo(' resp["a"]: '.$resp["a"]);
+    echo(' resp["b"]: '.$resp["b"]);
+    echo(' get_flag: '.$get_flag);
+    echo(' progress: '.$progress);
+    */    
+       
+       
     if($attempt_type ==1 || ($attempt_type ==2 && $count_tot <= $num_attempts)){
 	if ($partsFlag[0]){ ?> 
 	<p> a): <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b>
@@ -506,7 +499,7 @@ session_start();
 
 	
 	?>
-Score:  <?php echo (round($PScore)) ?>% &nbsp;&nbsp;&nbsp; Count: <?php echo ($count_tot) ?>  <span id ="t_delay_message"></span>
+ Base-Case Count: <?php echo ($count_tot) ?>  <span id ="t_delay_message"></span>
 	<p><input type = "submit" id = "check_submit" name = "check" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p>
              <input type="hidden" name="activity_id" value="<?php echo ($activity_id)?>" >
               <input type="hidden" id = "prob_parts" value="<?php echo ($probParts)?>" >
