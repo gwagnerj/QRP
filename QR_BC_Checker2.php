@@ -378,19 +378,57 @@ session_start();
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
-		
+<style>
+
+    .btn-default{
+       border-radius: 20%;  
+       border: 2px solid darkblue; /* Green */
+    }
+    #peer_help_button{
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+
+</style>	
 	</head>
 
 	<body>
 	<header>
-	<h3>Base-Case Checker</h3>
+	<h3>Base-Case Checker &nbsp;&nbsp;&nbsp;
+            <span>
+            <input type="button" id="show_answer_button" class="btn-default" value="Show Answer">
+            </span>&nbsp;
+              <input type="button" id="review_concepts_button" class="btn-default" value="Review Concepts">
+            </span>&nbsp;
+              <input type="button" id="peer_discuss_button" class="btn-default" value="Forum">
+            </span>&nbsp;&nbsp;
+            
+            <span style ="font-size:14px;" >  Request Help From: </span>
+            <span>
+            <input type="button" id="peer_help_button" class="btn-default" value="Students">
+            </span>&nbsp;
+            <span>
+            <span>
+            <input type="button" id="TA_help_button" class="btn-default" value="Tutors / TA">
+            </span>&nbsp;
+            <span>
+            <span>
+            <input type="button" id="instructor_help_button" class="btn-default" value="Instructor">
+            </span>&nbsp;
+            <span>
+            
+            </h3>
 	</header>
 	<main>
 	<h4> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h4>
-
+ <!--
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
-    
-
+    <div id = "test"> test <?php print_r ($wrongCount);?></div>
+    <div id = "test2"> parts_flag <?php print_r ($partsFlag);?></div>
+     <div id = "test3"> soln <?php print_r ($soln);?></div>
+      <div id = "test4"> soln_part_pblm <?php print_r ($corr_spec_num);?></div>
+-->
 	<form autocomplete="off" id = "check_form" method="POST" >
 	<!--<p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
 
@@ -405,15 +443,16 @@ session_start();
        
     if($attempt_type ==1 || ($attempt_type ==2 && $count_tot <= $num_attempts)){
 	if ($partsFlag[0]){ ?> 
-	<p> a): <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b>
+	<div id = "part_a">
+    <p> a): <input  [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b>
 	
     <?php if (isset($_POST['pin']) and $corr['a']=="Correct" ){echo '- Computed value is: '.$soln[0];} ?>  
 	<?php if (isset($_POST['pin']) and @$wrongCount[0]>$hintLimit and $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>$time_sleep1_trip and @$wrongCount[0]< $time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>=$time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
-	  </p>
+	  </p></div>
 	<?php } 
-
+    
 
 	if ($partsFlag[1]){ ?> 
 	<p> b): <input [ type=number]{width: 5%;} name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?> &nbsp - <b><?php echo ($corr['b']) ?> </b>
@@ -510,7 +549,7 @@ session_start();
 	
     
     
-   <p> <span id ="t_delay_limits"> time delay - 5s at count > <?php echo (3*$probParts) ?>, 30s at count > <?php echo (5*$probParts) ?> </span> </p>
+  
     
     
      <!--
@@ -539,110 +578,22 @@ session_start();
  -->
 
 	<script>
-   
-    
-		$(document).ready( function () {
-                
-                     var request;
-                function fetchPhase() {
-                    request = $.ajax({
-                        type: "POST",
-                        url: "fetchGPhase.php",
-                        data: "examtime_id="+examtime_id,
-                        success: function(data){
-                           try{
-                                var arrn = JSON.parse(data);
-                            }
-                            catch(err) {
-                                alert ('game data unavailable Data not found');
-                                alert (err);
-                                return;
-                            }
-                            
-                             var phase = arrn.phase;
-                            var end_of_phase = arrn.end_of_phase;
-                            	console.log ('phase = ',phase);
-                           if(phase != 1){  // submit away work time has eneded this is going to stop game and not back to the router
-                               $("#phase").attr('value', phase);
-                               SubmitAway(); 
-                            }
-                        }
-                    });
-                }
-                
-              /*   
-                setInterval(function() {
-                    if (request) request.abort();
-                    fetchPhase();
-                }, 10000);
-
- */
-                // Delay if they take to many total attempts
-                        
-                            var count_tot = $("#count_tot").val();
-                            var prob_parts = $("#prob_parts").val();
-                            console.log ("count_tot = "+count_tot);
-                             console.log ("prob_parts = "+prob_parts);
-                          
-                            
-
-                            var check_form = document.getElementById("check_form"), check_submit = document.getElementById("check_submit");
-                            check_form.onsubmit = function() {
-                                return false;
-                            }
-
-                            check_submit.onclick = function() {
-                            
-                                 if (count_tot > 5*prob_parts){
-                                        $("#t_delay_message").text(" 30s time delay limit exceeded");
-                                      setTimeout(function() {
-                                              check_form.submit();
-                                         }, 30000);
-                                           return false;
-                                  } else if (count_tot > 3*prob_parts){
-                                      $("#t_delay_message").text(" 5s time delay limit exceeded");
-                                      setTimeout(function() {
-                                              check_form.submit();
-                                         }, 5000);
-                                           return false; 
-                                  } else {
-                                      
-                                      check_form.submit();
-                                      return false; 
-                                  }
-                            }       
-                                 
-                                 
-                                 
-                                 
-                                 
-                               
-
-/* 
-                          if (count_tot > 3*prob_parts){
-                                
-                               var delayInMilliseconds = 1000; //1 second
-
-                            setTimeout(function() {
-                              //your code to be executed after 1 second
-                            }, delayInMilliseconds); 
-                                
-                                
-                            }
-                         */
-                        
-                  
-
-
-
-                
-                     function SubmitAway() { 
-                        window.close();
-                       // document.getElementById('the_form').submit();
-                    }
-                });
-         
-
+  
+  
+  
+  $('#show_answer_button').click(function(){
+    $(this).css('color','red');
+    $('#test').toggle(); 
+  });
+   $('#peer_help_button').click(function(){
+     $('#part_a').toggle(); 
+  });
+  $('#TA_help_button').click(function(){
+     $('#test').toggle(); 
+  });
+  $('#instructor_help_button').click(function(){
+     $('#test').toggle(); 
+  });
          
 	</script>
 

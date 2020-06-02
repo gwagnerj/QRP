@@ -106,7 +106,7 @@ $sql = "SELECT * FROM Users WHERE users_id = :users_id";
           QRcode::png($qrchecker_text, $file, $ecc, $pixel_size, $frame_size); 
          
     
-      $qrcode = "<span id = 'qrcode_id'><right><img src='".$file."'></right></span>"; 
+      $qrcode = "<span id = 'qrcode_id'><right><img src='".$file."'><p> Problem Checker </p></right></span>"; 
       
       // Make the QRcode for Base-case
         $qrchecker_text_bc =  'https://www.qrproblems.org/QRP/QR_BC_Checker2.php?activity_id='.$activity_id; 
@@ -123,7 +123,7 @@ $sql = "SELECT * FROM Users WHERE users_id = :users_id";
          // QRcode::png($text); 
         // Displaying the stored QR code from directory 
     
-      $qrcode_bc = "<span id = 'qrcode_id_bc'><right><img src='".$file_bc."'></right></span>"; 
+      $qrcode_bc = "<span id = 'qrcode_id_bc'><right><img src='".$file_bc."'><p> Base_Case Checker </p></right></span>"; 
       
       
 
@@ -195,10 +195,13 @@ $pass = array(
 <style>
 
 #base_case{
-   background-color: lightblue;  
+   background-color: #e6f7ff;  
 }
 #BC_checker{
-   background-color: lightblue;  
+   background-color: #e6f7ff;  
+}
+#qrcode_id_bc{
+   background-color: #e6f7ff;  
 }
 
 </style>
@@ -234,14 +237,14 @@ $pass = array(
     
      if($ref_choice >0 ){$reflect_flag = $connect_flag = $explore_flag = $society_flag = 1;}
     
-    if ($reflect_flag ==1){$reflect = $html->find('#reflect',0).'<textarea id = "reflect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$reflect = '';}
-    if($connect_flag ==1 && isset($pblm_data['connect'])){$connect = $pblm_data['connect'].'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';
-    } elseif ($connect_flag ==1){$connect = $html->find('#connect',0).'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';
+    if ($reflect_flag ==1){$reflect = $html->find('#reflect',0).'<textarea id = "reflect_text" r_class = "text_box" rows = "4" cols = "150"></textarea>';}else {$reflect = '';}
+    if($connect_flag ==1 && isset($pblm_data['connect'])){$connect = $pblm_data['connect'].'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "150"></textarea>';
+    } elseif ($connect_flag ==1){$connect = $html->find('#connect',0).'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "200"></textarea>';
     }else {$connect = '';}
 
    // if ($connect_flag ==1){$connect = $html->find('#connect',0).'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$connect = '';}
-    if ($explore_flag ==1){$explore = $html->find('#explore',0).'<textarea id = "explore_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$explore = '';}
-    if ($society_flag ==1){$society = $html->find('#society',0).'<textarea id = "society_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$society = '';}
+    if ($explore_flag ==1){$explore = $html->find('#explore',0).'<textarea id = "explore_text" r_class = "text_box" rows = "4" cols = "150"></textarea>';}else {$explore = '';}
+    if ($society_flag ==1){$society = $html->find('#society',0).'<textarea id = "society_text" r_class = "text_box" rows = "4" cols = "150"></textarea>';}else {$society = '';}
      
              // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
 
@@ -374,7 +377,7 @@ $pass = array(
             $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
         }
  
-  echo $this_html; 
+  echo $this_html; //-------------------------------------------------------display first part ------------------------------------------------------------------
   
  //  unlink('temp2 png');
   
@@ -471,6 +474,8 @@ $pass = array(
                     $("#BC_checker").hide();
                     $('#qrcode_id').hide();
                     $('#qrcode_id_bc').show();
+                    $('#reflections').hide();
+                    $('#reflectionsbutton').hide();
             } else if(!bc_display && qr_code){
                     $("#problem").show(); 
                     $("#base_case").hide();                        
@@ -485,6 +490,8 @@ $pass = array(
                     $("#BC_checker").show();
                     $('#qrcode_id').hide();
                     $('#qrcode_id_bc').hide();
+                     $('#reflections').hide();
+                    $('#reflectionsbutton').hide();
             } else {
                     $("#problem").show(); 
                     $("#base_case").hide();                        
@@ -509,6 +516,8 @@ $pass = array(
                     $("#BC_checker").hide();
                     $('#qrcode_id').hide();
                     $('#qrcode_id_bc').show();
+                     $('#reflections').hide();
+                    $('#reflectionsbutton').hide();
             } else if(!bc_display && qr_code){
                     $("#problem").show(); 
                     $("#base_case").hide();                        
@@ -523,6 +532,8 @@ $pass = array(
                     $("#BC_checker").show();
                     $('#qrcode_id').hide();
                     $('#qrcode_id_bc').hide();
+                    $('#reflections').hide();
+                    $('#reflectionsbutton').hide();
             } else {
                     $("#problem").show(); 
                     $("#base_case").hide();                        
@@ -558,7 +569,7 @@ $pass = array(
         $("#directions").toggle();
      });
      
-     $('#questions').prepend('<p> Questions for '+stu_name+':</p>')
+     $('#questions').prepend('<p> Questions for '+stu_name+':</p>');
     // color the back botton a little different
 			$("#backbutton").css({"background-color":"lightyellow",
            /*  

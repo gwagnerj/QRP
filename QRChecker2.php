@@ -92,7 +92,7 @@ session_start();
                $get_flag=1;
             } elseif (!isset($_POST['activity_id'])){       // revisiting the problem
 
-                // ger the values from the Resp table from before
+                // get the values from the Resp table from before
                  
                   foreach(range('a','j') as $v){
                        $sql = 'SELECT `resp_value` FROM Resp WHERE `activity_id` = :activity_id AND `part_name` = :part_name ORDER BY `resp_id` DESC LIMIT 1';
@@ -217,15 +217,15 @@ session_start();
         
      // keep track of the number of tries the student makes
 	// get the count from the activity table __________________________________________can get this from the resp table eventually _____________________________-
-  
- /*   if($count_tot == 0){   // first time no tries initialise count and wrong count
+ /*  
+   if($count_tot == 0){   // first time no tries initialise count and wrong count
 		for ($j=0;$j<=9;$j++){
-				//	$wrongCount[$j]=0;
-				//	$_SESSION['wrongC'[$j]]=$wrongCount[$j]; 
+					$wrongCount[$j]=0;
+			
                   
 				}
-	} */
-    
+	}
+     */
      if( $get_flag ==0){ // if we are comming in from this file on a post
     // get the old repsonses from the response table check to see which ones have changed and 
       $i =0;
@@ -250,8 +250,6 @@ session_start();
             ));
              $count_data = $stmt -> fetchColumn();
              $wrongCount[$i] = $count_data;
-           
-            
         
             
              // $_SESSION['old_resp'[$i]] = $resp[$v];  // reset the old resp so that we have 
@@ -275,8 +273,6 @@ session_start();
       if ($changed_flag){
             $count_tot++;
       }
-    
-    
    
 		
 	//}	 
@@ -291,46 +287,25 @@ session_start();
                 }	
                 
                 if(	abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]]) {
-                            
-                            
-                                    $corr_num[$corr_key[$j]]=1;
-                                    $corr[$corr_key[$j]]='Correct';
-                                    $score=$score+1;
- //                                   $_SESSION['$wrongC'[$j]] = 0;
- //                                   $wrongCount[$j]=0;
+                        $corr_num[$corr_key[$j]]=1;
+                        $corr[$corr_key[$j]]='Correct';
+                        $score=$score+1;
                                             
                             }
                 else  // got it wrong or did not attempt
                 {
-                    
-  /*                        
-                    if(!(isset($_SESSION['wrongC'[$j]])))  // needs initialized
-                    {
-                        
-                        $_SESSION['$wrongC'[$j]] = 0;
-                        $wrongCount[$j]=0;
-                        //echo 'im here';
-                        //echo $_SESSION['wrongC'[$j]];
-                    
-                        
-                   }
-   */
+ 
                     if ($resp[$resp_key[$j]]==0)  // did not attempt it
                     {
-                        
-   //                     $wrongCount[$j] = ($_SESSION['wrongC'[$j]]);
-  //                      $_SESSION['wrongC'[$j]] = $wrongCount[$j];
                         $corr_num[$corr_key[$j]]=0;
                         $corr[$corr_key[$j]]='';
-                    //	echo ($wrongCount[$j]);
+                   
                     }
                     else  // response is equal to zero so probably did not answer (better to use POST value I suppose - fix later
                     {
                         $wrongCount[$j] = $wrongCount[$j]+1;
- //                       $_SESSION['wrongC'[$j]] = $wrongCount[$j];
                             $corr_num[$corr_key[$j]]=0;
                             $corr[$corr_key[$j]]='Not Correct';
-                        //	echo ($wrongCount[$j]);	
                     }
                 }		
 			}
@@ -415,16 +390,16 @@ session_start();
 	<h4> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h4>
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
-    
+     <!-- <div id = "test"> test <?php print_r ($wrongCount);?></div> -->
 
 	<form autocomplete="off" id = "check_form" method="POST" >
-	<!--<p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
+	<!-- <p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
 
 	<?php
     if($attempt_type ==1 || ($attempt_type ==2 && $count_tot <= $num_attempts)){
 	if ($partsFlag[0]){ ?> 
-	<p> a): <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b>
-	
+	<p> a) <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> count <?php echo(@$wrongCount[0].' '); ?> 
+	 
     <?php if (isset($_POST['pin']) and $corr['a']=="Correct" ){echo '- Computed value is: '.$soln[0];} ?>  
 	<?php if (isset($_POST['pin']) and @$wrongCount[0]>$hintLimit and $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>$time_sleep1_trip and @$wrongCount[0]< $time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
