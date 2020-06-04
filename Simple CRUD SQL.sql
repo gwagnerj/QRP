@@ -1326,4 +1326,28 @@ WHERE
 		 ADD `correct_h` int(2) AFTER `correct_g`,
 		 ADD `correct_i` int(2) AFTER `correct_h`,
 		 ADD `correct_j` int(2) AFTER `correct_i`;
+         
+         
+  CREATE TABLE IF NOT EXISTS `Student` (
+  `student_id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+   `first_name` varchar(50) NOT NULL,
+    `last_name` varchar(50) NOT NULL,
+	`school_email` varchar(100) NOT NULL,
+    `email2` varchar(100),
+	`forgot_pswd` varchar(255) NOT NULL,
+   `password` varchar(255) NOT NULL,
+   `university` VARCHAR(100) NOT NULL,
+   `currentclass_id_1` int(11) NOT NULL,
+   `currentclass_id_2` int(11) NOT NULL,
+   `currentclass_id_3` int(11) NOT NULL,
+   `currentclass_id_4` int(11) NOT NULL,
+   `currentclass_id_5` int(11) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	`exp_date` DATETIME,
+  PRIMARY KEY (`student_id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        
         

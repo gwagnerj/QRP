@@ -1,6 +1,7 @@
 <?php
 // Include config file
 require_once 'pdo.php';
+require_once '../password.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';// Load Composer's autoloader
@@ -250,7 +251,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					$mail->Host       = 'ns8363.hostgator.com;ns8364.hostgator.com';  // Specify main and backup SMTP servers
 					$mail->SMTPAuth   = true;                                   // Enable SMTP authentication
 					$mail->Username   = 'wagnerj@excelproblempedia.org';                     // SMTP username
-					$mail->Password   = 'Iron26Men&FeMarines';                               // SMTP password
+					$mail->Password   =  $system_password;                              // SMTP password
 					$mail->SMTPSecure = 'tls';                                  // Enable TLS encryption, `ssl` also accepted
 					$mail->Port       = 587;                                    // TCP port to connect to try new port if using ssl
 
@@ -298,7 +299,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					$mail2->Host       = 'ns8363.hostgator.com;ns8364.hostgator.com';  // Specify main and backup SMTP servers
 					$mail2->SMTPAuth   = true;                                   // Enable SMTP authentication
 					$mail2->Username   = 'wagnerj@excelproblempedia.org';                     // SMTP username
-					$mail2->Password   = 'Iron26Men&FeMarines';                               // SMTP password
+					$mail2->Password   = $system_password;                               // SMTP password
 					$mail2->SMTPSecure = 'tls';                                  // Enable TLS encryption, `ssl` also accepted
 					$mail2->Port       = 587;                                    // TCP port to connect to try new port if using ssl
 
