@@ -38,7 +38,7 @@
         ));
         
          $_SESSION['success'] = 'signup for class successful - you may now access assignments for this class';
-           header("Location: stu_frontpage.php?student_id=".$student_id);
+           header("Location: QRhomework.php?student_id=".$student_id);
            return; 
         
     }
