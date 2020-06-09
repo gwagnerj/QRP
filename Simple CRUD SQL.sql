@@ -1350,4 +1350,14 @@ WHERE
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         
-        
+   CREATE TABLE StudentCurrentClassConnect (
+	currentclass_id INTEGER,
+	student_id INTEGER,
+    pin INTEGER,
+	CONSTRAINT FOREIGN KEY (currentclass_id) REFERENCES CurrentClass (currentclass_id),
+	CONSTRAINT FOREIGN KEY (student_id) REFERENCES Student (student_id),
+	PRIMARY KEY (`currentclass_id`,`student_id`)
+) ENGINE=InnoDB CHARACTER SET = utf8;     
+
+ ALTER TABLE Activity 
+		 ADD `student_id` INT AFTER `dex`;

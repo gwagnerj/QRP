@@ -20,8 +20,8 @@ if (isset($_SESSION['failure'])){
 	</head>
 
 	<body>
-		<form action="reset-request.php" method="post">
-					Enter email in system to reset password
+		<form action="stu_reset-request.php" method="post">
+					Enter School email in system to recieve information on your password or username
 					<input type="email" class="text" id = "email" name="email" placeholder="email" required> </br>
 					<input type="submit" class="submit" name = "reset-request-submit" value="Submit">
 				</div>

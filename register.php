@@ -127,8 +127,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			
 			} else {
 				$course_name_error ='';
-				//print_r ($_POST['course_name'][0]);
-				//die();
+			
 				if (!empty($_POST['course_name'][0])){$TA_course_1=  $_POST['course_name'][0];}
 				if (!empty($_POST['course_name'][1])){$TA_course_2=  $_POST['course_name'][1];}
 				if (!empty($_POST['course_name'][2])){$TA_course_3=  $_POST['course_name'][2];}

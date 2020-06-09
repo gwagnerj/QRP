@@ -3,21 +3,18 @@
 // Include config file
 require_once 'pdo.php';
 session_start();
-if (isset($_SESSION['sucess'])){
-	echo $_SESSION['sucess'];	
+if (isset($_SESSION['success'])){
+	echo $_SESSION['success'];	
 }
-if (isset($_SESSION['failure'])){
-	echo $_SESSION['failure'];	
+if (isset($_SESSION['error'])){
+	echo $_SESSION['error'];	
 }
-
-
 
 session_unset();
- /* 
- if ($_GET['newpswd']=='pswdupdated'){
-	 echo '<p class="resetsucess"> Your Password has been Reset</p> ';
- }
-  */
+ 
+ // see if they entered a username or an email address
+ 
+ 
 // Define variables and initialize with empty values
 $username = $password = "";
 $username_err = $password_err = "";
@@ -42,7 +39,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate credentials
     if(empty($username_err) && empty($password_err)){
         // Prepare a select statement
-        $sql = "SELECT username, password FROM Users WHERE username = :username";
+        $sql = "SELECT username, password,student_id FROM Student WHERE username = :username";
         
         if($stmt = $pdo->prepare($sql)){
             // Bind variables to the prepared statement as parameters
@@ -56,13 +53,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 // Check if username exists, if yes then verify password
                 if($stmt->rowCount() == 1){
                     if($row = $stmt->fetch()){
-                        $hashed_password = $row['password'];
-                        if(password_verify($password, $hashed_password)){
+                        $password_table = $row['password'];
+                        if($password_table==$password){
                             /* Password is correct, so start a new session and
                             save the username to the session */
                             session_start();
                             $_SESSION['username'] = $username;      
-                            header("location: QRPRepo.php");
+                            header("location: stu_frontpage.php?student_id=".$row['student_id']);
                         } else{
                             // Display an error message if password is not valid
                             $password_err = 'The password you entered was not valid.';
@@ -128,12 +125,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			<br/>
 		</br>
 		  
-			 
-			 
-             
-	<!--		 <p><h3>Proceed without login? </h3></p>
-			 <p>(you will not be able to contribute or edit)</p>
-	  <p><a href="QRPRepo.php">View Problem Repository</a>.</p>  -->
        
     </div>
 </body>

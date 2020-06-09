@@ -158,8 +158,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             // get the email of the sponsor
             
                 $subject = 'QRProblems - Registering a user';
-                $body = '<p>QRProblems has recieved a registration request for  '.$first.' '.$last.' at email '.$email.' <p> 
-                        <p> Welcome to the QRproblems! You can log on to the system at QRproblems.org/login - you may want to bookmark this site. Please help to keep the educational value of this system intact.
+                $body = '<p>QRProblems has recieved a registration request for  '.$first.' '.$last.' at email '.$school_email.' <p> 
+                        <p> Welcome to the QRproblems! You can log on to the system at QRhomework.org - you may want to bookmark this site. 
                         If you have questions or issues on using the system please contact the current system administrator John Wagner at wagnerj@trine.edu';
                             
                 try {
@@ -200,9 +200,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             // send an email to sponsor and admin
             // get the email of the sponsor
             
-                $subject = 'QRProblems - Registering a user - using you as a sponsor - if you do not know them suspend them';
-                $body = '<p>QRProblems has recieved a registration request for  '.$first.' '.$last.' at email '.$email.' <p> 
-                        <p> They are using you as a sponsor.  If you do not know and/or trust this person please log onto QRproblems.org/login and suspend their account ';
+                $subject = 'QRProblems - Registering a user ';
+                $body = '<p>QRProblems has recieved a registration request for  '.$first.' '.$last.' at email '.$email2.' <p> 
+                        <p> Welcome to the QRproblems! You can log on to the system at QRhomework.org - you may want to bookmark this site. 
+                        If you have questions or issues on using the system please contact the current system administrator John Wagner at wagnerj@trine.edu';
                             
                 try {
                 //Server settings
@@ -244,7 +245,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             // send an email to the new user welcoming them
             
             // Redirect to login page
-            $_SESSION['sucess'] = $_SESSION['sucess'].' Email notification has also been sent to your sponsor  - Please log in';
+            $_SESSION['sucess'] = $_SESSION['sucess'].' Welcome e-mail should have been sent to your email account(s)  - Please log in';
             header("location: stu_login.php");
         } else{
             echo "Something went wrong. Please try again later.";
