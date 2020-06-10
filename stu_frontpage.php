@@ -290,7 +290,7 @@
 	}
     
 		if (isset($_POST['reset']))	{
-             header("Location: stu_login.php");
+             header("Location: QRHomework.php");
 			return; 
 		}
         
@@ -367,9 +367,9 @@ if (isset($_SESSION['error'])){
 			<font color=#003399>Course: </font>
 			
 			<?php
-					echo (' num_classes: '.$num_classes);
-                    echo (' student_id: '.$student_id);
-                   echo (' currentclass_id '.$currentclass_id.'<br>');
+				//	echo (' num_classes: '.$num_classes);
+                 //   echo (' student_id: '.$student_id);
+                 //  echo (' currentclass_id '.$currentclass_id.'<br>');
                     if (isset($currentclass_id)>0 && $num_classes ==1 ){
                        // if (isset($currentclass_id)>0 ){
 						echo ('<input type = "hidden" name = "cclass_id" id = "have_cclass_id" value = "'.$currentclass_id.'"></input>'); 

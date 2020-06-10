@@ -1,5 +1,5 @@
 <?php
-require_once '../password.php';
+require_once('../password.php');
 //$pdo = new PDO('mysql:host=localhost;port=3306;dbname=misc', 
  //  'fred', 'zap');
 // See the "errors" folder for details...

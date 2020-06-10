@@ -1,6 +1,6 @@
 <?php
 require_once 'pdo.php';
-require_once '../password.php';
+require_once ('../password.php');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';// Load Composer's autoloader
@@ -68,9 +68,9 @@ if (isset($_POST["reset-request-submit"])){
     
 	   // echo 'Message has been sent';
 		$response = "Email is Sent - Please check your email for log on information";
-		$_SESSION['success'] = $response;
+		$_SESSION['success'] = $response.'<br><br>';
 	
-		echo '</br></br>';
+		
 		// echo '<a href = "emailForm.php" >back to email form</a>';
 
 
@@ -80,7 +80,10 @@ if (isset($_POST["reset-request-submit"])){
 	}	
 				
 
-
 }
-	header ('Location: stu_login.php');
+	
+    header ('Location: QRhomework.php');
+   die();
+ 
+    
 ?>

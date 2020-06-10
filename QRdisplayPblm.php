@@ -590,7 +590,7 @@ $pass = array(
                     // e.preventDefault();
 					// console.log("hello1");
 				
-                     window.location.replace('QRhomework.php?activity_id='+activity_id); // would like to put some parameters here instead of relying on session (like below)
+                     window.location.replace('stu_frontpage.php?activity_id='+activity_id); // would like to put some parameters here instead of relying on session (like below)
                   //  window.location.replace('../QRP/QRExam.php'+'?examactivity_id='+examactivity_id); // axam_num and examactivity
               	
 				 });

@@ -64,7 +64,6 @@ if(isset($_POST['iid'])){
             $nvar[$i]=$pblm_data['nv_'.($i+1)];
             $nv++;
             $pattern_for_var_image[$i] = '/##'.$nvar[$i].',img##/';
-     
             $pattern_for_var_img_sub[$i] = 's__'.$nvar[$i].',img__s';
             $pattern_for_var_img_sub2[$i] = 'x__'.$nvar[$i].',img__x';
             $pattern[$i]= '/##'.$nvar[$i].'.+?##/';

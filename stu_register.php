@@ -246,7 +246,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             
             // Redirect to login page
             $_SESSION['sucess'] = $_SESSION['sucess'].' Welcome e-mail should have been sent to your email account(s)  - Please log in';
-            header("location: stu_login.php");
+            header("location: QRhomework.php");
         } else{
             echo "Something went wrong. Please try again later.";
         }
@@ -384,7 +384,7 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
                 <input type="reset" class="btn btn-default" value="Reset">
             </div>
 			</br>
-            <p>Already have an account? <a href="stu_login.php">Login here</a>.</p>
+            <p>Already have an account? <a href="QRhomework.php">Login here</a>.</p>
            
         </form>
     </div>    
