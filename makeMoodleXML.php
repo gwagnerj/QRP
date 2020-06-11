@@ -6,6 +6,7 @@ require_once "pdo.php";
 require_once "simple_html_dom.php";
 session_start();
 
+
 echo ('	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>');
 
 // This is the make a Moodle XML file of the problem
@@ -140,7 +141,7 @@ if(isset($_POST['iid'])){
  
    
    //--------------------------------big Loop---------------------------------------------------------------------------------------------------
-  for($dex=101; $dex<=151; $dex++){
+  for($dex=111; $dex<=160; $dex++){
       
     $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
 	$stmt->execute(array(":problem_id" => $_POST['problem_id'], ":dex" => $dex));
@@ -199,8 +200,22 @@ if(isset($_POST['iid'])){
        for( $i=0;$i<$nv;$i++){
             $html_file = preg_replace($pattern[$i],$vari[$i],$html_file);
         }
- //       print($html_file); 
-
+        
+       $html_file = str_get_html($html_file); 
+     
+     // this next code replaces each question with the question and the answer and tolerance in the form Moodle expects
+          $m='a';
+           for( $i=0;$i<$last_part;$i++){
+                if($ans[$i]<1.2e43){
+                       $part_name = '#part'.$m;
+                       $part[$i] = $html_file->find($part_name,0);
+                       $part[$i] = $part[$i].'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$ans_pattern[$i].'<br><br>';
+                       $html_file->find($part_name,0)->innertext=$part[$i];
+                       // print($part[$i]);
+                }
+                $m++;
+           }
+   
 
     // put the images into the problem statement part of the document     
     $dom = new DOMDocument();
@@ -216,49 +231,43 @@ if(isset($_POST['iid'])){
              $image->setAttribute("src", $base64); 
              $html_file = $dom->saveHTML();
        }
-       
-       // turn problem back into and simple_html_dom object that I can replace the varaible images on 
-       $html_file =str_get_html($html_file); 
-
- 
-        $keep = 0;
-       $varImages = $html_file -> find('.var_image');
-       foreach($varImages as $varImage) {
-          $var_image_id = $varImage -> id;  
-          
-           for( $i=0;$i<$nv;$i++){
-              if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
-            } 
+    
+         //  print($html_file); 
             
-            If ($keep==0){
-                //  get rid of the caption and the image
-                   $varImage->find('.MsoNormal',0)->outertext = '';
-                   $varImage->find('.MsoCaption',0)->outertext = '';
-            } else {
-                 //  get rid of the caption 
-                $varImage->find('.MsoCaption',0)->outertext = '';
-            }
-             $keep = 0;
-        }
-
- // this next code replaces each question with the question and the answer and tolerance in the form Moodle expects
-  $m='a';
- 
-   for( $i=0;$i<$last_part;$i++){
-        if($ans[$i]<1.2e43){
-        //    $html_file = $html_file->find('"#part'.$m",0)&nbsp;".$html_q[$i].'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$ans_pattern[$i]."<br><br>";
-                     //   $part[$i] = $html_file->find('"#part'.$m",0).&nbsp;".$html_q[$i].'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$ans_pattern[$i]."<br><br>";
-                       
-                        $part_name = '#part'.$m;
-                       $part[$i] = $html_file->find($part_name,0);
-                       $part[$i] = $part[$i].'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$ans_pattern[$i].'<br><br>';
-                        $html_file->find($part_name,0)->innertext=$part[$i];
-               // print($part[$i]);
-        }
-        $m++;
-   }
-   
-  //print($html_file); 
+     /*         
+         $htmlfile = new simple_html_dom();
+         $htmlfile->load_file($html_file);
+          print($htmlfile); 
+         
+     
+     
+        
+    //  fix later this takes care of variable images and I need to find out what is wrong may need to make new file  
+        
+        $keep = 0;
+        
+      */     
+      
+       //  print($html_file); 
+        /*   
+               $varImages = $html_file -> find('.var_image');
+               foreach($varImages as $varImage) {
+                  $var_image_id = $varImage -> id;  
+                   for( $i=0;$i<$nv;$i++){
+                      if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
+                    } 
+                    If ($keep==0){
+                        //  get rid of the caption and the image
+                           $varImage->find('.MsoNormal',0)->outertext = '';
+                           $varImage->find('.MsoCaption',0)->outertext = '';
+                    } else {
+                         //  get rid of the caption 
+                        $varImage->find('.MsoCaption',0)->outertext = '';
+                    }
+                     $keep = 0;
+                }
+                
+        */ 
  
 //-------------------------------write more xml-----------------------------------------------------------------------------------------------------------
               
@@ -281,7 +290,6 @@ if(isset($_POST['iid'])){
         $xml->appendChild( $xml_quiz );
         $xml_document = $xml->saveXML();
       }
-      
 
       $xml->save('uploads/'.$xml_file_name);
    
@@ -290,21 +298,3 @@ if(isset($_POST['iid'])){
 
 
  ?>
-  
-  
- 
-         
-  
-   
-
-
-
-
-
-
-
-
-
-
-
-
