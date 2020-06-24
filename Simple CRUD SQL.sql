@@ -1361,3 +1361,59 @@ WHERE
 
  ALTER TABLE Activity 
 		 ADD `student_id` INT AFTER `dex`;
+         
+     CREATE TABLE IF NOT EXISTS `Users` (
+  `users_id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+   `first_name` varchar(50) NOT NULL,
+    `last_name` varchar(50) NOT NULL,
+	`email` varchar(100) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	`exp_date` DATETIME,
+  PRIMARY KEY (`users_id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;     
+
+    CREATE TABLE IF NOT EXISTS `Activity` (
+  `activity_id` int(11) NOT NULL AUTO_INCREMENT,
+   `users_id` int(11) ,
+  `blood_sugar` int(11) NOT NULL,
+   `systolic` int(11) NOT NULL,
+    `diastolic` int(11) NOT NULL,
+	`pulse` int(11) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`activity_id`),
+  CONSTRAINT FOREIGN KEY (users_id) REFERENCES Users (users_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;     
+         
+ 
+        ALTER TABLE Users 
+		 ADD `email2` VARCHAR(100) AFTER `email`,
+         ADD `email3` VARCHAR(100) AFTER `email2`,
+         ADD `email4` VARCHAR(100) AFTER `email3`,
+         ADD `email5` VARCHAR(100) AFTER `email4`;
+        
+  ALTER TABLE Users 
+		 ADD `email6` VARCHAR(100) AFTER `email5`,
+         ADD `email7` VARCHAR(100) AFTER `email6`,
+         ADD `email8` VARCHAR(100) AFTER `email7`,
+         ADD `birthdate` DATE AFTER `email8`;    
+
+ALTER TABLE Users 
+		 ADD `users_sophistication` int(1) AFTER `last_name`;
+         
+ ALTER TABLE Users 
+		 ADD `phone1` VARCHAR(16) AFTER `email8`,
+         ADD `phone2` VARCHAR(16) AFTER `phone1`,
+         ADD `phone3` VARCHAR(16) AFTER `phone2`,
+         ADD `phone4` VARCHAR(16) AFTER `phone3`;
+         
+  ALTER TABLE Activity 
+		 ADD `short_acting_insulin` INT(8) AFTER `blood_sugar`,
+         ADD `long_acting_insulin` INT(8) AFTER `short_acting_insulin`;
+             
+         
+                     
+         

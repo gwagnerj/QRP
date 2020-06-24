@@ -100,7 +100,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <body>
     <div class="wrapper">
 	
-        <h2>Quick Response Problems Login</h2>
+        <h2>Quick Response Student Login</h2>
         <p>Please fill in your credentials to login.</p>
 		
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
