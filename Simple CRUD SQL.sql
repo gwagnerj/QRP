@@ -1415,5 +1415,10 @@ ALTER TABLE Users
          ADD `long_acting_insulin` INT(8) AFTER `short_acting_insulin`;
              
          
+      ALTER TABLE Users 
+		 ADD `time_zone` VARCHAR(100) AFTER `last_name`;
+        
+    ALTER TABLE Activity 
+		 ADD `comment` VARCHAR(200) AFTER `updated_at`;
                      
          
