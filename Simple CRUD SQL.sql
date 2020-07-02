@@ -1362,6 +1362,9 @@ WHERE
  ALTER TABLE Activity 
 		 ADD `student_id` INT AFTER `dex`;
          
+         
+         
+  -- this is the stuff for qrblood --       
      CREATE TABLE IF NOT EXISTS `Users` (
   `users_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
@@ -1421,4 +1424,29 @@ ALTER TABLE Users
     ALTER TABLE Activity 
 		 ADD `comment` VARCHAR(200) AFTER `updated_at`;
                      
-         
+        CREATE TABLE IF NOT EXISTS `Monitors` (
+  `monitors_id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+   `first_name` varchar(50) NOT NULL,
+    `last_name` varchar(50) NOT NULL,
+	`email` varchar(100) NOT NULL,
+    `phone1` varchar(100) NOT NULL,
+    `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  	`exp_date` DATETIME,
+  PRIMARY KEY (`monitors_id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;        
+
+
+-- email_mode 0 = off, 1 = email all 2 = email extreem values  phone_mode is similar--
+CREATE TABLE UserMonitorConnect (
+	users_id INTEGER,
+	monitors_id INTEGER,
+    email_mode INTEGER,
+    phone_mode INTEGER,
+	CONSTRAINT FOREIGN KEY (users_id) REFERENCES Users (users_id),
+	CONSTRAINT FOREIGN KEY (monitors_id) REFERENCES Monitors (monitors_id),
+	PRIMARY KEY (`users_id`,`monitors_id`)
+) ENGINE=InnoDB CHARACTER SET = utf8;
+
+  
