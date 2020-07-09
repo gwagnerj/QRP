@@ -57,6 +57,8 @@ echo ('<form method = "POST">');
          echo("</th><th>");
            echo('Pre-pblm2');
          echo("</th><th>");
+          echo('Survey');
+         echo("</th><th>");
          echo('Sum for pblm');
 	
 		echo("</th></tr>\n");
@@ -128,7 +130,7 @@ echo ('<form method = "POST">');
 
            echo("</td>");
             $n_parts = 0; // get total parts in the problem so I can estimate the points per part 
-           
+            $n_ref_pp_parts = 0; // get the total number of reflection and preproblem parts
             
               $sql = "SELECT * FROM `Qa` WHERE problem_id = :problem_id AND dex = :dex ";
            $stmt = $pdo->prepare($sql);
@@ -144,9 +146,16 @@ echo ('<form method = "POST">');
                     $n_parts++;   
                 } 
               }
-                     
-             $perc_per_part_default =  round(100/$n_parts);  
-              $perc_per_part_last =  100 - $perc_per_part_default*($n_parts-1);  
+                if ($assign_data['reflect_flag']==1){$n_ref_pp_parts++;}  
+                if ($assign_data['connect_flag']==1){$n_ref_pp_parts++;}
+                if ($assign_data['explore_flag']==1){$n_ref_pp_parts++;} 
+                if ($assign_data['society_flag']==1){$n_ref_pp_parts++;} 
+                if ($assign_data['pp_flag1']==1){$n_ref_pp_parts++;} 
+                if ($assign_data['pp_flag2']==1){$n_ref_pp_parts++;} 
+                if ($assign_data['ref_choice']==1){$n_ref_pp_parts++;} 
+            $perc_tot_ref_pp_suvey = 5+10*$n_ref_pp_parts;  // 5 percent for survey and 10 pts for the reflections
+             $perc_per_part_default =  round((100-$perc_tot_ref_pp_suvey)/$n_parts);  
+              $perc_per_part_last =  (100-$perc_tot_ref_pp_suvey )- $perc_per_part_default*($n_parts-1);  
               $j=1;
             
            foreach(range('a','j') as $x){  // only getting one row 
@@ -176,45 +185,48 @@ echo ('<form method = "POST">');
               
           if ($assign_data['reflect_flag']==1){
                echo("<td>");
-              echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+              echo('<input type = "number" min = "0" max = "100" id="perc_ref_'.$i.'" name = "perc_ref_'.$i.'" required value = 10 > </input>');
                 echo("</td>");
            } else {echo("<td bgcolor = 'lightgray'> </td>");}
              
             if ($assign_data['explore_flag']==1){
                 echo("<td>");
-                echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                echo('<input type = "number" min = "0" max = "100" id="perc_exp_'.$i.'" name = "perc_exp_'.$i.'" required  value = 10 > </input>');
                 echo("</td>");
             } else {echo("<td bgcolor = 'lightgray'> </td>");}
              
               if ($assign_data['connect_flag']==1){
                  echo("<td>");
-                 echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                 echo('<input type = "number" min = "0" max = "100" id="perc_con_'.$i.'" name = "perc_con_'.$i.'" required  value = 10 > </input>');
                   echo("</td>");
             } else {echo("<td bgcolor = 'lightgray'> </td>");}
             
               if ($assign_data['society_flag']==1){
                  echo("<td>");
-                 echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                 echo('<input type = "number" min = "0" max = "100" id="perc_soc_'.$i.'" name = "perc_soc_'.$i.'" required  value = 10 > </input>');
                  echo("</td>");
            } else {echo("<td bgcolor = 'lightgray'> </td>");}
             
                if ($assign_data['ref_choice']==1){
                    echo("<td>");
-                   echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                   echo('<input type = "number" min = "0" max = "100" id="perc_anyref_'.$i.'" name = "perc_anyref_'.$i.'" required  value = 10 > </input>');
                    echo("</td>");
             } else {echo("<td bgcolor = 'lightgray'> </td>");}
             
                if ($assign_data['pp_flag1']==1){
                    echo("<td>");
-                   echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                   echo('<input type = "number" min = "0" max = "100" id="perc_pp1_'.$i.'" name = "perc_pp1_'.$i.'" required  value = 10 > </input>');
                    echo("</td>");
            } else {echo("<td bgcolor = 'lightgray'> </td>");}
              
                if ($assign_data['pp_flag2']==1){
                    echo("<td>");
-                   echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                   echo('<input type = "number" min = "0" max = "100" id="perc_pp2_'.$i.'" name = "perc_pp2_'.$i.'" required  value = 10 > </input>');
                   echo("</td>");
            } else {echo("<td bgcolor = 'lightgray' </td>");}
+                    echo("<td>");
+                   echo('<input type = "number" min = "0" max = "100" id="survey_'.$i.'" name = "survey_'.$i.'" required  value = 5 > </input>');
+                  echo("</td>");
             
             echo("<td>");	
             echo('<span id = "sum_pblm_'.$i.'"></span>');
@@ -304,26 +316,96 @@ $_SESSION['counter']=0;  // this is for the score board
 	<br>
 	<script>
 	
-	
+	function nextChar(c) {
+    return String.fromCharCode(c.charCodeAt(0) + 1);
+    }
+    
+    
+   
 	
 	$(document).ready( function () {
-		var sum_assign = 0;
+         var sum_assign = 0;
+        var sum_problem = 0;
+        var per_part;
         var i;
-        for (i = 1; i <= 20; i++) {
-        //  console.log(' i: '+i);
-          
-         
-         var per_prob =  $('#perc_'+i).val();
-         
-           console.log(' per_prob: '+per_prob);
+        var j;
+        
+         for (i = 1; i <= 20; i++) {
+           var letter = 'a';
+          var per_prob =  $('#perc_'+i).val();
+          // console.log(' per_prob: '+per_prob);
           if (per_prob != undefined) {
+         // look up all the parts of the problem
+             sum_problem = 0;
+           for (j = 1; j <= 10; j++) {
+               per_part =  $('#perc_'+letter+'_'+i).val();
+                if (per_part != undefined && !isNaN(per_part)) {
+                    sum_problem = parseInt(sum_problem) + parseInt(per_part);
+                }
+                letter = nextChar(letter);
+           }
+           if (typeof ($('#perc_ref_'+i).val())=='number'|| (typeof ($('#perc_ref_'+i).val())=='string' && $('#perc_ref_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_ref_'+i).val());}
+           if (typeof ($('#perc_exp_'+i).val())=='number'|| (typeof ($('#perc_exp_'+i).val())=='string' && $('#perc_exp_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_exp_'+i).val());}
+           if (typeof ($('#perc_con_'+i).val())=='number'|| (typeof ($('#perc_con_'+i).val())=='string' && $('#perc_con_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_con_'+i).val());}
+           if (typeof ($('#perc_soc_'+i).val())=='number'|| (typeof ($('#perc_soc_'+i).val())=='string' && $('#perc_soc_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_soc_'+i).val());}
+           if (typeof ($('#perc_pp1_'+i).val())=='number'|| (typeof ($('#perc_pp1_'+i).val())=='string' && $('#perc_pp1_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_pp1_'+i).val());}
+           if (typeof ($('#perc_pp2_'+i).val())=='number'|| (typeof ($('#perc_pp2_'+i).val())=='string' && $('#perc_pp2_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_pp2_'+i).val());}
+           if (typeof ($('#perc_anyref_'+i).val())=='number'|| (typeof ($('#perc_anyref_'+i).val())=='string' && $('#perc_anyref_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_anyref_'+i).val());}
+          if (typeof ($('#survey_'+i).val())=='number'|| (typeof ($('#survey_'+i).val())=='string' && $('#survey_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#survey_'+i).val());}
+
+           
+           
+         // console.log(' sum_problem: '+sum_problem);
+          $('#sum_pblm_'+i).text(sum_problem);
          sum_assign =  sum_assign + parseInt(per_prob);
           }
-         
         }
-		console.log(' sum_assign: '+sum_assign);
+		//console.log(' sum_assign: '+sum_assign);
         $("#sum_assignment").text(sum_assign);
-	} );
+        
+	$('form :input').change(function(){	
+        sum_assign = 0;
+        sum_problem = 0;
+    
+        for (i = 1; i <= 20; i++) {
+           var letter = 'a';
+          var per_prob =  $('#perc_'+i).val();
+          // console.log(' per_prob: '+per_prob);
+          if (per_prob != undefined) {
+         // look up all the parts of the problem
+             sum_problem = 0;
+           for (j = 1; j <= 10; j++) {
+               per_part =  $('#perc_'+letter+'_'+i).val();
+                if (per_part != undefined && !isNaN(per_part)) {
+                    sum_problem = parseInt(sum_problem) + parseInt(per_part);
+                }
+                letter = nextChar(letter);
+           }
+           
+           if (typeof ($('#perc_ref_'+i).val())=='number'|| (typeof ($('#perc_ref_'+i).val())=='string' && $('#perc_ref_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_ref_'+i).val());}
+           if (typeof ($('#perc_exp_'+i).val())=='number'|| (typeof ($('#perc_exp_'+i).val())=='string' && $('#perc_exp_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_exp_'+i).val());}
+           if (typeof ($('#perc_con_'+i).val())=='number'|| (typeof ($('#perc_con_'+i).val())=='string' && $('#perc_con_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_con_'+i).val());}
+           if (typeof ($('#perc_soc_'+i).val())=='number'|| (typeof ($('#perc_soc_'+i).val())=='string' && $('#perc_soc_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_soc_'+i).val());}
+           if (typeof ($('#perc_pp1_'+i).val())=='number'|| (typeof ($('#perc_pp1_'+i).val())=='string' && $('#perc_pp1_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_pp1_'+i).val());}
+           if (typeof ($('#perc_pp2_'+i).val())=='number'|| (typeof ($('#perc_pp2_'+i).val())=='string' && $('#perc_pp2_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_pp2_'+i).val());}
+           if (typeof ($('#perc_anyref_'+i).val())=='number'|| (typeof ($('#perc_anyref_'+i).val())=='string' && $('#perc_anyref_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#perc_anyref_'+i).val());}
+          if (typeof ($('#survey_'+i).val())=='number'|| (typeof ($('#survey_'+i).val())=='string' && $('#survey_'+i).val().length>0)){sum_problem = sum_problem + parseInt($('#survey_'+i).val());}
+
+         // console.log(' sum_problem: '+sum_problem);
+         
+        if (sum_problem != 100){sum_problem = '<b> <span style="color: red">'+sum_problem+'</span><b>'}
+
+         $('#sum_pblm_'+i).html(sum_problem);
+         sum_assign =  sum_assign + parseInt(per_prob);
+          }
+        }
+		//console.log(' sum_assign: '+sum_assign);
+        
+        if (sum_assign != 100){sum_assign = '<b> <span style="color: red">'+sum_assign+'</span><b>'}
+        $("#sum_assignment").html(sum_assign);
+	
+      });
+    });
 	
 	
 </script>	
