@@ -37,8 +37,6 @@
 		echo("</th><th>");
 		echo('part h');
 		echo("</th><th>");
-		echo('Compute');
-		echo("</th><th>");
 		echo('part i');
 		echo("</th><th>");
 		echo('part j');
@@ -50,6 +48,8 @@
         echo('connect');
 		echo("</th><th>");
          echo('society');
+         echo("</th><th>");
+         echo('Sum for pblm');
 	
 		echo("</th></tr>\n");
 		 echo("</thead>");
@@ -78,7 +78,7 @@
 				)); 
             $assign_datas = $stmt->fetchALL();
        foreach($assign_datas as $assign_data){
-           $problem_id = $assign_data['prob_num'])
+           $problem_id = $assign_data['prob_num'];
            
        //  echo   ('assign_data[prob_num]: '.$assign_data['prob_num']);
     
@@ -89,22 +89,27 @@
 			
 			echo("</td><td>");	
            echo('<input type = "number" min = "0" max = "100" id="perc_'.$i.'" name = "perc_'.$i.'" required  > </input>');
-      echo("</td><td>");
-              
+            echo("</td><td>");
+          
+            $x = 'a';          
               $sql = "SELECT * FROM `Qa` WHERE problem_id = :problem_id AND dex = :dex ";
            $stmt = $pdo->prepare($sql);
            $stmt -> execute(array(
 				':problem_id' => $problem_id,
                 ':dex' => 1,
 				)); 
-            $assign_datas = $stmt->fetchALL();
-       foreach($assign_datas as $assign_data){
-      
-      
-        $i = $i+1;
-        
-      }
-        
+            $Qa_data = $stmt->fetch();
+           foreach(range('a','j') as $x){  // only getting one row 
+                //echo("</td><td>");	
+               if($Qa_data['ans_'.$x]<1e43){
+                       echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+               } else {echo('xxx');}
+                        echo("</td><td>");
+              
+                $x++;  
+          }
+            echo("</td></tr>");	
+       }    
 
 //if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
     
