@@ -10,6 +10,11 @@
       			header( 'Location: QRPRepo.php' ) ;
 				die();
 }
+// fix bug if no class is selected and get a pdo error____________________________________________
+
+
+
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
     
@@ -190,7 +195,7 @@ $_SESSION['counter']=0;  // this is for the score board
                     value="open"> Open - students can freely move between base-case and their problem &nbsp;&nbsp;&nbsp;&nbsp;
                     <br>&nbsp;&nbsp;&nbsp;<input type="radio" name="work_flow"
                     <?php if ((isset($work_flow) && $work_flow=="bc_if")||!isset($work_flow)) echo "checked";?>
-                    value="bc_if" id = "bc_if"> Base-Case - Students are routed to the base-case they get stuck on their problem &nbsp;&nbsp;&nbsp;&nbsp;
+                    value="bc_if" id = "bc_if"> Base-Case If - Students are routed to the base-case they get stuck on their problem &nbsp;&nbsp;&nbsp;&nbsp;
                    
 
                    <div id = "base_case_if">

@@ -10,36 +10,38 @@
       			header( 'Location: QRPRepo.php' ) ;
 				die();
 }
-
+echo('<h1>Quick Response Assignment Setup - Grade Matrix</h1>');
 // table header
-   echo ('<table id="table_format" class = "a" border="1" >'."\n");
+  
+echo ('<form method = "POST">');
+  echo ('<table id="table_format" class = "a" border="1" >'."\n");
         echo("<thead>");
 
 		echo("</td><th>");
-		echo('Problem Number');
+		echo('Pblm Num');
 		echo("</th><th>");
-		echo('% of Assignment');
+		echo('% of Assign');
 		echo("</th><th>");
 		echo('part a)');
 		 echo("</th><th>");
 		
-		echo('part b');
+		echo('part b)');
 		echo("</th><th>");
-		echo('part c');
+		echo('part c)');
 		 echo("</th><th>");
-		echo('part d');
+		echo('part d)');
 		echo("</th><th>");
-		echo('part e');
+		echo('part e)');
 		echo("</th><th>");
-		echo('part f');
+		echo('part f)');
 		 echo("</th><th>");
-		 echo('part g');
+		 echo('part g)');
 		echo("</th><th>");
-		echo('part h');
+		echo('part h)');
 		echo("</th><th>");
-		echo('part i');
+		echo('part i)');
 		echo("</th><th>");
-		echo('part j');
+		echo('part j)');
 		echo("</th><th>");
         echo('reflect');
 		echo("</th><th>");
@@ -49,13 +51,18 @@
 		echo("</th><th>");
          echo('society');
          echo("</th><th>");
+          echo('reflection choice');
+         echo("</th><th>");
+           echo('Pre-pblm1');
+         echo("</th><th>");
+           echo('Pre-pblm2');
+         echo("</th><th>");
          echo('Sum for pblm');
 	
 		echo("</th></tr>\n");
 		 echo("</thead>");
 		 
 		  echo("<tbody>");
-
 
 // first get how many problems that the assignment has and how many parts to each problem
  $sql = "SELECT * FROM `Assigntime` WHERE assigntime_id = :assigntime_id";
@@ -68,8 +75,30 @@
         $iid = $assigntime_data['iid'];
         $currentclass_id = $assigntime_data['currentclass_id'];
        // echo ('currentclass_id: '.$currentclass_id);
+        
+        $sql = "SELECT count(*) AS cnt FROM `Assign` WHERE iid = :iid AND assign_num = :assign_num AND currentclass_id = :currentclass_id ORDER BY alias_num ";
+           $stmt = $pdo->prepare($sql);
+           $stmt -> execute(array(
+				':assign_num' => $assign_num,
+                ':iid' => $iid,
+                ':currentclass_id' => $currentclass_id,
+				)); 
+            $ns = $stmt->fetch();
+           
+
+           $n = $ns['cnt'];  // the number of problems in the assignment
+           $point_p_pblm_default = round(100/$n);
+           $points_last_p = 100 - $point_p_pblm_default*($n-1);
+         
+     //   echo('point_p_pblm_default: '.$point_p_pblm_default);
+     //  echo('  points_last_p: '.$points_last_p);
+      
         $i = 1;
-        $sql = "SELECT * FROM `Assign` WHERE iid = :iid AND assign_num = :assign_num AND currentclass_id = :currentclass_id ORDER BY alias_num ";
+       
+
+
+
+       $sql = "SELECT * FROM `Assign` WHERE iid = :iid AND assign_num = :assign_num AND currentclass_id = :currentclass_id ORDER BY alias_num ";
            $stmt = $pdo->prepare($sql);
            $stmt -> execute(array(
 				':assign_num' => $assign_num,
@@ -88,10 +117,19 @@
 			echo(htmlentities($assign_data['alias_num']));
 			
 			echo("</td><td>");	
-           echo('<input type = "number" min = "0" max = "100" id="perc_'.$i.'" name = "perc_'.$i.'" required  > </input>');
-            echo("</td><td>");
-          
-            $x = 'a';          
+            
+            
+            if ($i!=$n){
+                echo('<input type = "number" min = "0" max = "100" id="perc_'.$i.'" name = "perc_'.$i.'" required value = '.$point_p_pblm_default.' > </input>');
+            } else {
+                echo('<input type = "number" min = "0" max = "100" id="perc_'.$i.'" name = "perc_'.$i.'" required value = '.$points_last_p.' > </input>');
+            }
+
+
+           echo("</td>");
+            $n_parts = 0; // get total parts in the problem so I can estimate the points per part 
+           
+            
               $sql = "SELECT * FROM `Qa` WHERE problem_id = :problem_id AND dex = :dex ";
            $stmt = $pdo->prepare($sql);
            $stmt -> execute(array(
@@ -99,17 +137,94 @@
                 ':dex' => 1,
 				)); 
             $Qa_data = $stmt->fetch();
+           
            foreach(range('a','j') as $x){  // only getting one row 
                 //echo("</td><td>");	
                if($Qa_data['ans_'.$x]<1e43){
-                       echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
-               } else {echo('xxx');}
-                        echo("</td><td>");
+                    $n_parts++;   
+                } 
+              }
+                     
+             $perc_per_part_default =  round(100/$n_parts);  
+              $perc_per_part_last =  100 - $perc_per_part_default*($n_parts-1);  
+              $j=1;
+            
+           foreach(range('a','j') as $x){  // only getting one row 
+                //echo("</td><td>");	
+               if($Qa_data['ans_'.$x]<1e43){
+                       echo("<td>");
+                       
+                       
+                       if($j != $n_parts)
+                       {
+                            echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required value ='.$perc_per_part_default.' > </input>');
+                       } else {
+                           
+                            echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required value ='.$perc_per_part_last.' > </input>');
+                       }
+
+
+
+                       echo("</td>");
+              } else {
+                   echo("<td bgcolor = 'lightgray'> </td>");
+                  
+                 }
+                 $j++;
+              }
               
-                $x++;  
-          }
-            echo("</td></tr>");	
-       }    
+              
+          if ($assign_data['reflect_flag']==1){
+               echo("<td>");
+              echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                echo("</td>");
+           } else {echo("<td bgcolor = 'lightgray'> </td>");}
+             
+            if ($assign_data['explore_flag']==1){
+                echo("<td>");
+                echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                echo("</td>");
+            } else {echo("<td bgcolor = 'lightgray'> </td>");}
+             
+              if ($assign_data['connect_flag']==1){
+                 echo("<td>");
+                 echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                  echo("</td>");
+            } else {echo("<td bgcolor = 'lightgray'> </td>");}
+            
+              if ($assign_data['society_flag']==1){
+                 echo("<td>");
+                 echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                 echo("</td>");
+           } else {echo("<td bgcolor = 'lightgray'> </td>");}
+            
+               if ($assign_data['ref_choice']==1){
+                   echo("<td>");
+                   echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                   echo("</td>");
+            } else {echo("<td bgcolor = 'lightgray'> </td>");}
+            
+               if ($assign_data['pp_flag1']==1){
+                   echo("<td>");
+                   echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                   echo("</td>");
+           } else {echo("<td bgcolor = 'lightgray'> </td>");}
+             
+               if ($assign_data['pp_flag2']==1){
+                   echo("<td>");
+                   echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required  > </input>');
+                  echo("</td>");
+           } else {echo("<td bgcolor = 'lightgray' </td>");}
+            
+            echo("<td>");	
+            echo('<span id = "sum_pblm_'.$i.'"></span>');
+           echo("</td></tr>");	
+           $i++;
+       }  
+       echo('<td>Total</td><td><span id = "sum_assignment"></span></td></tbody></table><br><br>');
+        echo('<input type="submit" class="btn btn-primary"  style="width:20%"    value="Submit">');
+       
+       echo ('</form>');
 
 //if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
     
@@ -165,9 +280,7 @@ $_SESSION['counter']=0;  // this is for the score board
 </head>
 
 <body>
-<header>
-<h1>Quick Response Assignment Setup</h1>
-</header>
+
 
 <?php
 	
@@ -186,114 +299,30 @@ $_SESSION['counter']=0;  // this is for the score board
 ?>
 
 
-    
+    <br><br>
 	<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
-	
+	<br>
 	<script>
 	
 	
 	
 	$(document).ready( function () {
-		
-		var currentclass_name = "";
-		
-			$("#currentclass_id").change(function(){
-            var	 currentclass_id = $("#currentclass_id").val();
-                console.log ('currentclass_id: '+currentclass_id);
-				
-				// need to give it 	
-					$.ajax({
-						url: 'getactiveassignments.php',
-						method: 'post',
-					
-					data: {currentclass_id:currentclass_id}
-					}).done(function(activeass){
-						console.log("activeass: "+activeass);
-					 console.log(activeass);
-					 activeass = JSON.parse(activeass);
-					 	 $('#active_assign').empty();
-						var i = 0;
-						n = activeass.length;
-						console.log("n: "+n);
-						for (i=0;i<n;i++){
-							console.log(activeass[i]);	
-                            var s_act=activeass[i].toString();
-                            console.log(s_act);	
-							 $("#active_assign").append("<option value="+activeass[i]+">"+s_act+"</option>");
-							if (i != n-1){
-
-							}
-						}
-						
-					});	
-				
-			
-			 
-            } );
-        
-       $('input:radio[name="work_flow"]').change(
-              function(){
-                if ($(this).is(':checked') && $(this).val() == 'bc_if') {
-                     $('#base_case_if').show();
-                } else 
-                {$('#base_case_if').hide();
-                }
-            
-            //if($('#bc_if').is(':checked')) { $('#base_case_if').show(); } else {$('#base_case_if').hide();}
-        });
-        
-        
-     // this is from https://stackoverflow.com/questions/24468518/html5-input-datetime-local-default-value-of-today-and-current-time using pure JS   
-        window.addEventListener("load", function() {
-    var now = new Date();
-    var utcString = now.toISOString().substring(0,19);
-    var year = now.getFullYear();
-    var month = now.getMonth() + 1;
-    var day = now.getDate();
-    var hour = now.getHours();
-    var minute = now.getMinutes();
-    var second = now.getSeconds();
-    var localDatetime = year + "-" +
-                      (month < 10 ? "0" + month.toString() : month) + "-" +
-                      (day < 10 ? "0" + day.toString() : day) + "T" +
-                      (hour < 10 ? "0" + hour.toString() : hour) + ":" +
-                      (minute < 10 ? "0" + minute.toString() : minute) ;
-     if (month ==12){month = 1} else {month = month +1; }    // set default window closes to one month in the future            
-    var localDatetime2 = year + "-" +
-                      (month < 10 ? "0" + month.toString() : month) + "-" +
-                      (day < 10 ? "0" + day.toString() : day) + "T" +
-                      (hour < 10 ? "0" + hour.toString() : hour) + ":" +
-                      (minute < 10 ? "0" + minute.toString() : minute) ;
-    var window_opens = document.getElementById("window_opens");
-    window_opens.value = localDatetime;
-    var window_closes = document.getElementById("window_closes");
-    window_closes.value = localDatetime2;
-
-});
-        
-        $("#submit_id").click(function(){
+		var sum_assign = 0;
+        var i;
+        for (i = 1; i <= 20; i++) {
+        //  console.log(' i: '+i);
           
-        /*    
-          $.ajax({
-             type: "POST",
-             url: "QREStart.php",
-             data: {currentclass_id:currentclass_id,exam_num:exam_num},
-             success: function(msg) {
-                alert("Form Submitted: " + msg);
-             }
-          });
-           */
-         /*  $.ajax({
-				url: 'QREStart.php',
-				method: 'post',
-				data: {currentclass_id:currentclass_id,exam_num:exam_num}
-					})
-           */
-          
-        // $.post("QREStart.php",{currentclass_id:currentclass_id, exam_num:exam_num},);  
-          
-        });
-	
+         
+         var per_prob =  $('#perc_'+i).val();
+         
+           console.log(' per_prob: '+per_prob);
+          if (per_prob != undefined) {
+         sum_assign =  sum_assign + parseInt(per_prob);
+          }
+         
+        }
+		console.log(' sum_assign: '+sum_assign);
+        $("#sum_assignment").text(sum_assign);
 	} );
 	
 	
