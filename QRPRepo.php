@@ -232,8 +232,8 @@
 			echo '</p>';
             echo ('<style> form {display:inline}</style>');
             echo('<form action = "QRExamStart.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Start Exam"></form> &nbsp;');
-            echo('<form action = "QRExamRetrieve.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Retrieve Exam Results"></form>');
-            echo('<form action = "QRAssignmentStart.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Make Assignment"></form> &nbsp;');
+            echo('<form action = "QRExamRetrieve.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Retrieve Exam Results"></form> &nbsp;');
+            echo('<form action = "QRAssignmentStart0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Activate Hmwk"></form> &nbsp;');
 
           //     echo '<a href="QRExamStart.php?iid ='.$users_id.'" >Start an Exam</b></a>';
 			echo '&nbsp; &nbsp;&nbsp;';
@@ -527,15 +527,34 @@
 			} else {
 				$status_update = '';
 			}
-			
+			$active_flag = 0; // just initializing it
 			// if it is active for this user print active for the status
-					$sql = "SELECT Assign.assign_num AS assign_ass_num, Assign.alias_num AS alias_num,Assign.currentclass_id as currentclass_id FROM Assign WHERE prob_num = :prob_num and iid = :iid";
+					$sql = "SELECT Assign.assign_num AS assign_ass_num, Assign.alias_num AS alias_num,Assign.currentclass_id as currentclass_id ,Assign.assign_id as assign_id FROM Assign WHERE prob_num = :prob_num and iid = :iid";
                     $stmt8 = $pdo->prepare($sql);
                     $stmt8 -> execute(array(
                      ':prob_num' => $row['problem_id'],
                       ':iid' => $users_id,
                     ));
                     $row2 = $stmt8->fetch(PDO::FETCH_ASSOC); 
+                    if ($row2['assign_id']!=false ){
+                       $assign_id =  $row2['assign_id'];
+                       $sql = "SELECT assigntime_id FROM Assigntime WHERE assign_num = :assign_num AND iid = :iid AND currentclass_id = :currentclass_id";
+                        $stmt12 = $pdo->prepare($sql);
+                        $stmt12 -> execute(array(
+                         ':currentclass_id' => $row2['currentclass_id'],
+                         ':assign_num' => $row2['assign_ass_num'],
+                          ':iid' => $users_id,
+                        ));
+                        $assigntime_data = $stmt12->fetch(PDO::FETCH_ASSOC); 
+                        if ($assigntime_data['assigntime_id']!= false ){ 
+                           $active_flag = 2; // on an active homework
+                        } else {
+                           $active_flag = 1; //staged but not active
+                        }
+                       
+                    } else {
+                       $assign_id = '';
+                    }
                     
                     
                    /*  
@@ -547,24 +566,23 @@
 					 $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
                       */
                      
-					if($row2 == false){
-						if($status_update =='Circulated'){
-							echo('Circulated');
-						} else {
-						echo($row['status']);
-						}
-                         $active_flag = 0;
-					} else {
-                        $active_flag = 1;
+					if($active_flag == 0){
+                            if($status_update =='Circulated'){
+                                echo('Circulated');
+                            } else {
+                            echo($row['status']);
+                            }
+                            // $active_flag = 0;
+					} elseif($active_flag == 2) {
+                      //  $active_flag = 1;
                        // if I turn it red the filter wont pick it up
-                       echo ('Active');
+                            echo ('Active');
                        
 						//echo('<span style = "color: red;" > Active </br> Class# '.$row2["currentclass_id"].'</br> Asn '.$row2["assign_ass_num"].'</br> Pblm '.$row2["alias_num"] .'<br>  </span>');
-					}
+					} else {
+                         echo ('Staged');
+                    }
                     
- 
-
- 
 
                    // if it is Staged for an exam by the user this user print staged for the status
 					$sql = "SELECT Exam.exam_num AS exam_e_num, Exam.alias_num AS e_alias_num,Exam.currentclass_id as e_currentclass_id FROM Exam WHERE problem_id = :problem_id AND iid = :iid";
@@ -595,8 +613,6 @@
 						//echo('<span style = "color: red;" > Active </br> Class# '.$row2["currentclass_id"].'</br> Asn '.$row2["assign_ass_num"].'</br> Pblm '.$row2["alias_num"] .'<br>  </span>');
 					}
                     
-                    
-                    
 					// test to see if it is being used by other people and display in use
 				
                 $sql = "SELECT Assign.instr_last AS instr_last_nm FROM Assign WHERE prob_num = :problem_id AND iid <> :iid";
@@ -625,7 +641,7 @@
 					
 			
 			echo("</td><td>");
-            if ($active_flag ==1){
+            if ($active_flag > 0){
                 
                 // echo ($row2["currentclass_id"]);
                  // find the current class from the Currentclass table
@@ -683,7 +699,7 @@
             
            
              echo("</td><td>");
-              if ($active_flag ==1){
+              if ($active_flag >0){
                    echo ($row2["assign_ass_num"]);
               }
             echo("</td><td>");
@@ -695,12 +711,12 @@
 
  
              echo("</td><td>");
-            if ($active_flag ==1){
-                echo ($row2["alias_num"]);
+            if ($active_flag >1){
+                echo ('h-'.$row2["alias_num"]);
             }
             
              if ($staged_flag ==1){
-                echo ($row2e["e_alias_num"]);
+                echo ('e-'.$row2e["e_alias_num"]);
             }
             echo("</td><td>");
 			echo(htmlentities($row['nm_author']));
@@ -722,7 +738,7 @@
 			}
 			
 			if ($security != 'grader'){
-			echo('<form action = "QRactivatePblm.php" method = "GET" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "users_id" value = "'.$users_id.'"><input type = "submit" value ="Activate"></form>');
+			echo('<form action = "QRactivatePblm.php" method = "GET" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "hidden" name = "assign_id" value = "'.$assign_id.'"><input type = "submit" value ="Stage->HW"></form>');
 
 		//	echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$users_id.'">Act-deAct</a>');
 				
@@ -734,7 +750,7 @@
 				echo("&nbsp; ");
 				echo('<form action = "getGame.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Game"></form>');
 				echo("&nbsp; ");
-				echo('<form action = "stageExam.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Stage Exam"></form>');
+				echo('<form action = "stageExam.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Stage->Exam"></form>');
 				echo("&nbsp; ");
 				echo('<form action = "makeMoodleXML.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="MoodleXML"></form>');
 

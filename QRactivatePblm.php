@@ -2,6 +2,22 @@
 require_once "pdo.php";
 session_start();
 
+
+
+
+if (isset($_POST['assign_id'])&& $_POST['assign_id'] != ''){
+   $assign_id =  $_POST['assign_id'];
+    $activate_flag= 0; 
+} elseif (isset($_GET['assign_id']) && $_GET['assign_id'] != '') {
+    $assign_id =  $_GET['assign_id'];
+    $activate_flag= 0; 
+    
+}else {
+     $activate_flag= 1; // changes the form option from activate to deactivate
+    $assign_id ='';
+}
+    
+    
 if (isset($_SESSION['username'])) {
 	$username=$_SESSION['username'];
 } else {
@@ -11,25 +27,45 @@ if (isset($_SESSION['username'])) {
         echo "</script>";
 }
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['Submitted'])) {
+      if (isset($_POST['iid'])){
+        $iid = $_POST['iid'];
+      } else {
+        $_SESSION['error'] = 'iid missing in post in QRactivate.php';
+            echo  "<script type='text/javascript'>";
+            echo "window.close();";
+            echo "</script>";
+      }      
+       if (isset($_POST['problem_id'])){
+        $problem_id = $_POST['problem_id'];
+      } else {
+        $_SESSION['error'] = 'problem_id missing in post in QRactivate.php';
+            echo  "<script type='text/javascript'>";
+            echo "window.close();";
+            echo "</script>";
+      }       
+}  else {
 
+        // Guardian: Make sure that problem_id is present
+        if ( ! isset($_GET['problem_id']) or ! isset($_GET['iid']) ) {
+          $_SESSION['error'] = "Missing problem_id";
+                echo  "<script type='text/javascript'>";
+                echo "window.close();";
+                echo "</script>";
+        } else {
+            $problem_id = $_GET['problem_id'];	
+            $prob_num=$_GET['problem_id'];	
+            $iid = $_GET['iid'];
 
-// Guardian: Make sure that problem_id is present
-if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
-  $_SESSION['error'] = "Missing problem_id";
-        echo  "<script type='text/javascript'>";
-        echo "window.close();";
-        echo "</script>";
-} else {
-
-	$prob_num=$_GET['problem_id'];	
-	$iid = $_GET['users_id'];
-
-}
-
+        }
+        
+}       
+// echo (' iid: '.$iid);
+// echo (' problem_id: '.$problem_id);
 	// $choice = '';
     $sql = "SELECT * FROM Problem WHERE problem_id = :zip";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(':zip' => $_GET['problem_id']));
+    $stmt->execute(array(':zip' => $problem_id));
 	$problem_data = $stmt -> fetch();
 
 	
@@ -39,22 +75,11 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
     $stmt->execute(array(':iid' => $iid));
 	$current_class_data = $stmt -> fetch();
 	if ($current_class_data == false){
-		$_SESSION['error'] = 'There are no current classes for this Instructor - Please Add a Class that you are Teaching';
+		$_SESSION['error'] = 'There are no current classes for this Instructor - Please Add a Class that you are Teaching iid is: '.$iid;
             echo  "<script type='text/javascript'>";
             echo "window.close();";
             echo "</script>";
-	} else {
-		
-		/* $currentclass_id = $current_class_data['currentclass_id'];	
-		$sec_desig_1 = 	$current_class_data['sec_desig_1'];	
-		$sec_desig_2 = 	$current_class_data['sec_desig_2'];	
-		$sec_desig_3 = 	$current_class_data['sec_desig_3'];	
-		$sec_desig_4 = 	$current_class_data['sec_desig_4'];
-		$sec_desig_5 = 	$current_class_data['sec_desig_5'];	
-		$sec_desig_6 = 	$current_class_data['sec_desig_6'];
-		$class_exp_date = $current_class_data['exp_date'];
-		 */
-	}
+	} 
 	
 	
 	
@@ -66,31 +91,39 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
         echo "</script>";
 	}
 
+   // we have a file and are trying to deactivate it  
 
+   if(isset($_POST['Deactivate']) && $assign_id != ''){
+	 
+	 $sql = "DELETE FROM Assign WHERE assign_id = :zip";  
+	   $stmt = $pdo -> prepare($sql);
+	   $stmt -> execute(array(
+		':zip' => $assign_id
+	   ));
+	 
+	//echo('the problem was deactivated'.$assign_id);
+	 $_SESSION['success'] = 'the problem was deactivated';
+	       echo  "<script type='text/javascript'>";
+        echo "window.close();";
+        echo "</script>";
+   }
+
+
+// get info about the instructor
 	 $sql = "SELECT * FROM Users WHERE users_id = :zip";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(':zip' => $_GET['users_id']));
+    $stmt->execute(array(':zip' => $iid));
 	$Users_data = $stmt -> fetch();
-	
-
-
-	$sql = "SELECT * FROM Assign WHERE iid = :zip AND prob_num = :probnum";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(':zip' => $_GET['users_id'],':probnum' => $_GET['problem_id']));
-	$Assign_data = $stmt -> fetch();
-	
-		
 	
 	$university = $Users_data['university'];
 	$instr_last = $Users_data['last'];
 
-
-
-
-// if the assignment data is not equal to false then we already have an entry make the values of the variables equal to the values in the db
-	if($Assign_data != false) {
-		$assign_id = $Assign_data['assign_id'];
-		// echo($assign_id);
+		
+	if ($assign_id != ''){
+        	$sql = "SELECT * FROM Assign WHERE assign_id = :assign_id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(array(':assign_id' => $assign_id));
+            $Assign_data = $stmt -> fetch();
 		$assign_num = $Assign_data['assign_num'];
 		$alias_num = $Assign_data['alias_num'];
          $currentclass_id = $Assign_data['currentclass_id'];
@@ -115,56 +148,30 @@ if ( ! isset($_GET['problem_id']) or ! isset($_GET['users_id']) ) {
 	} else {
 		
 		// initialize a bunch of variables if we do not have a file in assign
-		$activate_flag = 1;	
 		
 		$instr_last =  $assign_num =  "";
 		$pp_flag1 = $pp_flag2 = $pp_flag3 =$pp_flag4 = $reflect_flag = $explore_flag= $choice =  "";
-		$assign_id = $alias_num = $connect_flag = $society_flag = $postp_flag1 =$postp_flag2 = $postp_flag3 =  "";
+		$alias_num = $connect_flag = $society_flag = $postp_flag1 =$postp_flag2 = $postp_flag3 =  "";
 		$grader_id1 = $grader_id2 = $grader_id3 = "";
 		$currentclass_id = '';
 	}
 
-// we have a file and are trying to deactivate it  
-   if(isset($_POST['Deactivate']) && $Assign_data != false){
-	 
-	 $sql = "DELETE FROM Assign WHERE assign_id = :zip";  
-	   $stmt = $pdo -> prepare($sql);
-	   $stmt -> execute(array(
-		':zip' => $assign_id
-	   ));
-	 
-	//echo('the problem was deactivated'.$assign_id);
-	 $_SESSION['sucess'] = 'the problem was deactivated';
-	       echo  "<script type='text/javascript'>";
-        echo "window.close();";
-        echo "</script>";
-   }
 
 
 
 // we dont have an entry and we are trying to activate - create an new entry 
-if(isset($_POST['Activate']) && $Assign_data==false){
+if(isset($_POST['Activate']) && $assign_id == ''){
 	$activate_flag = 1;
 	
 	$currentclass_id =  htmlentities($_POST['currentclass_id']);
 	
-		if(isset($_POST['exp_date'])){
-			$exp_date=$_POST['exp_date'];
-			} 
+		
 			
 		 $sql = "SELECT exp_date FROM CurrentClass WHERE currentclass_id = :currentclass_id";
 		$stmt = $pdo->prepare($sql);
 		$stmt->execute(array(':currentclass_id' => $currentclass_id));
 		$class_exp_data = $stmt -> fetch();
 		$class_exp_date = $class_exp_data['exp_date'];
-
-	if($exp_date > $class_exp_date){
-	$_SESSION['error']	= 'Expiration date of Assignment cannot exceed the expiration date on the class';
-		
-       echo  "<script type='text/javascript'>";
-        echo "window.close();";
-        echo "</script>";
-	}
 
 
 		// Set parameters
@@ -219,6 +226,8 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			if(isset($_POST['grader_id3'])){
 				$grader_id3=$_POST['grader_id3'];
 			} 
+
+
 		// check to make sure the problem number for that assignment and class is not already in the system
 		
 		$sql = "SELECT assign_id FROM Assign WHERE currentclass_id = :currentclass_id AND alias_num = :alias_num AND assign_num = :assign_num";
@@ -239,10 +248,10 @@ if(isset($_POST['Activate']) && $Assign_data==false){
  
  // Prepare an insert statement
         $sql = "INSERT INTO Assign (instr_last, iid, university,  assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,
-		connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3,exp_date,grader_id1,grader_id2,grader_id3,alias_num,
+		connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3,grader_id1,grader_id2,grader_id3,alias_num,
 		currentclass_id,sec_desig_1,sec_desig_2,sec_desig_3,sec_desig_4,sec_desig_5,sec_desig_6)
 		VALUES (:instr_last, :iid,:university,  :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,
-		:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3,:exp_date,:grader_id1,:grader_id2,:grader_id3,:alias_num,
+		:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3,:grader_id1,:grader_id2,:grader_id3,:alias_num,
 		:currentclass_id,:sec_desig_1,:sec_desig_2,:sec_desig_3,:sec_desig_4,:sec_desig_5,:sec_desig_6)";
          
        
@@ -265,7 +274,6 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				':explore_flag' => $explore_flag,
 				':connect_flag' => $connect_flag,
 				':society_flag' => $society_flag,
-				':exp_date' => $exp_date,
 				':grader_id1' => $grader_id1,
 				':grader_id2' => $grader_id2,
 				':grader_id3' => $grader_id3,
@@ -277,6 +285,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				':sec_desig_5' => $sec_desig_5,
 				':sec_desig_6' => $sec_desig_6
 				));
+      	 $_SESSION['success'] = 'the problem was attached to the assignment';
 
        echo  "<script type='text/javascript'>";
         echo "window.close();";
@@ -284,12 +293,12 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 	
 	}
 	// We have a file and are trying to edit it- just update the entry
-   if(isset($_POST['Submitted']) && $Assign_data !== false){ 
+   if(isset($_POST['Submitted']) && $assign_id != ''){ 
    
 	
   // changing assignment number so need a new time 
-   if($assign_num != $_POST['Assig_num'] ) {
-	$assign_num = $_POST['Assig_num'];
+   if($assign_num != $_POST['assign_num'] ) {
+	$assign_num = $_POST['assign_num'];
 	
    }
      if($alias_num != $_POST['alias_num'] ) {
@@ -358,9 +367,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			$postp_flag3 = 0;
 		}
 		
-		if(isset($_POST['exp_date'])){
-			$exp_date=$_POST['exp_date'];
-		} 
+		
 		// check the grader_id1 
 		if(isset($_POST['grader_id1'])){
 			$grader_id1=$_POST['grader_id1'];
@@ -376,13 +383,12 @@ if(isset($_POST['Activate']) && $Assign_data==false){
    
    	$sql = "UPDATE Assign SET  assign_t_created = :assign_t_created, assign_num = :assign_num, pp_flag1 = :pp_flag1, pp_flag2= :pp_flag2,
 			pp_flag3 = :pp_flag3, pp_flag4 = :pp_flag4, reflect_flag = :reflect_flag, explore_flag = :explore_flag, connect_flag = :connect_flag,
-			society_flag = :society_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3, ref_choice = :choice, exp_date = :exp_date,
+			society_flag = :society_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3, ref_choice = :choice, 
 			grader_id1 = :grader_id1, grader_id2 = :grader_id2, grader_id3 = :grader_id3, alias_num = :alias_num
 					WHERE assign_id = :assign_id";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
 			':assign_id' => $assign_id,
-			
 			':assign_t_created' => $assign_t_created,
 			':assign_num' => $assign_num,
 			':alias_num' => $alias_num,
@@ -398,12 +404,11 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			':postp_flag1' => $postp_flag1,
 			':postp_flag2' => $postp_flag2,
 			':postp_flag3' => $postp_flag3,
-			':exp_date' => $_POST['exp_date'],
 			':grader_id1' => $grader_id1,
 			':grader_id2' => $grader_id2,
 			':grader_id3' => $grader_id3
 			));
-			 $_SESSION['sucess'] = 'the problem was edited and remains active';
+			 $_SESSION['success'] = 'the problem was successfully edited';
 	       echo  "<script type='text/javascript'>";
             echo "window.close();";
             echo "</script>";
@@ -437,44 +442,19 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 </header>	
 	 <div class="wrapper">
        
-        <form  method="post">
+        <form  method="POST">
 			<?php
 				if($activate_flag== 1){
-							 echo('<h4><input type="checkbox" name="Activate" checked > Activate - make available to students </h4>');
+							 echo('<h4><input type="checkbox" name="Activate" checked > Stage - Attach problem to an Assignment </h4>');
 					
 				} else {
 					
-					echo('<h4><input type="checkbox" name="Deactivate" > Deactivate </h4>');
+					echo('<h4><input type="checkbox" name="Deactivate" > Remove it from an Assignment </h4>');
 				}
 			
 			?>
 				
-                	
-				
-				
-				
-		
         
-        <!--		
-          	<div id ="current_class_dd">	
-				Course: </br>
-				<select name = "currentclass_id" id = "currentclass_id">
-				<option value = "" selected disabled hidden >  Class  </option> 
-				<?php
-					/* $sql = 'SELECT * FROM `CurrentClass` WHERE `iid` = :iid';
-					$stmt = $pdo->prepare($sql);
-					$stmt -> execute(array(':iid' => $iid));
-					while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
-						{  */?>
-						<option value="<?php// echo $row['currentclass_id']; ?>" ><?php //echo $row['name']; ?> </option>
-						<?php
-                        //}
-						?>
-				</select>
-				</div>
-				</br>	      
-				-->
-			
 
 
             
@@ -518,7 +498,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			
 			</div>
 	
-			</br> <input type= "text" Name="assign_num" id = "assign_num" size="1" <?php if(strlen($assign_num) !== 0){echo ('value ='.$assign_num);  }?> required> Assignment Number <br> </br>
+			</br> <input type= "text" name="assign_num" id = "assign_num" size="1" <?php if(strlen($assign_num) !== 0){echo ('value ='.$assign_num);  }?> required> Assignment Number <br> </br>
 			</br>
 			<div id = "active_alias">
 			
@@ -543,8 +523,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 				}
 				
 			?>
-				<p><font >When Should This Activation Expire (max is 6 months from now) </font><input type="date" name="exp_date" value = "2019-05-13"  min="2019-05-13" max='2000-01-10' id="exp_date" ></p>
-				
+			
 			
 			<p><input type="checkbox" name="guess" <?php if($pp_flag1 =='1'){echo ('checked');  }?> > Preliminary Estimates </p>
 			<p><input type="checkbox" name="q_on_q" <?php if($pp_flag2 =='1'){echo ('checked');  }?>> Planning Questions </p>
@@ -572,7 +551,10 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			
 			
 			
-			
+		    <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
+            <p><input type="hidden" name="assign_id" id="assign_id" value=<?php echo($assign_id);?> ></p>
+
+		    <p><input type="hidden" name="problem_id" id="problem_id" value=<?php echo($problem_id);?> ></p>
 			<input type="hidden" name="Submitted" value="name" />
 			<p><input type = "submit"></p>
         </form >
@@ -735,7 +717,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 			
 			
 			// suggest a date as the end of the semester for the expiration date
-		
+	/* 	
 		var m = 0;
 		var d = new Date();   // current date
 		var minDate = d.toISOString(true).slice(0,10);
@@ -767,7 +749,7 @@ if(isset($_POST['Activate']) && $Assign_data==false){
 		d.setFullYear(yr, m, 15);  // change d to the end of the semester
 		var expDate = d.toISOString(true).slice(0,10);
 		document.getElementById("exp_date").value = expDate;
-	
+	 */
 	} );
 	
 	

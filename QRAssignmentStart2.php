@@ -4,12 +4,126 @@
 // this is called from the QRAssignmentSart.php and this will Collect the Points on a particular assignment from the instructor .  THis file was coppied form QRAssignmentSart.php
 	
     if (isset($_GET['assigntime_id'])) {
-	$assigntime_id = $_GET['assigntime_id'];
-} else {
+        $assigntime_id = $_GET['assigntime_id'];
+    } elseif ($_POST['assigntime_id']){
+        $assigntime_id = $_POST['assigntime_id'];
+    } 
+      else {
 	 $_SESSION['error'] = 'invalid assigntime_id in QRExamStart2.php ';
       			header( 'Location: QRPRepo.php' ) ;
 				die();
+    }
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
+    
+    if (isset ($_POST['n'])){
+        $n = $_POST['n'];  // n should be the number of problems in the assignment
+    } else {
+        $n = 20;
+    }
+    
+    $data_init = array();
+     for ($i=1;$i<=$n;$i++){
+      $data_init += array('perc_'.$i => '');
+      $data_init += array('perc_pp1_'.$i => ''); 
+      $data_init += array('perc_pp2_'.$i => ''); 
+      $data_init += array('perc_ref_'.$i =>''); 
+      $data_init += array('perc_exp_'.$i => ''); 
+      $data_init += array('perc_con_'.$i => ''); 
+      $data_init += array('perc_soc_'.$i => ''); 
+      $data_init += array('perc_any1_ref_'.$i => ''); 
+      $data_init += array('survey_'.$i => ''); 
+        foreach(range('a','j') as $x){ 
+           $data_init += array('perc_'.$x.'_'.$i => '');   
+         }
+     }
+    
+  
+     for ($i=1;$i<=$n;$i++){
+      
+         
+         if(isset($_POST['perc_'.$i])) {$data_init['perc_'.$i]= $_POST['perc_'.$i] ;}
+         if(isset($_POST['perc_pp1_'.$i])) {$data_init['perc_pp1_'.$i]= $_POST['perc_pp1_'.$i] ;}
+         if(isset($_POST['perc_pp2_'.$i])) {$data_init['perc_pp2_'.$i]= $_POST['perc_pp2_'.$i] ;}
+
+         if(isset($_POST['perc_ref_'.$i])) {$data_init['perc_ref_'.$i]= $_POST['perc_ref_'.$i] ;}
+         if(isset($_POST['perc_exp_'.$i])) {$data_init['perc_exp_'.$i]= $_POST['perc_exp_'.$i] ;}
+         if(isset($_POST['perc_con_'.$i])) {$data_init['perc_con_'.$i]= $_POST['perc_con_'.$i] ;}
+         if(isset($_POST['perc_soc_'.$i])) {$data_init['perc_soc_'.$i]= $_POST['perc_soc_'.$i] ;}
+         if(isset($_POST['perc_anyref_'.$i])) {$data_init['perc_any1_ref_'.$i]= $_POST['perc_anyref_'.$i] ;}
+         if(isset($_POST['survey_'.$i])) {$data_init['survey_'.$i]= $_POST['survey_'.$i] ;}
+        
+         
+        foreach(range('a','j') as $x){ 
+              if(isset($_POST['perc_'.$x.'_'.$i])) {$data_init['perc_'.$x.'_'.$i]= $_POST['perc_'.$x.'_'.$i] ;}
+        
+           $data_init += array('perc_'.$x.'_'.$i => '');   
+         }
+         
+     }
+    
+    
+    
+    // $sql = UPDATE Assigntime SETperc_1=:perc_1, perc_2=:perc_2, perc_3=:perc_3, perc_4=:perc_4, WHERE assigntime_id = :assigntime_id
+    $data = array();
+    $sql = 'UPDATE Assigntime SET ';
+    $data += array(':assigntime_id' => $assigntime_id);
+    
+    for ($i=1;$i<=$n;$i++){
+        $sql = $sql.'perc_pp1_'.$i.'=:perc_pp1_'.$i.', ';
+        $sql = $sql.'perc_pp2_'.$i.'=:perc_pp2_'.$i.', ';
+        $sql = $sql.'perc_ref_'.$i.'=:perc_ref_'.$i.', ';
+        $sql = $sql.'perc_exp_'.$i.'=:perc_exp_'.$i.', ';
+        $sql = $sql.'perc_con_'.$i.'=:perc_con_'.$i.', ';
+        $sql = $sql.'perc_soc_'.$i.'=:perc_soc_'.$i.', ';
+        $sql = $sql.'perc_any1_ref_'.$i.'=:perc_any1_ref_'.$i.', ';
+        $sql = $sql.'survey_'.$i.'=:survey_'.$i.', ';
+        
+      $data += array(':perc_'.$i => $data_init['perc_'.$i]);
+      $data += array(':perc_pp1_'.$i => $data_init['perc_pp1_'.$i]); 
+      $data += array(':perc_pp2_'.$i => $data_init['perc_pp2_'.$i]); 
+      $data += array(':perc_ref_'.$i => $data_init['perc_ref_'.$i]); 
+      $data += array(':perc_exp_'.$i => $data_init['perc_exp_'.$i]); 
+      $data += array(':perc_con_'.$i => $data_init['perc_con_'.$i]); 
+      $data += array(':perc_soc_'.$i => $data_init['perc_soc_'.$i]); 
+      $data += array(':perc_any1_ref_'.$i => $data_init['perc_any1_ref_'.$i]); 
+      $data += array(':survey_'.$i => $data_init['survey_'.$i]); 
+      
+        
+        foreach(range('a','j') as $x){  
+            $sql = $sql.'perc_'.$x.'_'.$i.'=:perc_'.$x.'_'.$i.', ';
+             $data += array(':perc_'.$x.'_'.$i => $data_init['perc_'.$x.'_'.$i]); 
+        }
+
+        if ($i != $n){
+            $sql = $sql.'perc_'.$i.'=:perc_'.$i.', ';
+        } else {
+            $sql = $sql.'perc_'.$i.'=:perc_'.$i.' ';  // need this one so we don't put a comma on the last one
+        }
+
+
+        
+ 
+        
+    } 
+    $sql = $sql.' WHERE assigntime_id = :assigntime_id ';
+
+ 
+     $stmt = $pdo->prepare($sql);
+     
+     $stmt->execute($data);
+     
+     
+                
+                  
+                $_SESSION['success'] = 'Assignment set';
+       			header( 'Location: QRPRepo.php' ) ;
+				die();
 }
+
+
+
 echo('<h1>Quick Response Assignment Setup - Grade Matrix</h1>');
 // table header
   
@@ -21,6 +135,8 @@ echo ('<form method = "POST">');
 		echo('Pblm Num');
 		echo("</th><th>");
 		echo('% of Assign');
+		echo("</th><th>");
+        echo('Pblm id');
 		echo("</th><th>");
 		echo('part a)');
 		 echo("</th><th>");
@@ -60,11 +176,13 @@ echo ('<form method = "POST">');
           echo('Survey');
          echo("</th><th>");
          echo('Sum for pblm');
+         echo("</th><th>");
+         echo('Edit');
 	
 		echo("</th></tr>\n");
 		 echo("</thead>");
 		 
-		  echo("<tbody>");
+		  echo("<tbody><tr></tr><tr>");
 
 // first get how many problems that the assignment has and how many parts to each problem
  $sql = "SELECT * FROM `Assigntime` WHERE assigntime_id = :assigntime_id";
@@ -110,25 +228,41 @@ echo ('<form method = "POST">');
             $assign_datas = $stmt->fetchALL();
        foreach($assign_datas as $assign_data){
            $problem_id = $assign_data['prob_num'];
-           
+           $assign_id = $assign_data['assign_id'];
+         /*   
+           $sql = "SELECT users_id FROM `Problem` WHERE problem_id = :problem_id";  // put this in to get userid for removing problem
+           $stmt = $pdo->prepare($sql);
+           $stmt -> execute(array(
+				':problem_id' => $problem_id,
+				)); 
+            $problem_data = $stmt->fetch();
+            $users_id = $problem_data['users_id'];
+ */
        //  echo   ('assign_data[prob_num]: '.$assign_data['prob_num']);
     
-         echo "<tr><td>";
-			
-			
+            echo "<tr><td>";
 			echo(htmlentities($assign_data['alias_num']));
-			
 			echo("</td><td>");	
-            
-            
-            if ($i!=$n){
-                echo('<input type = "number" min = "0" max = "100" id="perc_'.$i.'" name = "perc_'.$i.'" required value = '.$point_p_pblm_default.' > </input>');
-            } else {
-                echo('<input type = "number" min = "0" max = "100" id="perc_'.$i.'" name = "perc_'.$i.'" required value = '.$points_last_p.' > </input>');
-            }
+           if ($assigntime_data['perc_'.$i]!= null){
+               $point_p_pblm = $assigntime_data['perc_'.$i];
+           }  elseif ($i!=$n){
+               $point_p_pblm = $point_p_pblm_default;
+           }else {
+               $point_p_pblm = $points_last_p;
+           }
+           echo('<input type = "number" min = "0" max = "100" id="perc_'.$i.'" name = "perc_'.$i.'" required value = '.$point_p_pblm.' > </input>');
 
-
+           
            echo("</td>");
+            
+            echo "<td>";
+ //           echo ('<form action = "QRactivatePblm.php" method = "GET" target = "_blank"> '); // not sure why I need this but first one wont work w/o it
+            echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = '.$problem_id.'><input type = "hidden" name = "index" value = "1" ></form>');
+
+            echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = '.$problem_id.'><input type = "hidden" name = "index" value = "1" ><input type = "submit" value = '.$problem_id.'></form>');
+			echo("</td>");	
+            
+           
             $n_parts = 0; // get total parts in the problem so I can estimate the points per part 
             $n_ref_pp_parts = 0; // get the total number of reflection and preproblem parts
             
@@ -153,7 +287,9 @@ echo ('<form method = "POST">');
                 if ($assign_data['pp_flag1']==1){$n_ref_pp_parts++;} 
                 if ($assign_data['pp_flag2']==1){$n_ref_pp_parts++;} 
                 if ($assign_data['ref_choice']==1){$n_ref_pp_parts++;} 
-            $perc_tot_ref_pp_suvey = 5+10*$n_ref_pp_parts;  // 5 percent for survey and 10 pts for the reflections
+                $points_ref_pp_default = 10; 
+                $points_survey_default = 5;               
+            $perc_tot_ref_pp_suvey = $points_survey_default+$points_ref_pp_default*$n_ref_pp_parts;  // default 5 percent for survey and 10 pts for the reflections
              $perc_per_part_default =  round((100-$perc_tot_ref_pp_suvey)/$n_parts);  
               $perc_per_part_last =  (100-$perc_tot_ref_pp_suvey )- $perc_per_part_default*($n_parts-1);  
               $j=1;
@@ -163,15 +299,21 @@ echo ('<form method = "POST">');
                if($Qa_data['ans_'.$x]<1e43){
                        echo("<td>");
                        
-                       
+                       if ($assigntime_data['perc_'.$x.'_'.$i]!= null) {
+                            $perc_per_part = $assigntime_data['perc_'.$x.'_'.$i]; }
+                      elseif($j != $n_parts) {$perc_per_part = $perc_per_part_default; } 
+                      else {$perc_per_part = $perc_per_part_last;}
+                      echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required value ='.$perc_per_part.' > </input>');
+
+/*                        
                        if($j != $n_parts)
                        {
-                            echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required value ='.$perc_per_part_default.' > </input>');
+                            echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required value ='.$perc_per_part.' > </input>');
                        } else {
                            
                             echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required value ='.$perc_per_part_last.' > </input>');
                        }
-
+ */
 
 
                        echo("</td>");
@@ -182,83 +324,84 @@ echo ('<form method = "POST">');
                  $j++;
               }
               
-              
+            
           if ($assign_data['reflect_flag']==1){
                echo("<td>");
-              echo('<input type = "number" min = "0" max = "100" id="perc_ref_'.$i.'" name = "perc_ref_'.$i.'" required value = 10 > </input>');
+               if ($assigntime_data['perc_ref_'.$i] != null){$points_ref = $assigntime_data['perc_ref_'.$i];} else {$points_ref = $points_ref_pp_default;}
+              echo('<input type = "number" min = "0" max = "100" id="perc_ref_'.$i.'" name = "perc_ref_'.$i.'" required value ='.$points_ref.' > </input>');
                 echo("</td>");
            } else {echo("<td bgcolor = 'lightgray'> </td>");}
              
             if ($assign_data['explore_flag']==1){
                 echo("<td>");
-                echo('<input type = "number" min = "0" max = "100" id="perc_exp_'.$i.'" name = "perc_exp_'.$i.'" required  value = 10 > </input>');
+                if ($assigntime_data['perc_exp_'.$i] != null){$points_ref = $assigntime_data['perc_exp_'.$i];} else {$points_ref = $points_ref_pp_default;}
+
+                echo('<input type = "number" min = "0" max = "100" id="perc_exp_'.$i.'" name = "perc_exp_'.$i.'" required  value ='.$points_ref.' > </input>');
                 echo("</td>");
             } else {echo("<td bgcolor = 'lightgray'> </td>");}
              
               if ($assign_data['connect_flag']==1){
                  echo("<td>");
-                 echo('<input type = "number" min = "0" max = "100" id="perc_con_'.$i.'" name = "perc_con_'.$i.'" required  value = 10 > </input>');
+                 if ($assigntime_data['perc_con_'.$i] != null){$points_ref = $assigntime_data['perc_con_'.$i];} else {$points_ref = $points_ref_pp_default;}
+
+                 echo('<input type = "number" min = "0" max = "100" id="perc_con_'.$i.'" name = "perc_con_'.$i.'" required  value ='.$points_ref.' > </input>');
                   echo("</td>");
             } else {echo("<td bgcolor = 'lightgray'> </td>");}
             
               if ($assign_data['society_flag']==1){
                  echo("<td>");
-                 echo('<input type = "number" min = "0" max = "100" id="perc_soc_'.$i.'" name = "perc_soc_'.$i.'" required  value = 10 > </input>');
+                 if ($assigntime_data['perc_soc_'.$i] != null){$points_ref = $assigntime_data['perc_soc_'.$i];} else {$points_ref = $points_ref_pp_default;}
+
+                 echo('<input type = "number" min = "0" max = "100" id="perc_soc_'.$i.'" name = "perc_soc_'.$i.'" required  value ='.$points_ref.' > </input>');
                  echo("</td>");
            } else {echo("<td bgcolor = 'lightgray'> </td>");}
             
                if ($assign_data['ref_choice']==1){
                    echo("<td>");
-                   echo('<input type = "number" min = "0" max = "100" id="perc_anyref_'.$i.'" name = "perc_anyref_'.$i.'" required  value = 10 > </input>');
+                   if ($assigntime_data['perc_anyref_'.$i] != null){$points_ref = $assigntime_data['perc_anyref_'.$i];} else {$points_ref = $points_ref_pp_default;}
+
+                   echo('<input type = "number" min = "0" max = "100" id="perc_anyref_'.$i.'" name = "perc_anyref_'.$i.'" required  value ='.$points_ref.' > </input>');
                    echo("</td>");
             } else {echo("<td bgcolor = 'lightgray'> </td>");}
             
                if ($assign_data['pp_flag1']==1){
                    echo("<td>");
-                   echo('<input type = "number" min = "0" max = "100" id="perc_pp1_'.$i.'" name = "perc_pp1_'.$i.'" required  value = 10 > </input>');
+                   if ($assigntime_data['perc_pp1_'.$i] != null){$points_ref = $assigntime_data['perc_pp1_'.$i];} else {$points_ref = $points_ref_pp_default;}
+
+                   echo('<input type = "number" min = "0" max = "100" id="perc_pp1_'.$i.'" name = "perc_pp1_'.$i.'" required  value ='.$points_ref.' > </input>');
                    echo("</td>");
            } else {echo("<td bgcolor = 'lightgray'> </td>");}
              
                if ($assign_data['pp_flag2']==1){
                    echo("<td>");
-                   echo('<input type = "number" min = "0" max = "100" id="perc_pp2_'.$i.'" name = "perc_pp2_'.$i.'" required  value = 10 > </input>');
+                   if ($assigntime_data['perc_pp2_'.$i] != null){$points_ref = $assigntime_data['perc_pp2_'.$i];} else {$points_ref = $points_ref_pp_default;}
+
+                   echo('<input type = "number" min = "0" max = "100" id="perc_pp2_'.$i.'" name = "perc_pp2_'.$i.'" required  value ='.$points_ref.' > </input>');
                   echo("</td>");
            } else {echo("<td bgcolor = 'lightgray' </td>");}
                     echo("<td>");
-                   echo('<input type = "number" min = "0" max = "100" id="survey_'.$i.'" name = "survey_'.$i.'" required  value = 5 > </input>');
+                    if ($assigntime_data['survey_'.$i] != null){$points_sur = $assigntime_data['survey_'.$i];} else {$points_sur = $points_survey_default;}
+
+                   echo('<input type = "number" min = "0" max = "100" id="survey_'.$i.'" name = "survey_'.$i.'" required  value = '.$points_sur.' > </input>');
                   echo("</td>");
             
             echo("<td>");	
             echo('<span id = "sum_pblm_'.$i.'"></span>');
-           echo("</td></tr>");	
+            echo("</td><td>");	
+            echo ('<form action = "QRactivatePblm.php" method = "GET" target = "_blank"> ');
+           echo(' <input type = "hidden" name = "problem_id" value = "'.$problem_id.'"><input type = "hidden" name = "users_id" value = "'.$iid.'"></form>');
+           echo('<form action = "QRactivatePblm.php" method = "GET" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$problem_id.'"><input type = "hidden" name = "iid" value = "'.$iid.'"><input type = "hidden" name = "assign_id" value = "'.$assign_id.'"><input type = "submit" value ="Edit"></form>');
+           echo("</tr>");	
            $i++;
        }  
        echo('<td>Total</td><td><span id = "sum_assignment"></span></td></tbody></table><br><br>');
-        echo('<input type="submit" class="btn btn-primary"  style="width:20%"    value="Submit">');
-       
+        echo('<input type="submit" class="btn btn-primary"  name = "submit_name" style="width:20%"    value="Submit">');
+       // put in the hidden fields for the submission
+        echo ('<input type="hidden" name="assigntime_id"  value='.$assigntime_id.' >');
+         echo ('<input type="hidden" name="n"  value='.$n.' >'); // number of parts to the problem
        echo ('</form>');
 
-//if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
-    
-   // echo'first page submitted';
-   // input the values from the form into the Assigntime table - get the assigntime_id and then move onto page two to get points values for each part
-  
 
-
-        
-/* 		
-			$alias_num = $exam_num = $cclass_id = '';   
-			
-			
-            $sql_stmt = "SELECT * FROM Exam WHERE DATE(NOW())<= exp_date AND iid = :iid order by exam_id";
-            $stmt = $pdo->prepare($sql_stmt);
-            $stmt -> execute(array(':iid' => $iid));
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	 */
-     
-// this will be called form the main repo when the game master wants to run a game
-// this is just to get the game number and go on to QRGMaster.php with a post of the game number.
-// Validity will be checked in that file and sent back here if it is not valid
 
 $_SESSION['counter']=0;  // this is for the score board
 
