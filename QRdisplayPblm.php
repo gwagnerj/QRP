@@ -76,7 +76,9 @@ session_start();
                           ':currentclass_id' => $currentclass_id));
      $assigntime_data = $stmt -> fetch();
      $perc_of_assign = $assigntime_data['perc_'.$alias_num];
-
+     $due_date = new DateTime($assigntime_data['due_date']);
+     //$due_date = $assigntime_data['due_date'];
+     $due_date = $due_date->format(' D, M d  g:i a');
  $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':problem_id' => $problem_id));
@@ -230,6 +232,7 @@ $pass = array(
        $header_stuff ->find('#assignment_num',0)->innertext = $assignment_num;
        $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
        $header_stuff ->find('#perc_of_assign',0)->innertext = $perc_of_assign.'%';
+       $header_stuff ->find('#due_date',0)->innertext = $due_date;
        $header_stuff ->find('#contributor_name',0)->innertext = $contrib_first.' '.$contrib_last;
        $header_stuff ->find('#university',0)->innertext = $contrib_univ;
       if (strlen($nm_author)>1){$header_stuff ->find('#nm_author',0)->innertext = ' based on a problem by: '.$nm_author;}

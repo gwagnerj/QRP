@@ -21,27 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
  
  
     }
-   // see if the We already have a entry in the Assigntime table for this one or its new
+  // get the student results for the assignment
    
-   $new_flag = 0;
-   
-   
-  	 $sql = 'DELETE FROM Assigntime WHERE currentclass_id = :currentclass_id AND iid = :iid AND assign_num = :assign_num';
-
- // $sql = 'DELETE assigntime_id FROM Assigntime WHERE currentclass_id = :currentclass_id AND iid = :iid AND assign_num = :assign_num';     
-
-
- // $sql = 'SELECT assigntime_id FROM Assigntime WHERE currentclass_id = :currentclass_id AND iid = :iid AND assign_num = :assign_num';     
-          $stmt = $pdo->prepare($sql);
-           $stmt -> execute(array (
-           ':currentclass_id' => $_POST['currentclass_id'],
-           ':assign_num' => $_POST['active_assign'],
-           ':iid' => $_POST['iid'],
-           )); 
-           $_SESSION['success']='Assignment removed';
-        
-          // echo('assigntime_id: '.$assigntime_id);
-          // now go to the QRAssignmentStart2 with the assigntime_id 
+  	
                 header( 'Location: QRPRepo.php' ) ;
 				die();
          
