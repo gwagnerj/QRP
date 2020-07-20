@@ -496,7 +496,7 @@ if (isset($_SESSION['error'])){
             var currentclass_id = cclass_id;
            if (!isNaN(cclass_id))  {
                $.ajax({
-					url: 'getactiveassignments.php',
+					url: 'getactiveassignments2.php',
 					method: 'post',
 					data: {currentclass_id:currentclass_id}
 				}).done(function(activeass){
@@ -526,7 +526,7 @@ if (isset($_SESSION['error'])){
 			console.log ('currentclass_id: '+currentclass_id);
       
             $.ajax({
-					url: 'getactiveassignments.php',
+					url: 'getactiveassignments2.php',
 					method: 'post',
 					data: {currentclass_id:currentclass_id}
 				}).done(function(activeass){

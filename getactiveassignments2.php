@@ -5,7 +5,7 @@ session_start();
 			$currentclass_id = $_POST['currentclass_id'];
 
 			$stmt = "SELECT DISTINCT assign_num
-			FROM Assign
+			FROM Assign 
 			WHERE currentclass_id ='".$currentclass_id."' ORDER BY assign_num DESC"; 
 			$stmt = $pdo->prepare($stmt);	
 			$stmt->execute();
