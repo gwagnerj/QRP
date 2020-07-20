@@ -75,7 +75,6 @@ session_start();
      $stmt->execute(array(':assign_num' => $assignment_num,
                           ':currentclass_id' => $currentclass_id));
      $assigntime_data = $stmt -> fetch();
-     $assigntime_id = $assigntime_data['assigntime_id'];
      $perc_of_assign = $assigntime_data['perc_'.$alias_num];
 
  $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";

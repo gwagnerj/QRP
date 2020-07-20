@@ -69,7 +69,12 @@ session_start();
      $assignment_num = $assign_data['assign_num'];
      $alias_num = $assign_data['alias_num'];    
       
-    
+         $sql = 'SELECT * FROM Assigntime WHERE assign_num = :assign_num AND currentclass_id = :currentclass_id'; // may not want everything here
+     $stmt = $pdo->prepare($sql);
+     $stmt->execute(array(':assign_num' => $assignment_num,
+                          ':currentclass_id' => $currentclass_id));
+     $assigntime_data = $stmt -> fetch();
+     $perc_of_assign = $assigntime_data['perc_'.$alias_num];
       
          
         if ($progress == 4 ){  // first time through so initialize response and previous response to zero - student never saw this problem before - and is doing the basecase first
