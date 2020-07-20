@@ -70,8 +70,13 @@ session_start();
     $society_flag = $assign_data['society_flag'];  
     $ref_choice = $assign_data['ref_choice'];  
     
-    
-
+     $sql = 'SELECT * FROM Assigntime WHERE assign_num = :assign_num AND currentclass_id = :currentclass_id'; // may not want everything here
+     $stmt = $pdo->prepare($sql);
+     $stmt->execute(array(':assign_num' => $assignment_num,
+                          ':currentclass_id' => $currentclass_id));
+     $assigntime_data = $stmt -> fetch();
+     $assigntime_id = $assigntime_data['assigntime_id'];
+     $perc_of_assign = $assigntime_data['perc_'.$alias_num];
 
  $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
     $stmt = $pdo->prepare($sql);
@@ -225,6 +230,7 @@ $pass = array(
        $header_stuff ->find('#course',0)->innertext = $class_name;
        $header_stuff ->find('#assignment_num',0)->innertext = $assignment_num;
        $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
+       $header_stuff ->find('#perc_of_assign',0)->innertext = $perc_of_assign.'%';
        $header_stuff ->find('#contributor_name',0)->innertext = $contrib_first.' '.$contrib_last;
        $header_stuff ->find('#university',0)->innertext = $contrib_univ;
       if (strlen($nm_author)>1){$header_stuff ->find('#nm_author',0)->innertext = ' based on a problem by: '.$nm_author;}
@@ -253,7 +259,7 @@ $pass = array(
             $base_case = preg_replace($pattern[$i],$BC_vari[$i],$base_case);
         }
          // put in the special personalized variables into the problem statement
-         $stu_city = 'Angola';   // will read these from the tabel once we have a student login ---------------------
+         $stu_city = 'Angola';   // will read these from the table once we have a student login ---------------------
          $stu_state = 'Indiana';
          $stu_explode = explode(' ',$stu_name);
          $stu_first = $stu_explode[0];

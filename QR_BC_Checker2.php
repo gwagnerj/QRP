@@ -68,7 +68,9 @@ session_start();
      $assign_data = $stmt -> fetch();
      $assignment_num = $assign_data['assign_num'];
      $alias_num = $assign_data['alias_num'];    
-         
+      
+    
+      
          
         if ($progress == 4 ){  // first time through so initialize response and previous response to zero - student never saw this problem before - and is doing the basecase first
          $sql ='UPDATE `Activity` SET `progress` = :progress  WHERE activity_id = :activity_id';
