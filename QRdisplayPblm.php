@@ -69,7 +69,7 @@ session_start();
     $connect_flag = $assign_data['connect_flag'];  
     $society_flag = $assign_data['society_flag'];  
     $ref_choice = $assign_data['ref_choice'];  
-    
+    //--------------------------------------------------------------------------------------------------------------------- also in QR_BC_Checker2 and QRChecker2
      $sql = 'SELECT * FROM Assigntime WHERE assign_num = :assign_num AND currentclass_id = :currentclass_id'; // may not want everything here
      $stmt = $pdo->prepare($sql);
      $stmt->execute(array(':assign_num' => $assignment_num,
@@ -78,7 +78,42 @@ session_start();
      $perc_of_assign = $assigntime_data['perc_'.$alias_num];
      $due_date = new DateTime($assigntime_data['due_date']);
      //$due_date = $assigntime_data['due_date'];
-     $due_date = $due_date->format(' D, M d  g:i a');
+     $due_date = $due_date->format(' D, M d,  g:i A');
+     $due_date_int = strtotime($due_date);
+     $window_closes = new DateTime($assigntime_data['window_closes']);
+     $window_closes = $window_closes->format(' D, M d,  g:i A');
+     $window_closes_int = strtotime($window_closes);
+     $late_points = $assigntime_data['late_points'];
+     $credit = $assigntime_data['credit'];
+     $fixed_percent_decline = $assigntime_data['fixed_percent_decline'];
+      $now = new DateTime($activity_data['last_updated_at']);
+      $now = $now->format(' D, M d,  g:i A');
+
+    // $now = date(strtotime($activity_data['time_created']),' D, M d,  g:i A');
+    // $now = date(' D, M d,  g:i A');
+    $now_int = strtotime($now);
+    $perc_late_p_prob = $perc_late_p_part = $perc_late_p_assign = 0; 
+    $late_penalty = 0;
+  
+     
+    if ($now_int > $due_date_int && $now_int < $window_closes_int) {  // figure out the late penalty
+         if($late_points == 'linear'){
+             $late_penalty = round(100*($now_int - $due_date_int)/($window_closes_int - $due_date_int));
+          //   $late_penalty = 100;
+
+         }
+          if($late_points == 'fixedpercent'){
+             $late_penalty = 100 - ceil(($now_int - $due_date_int)/(60*60*24))*$fixed_percent_decline;  // ceil is php roundup
+         }
+         if ($credit =='latetoparts'){
+             $perc_late_p_part = $late_penalty;
+         } elseif ($credit =='latetoproblems'){
+             $perc_late_p_prob = $late_penalty;
+         }else {  // late penalty is latetoall and applies to the entire assignment
+            $perc_late_p_assign = $late_penalty;
+         }
+    }
+//end section-------------------------------------------------------------------------------------------------------------------------------------------    
  $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':problem_id' => $problem_id));
@@ -233,6 +268,16 @@ $pass = array(
        $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
        $header_stuff ->find('#perc_of_assign',0)->innertext = $perc_of_assign.'%';
        $header_stuff ->find('#due_date',0)->innertext = $due_date;
+      //        $header_stuff ->find('#now',0)->innertext = $now;
+      // $header_stuff ->find('#window_closes',0)->innertext = $window_closes;
+
+      
+      if ($perc_late_p_prob !=0){
+         $header_stuff ->find('#late_penalty',0)->innertext = 'Late Penalty on Problem: '.$perc_late_p_prob.'%';
+       }
+       
+     
+
        $header_stuff ->find('#contributor_name',0)->innertext = $contrib_first.' '.$contrib_last;
        $header_stuff ->find('#university',0)->innertext = $contrib_univ;
       if (strlen($nm_author)>1){$header_stuff ->find('#nm_author',0)->innertext = ' based on a problem by: '.$nm_author;}
