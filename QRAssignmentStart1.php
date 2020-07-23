@@ -56,11 +56,13 @@
     $perc_ec_max_decrease = 1;
     $fixed_percent_decline = 20;
     $assigntime_id = '';
+    $window_opens = $window_closes = $due_date = '';
     
 if($new_flag == 0){
     // redefine the varaibles read in from the Assigntime table values
-    
-    $sql = 'SELECT * FROM Assigntime WHERE currentclass_id = :currentclass_id AND iid = :iid AND assign_num = :assign_num';     
+          //  SELECT *, DATE_FORMAT(date_and_time, '%Y-%m-%dT%H:%i') AS custom_date 
+       
+    $sql = 'SELECT *, DATE_FORMAT(due_date, "%Y-%m-%dT%H:%i"),DATE_FORMAT(window_opens, "%Y-%m-%dT%H:%i")   FROM Assigntime WHERE currentclass_id = :currentclass_id AND iid = :iid AND assign_num = :assign_num';     
           $stmt = $pdo->prepare($sql);
            $stmt -> execute(array (
            ':currentclass_id' => $currentclass_id,
@@ -87,6 +89,13 @@ if($new_flag == 0){
           $perc_ec_max_decrease = $assigntime_data['perc_ec_max_decrease'];
           $assigntime_id = $assigntime_data['assigntime_id'];
           $fixed_percent_decline = $assigntime_data['fixed_percent_decline'];
+          $window_closes = new DateTime($assigntime_data['window_closes']);
+          $window_opens = new DateTime($assigntime_data['window_opens']);
+         
+      //    $window_opens = date(DATE_RFC3339, strtotime($window_opens));
+        //  $window_closes = $assigntime_data['window_closes'];
+          $due_date = $assigntime_data['due_date'];
+           $due_date = new DateTime($due_date);
           }
 
 
@@ -311,7 +320,9 @@ $_SESSION['counter']=0;  // this is for the score board
                   <font color=#003399>new_flag: &nbsp; </font>
                     <?php echo ($new_flag);?>
                    
-                </br>	
+              
+                
+  
                 <br>
                 <font color=#003399>Effort on base-case per problem part before answers are given: &nbsp; </font><br>
                     
@@ -365,23 +376,33 @@ $_SESSION['counter']=0;  // this is for the score board
            
            </br> </br>
             <font color=#003399> Assignment Timing? &nbsp; </font><br>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Opens <input type="datetime-local" id="window_opens" name = "window_opens" required value="<?php// echo ($date_time); ?>"> </input><br><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Due for Full Credit <input type="datetime-local" id="due_date" name = "due_date" required value="<?php// echo ($date_time); ?>"> </input><br><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Closes - No Access After this <input type="datetime-local" id="window_closes" name = "window_closes" required value="<?php// echo ($date_time); ?>"> </input><br><br>
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Opens <input type="datetime-local" id="window_opens" name = "window_opens" required value="<?php if ($window_opens!=''){echo $window_opens->format('Y-m-d\TH:i');}
+            else {$date = new DateTime();$timezone = new DateTimeZone('America/New_York');
+            $date->setTimezone($timezone); echo($date->format('Y-m-d\TH:i'));} 
+            ?>"> </input><br><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Due for Full Credit <input type="datetime-local" id="due_date" name = "due_date" required value="<?php if($due_date !=''){ echo $due_date->format('Y-m-d\TH:i'); }
+            else {$date = new DateTime(); $timezone = new DateTimeZone('America/New_York');
+            $date->setTimezone($timezone); $interval = new DateInterval('P7D');   $date->add($interval); echo($date->format('Y-m-d\TH:i'));}
+            ?>"> </input><br><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Closes - No Access After <input type="datetime-local" id="window_closes" name = "window_closes" required value="<?php if($window_closes!=''){echo $window_closes->format('Y-m-d\TH:i');}
+            else {$date = new DateTime(); $timezone = new DateTimeZone('America/New_York');
+            $date->setTimezone($timezone); $interval = new DateInterval('P7D');   $date->add($interval); echo($date->format('Y-m-d\TH:i'));}
+            ?>"> </input><br><br>
            
-            <font color=#003399>Late Penalty Applies to the: &nbsp; </font><br>
+            <font color=#003399>Late Penalty Applies to: &nbsp; </font><br>
+            <!--
            &nbsp;&nbsp; <input type="radio" name="credit" id = "credit"
                     <?php if (isset($credit) && $credit=="latetoall"  ) echo "checked";?>
                     value="latetoall"> Entire Assignment &nbsp;&nbsp;&nbsp;&nbsp;
+              -->      
+           &nbsp;&nbsp; <input type="radio" name="credit" id = "credit" value = "latetoproblems" checked> Each Problem
+                    <?php// if (isset($credit) && $credit=="latetoproblems"  ) echo "checked";?>
                     
-           &nbsp;&nbsp; <input type="radio" name="credit" id = "credit"
-                    <?php if (isset($credit) && $credit=="latetoproblems"  ) echo "checked";?>
-                    value="latetoproblems"> Entire Problem  &nbsp;&nbsp;&nbsp;&nbsp;
-
+            <!--
            &nbsp;&nbsp; <input type="radio" name="credit" id = "credit"
                     <?php if ((isset($credit) && $credit=="latetoparts")||!isset($credit)) echo "checked";?>
                     value="latetoparts"> Parts of the Problem that are Late &nbsp;&nbsp;&nbsp;&nbsp;
-                    
+              -->      
                     
             <br><font color=#003399> Late Policy &nbsp; </font><br>
            &nbsp;&nbsp; <input type="radio" name="late_points" id = "late_points"
@@ -390,7 +411,7 @@ $_SESSION['counter']=0;  // this is for the score board
 
            &nbsp;&nbsp; <input type="radio" name="late_points" id = "late_points"
                     <?php if (isset($late_points) && $late_points=="fixedpercent"  ) echo "checked";?>
-                    value="fixedpercent"> Fixed Percent of Maximum per day of: &nbsp;&nbsp;
+                    value="fixedpercent"> Fixed Percent of Maximum per day after Due date of: &nbsp;
                 <span id = "fixed_percent_per_day">
                    
                        &nbsp;&nbsp;  <input type = "number" min = "0" max = "100" id = "fixed_percent_decline" name = "fixed_percent_decline" value = 30 > </input><br>
@@ -471,8 +492,36 @@ $_SESSION['counter']=0;  // this is for the score board
             
             //if($('#bc_if').is(':checked')) { $('#base_case_if').show(); } else {$('#base_case_if').hide();}
         });
-        
-        
+      
+
+       
+	/* 	
+			
+            var	 assigntime_id = $("#assigntime_id").val();
+                console.log ('assigntime_id: '+assigntime_id);
+				
+				// need to give it 	
+					$.ajax({
+						url: 'getactiveassignments3.php',
+						method: 'post',
+					
+					data: {assigntime_id:assigntime_id}
+					}).done(function(dates){
+						console.log("dates: "+dates);
+				  var window_opens = dates.split(",")[0].slice(2,-1);
+                  var due_date = dates.split(",")[1].slice(1,-1);
+                  var window_closes = dates.split(",")[2].slice(1,-8);
+                  console.log("window_opens up: "+window_opens);
+                     console.log("due_date up: "+due_date);
+                      console.log("window_closes up: "+window_closes);
+					 var dates = JSON.parse(dates);  
+                      console.log("dates2: "+dates);
+                      
+                    });
+                  //  var res = str.split(" ");
+                 */
+                    
+      /*    
      // this is from https://stackoverflow.com/questions/24468518/html5-input-datetime-local-default-value-of-today-and-current-time using pure JS   
         window.addEventListener("load", function() {
     var now = new Date();
@@ -494,18 +543,36 @@ $_SESSION['counter']=0;  // this is for the score board
                       (day < 10 ? "0" + day.toString() : day) + "T" +
                       (hour < 10 ? "0" + hour.toString() : hour) + ":" +
                       (minute < 10 ? "0" + minute.toString() : minute) ;
-    var window_opens = document.getElementById("window_opens");
-    window_opens.value = localDatetime;
-    var window_closes = document.getElementById("window_closes");
-    window_closes.value = localDatetime2;
-     window_closes.value = localDatetime2;
-       due_date.value = localDatetime2;
+   // var x = document.getElementById("myLocalDate").value;
+    var window_opens = document.getElementById("window_opens").value;
+    console.log(' window_opens: '+window_opens);
+   var  n = window_opens.length;
+      console.log(' window_opens length: '+n);
+      var type = typeof(window_opens);
+      console.log(' window_opens type: '+type);
+   // if (n<3){
+         console.log(' localdatetime: '+localDatetime);
+         $('#window_opens').value = localDatetime;
+      //  window_opens.value = localDatetime;
+  //  }
+     var window_closes = document.getElementById("window_closes").value;
+      n = window_closes.length;
+    
+  // if (n<3){
+        window_closes.value = localDatetime2;
+  //  }
+    var due_date = document.getElementById("due_date").value;
+      n = due_date.length;
+  // if (n<3){
+        due_date.value = localDatetime2;
+  //  }
 
 });
-        
+ 
+       
         $("#submit_id").click(function(){
           
-        /*    
+           
           $.ajax({
              type: "POST",
              url: "QREStart.php",
@@ -514,18 +581,18 @@ $_SESSION['counter']=0;  // this is for the score board
                 alert("Form Submitted: " + msg);
              }
           });
-           */
-         /*  $.ajax({
+           
+           $.ajax({
 				url: 'QREStart.php',
 				method: 'post',
 				data: {currentclass_id:currentclass_id,exam_num:exam_num}
 					})
-           */
+          
           
         // $.post("QREStart.php",{currentclass_id:currentclass_id, exam_num:exam_num},);  
           
         });
-	
+	 */
 	} );
 	
 	
