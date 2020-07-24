@@ -46,7 +46,7 @@ session_start();
      $dex = $activity_data['dex'];  
      $alias_num = $activity_data['alias_num'];  
       $assign_id = $activity_data['assign_id'];
-      $count_tot = $activity_data['count_tot']; 
+     // $count_tot = $activity_data['count_tot']; 
       $progress = $activity_data['progress']; 
      
      $sql = 'SELECT name FROM CurrentClass WHERE currentclass_id = :currentclass_id';
@@ -71,7 +71,6 @@ session_start();
      $assigntime_data = $stmt -> fetch();
      $perc_of_assign = $assigntime_data['perc_'.$alias_num];
      $due_date = new DateTime($assigntime_data['due_date']);
-     //$due_date = $assigntime_data['due_date'];
      $due_date = $due_date->format(' D, M d,  g:i A');
      $due_date_int = strtotime($due_date);
      $window_closes = new DateTime($assigntime_data['window_closes']);
@@ -83,8 +82,6 @@ session_start();
       $now = new DateTime($activity_data['last_updated_at']);
       $now = $now->format(' D, M d,  g:i A');
 
-    // $now = date(strtotime($activity_data['time_created']),' D, M d,  g:i A');
-    // $now = date(' D, M d,  g:i A');
     $now_int = strtotime($now);
     $perc_late_p_prob = $perc_late_p_part = $perc_late_p_assign = 0; 
     $late_penalty = 0;
@@ -156,7 +153,8 @@ session_start();
             }                
 			
 			$score = 0;
-			$PScore = 0;  // percent score
+            $num_score_possible = 0;
+			$PScore = 0;  // percent score without a post
 			$partsFlag = array();
 		
 			//$resp = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
@@ -274,6 +272,7 @@ session_start();
     // get the old repsonses from the response table check to see which ones have changed and 
       $i =0;
       $changed_flag = false;
+      $count_tot = 0;
       foreach(range('a','j') as $v){
           if( $partsFlag[$i]){ 
                 $sql = 'SELECT `resp_value` FROM Resp WHERE `activity_id` = :activity_id AND `part_name` = :part_name ORDER BY `resp_id` DESC LIMIT 1';
@@ -294,7 +293,7 @@ session_start();
             ));
              $count_data = $stmt -> fetchColumn();
              $wrongCount[$i] = $count_data;
-        
+            $count_tot = $count_tot + $count_data;
             
              // $_SESSION['old_resp'[$i]] = $resp[$v];  // reset the old resp so that we have 
             if($resp[$v]==$old_resp[$i]){
@@ -313,11 +312,13 @@ session_start();
         $i++;  
         }
       }
-      
+     
+        
+    /*  
       if ($changed_flag){
             $count_tot++;
       }
-   
+    */
 		
 	//}	 
 		for ($j=0; $j<=9; $j++) {
@@ -361,9 +362,11 @@ session_start();
      
 		
 		//$PScore=$score/$probParts*100; 
+        $num_score_possible = 0;
         $PScore=0; 
          foreach(range('a','j') as $x){ 
-         $PScore = $PScore + $corr_num[$x]*$assigntime_data['perc_'.$x.'_'.$alias_num];
+         $PScore = $PScore + ($corr_num[$x]*$assigntime_data['perc_'.$x.'_'.$alias_num]);
+          $num_score_possible = $num_score_possible + $assigntime_data['perc_'.$x.'_'.$alias_num];
          }
     
      $sql ='UPDATE `Activity` SET `score` = :score, `count_tot` = :count_tot, correct_a = :correct_a,correct_b = :correct_b,correct_c = :correct_c,correct_d = :correct_d,correct_e = :correct_e,correct_f = :correct_f,correct_g = :correct_g,correct_h = :correct_h,correct_i = :correct_i,correct_j = :correct_j
@@ -466,7 +469,7 @@ session_start();
 	<?php } 
   
 	if ($partsFlag[2]){ ?> 
-	<p> c)(<?php echo $assigntime_data['perc_c_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b>
+	<p> c)(<?php echo $assigntime_data['perc_c_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b> count <?php echo(@$wrongCount[2].' '); ?>
 	<?php if ( $corr['c']=="Correct" ){echo '- Computed value is: '.$soln[2];} ?>  
 	<?php if ( @$wrongCount[2]>$hintLimit and $corr['c']=="Not Correct"&& $hintcPath != "uploads/default_hints.html" ){echo '<a href="'.$hintcPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if ( @$changed[2] and @$wrongCount[2]>$time_sleep1_trip and @$wrongCount[2]< $time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
@@ -475,7 +478,7 @@ session_start();
 	<?php } 
 
 	if ($partsFlag[3]){ ?> 
-	<p> d)(<?php echo $assigntime_data['perc_d_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b>
+	<p> d)(<?php echo $assigntime_data['perc_d_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b> count <?php echo(@$wrongCount[3].' '); ?>
 	<?php if ( $corr['d']=="Correct" ){echo '- Computed value is: '.$soln[3];} ?>  
 	<?php if ( @$wrongCount[3]>$hintLimit and $corr['d']=="Not Correct"&& $hintdPath != "uploads/default_hints.html" ){echo '<a href="'.$hintdPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if ( @$changed[3] and @$wrongCount[3]>$time_sleep1_trip and @$wrongCount[3]< $time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
@@ -484,7 +487,7 @@ session_start();
 	<?php } 
 
 	if ($partsFlag[4]){ ?> 
-	<p> e)(<?php echo $assigntime_data['perc_e_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b>
+	<p> e)(<?php echo $assigntime_data['perc_e_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b> count <?php echo(@$wrongCount[4].' '); ?>
 	<?php if ( $corr['e']=="Correct" ){echo '- Computed value is: '.$soln[4];} ?>  
 	<?php if ( @$wrongCount[4]>$hintLimit and $corr['e']=="Not Correct"&& $hintePath != "uploads/default_hints.html" ){echo '<a href="'.$hintePath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if ( @$changed[4] and @$wrongCount[4]>$time_sleep1_trip and @$wrongCount[4]< $time_sleep1_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
@@ -493,7 +496,7 @@ session_start();
 	<?php } 
 
 	if ($partsFlag[5]){ ?> 
-	<p> f)(<?php echo $assigntime_data['perc_f_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b>
+	<p> f)(<?php echo $assigntime_data['perc_f_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b> count <?php echo(@$wrongCount[5].' '); ?>
 	<?php if ( $corr['f']=="Correct" ){echo '- Computed value is: '.$soln[5];} ?>  
 	<?php if ( @$wrongCount[5]>$hintLimit and $corr['f']=="Not Correct"&& $hintfPath != "uploads/default_hints.html" ){echo '<a href="'.$hintfPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if ( @$changed[5] and @$wrongCount[5]>$time_sleep1_trip and @$wrongCount[5]< $time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
@@ -502,7 +505,7 @@ session_start();
 	<?php } 
 
 	if ($partsFlag[6]){ ?> 
-	<p> g)(<?php echo $assigntime_data['perc_g_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b>
+	<p> g)(<?php echo $assigntime_data['perc_g_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b> count <?php echo(@$wrongCount[6].' '); ?>
 	<?php if ( $corr['g']=="Correct" ){echo '- Computed value is: '.$soln[6];} ?>  
 	<?php if ( @$wrongCount[6]>$hintLimit and $corr['g']=="Not Correct"&& $hintgPath != "uploads/default_hints.html" ){echo '<a href="'.$hintgPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if ( @$changed[6] and @$wrongCount[6]>$time_sleep1_trip and @$wrongCount[6]< $time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
@@ -511,7 +514,7 @@ session_start();
 	<?php } 
 
 	if ($partsFlag[7]){ ?> 
-	<p> h)(<?php echo $assigntime_data['perc_h_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo($unit[7]) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b>
+	<p> h)(<?php echo $assigntime_data['perc_h_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo($unit[7]) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b> count <?php echo(@$wrongCount[7].' '); ?>
 	<?php if ( $corr['h']=="Correct" ){echo '- Computed value is: '.$soln[7];} ?>  
 	<?php if ( @$wrongCount[7]>$hintLimit and $corr['h']=="Not Correct"&& $hinthPath != "uploads/default_hints.html" ){echo '<a href="'.$hinthPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if ( @$changed[7] and @$wrongCount[7]>$time_sleep1_trip and @$wrongCount[7]< $time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
@@ -520,7 +523,7 @@ session_start();
 	<?php } 
 
 	if ($partsFlag[8]){ ?> 
-	<p> i)(<?php echo $assigntime_data['perc_i_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b>
+	<p> i)(<?php echo $assigntime_data['perc_i_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b> count <?php echo(@$wrongCount[8].' '); ?>
 	<?php if ( $corr['i']=="Correct" ){echo '- Computed value is: '.$soln[8];} ?>  
 	<?php if ( @$wrongCount[8]>$hintLimit and $corr['i']=="Not Correct"&& $hintiPath != "uploads/default_hints.html" ){echo '<a href="'.$hintiPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if ( @$changed[8] and @$wrongCount[8]>$time_sleep1_trip and @$wrongCount[8]< $time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
@@ -529,7 +532,7 @@ session_start();
 	<?php } 
 
 	if ($partsFlag[9]){ ?> 
-	<p> j)(<?php echo $assigntime_data['perc_j_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b>
+	<p> j)(<?php echo $assigntime_data['perc_j_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b> count <?php echo(@$wrongCount[9].' '); ?>
 	<?php if ( @$wrongCount[9]>$hintLimit and $corr['j']=="Not Correct"&& $hintjPath != "uploads/default_hints.html" ){echo '<a href="'.$hintjPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if ( @$changed[9] and @$wrongCount[9]>$time_sleep1_trip and @$wrongCount[9]< $time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if ( @$changed[9] and @$wrongCount[9]>=$time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
@@ -540,17 +543,38 @@ session_start();
 
 	
 	?>
-Score:  <?php echo (round($PScore)) ?>% &nbsp;&nbsp;&nbsp; Count: <?php echo ($count_tot) ?>  <span id ="t_delay_message"></span>
-	<p><input type = "submit" id = "check_submit" name = "check" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p>
+Score on Problem (includes only numerical parts):  <?php echo (round($PScore)) ?> %&nbsp; 
+<?php if($perc_late_p_prob != 0){$pscore_less = round($PScore*(1 - $perc_late_p_prob/100)); echo (' Less Late Penalty of '.$perc_late_p_prob.'% = '.$pscore_less.'%');} else {$pscore_less = $PScore; } ?> &nbsp; &nbsp; 
+ Total Count: <?php echo (@$count_tot) ?>   
+<br> numerical score possible  <?php echo (round($num_score_possible)) ?> %&nbsp;  
+<?php if ( $pscore_less==$num_score_possible){$ec_elgible_flag =1;} else {$ec_elgible_flag =0;} ?>
+         <span id ="t_delay_message"></span>
+	<p><input type = "submit" id = "check_submit" name = "check" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p><br>
              <input type="hidden" name="activity_id" value="<?php echo ($activity_id)?>" >
               <input type="hidden" id = "prob_parts" value="<?php echo ($probParts)?>" >
                <input type="hidden" id = "count_tot" value="<?php echo ($count_tot)?>" >
-          
-	</form>
 
-	
-    
-    
+     
+	</form>
+<form id = "finish_form" method="POST" action = "GetRating2.php">
+	        
+
+            <input type="hidden" name="activity_id" value="<?php echo ($activity_id)?>" >
+            <input type="hidden" name="problem_id" value="<?php echo ($problem_id)?>" >
+            <input type="hidden" id = "changed_flag" name="changed_flag" value="<?php echo ($changed_flag)?>" >
+            <input type="hidden" id = "count_from_check" name="count" value="<?php echo ($count_tot)?>" >
+            <input type="hidden" name="problem_id" value="<?php echo ($problem_id)?>" >
+            <input type="hidden" name="PScore" value="<?php echo ($PScore)?>" >
+             <input type="hidden" name="perc_late_p_prob" value="<?php echo ($perc_late_p_prob)?>" >
+             <input type="hidden" name="pscore_less" value="<?php echo ($pscore_less)?>" >
+             <input type="hidden" id = "ec_elgible_flag" name="ec_elgible_flag" value="<?php echo $ec_elgible_flag?>" >
+
+
+
+          <p><input type = "submit"  id = "finish_submit" name = "finish" value="Finish and Proceed to Survey" size="10" style = "width: 30%; background-color: red; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p>
+
+    </form>
+
    <p> <span id ="t_delay_limits"> time delay - 5s at count > <?php echo (3*$probParts) ?>, 30s at count > <?php echo (5*$probParts) ?> </span> </p>
     
     
@@ -583,7 +607,19 @@ Score:  <?php echo (round($PScore)) ?>% &nbsp;&nbsp;&nbsp; Count: <?php echo ($c
    
     
 		$(document).ready( function () {
-                
+            
+/*   I played with this to sneek values from the iframe to QRdisplayPblm problem and this worked but may as well use AJAX and get it from the activity table
+
+            var count_from_check = 0;
+                var ec_elgible_flag = 0;
+                var changed_flag =0;
+                 count_from_check = $('#count_from_check').val();
+               changed_flag = $('#changed_flag').val();
+               ec_elgible_flag = $('#ec_elgible_flag').val();
+               localStorage.setItem('count_from_check', count_from_check);
+               localStorage.setItem('ec_elgible_flag', ec_elgible_flag);
+               localStorage.setItem('changed_flag', changed_flag);
+                */  
                      var request;
                 function fetchPhase() {
                     request = $.ajax({

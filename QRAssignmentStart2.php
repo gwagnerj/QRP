@@ -2,7 +2,8 @@
 	require_once "pdo.php";
 	session_start();
 // this is called from the QRAssignmentSart.php and this will Collect the Points on a particular assignment from the instructor .  THis file was coppied form QRAssignmentSart.php
-	
+ 
+ 
     if (isset($_GET['assigntime_id'])) {
         $assigntime_id = $_GET['assigntime_id'];
     } elseif ($_POST['assigntime_id']){
@@ -13,6 +14,7 @@
       			header( 'Location: QRPRepo.php' ) ;
 				die();
     }
+    
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
@@ -195,7 +197,21 @@ echo ('<form method = "POST">');
         $iid = $assigntime_data['iid'];
         $currentclass_id = $assigntime_data['currentclass_id'];
        // echo ('currentclass_id: '.$currentclass_id);
-        
+       
+     // do some error checking on the input data from QRAssignmentSart1 and send it back there if it does not check out
+       
+       if ($assigntime_data['due_date'] < $assigntime_data['window_opens'] || $assigntime_data['due_date']> $assigntime_data['window_closes']){
+           
+       $_SESSION['error'] = 'date error - due date must be between the window opening date and closing date';
+            header( 'Location: QRAssignmentStart1.php?currentclass_id='.$currentclass_id.'&assign_num='.$assign_num.'&iid='.$iid.'&new_flag=0');
+            die();
+       }
+       
+       
+       
+       
+       
+       
         $sql = "SELECT count(*) AS cnt FROM `Assign` WHERE iid = :iid AND assign_num = :assign_num AND currentclass_id = :currentclass_id ORDER BY alias_num ";
            $stmt = $pdo->prepare($sql);
            $stmt -> execute(array(

@@ -437,9 +437,9 @@ $pass = array(
   ?>
   <!--   -->
    <div id = 'checker'>
-   <iframe src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
+   <iframe name = "BC_checker2" src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
       <div id = 'BC_checker'>
-   <iframe src="QR_BC_Checker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
+   <iframe id = "checker2" name ="checker2" src="QR_BC_Checker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
 
  <?php
  
@@ -510,6 +510,9 @@ $pass = array(
      var reflection_button_flag = pass['reflection_button_flag'];
      var bc_display = false;
      var qr_code = false;
+
+
+     
      
      $('#qrcode_id_bc').hide();
      $('#qrcode_id').hide();
@@ -647,6 +650,30 @@ $pass = array(
                   //  window.location.replace('../QRP/QRExam.php'+'?examactivity_id='+examactivity_id); // axam_num and examactivity
               	
 				 });
+                 
+                 
+ /*  this was an experiment to sneek values from the iframe to this script using local vars on a timer - if I am going that way I will just use AJAX               
+           var  count_from_check  =0;
+           var ec_elgible_flag = 0;
+             var changed_flag = 0;
+     function change_count(){
+          count_from_check = localStorage.getItem('count_from_check');
+          ec_elgible_flag = localStorage.getItem('ec_elgible_flag');
+          changed_flag = localStorage.getItem('changed_flag');  
+        if (changed_flag == 1 &&  ec_elgible_flag ==1){
+           hs = 1;  
+            console.log (' hs: '+hs);
+        }
+     // console.log(' count_from_check: '+count_from_check);
+     //    console.log('ec_elgible_flag: '+ec_elgible_flag);
+     //     console.log('changed_flag: '+changed_flag);
+    setTimeout(change_count, 3000);
+}
+
+change_count(); 
+     // var count_from_check = localStorage.getItem('count_from_check');
+     // var count_from_check = $('#checker2').contents().find('#count_from_check').val();
+      */
  
  });
 

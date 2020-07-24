@@ -221,6 +221,16 @@
                         ));        
                      $users_data = $stmt -> fetch();
                      $instr_last = $users_data['last'];
+                     
+                      $sql = "SELECT `assigntime_id` FROM `Assigntime` WHERE iid = :iid AND assign_num = :assign_num AND currentclass_id = :currentclass_id";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute(array(
+                        ':iid' => $iid,
+                        ':assign_num' => $assign_num,
+                        ':currentclass_id' => $current_class_id,
+                        ));        
+                     $assigntime_data = $stmt -> fetch();
+                     $assigntime_id = $assigntime_data['assigntime_id'];
                     
 
                         // go the controller
@@ -241,8 +251,8 @@
                      */
                     // check the activity table and see if there is an entry if not make a new entry and go to the controller
                          
-                        $sql = 'INSERT INTO Activity (problem_id, pin, iid, dex, student_id,    assign_id,  instr_last, university, pp1, pp2, pp3, pp4, post_pblm1, post_pblm2, post_pblm3, score, progress, stu_name, alias_num, currentclass_id, count_tot)	
-                                             VALUES (:problem_id, :pin, :iid, :dex,:student_id, :assign_id, :instr_last,:university,:pp1,:pp2,:pp3,:pp4,:post_pblm1,:post_pblm2,:post_pblm3, :score,:progress, :stu_name, :alias_num, :cclass_id, :count_tot)';
+                        $sql = 'INSERT INTO Activity (problem_id, pin, iid, dex, student_id,    assign_id, assigntime_id,  instr_last, university, pp1, pp2, pp3, pp4, post_pblm1, post_pblm2, post_pblm3, score, progress, stu_name, alias_num, currentclass_id, count_tot)	
+                                             VALUES (:problem_id, :pin, :iid, :dex,:student_id, :assign_id, :assigntime_id, :instr_last,:university,:pp1,:pp2,:pp3,:pp4,:post_pblm1,:post_pblm2,:post_pblm3, :score,:progress, :stu_name, :alias_num, :cclass_id, :count_tot)';
                         $stmt = $pdo->prepare($sql);
                         $stmt -> execute(array(
                         ':problem_id' => $problem_id,
@@ -251,6 +261,7 @@
                         ':dex' => $dex,
                          ':student_id' => $student_id,
                        ':assign_id' => $assign_id,
+                       ':assigntime_id' => $assigntime_id,
                        ':instr_last' => $instr_last,
                         ':university' => $assign_data['university'],
                         ':pp1' => $assign_data['pp_flag1'],

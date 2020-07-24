@@ -1929,4 +1929,24 @@ ALTER TABLE Activity
 		PRIMARY KEY (`assigntime_id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;           
          
+     ALTER TABLE Activity 
+		 ADD `assigntime_id` INT(11) AFTER `assign_id`,
+         ADD `p_num_score_raw` INT(4) AFTER `score`,
+         ADD `late_penalty` INT(4) AFTER `p_num_score_raw`,
+         ADD `p_num_score_net` INT(4) AFTER `late_penalty`,
+         ADD `survey_pts` INT(4) AFTER `p_num_score_net`,
+         ADD `ec_elgible_flag` INT(4) AFTER `survey_pts`,
+         ADD `ec_pts` INT(4) AFTER `ec_elgible_flag`,
+         ADD `reflect_pts` INT(4) AFTER `ec_pts`,
+         ADD `explore_pts` INT(4) AFTER `reflect_pts`,
+         ADD `connect_pts` INT(4) AFTER `explore_pts`,
+         ADD `society_pts` INT(4) AFTER `connect_pts`,
+         ADD `pp1_pts` INT(4) AFTER `society_pts`,
+         ADD `pp2_pts` INT(4) AFTER `pp1_pts`,
+         ADD `pp3_pts` INT(4) AFTER `pp2_pts`;
          
+         
+         
+         
+         
+       
