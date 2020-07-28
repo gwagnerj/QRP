@@ -6,20 +6,7 @@ session_start();
 
 // this strips out the get parameters so they are not in the url - its is not really secure data but I would rather not having people messing with them
 // if they do not what they are doing
-/* 
- if (!empty($_GET)) {
-        $_SESSION['got'] = $_GET;
-        header('Location: QRdisplayPblm.php');
-        die;
-    } else{
-        if (!empty($_SESSION['got'])) {
-            $_GET = $_SESSION['got'];
-            unset($_SESSION['got']);
-        }
-    }
-     */
-        //use the $_GET vars here..
-    
+
 
 //  Set the varaibles to the Get Parameters or if they do not exist try the session variables if those don't exist error back to QRhomework
 
@@ -94,16 +81,20 @@ session_start();
     $now_int = strtotime($now);
     $perc_late_p_prob = $perc_late_p_part = $perc_late_p_assign = 0; 
     $late_penalty = 0;
-  
+    $ec_daysb4due_elgible = $assigntime_data['ec_daysb4due_elgible'];
+    $due_date_ec_int = $due_date_int - $ec_daysb4due_elgible*60*60*24;
+    $due_date_ec = date(' D, M d,  g:i A', $due_date_ec_int);
      
-    if ($now_int > $due_date_int && $now_int < $window_closes_int) {  // figure out the late penalty
+    if ($now_int > $due_date_int ) {  // figure out the late penalty
          if($late_points == 'linear'){
              $late_penalty = round(100*($now_int - $due_date_int)/($window_closes_int - $due_date_int));
           //   $late_penalty = 100;
 
          }
           if($late_points == 'fixedpercent'){
-             $late_penalty = 100 - ceil(($now_int - $due_date_int)/(60*60*24))*$fixed_percent_decline;  // ceil is php roundup
+             // $late_penalty = 30;
+             $days_past_due = ceil(($now_int - $due_date_int)/(60*60*24)); // ceil is php roundup
+             $late_penalty = $days_past_due*$fixed_percent_decline;  
          }
          if ($credit =='latetoparts'){
              $perc_late_p_part = $late_penalty;
@@ -209,7 +200,17 @@ $pass = array(
     
     'stu_name' => $stu_name,
     'activity_id' => $activity_id,
-    'reflection_button_flag' => $reflection_button_flag
+    'reflection_button_flag' => $reflection_button_flag,
+      'reflect_flag' => $reflect_flag,
+      'explore_flag' => $explore_flag,
+      'connect_flag' => $connect_flag,
+      'society_flag' => $society_flag,
+      'ref_choice' => $ref_choice,
+      'perc_ref' => $assigntime_data['perc_ref_'.$alias_num], // to put the points by the reflections in JS
+      'perc_exp' => $assigntime_data['perc_exp_'.$alias_num],
+      'perc_con' => $assigntime_data['perc_con_'.$alias_num],
+      'perc_soc' => $assigntime_data['perc_soc_'.$alias_num]
+      
     );
     echo '<script>';
     echo 'var pass = ' . json_encode($pass) . ';';
@@ -268,6 +269,8 @@ $pass = array(
        $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
        $header_stuff ->find('#perc_of_assign',0)->innertext = $perc_of_assign.'%';
        $header_stuff ->find('#due_date',0)->innertext = $due_date;
+       $header_stuff ->find('#due_date_ec',0)->innertext = $due_date_ec;
+      // $header_stuff ->find('#now',0)->innertext = $now;
       //        $header_stuff ->find('#now',0)->innertext = $now;
       // $header_stuff ->find('#window_closes',0)->innertext = $window_closes;
 
@@ -289,15 +292,17 @@ $pass = array(
        $base_case = $html->find('#problem',0); 
     
      if($ref_choice >0 ){$reflect_flag = $connect_flag = $explore_flag = $society_flag = 1;}
-    
+   /*  
     if ($reflect_flag ==1){$reflect = $html->find('#reflect',0).'<textarea id = "reflect_text" r_class = "text_box" rows = "4" cols = "150"></textarea>';}else {$reflect = '';}
     if($connect_flag ==1 && isset($pblm_data['connect'])){$connect = $pblm_data['connect'].'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "150"></textarea>';
     } elseif ($connect_flag ==1){$connect = $html->find('#connect',0).'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "200"></textarea>';
     }else {$connect = '';}
-
-   // if ($connect_flag ==1){$connect = $html->find('#connect',0).'<textarea id = "connect_text" r_class = "text_box" rows = "4" cols = "100"></textarea>';}else {$connect = '';}
-    if ($explore_flag ==1){$explore = $html->find('#explore',0).'<textarea id = "explore_text" r_class = "text_box" rows = "4" cols = "150"></textarea>';}else {$explore = '';}
-    if ($society_flag ==1){$society = $html->find('#society',0).'<textarea id = "society_text" r_class = "text_box" rows = "4" cols = "150"></textarea>';}else {$society = '';}
+     */
+    
+    if ($reflect_flag ==1){$reflect = $html->find('#reflect',0).'<div id = "reflect_confirm"> </div><form id = "reflect_text_form"><textarea id = "reflect_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["reflect_text"]).'</textarea><input type = "submit" id = "submit_reflect" value = "Save"></form>';}else {$reflect = '';}
+    if ($connect_flag ==1){$connect = $html->find('#connect',0).'<div id = "connect_confirm"> </div><form id = "connect_text_form"><textarea id = "connect_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["connect_text"]).'</textarea><input type = "submit" id = "submit_connect" value = "Save"></form>';}else {$connect = '';}
+    if ($explore_flag ==1){$explore = $html->find('#explore',0).'<div id = "explore_confirm"> </div><form id = "explore_text_form"><textarea id = "explore_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["explore_text"]).'</textarea><input type = "submit" id = "submit_explore" value = "Save"></form>';}else {$explore = '';}
+    if ($society_flag ==1){$society = $html->find('#society',0).'<div id = "society_confirm"> </div><form id = "society_text_form"><textarea id = "society_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["society_text"]).'</textarea><input type = "submit" id = "submit_society" value = "Save"></form>';}else {$society = '';}
      
              // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
 
@@ -437,9 +442,9 @@ $pass = array(
   ?>
   <!--   -->
    <div id = 'checker'>
-   <iframe name = "BC_checker2" src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
+   <iframe name = "checker2" id = "checker2" src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
       <div id = 'BC_checker'>
-   <iframe id = "checker2" name ="checker2" src="QR_BC_Checker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
+   <iframe  name ="BC_checker2" id = "BC_checker2" src="QR_BC_Checker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
 
  <?php
  
@@ -503,14 +508,47 @@ $pass = array(
  ?>
  
 <script>
+// try to read in a value from the iframe
+ 
+
+
  $(document).ready(function(){
     
     var activity_id = pass['activity_id']; 
      var stu_name = pass['stu_name']; 
      var reflection_button_flag = pass['reflection_button_flag'];
-     var bc_display = false;
-     var qr_code = false;
 
+      var reflect_flag = pass['reflect_flag']; 
+      var explore_flag = pass['explore_flag']; 
+      var connect_flag = pass['connect_flag']; 
+      var society_flag = pass['society_flag']; 
+      var ref_choice = pass['ref_choice']; 
+      var perc_ref = pass['perc_ref'];
+      var perc_exp = pass['perc_exp'];
+      var perc_con = pass['perc_con'];
+      var perc_soc = pass['perc_soc'];
+      
+      
+      
+      
+    var bc_display = false;
+     var qr_code = false;
+     var myFrame = document.getElementById('checker2').contentWindow
+    
+    $("#checker2").on("load", function () {
+   //  var total_count = $("#checker2").contents().find("#total_count").html();
+    var total_count = $("#checker2").contents().find("#total_count").text();
+     var PScore = $("#checker2").contents().find("#PScore").val();
+    var parent_test = document.getElementById('checker2').contentWindow.test;
+  
+       var test2 = myFrame.test;
+    
+  //  console.log('test from parent: '+test);  
+ 
+       console.log('blah: '+total_count);
+      console.log('PScore: '+PScore);
+    
+        });
 
      
      
@@ -519,6 +557,12 @@ $pass = array(
     $('#base_case').hide();
     $('#directions').hide();
     $('#BC_checker').hide();
+    
+    if(reflect_flag == 0 && ref_choice == 0){$("#reflect").hide(); }    
+    if(explore_flag == 0 && ref_choice == 0){$("#explore").hide(); }    
+    if(connect_flag == 0 && ref_choice == 0){$("#connect").hide(); }    
+    if(society_flag == 0 && ref_choice == 0){$("#society").hide(); }    
+    
     
   $('#basecasebutton').click(function(){
         if(bc_display == false){bc_display =true;}else{bc_display =false;}
@@ -674,7 +718,97 @@ change_count();
      // var count_from_check = localStorage.getItem('count_from_check');
      // var count_from_check = $('#checker2').contents().find('#count_from_check').val();
       */
- 
+      
+      // this next block of code puts the text entries for the reflections into the activity table via AJAX
+            $("#reflect_text_form").submit(function() {
+           var reflect_text = $("#reflect_text").val();
+            $.ajax({
+                type: "POST",
+                url: "addReflect_text.php",
+                data: {
+                  activity_id: activity_id,  
+                  reflect_text: reflect_text
+                },
+
+                success: function(result) {
+                  $("#reflect_confirm").html(result);
+                }
+            });
+          return false;
+        });
+        
+              $("#connect_text_form").submit(function() {
+           var connect_text = $("#connect_text").val();
+            $.ajax({
+                type: "POST",
+                url: "addConnect_text.php",
+                data: {
+                  activity_id: activity_id,  
+                  connect_text: connect_text
+                },
+
+                success: function(result) {
+                  $("#connect_confirm").html(result);
+                }
+            });
+          return false;
+        });
+      
+      
+       $("#explore_text_form").submit(function() {
+           var explore_text = $("#explore_text").val();
+            $.ajax({
+                type: "POST",
+                url: "addExplore_text.php",
+                data: {
+                  activity_id: activity_id,  
+                  explore_text: explore_text
+                },
+
+                success: function(result) {
+                  $("#explore_confirm").html(result);
+                }
+            });
+          return false;
+        });
+        
+          $("#society_text_form").submit(function() {
+           var society_text = $("#society_text").val();
+            $.ajax({
+                type: "POST",
+                url: "addSociety_text.php",
+                data: {
+                  activity_id: activity_id,  
+                  society_text: society_text
+                },
+
+                success: function(result) {
+                  $("#society_confirm").html(result);
+                }
+            });
+          return false;
+        });
+
+    $('#reflect_text').on('input',function(){
+        $("#reflect_confirm").html('<div style = "color:red;"><b>changes not saved</b>');
+    });
+    $('#connect_text').on('input',function(){
+        $("#connect_confirm").html('<div style = "color:red;"><b>changes not saved</b>');
+    });
+
+    $('#explore_text').on('input',function(){
+        $("#explore_confirm").html('<div style = "color:red;"><b>changes not saved</b>');
+    });
+    $('#society_text').on('input',function(){
+        $("#society_confirm").html('<div style = "color:red;"><b>changes not saved</b>');
+    });
+
+// put the points next to the reflections
+   $('#reflect').append('('+perc_ref+' %)');
+   $('#explore').append('('+perc_exp+' %)');
+   $('#connect').append('('+perc_con+' %)');
+   $('#society').append('('+perc_soc+' %)');
+
  });
 
 

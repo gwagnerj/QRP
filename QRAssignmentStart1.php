@@ -53,8 +53,15 @@
     $perc_ec_max_p_assign = 20;
     $perc_ec_max_p_pblm = 20;
     $perc_ec_max_person_to_person = 5;
-    $perc_ec_max_decrease = 1;
     $fixed_percent_decline = 20;
+    
+    $ec_daysb4due_elgible = 2;
+    
+    $perc_ec_base_video = 3;
+    $perc_ec_base_audio = 2;
+    $perc_ec_base_written = 1;
+    
+    
     $assigntime_id = '';
     $window_opens = $window_closes = $due_date = '';
     
@@ -87,6 +94,12 @@ if($new_flag == 0){
           $perc_ec_max_p_pblm = $assigntime_data['perc_ec_max_p_pblm'];
           $perc_ec_max_person_to_person = $assigntime_data['perc_ec_max_person_to_person'];
           $perc_ec_max_decrease = $assigntime_data['perc_ec_max_decrease'];
+          
+          $ec_daysb4due_elgible = $assigntime_data['ec_daysb4due_elgible'];
+          $perc_ec_base_video = $assigntime_data['perc_ec_base_video'];
+          $perc_ec_base_audio = $assigntime_data['perc_ec_base_audio'];
+          $perc_ec_base_written = $assigntime_data['perc_ec_base_written'];
+          
           $assigntime_id = $assigntime_data['assigntime_id'];
           $fixed_percent_decline = $assigntime_data['fixed_percent_decline'];
           $window_closes = new DateTime($assigntime_data['window_closes']);
@@ -126,6 +139,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
              perc_ec_max_p_assign=:perc_ec_max_p_assign, 
              perc_ec_max_p_pblm=:perc_ec_max_p_pblm, 
              perc_ec_max_person_to_person=:perc_ec_max_person_to_person, 
+             
+             ec_daysb4due_elgible=:ec_daysb4due_elgible,
+             perc_ec_base_video=:perc_ec_base_video,
+             perc_ec_base_audio=:perc_ec_base_audio,
+             perc_ec_base_written=:perc_ec_base_written,
+             
+             
              due_date=:due_date, 
              credit=:credit, 
              late_points=:late_points, 
@@ -153,6 +173,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
               ':perc_ec_max_p_assign' => $_POST['perc_ec_max_p_assign'],
               ':perc_ec_max_p_pblm' => $_POST['perc_ec_max_p_pblm'],
               ':perc_ec_max_person_to_person' => $_POST['perc_ec_max_person_to_person'],
+
+              ':ec_daysb4due_elgible' => $_POST['ec_daysb4due_elgible'],
+              ':perc_ec_base_video' => $_POST['perc_ec_base_video'],
+              ':perc_ec_base_audio' => $_POST['perc_ec_base_audio'],
+              ':perc_ec_base_written' => $_POST['perc_ec_base_written'],
+              
               ':due_date' => $_POST['due_date'],
               ':credit' => $_POST['credit'],
               ':late_points' => $_POST['late_points'],
@@ -167,8 +193,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
    
    // input the values from the form into the Assigntime table - get the assigntime_id and then move onto page two to get points values for each part
    
-       $sql = 'INSERT INTO `Assigntime` (assign_num, iid, currentclass_id, work_flow, bc_ans_n,bc_ans_t, p_bc_n, p_bc_t, help_n_stu, help_t_stu, help_n_ta, help_t_ta, help_n_instruct, help_t_instruct, work_time_per_problem, max_attempts_per_problem, window_opens, window_closes, perc_ec_max_p_assign, perc_ec_max_p_pblm, perc_ec_max_person_to_person, due_date,credit, late_points, fixed_percent_decline)	
-                                    VALUES (:assign_num, :iid, :currentclass_id, :work_flow, :bc_ans_n,:bc_ans_t, :p_bc_n, :p_bc_t, :help_n_stu, :help_t_stu, :help_n_ta, :help_t_ta, :help_n_instruct, :help_t_instruct, :work_time_per_problem, :max_attempts_per_problem, :window_opens, :window_closes, :perc_ec_max_p_assign, :perc_ec_max_p_pblm, :perc_ec_max_person_to_person, :due_date, :credit, :late_points, :fixed_percent_decline)';
+       $sql = 'INSERT INTO `Assigntime` (assign_num, iid, currentclass_id, work_flow, bc_ans_n,bc_ans_t, p_bc_n, p_bc_t, help_n_stu, help_t_stu, help_n_ta, help_t_ta, help_n_instruct, help_t_instruct, work_time_per_problem, max_attempts_per_problem, window_opens, window_closes, perc_ec_max_p_assign, perc_ec_max_p_pblm, perc_ec_max_person_to_person, ec_daysb4due_elgible,perc_ec_base_video, perc_ec_base_audio, perc_ec_base_written, due_date,credit, late_points, fixed_percent_decline)	
+                                    VALUES (:assign_num, :iid, :currentclass_id, :work_flow, :bc_ans_n,:bc_ans_t, :p_bc_n, :p_bc_t, :help_n_stu, :help_t_stu, :help_n_ta, :help_t_ta, :help_n_instruct, :help_t_instruct, :work_time_per_problem, :max_attempts_per_problem, :window_opens, :window_closes, :perc_ec_max_p_assign, :perc_ec_max_p_pblm, :perc_ec_max_person_to_person, :ec_daysb4due_elgible, :perc_ec_base_video, :perc_ec_base_audio, :perc_ec_base_written, :due_date, :credit, :late_points, :fixed_percent_decline)';
                 $stmt = $pdo->prepare($sql);
                 $stmt -> execute(array(
                   ':assign_num' => $_POST['assign_num'],
@@ -192,6 +218,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
                   ':perc_ec_max_p_assign' => $_POST['perc_ec_max_p_assign'],
                   ':perc_ec_max_p_pblm' => $_POST['perc_ec_max_p_pblm'],
                   ':perc_ec_max_person_to_person' => $_POST['perc_ec_max_person_to_person'],
+                  ':ec_daysb4due_elgible' => $_POST['ec_daysb4due_elgible'],
+                  ':perc_ec_base_video' => $_POST['perc_ec_base_video'],
+                  ':perc_ec_base_audio' => $_POST['perc_ec_base_audio'],
+                  ':perc_ec_base_written' => $_POST['perc_ec_base_written'],
+
+
                   ':due_date' => $_POST['due_date'],
                   ':credit' => $_POST['credit'],
                   ':late_points' => $_POST['late_points'],
@@ -332,26 +364,32 @@ $_SESSION['counter']=0;  // this is for the score board
                    
                 	    <br>
                 <font color=#003399>Effort on base-case per problem part before help from: &nbsp; </font><br>
-                     Other Students:<br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;Time(minutes): <input type = "number" min = "0" max = "20" id="help_t_stu" name = "help_t_stu" required value = <?php echo $help_t_stu; ?> > </input><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "20" id="help_n_stu" name = "help_n_stu" required value = <?php echo $help_n_stu; ?>> </input><br>
-                     Teaching Assistants or Tutors:<br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;Time(minutes): <input type = "number" min = "0" max = "20" id="help_t_ta" name = "help_t_ta" required value = <?php echo $help_t_ta; ?> > </input><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "20" id="help_n_ta" name = "help_n_ta" required value = <?php echo $help_n_ta; ?>> </input><br>
-                     Instructors:<br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;Time(minutes): <input type = "number" min = "0" max = "20" id="help_t_instruct" name = "help_t_instruct" required value = <?php echo $help_t_instruct; ?> > </input><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "20" id="help_n_instruct" name = "help_n_instruct" required value = <?php echo $help_n_instruct; ?>> </input><br>
+                     &nbsp;&nbsp; Other Students:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time(minutes): <input type = "number" min = "0" max = "20" id="help_t_stu" name = "help_t_stu" required value = <?php echo $help_t_stu; ?> > </input><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "20" id="help_n_stu" name = "help_n_stu" required value = <?php echo $help_n_stu; ?>> </input><br>
+                      &nbsp;&nbsp; Teaching Assistants or Tutors:<br>
+                       &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Time(minutes): <input type = "number" min = "0" max = "20" id="help_t_ta" name = "help_t_ta" required value = <?php echo $help_t_ta; ?> > </input><br>
+                       &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "20" id="help_n_ta" name = "help_n_ta" required value = <?php echo $help_n_ta; ?>> </input><br>
+                      &nbsp;&nbsp; Instructors:<br>
+                       &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Time(minutes): <input type = "number" min = "0" max = "20" id="help_t_instruct" name = "help_t_instruct" required value = <?php echo $help_t_instruct; ?> > </input><br>
+                      &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "20" id="help_n_instruct" name = "help_n_instruct" required value = <?php echo $help_n_instruct; ?>> </input><br>
                         
               <br>
               <font color=#003399>Absolute Limits on Problem: &nbsp; </font><br>
                	
                   &nbsp;&nbsp;&nbsp;&nbsp;Max Time for the Problem (minutes, blank = infinite): <input type = "number" min = "0" max = "20" id="work_time_per_problem" name = "work_time_per_problem" value = <?php echo $work_time_per_problem; ?> > </input><br>
                   &nbsp;&nbsp;&nbsp;&nbsp;Max Total Number of Tries for the Problem (blank = infinite) : <input type = "number" min = "0" max = "20" id="max_attempts_per_problem" name = "max_attempts_per_problem" value = <?php echo $max_attempts_per_problem; ?>  > </input><br>
-                 Extra Credit:<br>
-                 &nbsp;&nbsp;&nbsp;&nbsp;Max percent Extra Credit per assignment for one student for peer assistance: <input type = "number" min = "0" max = "100" id="perc_ec_max_p_assign" name = "perc_ec_max_p_assign" value = <?php echo $perc_ec_max_p_assign; ?>  > </input><br>
-                 &nbsp;&nbsp;&nbsp;&nbsp;Max percent Extra Credit per individual problem for one student for peer assistance: <input type = "number" min = "0" max = "50" id="perc_ec_max_p_pblm" name = "perc_ec_max_p_pblm" value = <?php echo $perc_ec_max_p_pblm; ?>  > </input><br>
-                 &nbsp;&nbsp;&nbsp;&nbsp;Max percent Extra Credit per assignment for one student for peer assistance from one student: <input type = "number" min = "0" max = "50" id="perc_ec_max_person_to_person" name = "perc_ec_max_person_to_person" value = <?php echo $perc_ec_max_person_to_person; ?>  > </input><br>
-                 &nbsp;&nbsp;&nbsp;&nbsp;Max percent Extra Credit Decreases by this per day toward zero at Due Date <input type = "number" min = "0" max = "10" id="perc_ec_max_decrease" name = "perc_ec_max_decrease" value = <?php echo $perc_ec_max_decrease; ?>  > </input><br>
+            
+                   <br> <font color=#003399>Extra Credit: &nbsp; </font><br>
+                  &nbsp;&nbsp;&nbsp;&nbsp; Number of days before the due date that problem and base-case is completed and any material is uploaded to be elgible for extra credit : <input type = "number" min = "0" max = "20" id="ec_daysb4due_elgible" name = "ec_daysb4due_elgible" value = <?php echo $ec_daysb4due_elgible; ?>  > </input><br>
+                <br> &nbsp;&nbsp;Peer Instruction:<br>
+                 &nbsp;&nbsp;&nbsp;&nbsp; Max percent Extra Credit per assignment for one student for peer assistance: <input type = "number" min = "0" max = "100" id="perc_ec_max_p_assign" name = "perc_ec_max_p_assign" value = <?php echo $perc_ec_max_p_assign; ?>  > </input><br>
+                 &nbsp;&nbsp;&nbsp;&nbsp; Max percent Extra Credit per individual problem for one student for peer assistance: <input type = "number" min = "0" max = "50" id="perc_ec_max_p_pblm" name = "perc_ec_max_p_pblm" value = <?php echo $perc_ec_max_p_pblm; ?>  > </input><br>
+                 &nbsp;&nbsp;&nbsp;&nbsp; Max percent Extra Credit per assignment for one student for peer assistance from one student: <input type = "number" min = "0" max = "50" id="perc_ec_max_person_to_person" name = "perc_ec_max_person_to_person" value = <?php echo $perc_ec_max_person_to_person; ?>  > </input><br>
+                <br>&nbsp;&nbsp;Student generated instructional material:<br>
+                 &nbsp;&nbsp;&nbsp;&nbsp; Base percent Extra Credit on assignment for video instruction on basecase: <input type = "number" min = "0" max = "100" id="perc_ec_base_video" name = "perc_ec_base_video" value = <?php echo $perc_ec_base_video; ?>  > </input><br>
+                 &nbsp;&nbsp;&nbsp;&nbsp; Base percent Extra Credit on assignment for audio instruction on basecase: <input type = "number" min = "0" max = "50" id="perc_ec_base_audio" name = "perc_ec_base_audio" value = <?php echo $perc_ec_base_audio; ?>  > </input><br>
+                 &nbsp;&nbsp;&nbsp;&nbsp; Base percent Extra Credit on assignment for written instruction on basecase: <input type = "number" min = "0" max = "50" id="perc_ec_base_written" name = "perc_ec_base_written" value = <?php echo $perc_ec_base_written; ?>  > </input><br>
 
            </br>
                 <font color=#003399>Work Flow: &nbsp; </font><br>

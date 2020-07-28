@@ -13,45 +13,58 @@ if(isset($_GET['activity_id'])){
 if(isset($_POST['submit_button'])){
     $files = array_filter($_FILES['files']['name']);
     $total = count($_FILES['files']['name']);
+   if ($total>0){
    
-   
-   for( $i=0 ; $i < $total ; $i++ ) {
+       for( $i=0 ; $i < $total ; $i++ ) {
 
-        $file_name = $_FILES['files']['name'][$i];;
-        $file_type = $_FILES['files']['type'][$i];
-        $file_tmp_name = $_FILES['files']['tmp_name'][$i];
-        $file_error = $_FILES['files']['error'][$i];
-        $file_size = $_FILES['files']['size'][$i];
-        
-        $file_ext = explode('.',$file_name);
-        $file_actual_ext = strtolower(end($file_ext));
-        $allow = array('jpg','jpeg','png','pdf');
-        
-        
-        if(in_array($file_actual_ext,$allow)){
-            if($file_error ==0){
-                if ($file_size < 10000000){
-                   $file_new_name = $activity_id.'-'.$i.'.'.$file_actual_ext; 
-                    $file_destination = 'student_work/'.$file_new_name;
-                    move_uploaded_file($file_tmp_name,$file_destination);
-                   
-                
-                 
+            $file_name = $_FILES['files']['name'][$i];;
+            $file_type = $_FILES['files']['type'][$i];
+            $file_tmp_name = $_FILES['files']['tmp_name'][$i];
+            $file_error = $_FILES['files']['error'][$i];
+            $file_size = $_FILES['files']['size'][$i];
+            
+            $file_ext = explode('.',$file_name);
+            $file_actual_ext = strtolower(end($file_ext));
+            $allow = array('jpg','jpeg','png','pdf');
+
+            
+            if(in_array($file_actual_ext,$allow)){
+                if($file_error ==0){
+                    if ($file_size < 10000000){
+                       $file_new_name = $activity_id.'-'.$i.'-'.$file_name.'.'.$file_actual_ext; 
+                        $file_destination = 'student_work/'.$file_new_name;
+                        // CHeck to see if there is a file by the same name
+                        if (file_exists($file_destination)){
+                            $_SESSION['error'] = 'File by the name, '.$file_name.', was already in system and  was overwritten';  
+                        }  
+                        
+                        move_uploaded_file($file_tmp_name,$file_destination);
+                       
                     
-                }else {
-                     $_SESSION['error'] = 'File size is too large max file size is 10Mb'; 
+                     
+                        
+                    }else {
+                         $_SESSION['error'] = 'File size is too large max file size is 10Mb'; 
+                    }
+                } else {
+                        $_SESSION['error'] = 'This error in file of type'.$file_error; 
                 }
             } else {
-                    $_SESSION['error'] = 'This error in file of type'.$file_error; 
+                    $_SESSION['error'] = 'This file type is not allowed (only image and pdf files)';
             }
-        } else {
-                $_SESSION['error'] = 'This file type is not allowed (only image and pdf files)';
-        }
-    
+        
+       }
+   
+       $_SESSION['success'] = 'Your work has been successfully uploaded';
+        echo('Your work has been successfully uploaded');
+        // probably go somewhere else maybe apply the points so that they recieve the provisional points
+   
+   } else {
+        $_SESSION['error'] = 'no files were selected';
+       
    }
    
-     $_SESSION['success'] = 'Your work has been successfully uploaded';
-    echo('Your work has been successfully uploaded');
+     
 }
 
 
@@ -82,7 +95,7 @@ if(isset($_POST['submit_button'])){
 
 <body>
 <header>
-<h1>Quick Response - Upload Your Work</h1>
+<h1>Quick Response - Upload Your work for solving the numerical part of your problem (not the base-case or reflections)</h1>
 </header>
 
 <?php
@@ -98,8 +111,9 @@ if(isset($_POST['submit_button'])){
 ?>	
 
  <form method = "POST" enctype = "multipart/form-data" >
-    <input type="file" name = "files[]" multiple = "multiple">
-    <button type = "submit" name = "submit_button">Upload Your Work</button>
+    <input type="file" name = "files[]" multiple = "multiple"> &nbsp;
+    (Accepted file types: jpg, jpeg, png and pdf)<br><br>
+    <button type = "submit" name = "submit_button">Subit Work Files</button>
  </form>
  
  </body>

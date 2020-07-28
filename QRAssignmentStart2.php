@@ -24,23 +24,77 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
     } else {
         $n = 20;
     }
+     
+     // need to get the alias numbers for the problems
+     
+        $sql = "SELECT *  FROM `Assigntime` WHERE assigntime_id = :assigntime_id";
+           $stmt = $pdo->prepare($sql);
+           $stmt -> execute(array(
+				':assigntime_id' => $assigntime_id,
+				)); 
+          
+          $assigntime_data = $stmt->fetch();
+           
+            $assign_num = $assigntime_data['assign_num'];
+            $iid = $assigntime_data['iid'];
+            $currentclass_id = $assigntime_data['currentclass_id'];
     
-    $data_init = array();
-     for ($i=1;$i<=$n;$i++){
-      $data_init += array('perc_'.$i => '');
-      $data_init += array('perc_pp1_'.$i => ''); 
-      $data_init += array('perc_pp2_'.$i => ''); 
-      $data_init += array('perc_ref_'.$i =>''); 
-      $data_init += array('perc_exp_'.$i => ''); 
-      $data_init += array('perc_con_'.$i => ''); 
-      $data_init += array('perc_soc_'.$i => ''); 
-      $data_init += array('perc_any1_ref_'.$i => ''); 
-      $data_init += array('survey_'.$i => ''); 
+     
+     
+     
+     
+     $sql = "SELECT `alias_num` FROM `Assign` WHERE iid = :iid AND assign_num = :assign_num AND currentclass_id = :currentclass_id ORDER BY alias_num ";
+           $stmt = $pdo->prepare($sql);
+           $stmt -> execute(array(
+				':assign_num' => $assign_num,
+                ':iid' => $iid,
+                ':currentclass_id' => $currentclass_id,
+				)); 
+           $alias_numss = $stmt->fetchALL();
+     $data_init = array();
+     
+     foreach($alias_numss as $alias_nums){
+        $alias_num = $alias_nums['alias_num']+0;
+         echo(' alias_num: '.$alias_num);
+      $data_init += array('perc_'.$alias_num => '');
+      $data_init += array('perc_pp1_'.$alias_num => ''); 
+      $data_init += array('perc_pp2_'.$alias_num => ''); 
+      $data_init += array('perc_ref_'.$alias_num =>''); 
+      $data_init += array('perc_exp_'.$alias_num => ''); 
+      $data_init += array('perc_con_'.$alias_num => ''); 
+      $data_init += array('perc_soc_'.$alias_num => ''); 
+      $data_init += array('perc_any1_ref_'.$alias_num => ''); 
+      $data_init += array('survey_'.$alias_num => ''); 
         foreach(range('a','j') as $x){ 
-           $data_init += array('perc_'.$x.'_'.$i => '');   
+           $data_init += array('perc_'.$x.'_'.$alias_num => '');   
          }
      }
-    
+   
+      
+  $max_alias_num = 0;
+     foreach($alias_numss as $alias_nums){
+        $alias_num = $alias_nums['alias_num']+0;
+         $max_alias_num = $alias_num;
+         if(isset($_POST['perc_'.$alias_num])) {$data_init['perc_'.$alias_num]= $_POST['perc_'.$alias_num] ;}
+         if(isset($_POST['perc_pp1_'.$alias_num])) {$data_init['perc_pp1_'.$alias_num]= $_POST['perc_pp1_'.$alias_num] ;}
+         if(isset($_POST['perc_pp2_'.$alias_num])) {$data_init['perc_pp2_'.$alias_num]= $_POST['perc_pp2_'.$alias_num] ;}
+
+         if(isset($_POST['perc_ref_'.$alias_num])) {$data_init['perc_ref_'.$alias_num]= $_POST['perc_ref_'.$alias_num] ;}
+         if(isset($_POST['perc_exp_'.$alias_num])) {$data_init['perc_exp_'.$alias_num]= $_POST['perc_exp_'.$alias_num] ;}
+         if(isset($_POST['perc_con_'.$alias_num])) {$data_init['perc_con_'.$alias_num]= $_POST['perc_con_'.$alias_num] ;}
+         if(isset($_POST['perc_soc_'.$alias_num])) {$data_init['perc_soc_'.$alias_num]= $_POST['perc_soc_'.$alias_num] ;}
+         if(isset($_POST['perc_anyref_'.$alias_num])) {$data_init['perc_any1_ref_'.$alias_num]= $_POST['perc_anyref_'.$alias_num] ;}
+         if(isset($_POST['survey_'.$alias_num])) {$data_init['survey_'.$alias_num]= $_POST['survey_'.$alias_num] ;}
+        
+         
+        foreach(range('a','j') as $x){ 
+              if(isset($_POST['perc_'.$x.'_'.$alias_num])) {$data_init['perc_'.$x.'_'.$alias_num]= $_POST['perc_'.$x.'_'.$alias_num] ;}
+        
+           $data_init += array('perc_'.$x.'_'.$alias_num => '');   
+         }
+         
+     }
+ /*    
   
      for ($i=1;$i<=$n;$i++){
       
@@ -67,7 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
     
     
     
-    // $sql = UPDATE Assigntime SETperc_1=:perc_1, perc_2=:perc_2, perc_3=:perc_3, perc_4=:perc_4, WHERE assigntime_id = :assigntime_id
     $data = array();
     $sql = 'UPDATE Assigntime SET ';
     $data += array(':assigntime_id' => $assigntime_id);
@@ -102,6 +155,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
             $sql = $sql.'perc_'.$i.'=:perc_'.$i.', ';
         } else {
             $sql = $sql.'perc_'.$i.'=:perc_'.$i.' ';  // need this one so we don't put a comma on the last one
+        }
+ */
+  
+    $data = array();
+    $sql = 'UPDATE Assigntime SET ';
+    $data += array(':assigntime_id' => $assigntime_id);
+    
+    foreach($alias_numss as $alias_nums){
+        $alias_num = $alias_nums['alias_num']+0;
+        $sql = $sql.'perc_pp1_'.$alias_num.'=:perc_pp1_'.$alias_num.', ';
+        $sql = $sql.'perc_pp2_'.$alias_num.'=:perc_pp2_'.$alias_num.', ';
+        $sql = $sql.'perc_ref_'.$alias_num.'=:perc_ref_'.$alias_num.', ';
+        $sql = $sql.'perc_exp_'.$alias_num.'=:perc_exp_'.$alias_num.', ';
+        $sql = $sql.'perc_con_'.$alias_num.'=:perc_con_'.$alias_num.', ';
+        $sql = $sql.'perc_soc_'.$alias_num.'=:perc_soc_'.$alias_num.', ';
+        $sql = $sql.'perc_any1_ref_'.$alias_num.'=:perc_any1_ref_'.$alias_num.', ';
+        $sql = $sql.'survey_'.$alias_num.'=:survey_'.$alias_num.', ';
+        
+      $data += array(':perc_'.$alias_num => $data_init['perc_'.$alias_num]);
+      $data += array(':perc_pp1_'.$alias_num => $data_init['perc_pp1_'.$alias_num]); 
+      $data += array(':perc_pp2_'.$alias_num => $data_init['perc_pp2_'.$alias_num]); 
+      $data += array(':perc_ref_'.$alias_num => $data_init['perc_ref_'.$alias_num]); 
+      $data += array(':perc_exp_'.$alias_num => $data_init['perc_exp_'.$alias_num]); 
+      $data += array(':perc_con_'.$alias_num => $data_init['perc_con_'.$alias_num]); 
+      $data += array(':perc_soc_'.$alias_num => $data_init['perc_soc_'.$alias_num]); 
+      $data += array(':perc_any1_ref_'.$alias_num => $data_init['perc_any1_ref_'.$alias_num]); 
+      $data += array(':survey_'.$alias_num => $data_init['survey_'.$alias_num]); 
+      
+        
+        foreach(range('a','j') as $x){  
+            $sql = $sql.'perc_'.$x.'_'.$alias_num.'=:perc_'.$x.'_'.$alias_num.', ';
+             $data += array(':perc_'.$x.'_'.$alias_num => $data_init['perc_'.$x.'_'.$alias_num]); 
+        }
+
+        if ($alias_num != $max_alias_num){
+            $sql = $sql.'perc_'.$alias_num.'=:perc_'.$alias_num.', ';
+        } else {
+            $sql = $sql.'perc_'.$alias_num.'=:perc_'.$alias_num.' ';  // need this one so we don't put a comma on the last one
         }
 
 
@@ -245,6 +336,7 @@ echo ('<form method = "POST">');
        foreach($assign_datas as $assign_data){
            $problem_id = $assign_data['prob_num'];
            $assign_id = $assign_data['assign_id'];
+           $i = $assign_data['alias_num']+0;
          /*   
            $sql = "SELECT users_id FROM `Problem` WHERE problem_id = :problem_id";  // put this in to get userid for removing problem
            $stmt = $pdo->prepare($sql);
@@ -408,13 +500,13 @@ echo ('<form method = "POST">');
            echo(' <input type = "hidden" name = "problem_id" value = "'.$problem_id.'"><input type = "hidden" name = "users_id" value = "'.$iid.'"></form>');
            echo('<form action = "QRactivatePblm.php" method = "GET" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$problem_id.'"><input type = "hidden" name = "iid" value = "'.$iid.'"><input type = "hidden" name = "assign_id" value = "'.$assign_id.'"><input type = "submit" value ="Edit"></form>');
            echo("</tr>");	
-           $i++;
+         //  $i++;
        }  
        echo('<td>Total</td><td><span id = "sum_assignment"></span></td></tbody></table><br><br>');
         echo('<input type="submit" class="btn btn-primary"  name = "submit_name" style="width:20%"    value="Submit">');
        // put in the hidden fields for the submission
         echo ('<input type="hidden" name="assigntime_id"  value='.$assigntime_id.' >');
-         echo ('<input type="hidden" name="n"  value='.$n.' >'); // number of parts to the problem
+  //       echo ('<input type="hidden" name="n"  value='.$n.' >'); // number of problems in the assignment
        echo ('</form>');
 
 

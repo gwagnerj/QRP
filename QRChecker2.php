@@ -24,7 +24,8 @@ session_start();
         header("Location: QRhomework.php");
         die();
 	}
-
+    $switch_to_bc = 0;  
+    $diff_time_min = 0;  // default value for the difference in time between
 
   $attempt_type = 1;  // this will determine how many chances you get
     
@@ -69,6 +70,11 @@ session_start();
      $stmt->execute(array(':assign_num' => $assignment_num,
                           ':currentclass_id' => $currentclass_id));
      $assigntime_data = $stmt -> fetch();
+     
+     $work_flow =  $assigntime_data['work_flow'];
+     $p_bc_n = $assigntime_data['p_bc_n'];
+     $p_bc_t = $assigntime_data['p_bc_t'];
+     
      $perc_of_assign = $assigntime_data['perc_'.$alias_num];
      $due_date = new DateTime($assigntime_data['due_date']);
      $due_date = $due_date->format(' D, M d,  g:i A');
@@ -85,16 +91,20 @@ session_start();
     $now_int = strtotime($now);
     $perc_late_p_prob = $perc_late_p_part = $perc_late_p_assign = 0; 
     $late_penalty = 0;
-  
+    $ec_daysb4due_elgible = $assigntime_data['ec_daysb4due_elgible'];
+    $due_date_ec_int = $due_date_int - $ec_daysb4due_elgible*60*60*24;
+    $due_date_ec = date(' D, M d,  g:i A', $due_date_ec_int);
      
-    if ($now_int > $due_date_int && $now_int < $window_closes_int) {  // figure out the late penalty
+    if ($now_int > $due_date_int ) {  // figure out the late penalty
          if($late_points == 'linear'){
              $late_penalty = round(100*($now_int - $due_date_int)/($window_closes_int - $due_date_int));
           //   $late_penalty = 100;
 
          }
           if($late_points == 'fixedpercent'){
-             $late_penalty = 100 - ceil(($now_int - $due_date_int)/(60*60*24))*$fixed_percent_decline;  // ceil is php roundup
+             // $late_penalty = 30;
+             $days_past_due = ceil(($now_int - $due_date_int)/(60*60*24)); // ceil is php roundup
+             $late_penalty = $days_past_due*$fixed_percent_decline;  
          }
          if ($credit =='latetoparts'){
              $perc_late_p_part = $late_penalty;
@@ -273,6 +283,7 @@ session_start();
       $i =0;
       $changed_flag = false;
       $count_tot = 0;
+      $switch_to_bc = 0;
       foreach(range('a','j') as $v){
           if( $partsFlag[$i]){ 
                 $sql = 'SELECT `resp_value` FROM Resp WHERE `activity_id` = :activity_id AND `part_name` = :part_name ORDER BY `resp_id` DESC LIMIT 1';
@@ -285,7 +296,9 @@ session_start();
             $old_resp[$i] = $resp_data['resp_value'];
             $resp[$v]=(float)$_POST[$v]+0.0;
             // now get the counts for all of the previous tries from the table
-           $sql = 'SELECT COUNT(`resp_value`) FROM `Resp` WHERE `activity_id` = :activity_id AND `part_name` = :part_name';
+      
+
+      $sql = 'SELECT COUNT(`resp_value`) FROM `Resp` WHERE `activity_id` = :activity_id AND `part_name` = :part_name';
                  $stmt = $pdo->prepare($sql);
                   $stmt ->execute(array(
                 ':activity_id' => $activity_id,
@@ -294,12 +307,26 @@ session_start();
              $count_data = $stmt -> fetchColumn();
              $wrongCount[$i] = $count_data;
             $count_tot = $count_tot + $count_data;
+          
+
+          // put the wrong count values in activity table for easy access by other files
+            $sql = 'UPDATE `Activity` SET wcount_'.$v.'= :wcount_x WHERE activity_id = :activity_id';
+            $stmt = $pdo->prepare($sql);
+             $stmt ->execute(array(
+                    ':activity_id' => $activity_id,
+                    ':wcount_x' => $count_data,
+                 ));
             
              // $_SESSION['old_resp'[$i]] = $resp[$v];  // reset the old resp so that we have 
             if($resp[$v]==$old_resp[$i]){
                 $changed[$i]= false;
             } else { 
-                $changed[$i]=true;
+          
+                
+            
+
+
+               $changed[$i]=true;
                 $changed_flag = true;
                 $sql = 'INSERT INTO Resp (activity_id, resp_value,part_name) VALUES (:activity_id, :resp_value, :part_name)';
                 $stmt = $pdo->prepare($sql);
@@ -308,6 +335,31 @@ session_start();
                     ':resp_value' => $resp[$v],
                     ':part_name' => $v
                  ));
+                
+                $sql = 'SELECT UNIX_TIMESTAMP(`created_at`) AS created_at FROM Resp WHERE activity_id = :activity_id AND part_name = :part_name ORDER BY resp_id DESC LIMIT 1';
+                $stmt = $pdo->prepare($sql);
+                $stmt ->execute(array(
+                    ':activity_id' => $activity_id,
+                    ':part_name' => $v,
+                 ));
+                 $original_dates = $stmt -> fetch();                
+                 $last_date = $original_dates['created_at'];
+               
+                // get the time they have been working on this part from the Resp table
+                $sql = 'SELECT UNIX_TIMESTAMP(`created_at`) AS created_at FROM Resp WHERE activity_id = :activity_id AND part_name = :part_name ORDER BY resp_id ASC LIMIT 1';
+                $stmt = $pdo->prepare($sql);
+                $stmt ->execute(array(
+                    ':activity_id' => $activity_id,
+                    ':part_name' => $v,
+                 ));
+                 $original_dates = $stmt -> fetch();                
+                 $first_date = $original_dates['created_at'];
+                 
+                if (is_numeric($last_date) && is_numeric($first_date))
+                {$diff_time_min = round(($last_date - $first_date)/60);} else {$diff_time_min=0;}
+                 
+                   if($work_flow == 'bc_if' && $count_data >= $p_bc_n && $diff_time_min > $p_bc_t && $activity_data["bc_correct_".$v] != 1)
+                   {$go_to_bc[$i] = 1; $switch_to_bc = 1;} else {$go_to_bc[$i] = 0;}                 
             }
         $i++;  
         }
@@ -355,10 +407,6 @@ session_start();
                 }		
 			}
 		}
-     
-     
-     
-     
      
 		
 		//$PScore=$score/$probParts*100; 
@@ -442,6 +490,9 @@ session_start();
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
      <!-- <div id = "test"> test <?php print_r ($wrongCount);?></div> -->
+     
+     diff_time_min: <?php echo($diff_time_min);?>
+     switch_to_bc: <?php echo($switch_to_bc);?>
 
 	<form autocomplete="off" id = "check_form" method="POST" >
 	<!-- <p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
@@ -543,16 +594,31 @@ session_start();
 
 	
 	?>
-Score on Problem (includes only numerical parts):  <?php echo (round($PScore)) ?> %&nbsp; 
-<?php if($perc_late_p_prob != 0){$pscore_less = round($PScore*(1 - $perc_late_p_prob/100)); echo (' Less Late Penalty of '.$perc_late_p_prob.'% = '.$pscore_less.'%');} else {$pscore_less = $PScore; } ?> &nbsp; &nbsp; 
- Total Count: <?php echo (@$count_tot) ?>   
+Provisional Score on Problem:  <?php echo (round($PScore)) ?> %&nbsp; 
+<?php if($perc_late_p_prob != 0){$pscore_less = round($PScore - $perc_late_p_prob); echo (' Less Late Penalty of '.$perc_late_p_prob.'% = '.$pscore_less.'%');} else {$pscore_less = $PScore; } ?> &nbsp; &nbsp; 
+ <br> note - Score only includes quatitative parts of the problem.  These points awarded when work is uploaded. <br>
+ 
+ Total Count:<span id = "total_count" > <?php echo (@$count_tot) ?> </span> <br>
+ <!--
+ Due Date: <?php echo (@$due_date) ?>  Due_Date_int:  <?php echo (@$due_date_int) ?><br>
+ Now: <?php echo (@$now) ?>  Now_int:  <?php echo (@$now_int) ?> Duedate-nowInt: <?php echo ($due_date_int - $now_int) ?> <br>  <br>
+ nowInt-window_closes_int <?php echo ($now_int-$window_closes_int) ?> <br>  <br>
+ Late Penalty: <?php echo (@$late_penalty) ?>   <br>
+ late_points: <?php echo (@$late_points) ?>   <br>
+ fixed_percent_decline: <?php echo (@$fixed_percent_decline) ?>   <br>
+  days_past_due: <?php echo (@$days_past_due) ?>   <br>
+ 
+Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
+--> 
 <br> numerical score possible  <?php echo (round($num_score_possible)) ?> %&nbsp;  
-<?php if ( $pscore_less==$num_score_possible){$ec_elgible_flag =1;} else {$ec_elgible_flag =0;} ?>
+
+<?php if ( $pscore_less==$num_score_possible && $now_int < $due_date_ec_int){$ec_elgible_flag =1;} else {$ec_elgible_flag =0;} ?>
          <span id ="t_delay_message"></span>
 	<p><input type = "submit" id = "check_submit" name = "check" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p><br>
              <input type="hidden" name="activity_id" value="<?php echo ($activity_id)?>" >
-              <input type="hidden" id = "prob_parts" value="<?php echo ($probParts)?>" >
-               <input type="hidden" id = "count_tot" value="<?php echo ($count_tot)?>" >
+             <input type="hidden" id = "prob_parts" value="<?php echo ($probParts)?>" >
+             <input type="hidden" id = "count_tot" value="<?php echo ($count_tot)?>" >
+             <input type="hidden" id = "switch_to_bc" value="<?php echo ($switch_to_bc)?>" >
 
      
 	</form>
@@ -564,9 +630,11 @@ Score on Problem (includes only numerical parts):  <?php echo (round($PScore)) ?
             <input type="hidden" id = "changed_flag" name="changed_flag" value="<?php echo ($changed_flag)?>" >
             <input type="hidden" id = "count_from_check" name="count" value="<?php echo ($count_tot)?>" >
             <input type="hidden" name="problem_id" value="<?php echo ($problem_id)?>" >
-            <input type="hidden" name="PScore" value="<?php echo ($PScore)?>" >
+            <input type="hidden" id = "PScore" name="PScore" value="<?php echo ($PScore)?>" >
              <input type="hidden" name="perc_late_p_prob" value="<?php echo ($perc_late_p_prob)?>" >
+             <input type="hidden" name="num_score_possible" value="<?php echo ($num_score_possible)?>" >
              <input type="hidden" name="pscore_less" value="<?php echo ($pscore_less)?>" >
+
              <input type="hidden" id = "ec_elgible_flag" name="ec_elgible_flag" value="<?php echo $ec_elgible_flag?>" >
 
 
@@ -605,9 +673,10 @@ Score on Problem (includes only numerical parts):  <?php echo (round($PScore)) ?
 
 	<script>
    
-    
+     
 		$(document).ready( function () {
-            
+         
+          
 /*   I played with this to sneek values from the iframe to QRdisplayPblm problem and this worked but may as well use AJAX and get it from the activity table
 
             var count_from_check = 0;

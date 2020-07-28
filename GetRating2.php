@@ -1,12 +1,13 @@
 <?php
  session_start();
   Require_once "pdo.php";
-	 
-	 if (isset($_POST['PScore'])&& isset($_POST['activity_id']) && isset($_POST['perc_late_p_prob'])&& isset($_POST['pscore_less'])&& isset($_POST['ec_elgible_flag'])){
+	 // values from QRChecker2 that need put in the activity table
+	 if (isset($_POST['PScore'])&& isset($_POST['activity_id']) && isset($_POST['perc_late_p_prob'])&& isset($_POST['pscore_less'])&& isset($_POST['ec_elgible_flag'])&& isset($_POST['num_score_possible'])){
 		// put these in the activity table and from the previous page 
        $activity_id = $_POST['activity_id'];
         $ec_elgible_flag =$_POST['ec_elgible_flag'];
         $p_num_score_net = $_POST['pscore_less'];
+        
         
            $sql ='UPDATE `Activity` SET `p_num_score_raw` = :p_num_score_raw, `late_penalty` = :late_penalty, `p_num_score_net` = :p_num_score_net, `ec_elgible_flag` = :ec_elgible_flag 
            WHERE activity_id = :activity_id';
@@ -28,7 +29,14 @@
 		$_SESSION['error'] = 'count not set in GetRating2.php';
 	}
      */
-      if (isset($_POST['activity_id'])){
+      if (isset($_POST['num_score_possible'])){
+		$num_score_possible = $_POST['num_score_possible'];
+	} else {
+		$_SESSION['error'] = 'num_score_possible not set in GetRating2.php';
+	}
+
+
+     if (isset($_POST['activity_id'])){
 		$activity_id = $_POST['activity_id'];
 	} else {
 		$_SESSION['error'] = 'activity_id not set in GetRating2.php';
@@ -59,14 +67,18 @@
 
 	
       
-			 if ((isset($_POST['effectiveness']) and isset($_POST['difficulty']) and isset($_POST['confidence'])and isset($_POST['t_take1'])and isset($_POST['t_take2'])and isset($_POST['t_b4due']))
-				 or (isset($_POST['not_perfect']) and isset($_POST['t_take1_np']) and isset($_POST['t_b4due_np']) and isset($_POST['confidence_np']))
+			 if ((isset($_POST['effectiveness']) && isset($_POST['difficulty']) && isset($_POST['confidence'])&& isset($_POST['t_take1'])&& isset($_POST['t_take2'])&& isset($_POST['t_b4due']))
+				 || (isset($_POST['not_perfect']) && isset($_POST['t_take1_np']) && isset($_POST['t_b4due_np']) && isset($_POST['confidence_np']))
 			 )
 			 {
-				if (isset($_POST['effectiveness']) and isset($_POST['difficulty']) and isset($_POST['confidence'])and isset($_POST['t_take1'])and isset($_POST['t_take2'])and isset($_POST['t_b4due']))
+				if (isset($_POST['effectiveness']) && isset($_POST['difficulty']) && isset($_POST['confidence'])&& isset($_POST['t_take1'])&& isset($_POST['t_take2'])&& isset($_POST['t_b4due']))
 				{
-				
-						
+				if ($_POST['peer_instruction']=='yes'){$peer_instruction = 1;} else {$peer_instruction = 0;}
+				if ($_POST['video_instruction']=='yes'){$video_instruction = 1;} else {$video_instruction = 0;}
+               
+
+             //  if ($_POST['audio_instruction']=='yes'){$audio_instruction = 1;} else {$audio_instruction = 0;}
+			//	if ($_POST['written_instruction']=='yes'){$written_instruction = 1;} else {$written_instruction = 0;}
 
 					// put the values in the data base
 
@@ -187,7 +199,7 @@
 				
 
 
-				if (isset($_POST['prob_comments']) & strlen($_POST['prob_comments']) >7 )
+				if (isset($_POST['prob_comments']) && strlen($_POST['prob_comments']) >7 )
 				{
 					
 					$prob_comments =$prefix. htmlentities($_POST['prob_comments']).$data['prob_comments'];
@@ -200,7 +212,7 @@
 										':holder' => $prob_comments,
 										':pblm_num' => $problem_id));	
 				}
-				if (isset($_POST['sug_hints']) & strlen($_POST['sug_hints']) >7 )
+				if (isset($_POST['sug_hints']) && strlen($_POST['sug_hints']) >7 )
 				{
 					
 					$sug_hints =$prefix. htmlentities($_POST['sug_hints']).$data['sug_hints'];
@@ -246,7 +258,7 @@
 			 
 			 
 			 }
-	  				
+	  		if($num_score_possible == $p_num_score_net){$perf_num_score_flag = 1;} else {$perf_num_score_flag = 0;}		
 
 	?>
 
@@ -287,12 +299,32 @@
 	<form method="POST">
 
     <input type = "number" hidden name = "activity_id"  value = <?php echo ($activity_id); ?> > </input>
+   <input type = "number" hidden id = "ec_elgible_flag" name = "ec_elgible_flag"  value = <?php echo ($ec_elgible_flag); ?> > </input>
+   <input type = "number" hidden id = "perf_num_score_flag" name = "perf_num_score_flag"  value = <?php echo ($perf_num_score_flag); ?> > </input>
+   <input type = "number" hidden id = "num_score_possible" name = "num_score_possible"  value = <?php echo ($num_score_possible); ?> > </input>
 
     <div id = "peer_instruction"> 
-	Make myself avalable for peer instruction on this problem for possible extra credit<br> 
+	Make myself avalable for peer instruction on this problem for possible extra credit - Base Case must be solved<br> 
 		&nbsp &nbsp <input type="radio" name="peer_instruction" value = "yes"  size= 20  >&nbsp &nbsp Yes <br>
 		&nbsp &nbsp <input type="radio" name="peer_instruction" value = "no"  size= 20  >&nbsp &nbsp No  <br>
 	<p></p>
+    Intend to submit video instruction on the solution to part of the Base-Case by the due date for extra credit?<br> 
+		&nbsp &nbsp <input type="radio" name="video_instruction" value = "yes"  size= 20  >&nbsp &nbsp Yes <br>
+		&nbsp &nbsp <input type="radio" name="video_instruction" value = "no"  size= 20  >&nbsp &nbsp No  <br>
+        <p></p>
+        
+        
+ <!--       
+    Will submit audio instruction on the solution to one part of the problem for extra credit?<br> 
+		&nbsp &nbsp <input type="radio" name="audio_instruction" value = "yes"  size= 20  >&nbsp &nbsp Yes <br>
+		&nbsp &nbsp <input type="radio" name="audio_instruction" value = "no"  size= 20  >&nbsp &nbsp No  <br>
+
+	<p></p>
+	Will submit written documentation  - Base Case must be solved<br> 
+		&nbsp &nbsp <input type="radio" name="written_instruction" value = "yes"  size= 20  >&nbsp &nbsp Yes <br>
+		&nbsp &nbsp <input type="radio" name="written_instruction" value = "no"  size= 20  >&nbsp &nbsp No  <br>
+	<p></p>
+-->
 	</div>
 
 
@@ -514,37 +546,37 @@
 	//	$('#move_on_submit').hide();
 		
 		var ec_elgible_flag = $('#ec_elgible_flag').val();
+        var perf_num_score_flag = $('#perf_num_score_flag').val();
 		
-		if (ec_elgible_flag == 1){
-			
-		console.log(score);
-		$('#not_perfect').hide();
-		$('#time_start_np').hide();
-		$('#time_start').show();
-		$('#too_long_div').hide();
-		$('#conf_div_np').hide();
-		$('#conf_div').show();
-		$('#time_take1_np').hide();
-		$('#time_take1').show();
-		
-		
+		if(perf_num_score_flag==1){
+            $('#not_perfect').hide();
+            $('#time_start_np').hide();
+            $('#time_start').show();
+            $('#too_long_div').hide();
+            $('#conf_div_np').hide();
+            $('#conf_div').show();
+            $('#time_take1_np').hide();
+            $('#time_take1').show();
+        } else {
+              $('#time_take2').hide();
+            $('#time_start').hide();
+            $('#time_start_np').show();
+            $('#eff_div').hide();
+            $('#diff_div').hide();
+            $('#too_long_div').hide();
+            $('#conf_div_np').show();
+            $('#conf_div').hide();
+            $('#time_take1_np').show();
+            $('#time_take1').hide();
+        }
+        
+        if (ec_elgible_flag == 1){
+            $('#peer_instruction').show();
 		} else {
-			
-		$('#time_take2').hide();
-		$('#time_start').hide();
-		$('#time_start_np').show();
-		$('#eff_div').hide();
-		$('#diff_div').hide();
-		$('#too_long_div').hide();
-		$('#conf_div_np').show();
-		$('#conf_div').hide();
-		$('#time_take1_np').show();
-		$('#time_take1').hide();
-		
-		
+            $('#peer_instruction').hide();
 		}
 		
-		});
+   });
 
 	</script>
 

@@ -1483,7 +1483,10 @@ ALTER TABLE Activity
          `perc_ec_max_p_assign` INT(3),
          `perc_ec_max_p_pblm` INT(3),
          `perc_ec_max_person_to_person` INT(3),
-         `perc_ec_max_decrease` INT(3),
+         `ec_daysb4due_elgible` INT(3),
+         `perc_ec_base_video` INT(3),
+         `perc_ec_base_audio` INT(3),
+         `perc_ec_base_written` INT(3),
          `perc_1` INT(3),
          `perc_a_1` INT(3),
          `perc_b_1` INT(3),
@@ -1936,16 +1939,50 @@ ALTER TABLE Activity
          ADD `p_num_score_net` INT(4) AFTER `late_penalty`,
          ADD `survey_pts` INT(4) AFTER `p_num_score_net`,
          ADD `ec_elgible_flag` INT(4) AFTER `survey_pts`,
-         ADD `ec_pts` INT(4) AFTER `ec_elgible_flag`,
+         ADD `wants_ec` INT(4) AFTER `ec_elgible_flag`,
+         ADD `ec_pts` INT(4) AFTER `wants_ec`,
          ADD `reflect_pts` INT(4) AFTER `ec_pts`,
          ADD `explore_pts` INT(4) AFTER `reflect_pts`,
          ADD `connect_pts` INT(4) AFTER `explore_pts`,
          ADD `society_pts` INT(4) AFTER `connect_pts`,
          ADD `pp1_pts` INT(4) AFTER `society_pts`,
          ADD `pp2_pts` INT(4) AFTER `pp1_pts`,
-         ADD `pp3_pts` INT(4) AFTER `pp2_pts`;
+         ADD `pp3_pts` INT(4) AFTER `pp2_pts`,
          
          
+        ALTER TABLE Activity  
+        ADD `wcount_bc_a` INT(4) AFTER `count_tot`,
+        ADD `wcount_bc_b` INT(4) AFTER `wcount_bc_a`,
+        ADD `wcount_bc_c` INT(4) AFTER `wcount_bc_b`,
+        ADD `wcount_bc_d` INT(4) AFTER `wcount_bc_c`,
+        ADD `wcount_bc_e` INT(4) AFTER `wcount_bc_d`,
+        ADD `wcount_bc_f` INT(4) AFTER `wcount_bc_e`,
+        ADD `wcount_bc_g` INT(4) AFTER `wcount_bc_f`,
+        ADD `wcount_bc_h` INT(4) AFTER `wcount_bc_g`,
+        ADD `wcount_bc_i` INT(4) AFTER `wcount_bc_h`,
+        ADD `wcount_bc_j` INT(4) AFTER `wcount_bc_i`,
+        ADD `wcount_a` INT(4) AFTER `wcount_bc_j`,
+        ADD `wcount_b` INT(4) AFTER `wcount_a`,
+        ADD `wcount_c` INT(4) AFTER `wcount_b`,
+        ADD `wcount_d` INT(4) AFTER `wcount_c`,
+        ADD `wcount_e` INT(4) AFTER `wcount_d`,
+        ADD `wcount_f` INT(4) AFTER `wcount_e`,
+        ADD `wcount_g` INT(4) AFTER `wcount_f`,
+        ADD `wcount_h` INT(4) AFTER `wcount_g`,
+        ADD `wcount_i` INT(4) AFTER `wcount_h`,
+        ADD `wcount_j` INT(4) AFTER `wcount_i`,
+        ADD `reflect_text` VARCHAR(3000) AFTER `wcount_j`,
+        ADD `explore_text` VARCHAR(3000) AFTER `reflect_text`,
+        ADD `connect_text` VARCHAR(3000) AFTER `explore_text`,
+        ADD `society_text` VARCHAR(3000) AFTER `connect_text`;
+       
+
+
+
+
+
+     ALTER TABLE Activity 
+		  ADD `wants_ec` INT(4) AFTER `ec_elgible_flag`;   
          
          
          
