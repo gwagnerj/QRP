@@ -1487,6 +1487,8 @@ ALTER TABLE Activity
          `perc_ec_base_video` INT(3),
          `perc_ec_base_audio` INT(3),
          `perc_ec_base_written` INT(3),
+         `peer_refl_t` INT(3),
+         `peer_refl_n` INT(3),
          `perc_1` INT(3),
          `perc_a_1` INT(3),
          `perc_b_1` INT(3),

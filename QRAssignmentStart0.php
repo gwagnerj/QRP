@@ -157,7 +157,7 @@ $_SESSION['counter']=0;  // this is for the score board
             
                     
             <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
-			<p><input type = "submit" name = "submit_name" id = "submit_id" value = "Submit First Page"></p><br>
+			<p><input type = "submit" name = "submit_name" id = "submit_id" value = "Start / Edit Assignment Activation"></p><br>
             <p><input type="submit" formaction="remove_assignment.php" value="Deactivate Assignment"></p><br>
              <p><input type="submit" formaction="stu_assignment_results.php" value="Student Results"></p>
 	

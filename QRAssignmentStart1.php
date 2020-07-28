@@ -60,7 +60,8 @@
     $perc_ec_base_video = 3;
     $perc_ec_base_audio = 2;
     $perc_ec_base_written = 1;
-    
+    $peer_refl_n = 5;
+    $peer_refl_t = 2;
     
     $assigntime_id = '';
     $window_opens = $window_closes = $due_date = '';
@@ -99,6 +100,9 @@ if($new_flag == 0){
           $perc_ec_base_video = $assigntime_data['perc_ec_base_video'];
           $perc_ec_base_audio = $assigntime_data['perc_ec_base_audio'];
           $perc_ec_base_written = $assigntime_data['perc_ec_base_written'];
+          $peer_refl_n = $assigntime_data['peer_refl_n'];
+          $peer_refl_t =$assigntime_data['peer_refl_t'];
+          
           
           $assigntime_id = $assigntime_data['assigntime_id'];
           $fixed_percent_decline = $assigntime_data['fixed_percent_decline'];
@@ -139,6 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
              perc_ec_max_p_assign=:perc_ec_max_p_assign, 
              perc_ec_max_p_pblm=:perc_ec_max_p_pblm, 
              perc_ec_max_person_to_person=:perc_ec_max_person_to_person, 
+             peer_refl_n = :peer_refl_n,
+             peer_refl_t =:peer_refl_t,
+             
              
              ec_daysb4due_elgible=:ec_daysb4due_elgible,
              perc_ec_base_video=:perc_ec_base_video,
@@ -178,7 +185,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
               ':perc_ec_base_video' => $_POST['perc_ec_base_video'],
               ':perc_ec_base_audio' => $_POST['perc_ec_base_audio'],
               ':perc_ec_base_written' => $_POST['perc_ec_base_written'],
-              
+              ':peer_refl_t' => $_POST['peer_refl_t'],
+              ':peer_refl_n' => $_POST['peer_refl_n'],
               ':due_date' => $_POST['due_date'],
               ':credit' => $_POST['credit'],
               ':late_points' => $_POST['late_points'],
@@ -193,8 +201,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
    
    // input the values from the form into the Assigntime table - get the assigntime_id and then move onto page two to get points values for each part
    
-       $sql = 'INSERT INTO `Assigntime` (assign_num, iid, currentclass_id, work_flow, bc_ans_n,bc_ans_t, p_bc_n, p_bc_t, help_n_stu, help_t_stu, help_n_ta, help_t_ta, help_n_instruct, help_t_instruct, work_time_per_problem, max_attempts_per_problem, window_opens, window_closes, perc_ec_max_p_assign, perc_ec_max_p_pblm, perc_ec_max_person_to_person, ec_daysb4due_elgible,perc_ec_base_video, perc_ec_base_audio, perc_ec_base_written, due_date,credit, late_points, fixed_percent_decline)	
-                                    VALUES (:assign_num, :iid, :currentclass_id, :work_flow, :bc_ans_n,:bc_ans_t, :p_bc_n, :p_bc_t, :help_n_stu, :help_t_stu, :help_n_ta, :help_t_ta, :help_n_instruct, :help_t_instruct, :work_time_per_problem, :max_attempts_per_problem, :window_opens, :window_closes, :perc_ec_max_p_assign, :perc_ec_max_p_pblm, :perc_ec_max_person_to_person, :ec_daysb4due_elgible, :perc_ec_base_video, :perc_ec_base_audio, :perc_ec_base_written, :due_date, :credit, :late_points, :fixed_percent_decline)';
+       $sql = 'INSERT INTO `Assigntime` (assign_num, iid, currentclass_id, work_flow, bc_ans_n,bc_ans_t, p_bc_n, p_bc_t, help_n_stu, help_t_stu, help_n_ta, help_t_ta, help_n_instruct, help_t_instruct, work_time_per_problem, max_attempts_per_problem, window_opens, window_closes, perc_ec_max_p_assign, perc_ec_max_p_pblm, perc_ec_max_person_to_person, ec_daysb4due_elgible,perc_ec_base_video, perc_ec_base_audio, perc_ec_base_written, peer_refl_t, peer_refl_n, due_date,credit, late_points, fixed_percent_decline)	
+                                    VALUES (:assign_num, :iid, :currentclass_id, :work_flow, :bc_ans_n,:bc_ans_t, :p_bc_n, :p_bc_t, :help_n_stu, :help_t_stu, :help_n_ta, :help_t_ta, :help_n_instruct, :help_t_instruct, :work_time_per_problem, :max_attempts_per_problem, :window_opens, :window_closes, :perc_ec_max_p_assign, :perc_ec_max_p_pblm, :perc_ec_max_person_to_person, :ec_daysb4due_elgible, :perc_ec_base_video, :perc_ec_base_audio, :perc_ec_base_written,:peer_refl_t,:peer_refl_n, :due_date, :credit, :late_points, :fixed_percent_decline)';
                 $stmt = $pdo->prepare($sql);
                 $stmt -> execute(array(
                   ':assign_num' => $_POST['assign_num'],
@@ -222,8 +230,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
                   ':perc_ec_base_video' => $_POST['perc_ec_base_video'],
                   ':perc_ec_base_audio' => $_POST['perc_ec_base_audio'],
                   ':perc_ec_base_written' => $_POST['perc_ec_base_written'],
-
-
+                    ':peer_refl_t' => $_POST['peer_refl_t'],
+                  ':peer_refl_n' => $_POST['peer_refl_n'],
                   ':due_date' => $_POST['due_date'],
                   ':credit' => $_POST['credit'],
                   ':late_points' => $_POST['late_points'],
@@ -247,22 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
 
 }
 
-// this is called from the main repo and this will Collect the information on a particular assignment from the instructor then moves onto .  THis file was coppied form QRExamStart.php
 
-        
-/* 		
-			$alias_num = $exam_num = $cclass_id = '';   
-			
-			
-            $sql_stmt = "SELECT * FROM Exam WHERE DATE(NOW())<= exp_date AND iid = :iid order by exam_id";
-            $stmt = $pdo->prepare($sql_stmt);
-            $stmt -> execute(array(':iid' => $iid));
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	 */
-     
-// this will be called form the main repo when the game master wants to run a game
-// this is just to get the game number and go on to QRGMaster.php with a post of the game number.
-// Validity will be checked in that file and sent back here if it is not valid
 
 $_SESSION['counter']=0;  // this is for the score board
 
@@ -388,9 +381,9 @@ $_SESSION['counter']=0;  // this is for the score board
                  &nbsp;&nbsp;&nbsp;&nbsp; Max percent Extra Credit per assignment for one student for peer assistance from one student: <input type = "number" min = "0" max = "50" id="perc_ec_max_person_to_person" name = "perc_ec_max_person_to_person" value = <?php echo $perc_ec_max_person_to_person; ?>  > </input><br>
                 <br>&nbsp;&nbsp;Student generated instructional material:<br>
                  &nbsp;&nbsp;&nbsp;&nbsp; Base percent Extra Credit on assignment for video instruction on basecase: <input type = "number" min = "0" max = "100" id="perc_ec_base_video" name = "perc_ec_base_video" value = <?php echo $perc_ec_base_video; ?>  > </input><br>
-                 &nbsp;&nbsp;&nbsp;&nbsp; Base percent Extra Credit on assignment for audio instruction on basecase: <input type = "number" min = "0" max = "50" id="perc_ec_base_audio" name = "perc_ec_base_audio" value = <?php echo $perc_ec_base_audio; ?>  > </input><br>
-                 &nbsp;&nbsp;&nbsp;&nbsp; Base percent Extra Credit on assignment for written instruction on basecase: <input type = "number" min = "0" max = "50" id="perc_ec_base_written" name = "perc_ec_base_written" value = <?php echo $perc_ec_base_written; ?>  > </input><br>
-
+              <!--    &nbsp;&nbsp;&nbsp;&nbsp; Base percent Extra Credit on assignment for audio instruction on basecase: --><input type = "hidden" min = "0" max = "50" id="perc_ec_base_audio" name = "perc_ec_base_audio" value = <?php echo $perc_ec_base_audio; ?>  > </input><br>
+              <!--   &nbsp;&nbsp;&nbsp;&nbsp; Base percent Extra Credit on assignment for written instruction on basecase:  --><input type = "hidden" min = "0" max = "50" id="perc_ec_base_written" name = "perc_ec_base_written" value = <?php echo $perc_ec_base_written; ?>  > </input><br>
+          
            </br>
                 <font color=#003399>Work Flow: &nbsp; </font><br>
                 &nbsp;&nbsp; <input type="radio" name="work_flow" id = "work_flow"
@@ -413,7 +406,7 @@ $_SESSION['counter']=0;  // this is for the score board
                     value="bc_first"> Base-Case First - Students work the base-case before they can work on their problem &nbsp;&nbsp;&nbsp;&nbsp;
            
            </br> </br>
-            <font color=#003399> Assignment Timing? &nbsp; </font><br>
+            <font color=#003399> Assignment Timing: &nbsp; </font><br>
             <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Opens <input type="datetime-local" id="window_opens" name = "window_opens" required value="<?php if ($window_opens!=''){echo $window_opens->format('Y-m-d\TH:i');}
             else {$date = new DateTime();$timezone = new DateTimeZone('America/New_York');
             $date->setTimezone($timezone); echo($date->format('Y-m-d\TH:i'));} 
@@ -426,7 +419,12 @@ $_SESSION['counter']=0;  // this is for the score board
             else {$date = new DateTime(); $timezone = new DateTimeZone('America/New_York');
             $date->setTimezone($timezone); $interval = new DateInterval('P7D');   $date->add($interval); echo($date->format('Y-m-d\TH:i'));}
             ?>"> </input><br><br>
+            
+              <font color=#003399> Peer Rating of Reflections: &nbsp; </font><br>
+            &nbsp;&nbsp;&nbsp;&nbsp; Number of days after assignment due date that students should complete the rating of the reflections: <input type = "number" min = "0" max = "20" id="peer_refl_t" name = "peer_refl_t" value = <?php echo $peer_refl_t; ?>  > </input><br><br>
            
+           &nbsp;&nbsp;&nbsp;&nbsp; Number of reflections that students should rate per reflection submitted: <input type = "number" min = "0" max = "7" id="peer_refl_n" name = "peer_refl_n" value = <?php echo $peer_refl_n; ?>  > </input><br><br>
+
             <font color=#003399>Late Penalty Applies to: &nbsp; </font><br>
             <!--
            &nbsp;&nbsp; <input type="radio" name="credit" id = "credit"
@@ -459,7 +457,7 @@ $_SESSION['counter']=0;  // this is for the score board
             <p><input type="hidden" name="assigntime_id" id="assigntime_id" value=<?php echo($assigntime_id);?> ></p>
 
               <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
-			<p><input type = "submit" name = "submit_name" id = "submit_id" value = "Submit Second Page"></p>
+			<p><input type = "submit" name = "submit_name" id = "submit_id" value = "Submit and go to Next Page"></p>
    
 	
 	</form>
