@@ -25,7 +25,9 @@ session_start();
      $stmt = $pdo->prepare($sql);
      $stmt->execute(array(':activity_id' => $activity_id));
      $activity_data = $stmt -> fetch();
-        
+     
+     
+     $switch_to_bc = $activity_data['switch_to_bc'];   
      $problem_id = $activity_data['problem_id'];   
      $iid = $activity_data['iid'];   
      $pin = $activity_data['pin'];   
@@ -209,7 +211,8 @@ $pass = array(
       'perc_ref' => $assigntime_data['perc_ref_'.$alias_num], // to put the points by the reflections in JS
       'perc_exp' => $assigntime_data['perc_exp_'.$alias_num],
       'perc_con' => $assigntime_data['perc_con_'.$alias_num],
-      'perc_soc' => $assigntime_data['perc_soc_'.$alias_num]
+      'perc_soc' => $assigntime_data['perc_soc_'.$alias_num],
+       'switch_to_bc' => $switch_to_bc
       
     );
     echo '<script>';
@@ -527,36 +530,73 @@ $pass = array(
       var perc_exp = pass['perc_exp'];
       var perc_con = pass['perc_con'];
       var perc_soc = pass['perc_soc'];
+      var switch_to_bc = pass['switch_to_bc'];
+       
+       if (switch_to_bc == 1){
+         $('#base_case').show();
+         $('#BC_checker').show();
+          $("#problem").hide(); 
+         $('#reflections').hide();
+          $("#checker").hide();
+           $('#basecasebutton').hide();
+          $('#qrcode_id_bc').hide();
+          $('#reflectionsbutton').hide();
+          $('#qrcode_id').hide(); 
+           $('#directions').hide();
+             $('#checkerbutton').prop('value','to QR code'); 
+          var bc_display = true;
+        } else {
+            var bc_display = false;
+                 $('#qrcode_id_bc').hide();
+                 $('#qrcode_id').hide();
+                $('#base_case').hide();
+                $('#directions').hide();
+                $('#BC_checker').hide();
+               $('#basecasebutton').prop('value','to Base-case');
+                $('#checkerbutton').prop('value','to QR code'); 
+        }
       
-      
-      
-      
-    var bc_display = false;
+        
+    
+    
      var qr_code = false;
      var myFrame = document.getElementById('checker2').contentWindow
     
     $("#checker2").on("load", function () {
-   //  var total_count = $("#checker2").contents().find("#total_count").html();
-    var total_count = $("#checker2").contents().find("#total_count").text();
-     var PScore = $("#checker2").contents().find("#PScore").val();
-    var parent_test = document.getElementById('checker2').contentWindow.test;
-  
-       var test2 = myFrame.test;
-    
-  //  console.log('test from parent: '+test);  
- 
-       console.log('blah: '+total_count);
-      console.log('PScore: '+PScore);
-    
-        });
+               //  var total_count = $("#checker2").contents().find("#total_count").html();
+                var total_count = $("#checker2").contents().find("#total_count").text();
+                 var PScore = $("#checker2").contents().find("#PScore").val();
+                  switch_to_bc = $("#checker2").contents().find("#switch_to_bc").val();
+                 
+                var parent_test = document.getElementById('checker2').contentWindow.test;
+              
+                   var test2 = myFrame.test;
+                
+              //  console.log('test from parent: '+test);  
+             
+                   console.log('blah: '+total_count);
+                  console.log('PScore: '+PScore);
+                    console.log('switch_to_bc: '+switch_to_bc);
+                
 
+                if (switch_to_bc == 1){
+                     $('#base_case').show();
+                     $('#BC_checker').show();
+                      $("#problem").hide(); 
+                     $('#reflections').hide();
+                      $("#checker").hide();
+                      $('#basecasebutton').hide();
+                      $('#qrcode_id_bc').hide();
+                      $('#reflectionsbutton').hide();
+                      $('#qrcode_id').hide();
+                      $('#checkerbutton').prop('value','to QR code'); 
+                      bc_display = true;
+                }
+        });
+   
      
      
-     $('#qrcode_id_bc').hide();
-     $('#qrcode_id').hide();
-    $('#base_case').hide();
-    $('#directions').hide();
-    $('#BC_checker').hide();
+    
     
     if(reflect_flag == 0 && ref_choice == 0){$("#reflect").hide(); }    
     if(explore_flag == 0 && ref_choice == 0){$("#explore").hide(); }    
@@ -576,6 +616,8 @@ $pass = array(
                     $('#qrcode_id_bc').show();
                     $('#reflections').hide();
                     $('#reflectionsbutton').hide();
+                    $('#basecasebutton').prop('value','to Problem');
+                   // $("#btnAddProfile").prop('value', 'Save');
             } else if(!bc_display && qr_code){
                     $("#problem").show(); 
                     $("#base_case").hide();                        
@@ -583,6 +625,7 @@ $pass = array(
                     $("#BC_checker").hide();
                     $('#qrcode_id').show();
                     $('#qrcode_id_bc').hide();
+                    $('#basecasebutton').prop('value','to Base-case');
             }else if(bc_display && !qr_code){
                     $("#problem").hide(); 
                     $("#base_case").show();                        
@@ -592,6 +635,7 @@ $pass = array(
                     $('#qrcode_id_bc').hide();
                      $('#reflections').hide();
                     $('#reflectionsbutton').hide();
+                     $('#basecasebutton').prop('value','to Problem');
             } else {
                     $("#problem").show(); 
                     $("#base_case").hide();                        
@@ -599,6 +643,7 @@ $pass = array(
                     $("#BC_checker").hide();
                     $('#qrcode_id').hide();
                     $('#qrcode_id_bc').hide();
+                     $('#basecasebutton').prop('value','to Base-case');
             }
 
         
@@ -618,6 +663,7 @@ $pass = array(
                     $('#qrcode_id_bc').show();
                      $('#reflections').hide();
                     $('#reflectionsbutton').hide();
+                      $('#checkerbutton').prop('value','to Checker'); 
             } else if(!bc_display && qr_code){
                     $("#problem").show(); 
                     $("#base_case").hide();                        
@@ -625,6 +671,7 @@ $pass = array(
                     $("#BC_checker").hide();
                     $('#qrcode_id').show();
                     $('#qrcode_id_bc').hide();
+                    $('#checkerbutton').prop('value','to Checker'); 
             }else if(bc_display && !qr_code){
                     $("#problem").hide(); 
                     $("#base_case").show();                        
@@ -634,6 +681,7 @@ $pass = array(
                     $('#qrcode_id_bc').hide();
                     $('#reflections').hide();
                     $('#reflectionsbutton').hide();
+                    $('#checkerbutton').prop('value','to QR code'); 
             } else {
                     $("#problem").show(); 
                     $("#base_case").hide();                        
@@ -641,6 +689,7 @@ $pass = array(
                     $("#BC_checker").hide();
                     $('#qrcode_id').hide();
                     $('#qrcode_id_bc').hide();
+                    $('#checkerbutton').prop('value','to QR code'); 
             }
 
     });

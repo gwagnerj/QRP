@@ -1973,7 +1973,8 @@ ALTER TABLE Activity
         ADD `wcount_h` INT(4) AFTER `wcount_g`,
         ADD `wcount_i` INT(4) AFTER `wcount_h`,
         ADD `wcount_j` INT(4) AFTER `wcount_i`,
-        ADD `reflect_text` VARCHAR(3000) AFTER `wcount_j`,
+         ADD `switch_to_bc` INT(2) AFTER `wcount_j`,
+        ADD `reflect_text` VARCHAR(3000) AFTER `switch_to_bc`,
         ADD `explore_text` VARCHAR(3000) AFTER `reflect_text`,
         ADD `connect_text` VARCHAR(3000) AFTER `explore_text`,
         ADD `society_text` VARCHAR(3000) AFTER `connect_text`;
@@ -1986,6 +1987,8 @@ ALTER TABLE Activity
      ALTER TABLE Activity 
 		  ADD `wants_ec` INT(4) AFTER `ec_elgible_flag`;   
          
-         
+      
+     ALTER TABLE Activity 
+		  ADD `switch_to_bc` INT(2) AFTER `wcount_j`;    
          
        

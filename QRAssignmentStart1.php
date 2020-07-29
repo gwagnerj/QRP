@@ -94,7 +94,7 @@ if($new_flag == 0){
           $perc_ec_max_p_assign = $assigntime_data['perc_ec_max_p_assign'];
           $perc_ec_max_p_pblm = $assigntime_data['perc_ec_max_p_pblm'];
           $perc_ec_max_person_to_person = $assigntime_data['perc_ec_max_person_to_person'];
-          $perc_ec_max_decrease = $assigntime_data['perc_ec_max_decrease'];
+         // $perc_ec_max_decrease = $assigntime_data['perc_ec_max_decrease'];
           
           $ec_daysb4due_elgible = $assigntime_data['ec_daysb4due_elgible'];
           $perc_ec_base_video = $assigntime_data['perc_ec_base_video'];

@@ -430,7 +430,15 @@ if (isset($_SESSION['error'])){
 			<br>	
 		
 	<p><input type = "submit" name = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
-	</form>
+	<!--  need to figure out which homeworks had reflections and are past the due date but before the date that they closes and needs rated -->
+   
+ 
+   <br>
+    <div id = "peer_rating_div">
+    </div>
+    
+  
+    </form>
 	</br>
 	<form method = "POST">
 		<p><input type = "submit" value="Back to Login" name = "reset"  size="2" style = "width: 30%; background-color: #FAF1BC; color: black"/> &nbsp &nbsp </p>  
@@ -505,7 +513,7 @@ if (isset($_SESSION['error'])){
             console.log("cclass_id: "+cclass_id);
             
             var currentclass_id = cclass_id;
-           if (!isNaN(cclass_id))  {
+      if (!isNaN(cclass_id))  {
                $.ajax({
 					url: 'getactiveassignments2.php',
 					method: 'post',
@@ -527,7 +535,7 @@ if (isset($_SESSION['error'])){
                     
                     if (!isNaN(assign_num))  { $('#assign_num').val(assign_num).change();}
 				}) 
-               } else {
+      } else {
                    console.log('need to get ir from drop down');
                    
                  
@@ -551,7 +559,7 @@ if (isset($_SESSION['error'])){
 					}
 				}) 
 		}) 
-		}	
+      }	
 			// this is getting the problem numbers (alias number) once the course has been selected
 			$("#assign_num").change(function(){
 		var	 assign_num = $("#assign_num").val();
@@ -579,9 +587,94 @@ if (isset($_SESSION['error'])){
 						for (i=0;i<n;i++){
 							//could put in code to get from the activity table which problems have been attempted and which are complete and color the radio buttons different
 							$('#alias_num_div').append('<input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'&nbsp; &nbsp; &nbsp;') ;
-					}
+					
+                       
+                    }
+                       // this bit should get the peer rating reflections from the assignment
+                          
+                          $.ajax({
+                           url: 'get_peer_reflections.php',
+                            method: 'post',
+                            data: {assign_num:assign_num,currentclass_id:currentclass_id}
+                          }).done(function(peer_reflections){
+                            console.log(' peer_reflections: '+peer_reflections);
+                           peer_reflections = JSON.parse(peer_reflections);
+                            
+                            const peer_reflection = Object.values(peer_reflections);
+                            
+                            console.log(' peer_reflection: '+peer_reflection);
+                             n = peer_reflection.length;
+                             console.log(' n: '+n);
+                            
+                        if(n>0) {    
+                            $('#peer_rating_div').append("<hr><br> <font color=#003399> The following reflections from assignment "+assign_num+" are ready to be rated </font></br> </br>&nbsp;&nbsp;&nbsp;&nbsp;") ;
+                            for (i=0;i<n;i++){
+                                //could put in code to get from the activity table which problems have been attempted and which are complete and color the radio buttons different
+                                $('#peer_rating_div').append('<input  name="peer_num"  type="radio"  value="'+peer_reflection[i]+'"/> '+peer_reflection[i]+'&nbsp; &nbsp; &nbsp;') ;
+                             }
+                             var text = '<br><p><input type = "submit" name = "Rate Reflection" formaction="peer_rating.php" value="Rate Reflection" id="Rate Reflection" size="2" style = "width: 30%; background-color:navy; color: white"/> <br><hr>&nbsp &nbsp </p>';
+                                $('#peer_rating_div').append(text) ;  
+                        }
+                    })
+                    
 				}) 
-			});
+			
+          
+            
+            
+            
+            
+            
+            
+            
+            });
+            
+            
+            
+            
+            
+            
+            
+            
+            
+/* 
+     
+    if(isset($assigntime_id)){
+       $now = time();
+        $sql = 'SELECT `peer_refl_t`,`peer_refl_n` FROM Assigntime WHERE assigntime_id = :assigntime_id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array(':assigntime_id' => $assigntime_id));
+        $assigntime_data = $stmt -> fetch();
+        $peer_refl_t = $assigntime_data['peer_refl_t'];
+         $peer_refl_n = $assigntime_data['peer_refl_n'];
+        $due_cutoff = $now - $peer_refl_t*24*60*60;
+
+
+        $sql = 'SELECT * FROM Assigntime WHERE assigntime_id = :assigntime_id AND UNIX_TIMESTAMP(`due_date`) <= :now AND UNIX_TIMESTAMP(`due_date`) >= :due_cutoff '; 
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array(
+        ':assigntime_id' => $assigntime_id,
+        ':now' => $now,
+        ':due_cutoff' => $due_cutoff,
+        ));
+        $assigntime_data = $stmt -> fetch();
+       $current_class_id_peer = $assigntime_data['current_class_id'];
+       $assign_num_peer = $assigntime_data['assign_num'];
+       $assign_num_peer = $assigntime_data['assign_num'];
+       $iid_peer = $assigntime_data['iid'];
+       $reflections = array(); 
+       for ($i=0;$i<=20;$i++){
+            if($assigntime_data['perc_ref_'.$i]>0){$reflections['perc_ref_'.$i] = $assigntime_data['perc_ref_'.$i];}
+            if($assigntime_data['perc_exp_'.$i]>0){$reflections['perc_exp_'.$i] = $assigntime_data['perc_exp_'.$i];}
+            if($assigntime_data['perc_con_'.$i]>0){$reflections['perc_con_'.$i] = $assigntime_data['perc_con_'.$i];}
+            if($assigntime_data['perc_soc_'.$i]>0){$reflections['perc_soc_'.$i] = $assigntime_data['perc_soc_'.$i];}
+            
+        }
+   
+      print_r( $reflections);
+     }  
+
+ */
 
 </script>
 

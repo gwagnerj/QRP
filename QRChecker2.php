@@ -36,7 +36,8 @@ session_start();
      $stmt = $pdo->prepare($sql);
      $stmt->execute(array(':activity_id' => $activity_id));
      $activity_data = $stmt -> fetch();
-        
+     
+      $switch_to_bc = $activity_data['switch_to_bc'];  
      $problem_id = $activity_data['problem_id'];   
      $iid = $activity_data['iid'];   
      $pin = $activity_data['pin'];   
@@ -417,7 +418,7 @@ session_start();
           $num_score_possible = $num_score_possible + $assigntime_data['perc_'.$x.'_'.$alias_num];
          }
     
-     $sql ='UPDATE `Activity` SET `score` = :score, `count_tot` = :count_tot, correct_a = :correct_a,correct_b = :correct_b,correct_c = :correct_c,correct_d = :correct_d,correct_e = :correct_e,correct_f = :correct_f,correct_g = :correct_g,correct_h = :correct_h,correct_i = :correct_i,correct_j = :correct_j
+     $sql ='UPDATE `Activity` SET `score` = :score, `count_tot` = :count_tot, correct_a = :correct_a,correct_b = :correct_b,correct_c = :correct_c,correct_d = :correct_d,correct_e = :correct_e,correct_f = :correct_f,correct_g = :correct_g,correct_h = :correct_h,correct_i = :correct_i,correct_j = :correct_j, switch_to_bc = :switch_to_bc
                               WHERE activity_id = :activity_id';
         $stmt = $pdo -> prepare($sql);
         $stmt -> execute(array(
@@ -433,7 +434,8 @@ session_start();
                 ':correct_g' => $corr_num['g'],
                 ':correct_h' => $corr_num['h'],
                 ':correct_i' => $corr_num['i'],
-                ':correct_j' => $corr_num['j']
+                ':correct_j' => $corr_num['j'],
+                ':switch_to_bc' => $switch_to_bc,
                  ));
     
     
@@ -441,15 +443,7 @@ session_start();
 		$corr_num_st = implode(",",$corr_num);
         
         
-     /*  
-           $stmt = $pdo->prepare("UPDATE `Examactivity` SET ".$trynum_pblm." = :trynum_pblm,".$response_key." = :response_key WHERE examactivity_id = :examactivity_id ");
-			$stmt->execute(array(
-            ":examactivity_id" => $examactivity_id,
-            ":trynum_pblm" => $count,
-             ":response_key" => $corr_num_st, 
-            ));
-	
-     */
+    
     
     
     // time delay on total tries for the problem - try this in the JS
@@ -489,11 +483,11 @@ session_start();
 	<h4> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h4>
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
-     <!-- <div id = "test"> test <?php print_r ($wrongCount);?></div> -->
+     <!-- <div id = "test"> test <?php print_r ($wrongCount);?></div>
      
      diff_time_min: <?php echo($diff_time_min);?>
      switch_to_bc: <?php echo($switch_to_bc);?>
-
+ -->
 	<form autocomplete="off" id = "check_form" method="POST" >
 	<!-- <p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
 
@@ -625,7 +619,7 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
 <form id = "finish_form" method="POST" action = "GetRating2.php">
 	        
 
-            <input type="hidden" name="activity_id" value="<?php echo ($activity_id)?>" >
+            <input type="hidden" id = "activity_id" name="activity_id" value="<?php echo ($activity_id)?>" >
             <input type="hidden" name="problem_id" value="<?php echo ($problem_id)?>" >
             <input type="hidden" id = "changed_flag" name="changed_flag" value="<?php echo ($changed_flag)?>" >
             <input type="hidden" id = "count_from_check" name="count" value="<?php echo ($count_tot)?>" >
@@ -675,7 +669,8 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
    
      
 		$(document).ready( function () {
-         
+        
+        var activity_id = $('#activity_id').val();
           
 /*   I played with this to sneek values from the iframe to QRdisplayPblm problem and this worked but may as well use AJAX and get it from the activity table
 
@@ -759,7 +754,10 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
                             }       
                                  
                                  
-                                 
+          if($('#switch_to_bc').val() ==1){
+            window.location.replace("QR_BC_Checker2.php?activity_id="+activity_id);
+
+          }              
                                  
                                  
                                
