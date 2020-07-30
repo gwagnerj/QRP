@@ -2002,4 +2002,23 @@ ALTER TABLE Activity
        ADD `explore_review_count` INT(3) DEFAULT 0 AFTER `explore_text`,
         ADD `connect_review_count` INT(3) DEFAULT 0 AFTER `connect_text`,
        ADD `society_review_count` INT(3) DEFAULT 0 AFTER `society_text`;
-      
+    
+
+  CREATE TABLE IF NOT EXISTS `Rating` (
+  `rating_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `activity_id` INT(11) NOT NULL,
+   `rator_student_id` INT(11) NOT NULL,
+    `ratee_student_id` INT(11) NOT NULL,
+	`rating_out_of_5` INT(2) NOT NULL,
+    `ranking` INT(3),
+     `ranking_out_of` INT(3),
+     `exp_date` DATETIME,
+    `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`rating_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;     
+
+
+
+
+    
