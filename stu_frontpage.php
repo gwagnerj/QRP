@@ -453,6 +453,7 @@ if (isset($_SESSION['error'])){
            <input type="hidden"  name="stu_name" value="<?php echo ($stu_name);?>" >
            <input type="hidden"  name="student_id" value="<?php echo ($student_id);?>" >
              <input type="hidden"  name="activity_id" value="<?php echo ($activity_id);?>" >
+                   <input type="hidden"  name="currentclass_id" value="<?php echo ($currentclass_id);?>" >
               <input type="hidden"  name="pin" value="<?php echo ($pin);?>" >
                 <input type="hidden"  name="dex" value="<?php echo ($pin);?>" >
 	 </form>

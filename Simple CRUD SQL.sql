@@ -1975,11 +1975,14 @@ ALTER TABLE Activity
         ADD `wcount_j` INT(4) AFTER `wcount_i`,
          ADD `switch_to_bc` INT(2) AFTER `wcount_j`,
         ADD `reflect_text` VARCHAR(3000) AFTER `switch_to_bc`,
-        ADD `explore_text` VARCHAR(3000) AFTER `reflect_text`,
-        ADD `connect_text` VARCHAR(3000) AFTER `explore_text`,
-        ADD `society_text` VARCHAR(3000) AFTER `connect_text`;
+           ADD `reflect_review_count` INT(3)  DEFAULT 0 AFTER `reflect_text`,
+        ADD `explore_text` VARCHAR(3000) AFTER `reflect_review_count`,
+         ADD `explore_review_count` INT(3) AFTER `explore_text`,
+        ADD `connect_text` VARCHAR(3000) AFTER `explore_review_count`,
+         ADD `connect_review_count` INT(3) AFTER `connect_text`,
+        ADD `society_text` VARCHAR(3000) AFTER `connect_review_count`,
+         ADD `society_review_count` INT(3) AFTER `society_text`;
        
-
 
 
 
@@ -1991,4 +1994,12 @@ ALTER TABLE Activity
      ALTER TABLE Activity 
 		  ADD `switch_to_bc` INT(2) AFTER `wcount_j`;    
          
-       
+   
+
+
+   ALTER TABLE Activity
+      ADD `reflect_review_count` INT(3) DEFAULT 0 AFTER `reflect_text`,
+       ADD `explore_review_count` INT(3) DEFAULT 0 AFTER `explore_text`,
+        ADD `connect_review_count` INT(3) DEFAULT 0 AFTER `connect_text`,
+       ADD `society_review_count` INT(3) DEFAULT 0 AFTER `society_text`;
+      
