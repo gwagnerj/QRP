@@ -140,6 +140,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['Submitted'])) {
 		$explore_flag = $Assign_data['explore_flag'];
 		$connect_flag = $Assign_data['connect_flag'];
 		$society_flag = $Assign_data['society_flag'];
+        $reflect_pr_flag = $Assign_data['reflect_pr_flag'];
+		$explore_pr_flag = $Assign_data['explore_pr_flag'];
+		$connect_pr_flag = $Assign_data['connect_pr_flag'];
+		$society_pr_flag = $Assign_data['society_pr_flag'];
 		$choice = $Assign_data['ref_choice'];
 		$grader_id1 = $Assign_data['grader_id1'];
 		$grader_id2 = $Assign_data['grader_id2'];
@@ -152,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['Submitted'])) {
 		$instr_last =  $assign_num =  "";
 		$pp_flag1 = $pp_flag2 = $pp_flag3 =$pp_flag4 = $reflect_flag = $explore_flag= $choice =  "";
 		$alias_num = $connect_flag = $society_flag = $postp_flag1 =$postp_flag2 = $postp_flag3 =  "";
-		$grader_id1 = $grader_id2 = $grader_id3 = "";
+		$grader_id1 = $grader_id2 = $grader_id3 = $reflect_pr_flag = $explore_pr_flag = $connect_pr_flag = $society_pr_flag = "";
 		$currentclass_id = '';
 	}
 
@@ -207,6 +211,26 @@ if(isset($_POST['Activate']) && $assign_id == ''){
 			if(isset($_POST['society'])){
 				$society_flag = 1;
 			}
+             if(isset($_POST['reflect_pr_flag'])){
+			$reflect_pr_flag = 1;
+		} else {
+			$reflect_pr_flag = 0;
+		}
+		if(isset($_POST['explore_pr_flag'])){
+			$explore_pr_flag = 1;
+		} else {
+			$explore_pr_flag = 0;
+		}
+		if(isset($_POST['connect_pr_flag'])){
+			$connect_pr_flag = 1;
+		} else {
+			$connect_pr_flag = 0;
+		}
+		if(isset($_POST['society_pr_flag'])){
+			$society_pr_flag = 1;
+		} else {
+			$society_pr_flag = 0;
+		}
 			if(isset($_POST['postprob1'])){
 				$postp_flag1 = 1;
 			}
@@ -248,10 +272,10 @@ if(isset($_POST['Activate']) && $assign_id == ''){
  
  // Prepare an insert statement
         $sql = "INSERT INTO Assign (instr_last, iid, university,  assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,
-		connect_flag,society_flag,postp_flag1,postp_flag2,postp_flag3,grader_id1,grader_id2,grader_id3,alias_num,
+		connect_flag,society_flag,reflect_pr_flag,explore_pr_flag,connect_pr_flag,society_pr_flag,postp_flag1,postp_flag2,postp_flag3,grader_id1,grader_id2,grader_id3,alias_num,
 		currentclass_id,sec_desig_1,sec_desig_2,sec_desig_3,sec_desig_4,sec_desig_5,sec_desig_6)
 		VALUES (:instr_last, :iid,:university,  :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,
-		:connect_flag, :society_flag,:postp_flag1, :postp_flag2,:postp_flag3,:grader_id1,:grader_id2,:grader_id3,:alias_num,
+		:connect_flag, :society_flag,:reflect_pr_flag,:explore_pr_flag,:connect_pr_flag,:society_pr_flag,:postp_flag1, :postp_flag2,:postp_flag3,:grader_id1,:grader_id2,:grader_id3,:alias_num,
 		:currentclass_id,:sec_desig_1,:sec_desig_2,:sec_desig_3,:sec_desig_4,:sec_desig_5,:sec_desig_6)";
          
        
@@ -274,6 +298,10 @@ if(isset($_POST['Activate']) && $assign_id == ''){
 				':explore_flag' => $explore_flag,
 				':connect_flag' => $connect_flag,
 				':society_flag' => $society_flag,
+                ':reflect_pr_flag' => $reflect_pr_flag,
+				':explore_pr_flag' => $explore_pr_flag,
+				':connect_pr_flag' => $connect_pr_flag,
+				':society_pr_flag' => $society_pr_flag,
 				':grader_id1' => $grader_id1,
 				':grader_id2' => $grader_id2,
 				':grader_id3' => $grader_id3,
@@ -346,6 +374,26 @@ if(isset($_POST['Activate']) && $assign_id == ''){
 		} else {
 			$society_flag = 0;
 		}
+        if(isset($_POST['reflect_pr_flag'])){
+			$reflect_pr_flag = 1;
+		} else {
+			$reflect_pr_flag = 0;
+		}
+		if(isset($_POST['explore_pr_flag'])){
+			$explore_pr_flag = 1;
+		} else {
+			$explore_pr_flag = 0;
+		}
+		if(isset($_POST['connect_pr_flag'])){
+			$connect_pr_flag = 1;
+		} else {
+			$connect_pr_flag = 0;
+		}
+		if(isset($_POST['society_pr_flag'])){
+			$society_pr_flag = 1;
+		} else {
+			$society_pr_flag = 0;
+		}
 		if(isset($_POST['choice'])){
 			$choice = $_POST['choice'];
 		} else {
@@ -383,7 +431,8 @@ if(isset($_POST['Activate']) && $assign_id == ''){
    
    	$sql = "UPDATE Assign SET  assign_t_created = :assign_t_created, assign_num = :assign_num, pp_flag1 = :pp_flag1, pp_flag2= :pp_flag2,
 			pp_flag3 = :pp_flag3, pp_flag4 = :pp_flag4, reflect_flag = :reflect_flag, explore_flag = :explore_flag, connect_flag = :connect_flag,
-			society_flag = :society_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3, ref_choice = :choice, 
+			society_flag = :society_flag, reflect_flag = :reflect_flag, explore_pr_flag = :explore_pr_flag, connect_pr_flag = :connect_pr_flag,
+			society_pr_flag = :society_pr_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3, ref_choice = :choice, 
 			grader_id1 = :grader_id1, grader_id2 = :grader_id2, grader_id3 = :grader_id3, alias_num = :alias_num
 					WHERE assign_id = :assign_id";
 			$stmt = $pdo->prepare($sql);
@@ -400,6 +449,11 @@ if(isset($_POST['Activate']) && $assign_id == ''){
 			':explore_flag' => $explore_flag,
 			':connect_flag' => $connect_flag,
 			':society_flag' => $society_flag,
+            ':reflect_pr_flag' => $reflect_pr_flag,
+			':explore_pr_flag' => $explore_pr_flag,
+			':connect_pr_flag' => $connect_pr_flag,
+			':society_pr_flag' => $society_pr_flag,
+
 			':choice' => $choice,
 			':postp_flag1' => $postp_flag1,
 			':postp_flag2' => $postp_flag2,
@@ -524,20 +578,29 @@ if(isset($_POST['Activate']) && $assign_id == ''){
 				
 			?>
 			
-			
+			<!--
 			<p><input type="checkbox" name="guess" <?php if($pp_flag1 =='1'){echo ('checked');  }?> > Preliminary Estimates </p>
 			<p><input type="checkbox" name="q_on_q" <?php if($pp_flag2 =='1'){echo ('checked');  }?>> Planning Questions </p>
-			 Reflections:<br>
+            -->
+            
+			 Reflections:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Peer Review<br>
 			<!-- &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" value = 0 <?php if($choice ==0){echo ('checked');  }?> > Specify  <br>  -->
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" name="reflect" <?php if($reflect_flag ==1){echo ('checked');  }?> > Reflect  <br>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" name="explore" <?php if($explore_flag ==1){echo ('checked');  }?>> Explore  <br>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" name="connect" <?php if($connect_flag ==1){echo ('checked');  }?> > Connect  <br>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" name="society" <?php if($society_flag ==1){echo ('checked');  }?> > Society  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" name="reflect" id = "reflect_flag" <?php if($reflect_flag ==1){echo ('checked');  }?> > Reflect 
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "peer_review" id="reflect_pr_flag" name="reflect_pr_flag" <?php if($reflect_pr_flag ==1){echo ('checked');  }?>>   <br>
+
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" id = "explore_flag" name="explore" <?php if($explore_flag ==1){echo ('checked');  }?>> Explore  
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "peer_review" id = "explore_pr_flag" name="explore_pr_flag" <?php if($explore_pr_flag ==1){echo ('checked');  }?>>  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" id = "connect_flag" name="connect" <?php if($connect_flag ==1){echo ('checked');  }?> > Connect  
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "peer_review" id = "connect_pr_flag" name="connect_pr_flag" <?php if($connect_pr_flag ==1){echo ('checked');  }?> >  <br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" id = "society_flag"  name="society" <?php if($society_flag ==1){echo ('checked');  }?> > Society  
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "peer_review" id = "society_pr_flag" name="society_pr_flag" <?php if($society_pr_flag ==1){echo ('checked');  }?> >  <br>
 			<br>
+            
+        <!--    
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" class = "choice_class" value = 1 <?php if($choice ==1){echo ('checked');  }?> > Any One  <br>
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" class = "choice_class" value = 2 <?php if($choice ==2){echo ('checked');  }?> > Any Two  <br>
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" class = "choice_class" value = 3 <?php if($choice ==3){echo ('checked');  }?> > Any Three  <br>
-			
+			-->
 			<div id = "allow_grade">
 				</br>
 				&nbsp Who can see individual student results for this problem: </br>
@@ -580,11 +643,30 @@ if(isset($_POST['Activate']) && $assign_id == ''){
 	
 	$(document).ready( function () {
         
+        
+        
         $("#close_it").click(function(){
              window.close();
         });
-        
-        
+       
+      // $('#reflect_pr_flag').prop('checked')
+      //$('#checkboxId').is(':checked')
+      $( "#reflect_pr_flag").click(function() {if ($('#reflect_pr_flag').prop('checked')){$('#reflect_flag').prop('checked',true);}   });
+      $( "#explore_pr_flag").click(function() {if ($('#explore_pr_flag').prop('checked')){$('#explore_flag').prop('checked',true);}   });
+      $( "#connect_pr_flag").click(function() {if ($('#connect_pr_flag').prop('checked')){$('#connect_flag').prop('checked',true);}  });
+      $( "#society_pr_flag").click(function() {if ($('#society_pr_flag').prop('checked')){$('#society_flag').prop('checked',true);}  });
+      
+      
+      $( "#reflect_flag").click(function() {if ($('#reflect_flag').prop('checked')==false){$('#reflect_pr_flag').prop('checked',false);}   });
+      
+      $( "#explore_flag").click(function() {if ($('#explore_flag').prop('checked')==false){$('#explore_pr_flag').prop('checked',false);}   });
+      $( "#connect_flag").click(function() {if ($('#connect_flag').prop('checked')==false){$('#connect_pr_flag').prop('checked',false);}   });
+      $( "#society_flag").click(function() {if ($('#society_flag').prop('checked')==false){$('#society_pr_flag').prop('checked',false);}   });
+   
+               
+               
+   
+       
 		var sec_tot = 0;
 		var currentclass_name = '';
 		

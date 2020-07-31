@@ -33,14 +33,80 @@ session_start();
        $assign_num_peer = $assigntime_data['assign_num'];
        $assign_num_peer = $assigntime_data['assign_num'];
        $iid_peer = $assigntime_data['iid'];
-        */
+      
+       $sql = 'SELECT `reflect_pr_flag` FROM Assign WHERE currentclass_id = :currentclass_id AND assign_num = :assign_num AND alias_num = :alias_num  '; 
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array(
+        ':currentclass_id' => $_POST['currentclass_id'],
+        ':assign_num' =>  $_POST['assign_num'],
+        ':alias_num' => $i,
+        ));
+        $assign_data = $stmt -> fetch();
+       
+        */ 
+       
        
        $reflections = array(); 
            for ($i=1;$i<=20;$i++){
-             if($assigntime_data['perc_ref_'.$i]>0){$reflections['ref'.$i] =$i.') reflect';}
-             if($assigntime_data['perc_exp_'.$i]>0){$reflections['exp'.$i] =$i.') explore'; }
-             if($assigntime_data['perc_con_'.$i]>0){$reflections['con'.$i] =$i.') connect'; }
-             if($assigntime_data['perc_soc_'.$i]>0){$reflections['soc'.$i] =$i.') society'; }
+             if($assigntime_data['perc_ref_'.$i]>0){
+                  $sql = 'SELECT `reflect_pr_flag` FROM Assign WHERE currentclass_id = :currentclass_id AND assign_num = :assign_num AND alias_num = :alias_num  '; 
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute(array(
+                    ':currentclass_id' => $_POST['currentclass_id'],
+                    ':assign_num' =>  $_POST['assign_num'],
+                    ':alias_num' => $i,
+                    ));
+                    $assign_data = $stmt -> fetch();
+                    if($assign_data['reflect_pr_flag']==1){
+                        $reflections['ref'.$i] =$i.') reflect';
+                        }
+              }
+              
+              
+              if($assigntime_data['perc_exp_'.$i]>0){
+                $sql = 'SELECT `explore_pr_flag` FROM Assign WHERE currentclass_id = :currentclass_id AND assign_num = :assign_num AND alias_num = :alias_num  '; 
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute(array(
+                    ':currentclass_id' => $_POST['currentclass_id'],
+                    ':assign_num' =>  $_POST['assign_num'],
+                    ':alias_num' => $i,
+                    ));
+                    $assign_data = $stmt -> fetch();
+                    if($assign_data['explore_pr_flag']==1){
+                        $reflections['exp'.$i] =$i.') explore';
+              
+                    }
+              }
+              if($assigntime_data['perc_con_'.$i]>0){
+                $sql = 'SELECT `connect_pr_flag` FROM Assign WHERE currentclass_id = :currentclass_id AND assign_num = :assign_num AND alias_num = :alias_num  '; 
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute(array(
+                    ':currentclass_id' => $_POST['currentclass_id'],
+                    ':assign_num' =>  $_POST['assign_num'],
+                    ':alias_num' => $i,
+                    ));
+                    $assign_data = $stmt -> fetch();
+                    if($assign_data['connect_pr_flag']==1){
+                        $reflections['con'.$i] =$i.') connect';
+              
+                    }
+              }
+                 if($assigntime_data['perc_soc_'.$i]>0){
+                $sql = 'SELECT `society_pr_flag` FROM Assign WHERE currentclass_id = :currentclass_id AND assign_num = :assign_num AND alias_num = :alias_num  '; 
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute(array(
+                    ':currentclass_id' => $_POST['currentclass_id'],
+                    ':assign_num' =>  $_POST['assign_num'],
+                    ':alias_num' => $i,
+                    ));
+                    $assign_data = $stmt -> fetch();
+                    if($assign_data['society_pr_flag']==1){
+                        $reflections['soc'.$i] =$i.') society';
+              
+                    }
+              }
+
+        
          /*   
 
            if($assigntime_data['perc_exp_'.$i]>0){$reflections['perc_exp_'.$i] = $assigntime_data['perc_exp_'.$i];}

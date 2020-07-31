@@ -2007,6 +2007,8 @@ ALTER TABLE Activity
   CREATE TABLE IF NOT EXISTS `Rating` (
   `rating_id` INT(11) NOT NULL AUTO_INCREMENT,
   `activity_id` INT(11) NOT NULL,
+   `assign_id` INT(11) NOT NULL,
+    `refl_type` VARCHAR(20) NOT NULL,
    `rator_student_id` INT(11) NOT NULL,
     `ratee_student_id` INT(11) NOT NULL,
 	`rating_out_of_5` INT(2) NOT NULL,
@@ -2019,6 +2021,10 @@ ALTER TABLE Activity
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;     
 
 
-
+ ALTER TABLE Assign
+      ADD `reflect_pr_flag` INT(3) DEFAULT 0 AFTER `society_flag`,
+       ADD `explore_pr_flag` INT(3) DEFAULT 0 AFTER `reflect_pr_flag`,
+        ADD `connect_pr_flag` INT(3) DEFAULT 0 AFTER `explore_pr_flag`,
+       ADD `society_pr_flag` INT(3) DEFAULT 0 AFTER `connect_pr_flag`;
 
     
