@@ -267,7 +267,6 @@ $pass = array(
       // subbing in the header
        $header_stuff ->find('#stu_name',0)->innertext = $stu_name;
        $header_stuff ->find('#course',0)->innertext = $class_name;
-       $header_stuff ->find('#course',0)->innertext = $class_name;
        $header_stuff ->find('#assignment_num',0)->innertext = $assignment_num;
        $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
        $header_stuff ->find('#perc_of_assign',0)->innertext = $perc_of_assign.'%';

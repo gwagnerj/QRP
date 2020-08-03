@@ -2011,7 +2011,7 @@ ALTER TABLE Activity
     `refl_type` VARCHAR(20) NOT NULL,
    `rator_student_id` INT(11) NOT NULL,
     `ratee_student_id` INT(11) NOT NULL,
-	`rating_out_of_5` INT(2) NOT NULL,
+	`rating` INT(2) NOT NULL,
     `ranking` INT(3),
      `ranking_out_of` INT(3),
      `exp_date` DATETIME,

@@ -44,11 +44,19 @@ session_start();
         $assign_data = $stmt -> fetch();
        
         */ 
+     //  make this a join type of request and see what we get   
+       
+       
+       
+       
+       
+       
        
        
        $reflections = array(); 
            for ($i=1;$i<=20;$i++){
              if($assigntime_data['perc_ref_'.$i]>0){
+                 
                   $sql = 'SELECT `reflect_pr_flag` FROM Assign WHERE currentclass_id = :currentclass_id AND assign_num = :assign_num AND alias_num = :alias_num  '; 
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute(array(
@@ -58,12 +66,14 @@ session_start();
                     ));
                     $assign_data = $stmt -> fetch();
                     if($assign_data['reflect_pr_flag']==1){
+                 //  if($assign_data[1==1){
                         $reflections['ref'.$i] =$i.') reflect';
                         }
               }
               
               
               if($assigntime_data['perc_exp_'.$i]>0){
+                   
                 $sql = 'SELECT `explore_pr_flag` FROM Assign WHERE currentclass_id = :currentclass_id AND assign_num = :assign_num AND alias_num = :alias_num  '; 
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute(array(
@@ -73,11 +83,13 @@ session_start();
                     ));
                     $assign_data = $stmt -> fetch();
                     if($assign_data['explore_pr_flag']==1){
+                  //  if($assign_data[1==1){
                         $reflections['exp'.$i] =$i.') explore';
               
                     }
               }
               if($assigntime_data['perc_con_'.$i]>0){
+                  
                 $sql = 'SELECT `connect_pr_flag` FROM Assign WHERE currentclass_id = :currentclass_id AND assign_num = :assign_num AND alias_num = :alias_num  '; 
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute(array(
@@ -87,11 +99,13 @@ session_start();
                     ));
                     $assign_data = $stmt -> fetch();
                     if($assign_data['connect_pr_flag']==1){
+                  //  if($assign_data[1==1){
                         $reflections['con'.$i] =$i.') connect';
               
                     }
               }
                  if($assigntime_data['perc_soc_'.$i]>0){
+                     
                 $sql = 'SELECT `society_pr_flag` FROM Assign WHERE currentclass_id = :currentclass_id AND assign_num = :assign_num AND alias_num = :alias_num  '; 
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute(array(
@@ -100,7 +114,7 @@ session_start();
                     ':alias_num' => $i,
                     ));
                     $assign_data = $stmt -> fetch();
-                    if($assign_data['society_pr_flag']==1){
+                   if($assign_data['society_pr_flag']==1){
                         $reflections['soc'.$i] =$i.') society';
               
                     }
