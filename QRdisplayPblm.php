@@ -186,7 +186,7 @@ $htmlfilenm = "uploads/".$htmlfilenm;
         if($row['v_'.($i+1)]!='Null' ){
             $vari[$i] = $row['v_'.($i+1)];
             $BC_vari[$i] = $BC_row['v_'.($i+1)];
-            $pattern[$i]= '/##'.$nvar[$i].'.+?##/';
+            $pattern[$i]= '/##'.$nvar[$i].',.+?##/';
         }
     }
    // see if we need a reflections button
