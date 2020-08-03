@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
      
      foreach($alias_numss as $alias_nums){
         $alias_num = $alias_nums['alias_num']+0;
-         echo(' alias_num: '.$alias_num);
+       //  echo(' alias_num: '.$alias_num);
       $data_init += array('perc_'.$alias_num => '');
       $data_init += array('perc_pp1_'.$alias_num => ''); 
       $data_init += array('perc_pp2_'.$alias_num => ''); 

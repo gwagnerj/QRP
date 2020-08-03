@@ -301,7 +301,7 @@
 	}
     
 		if (isset($_POST['reset']))	{
-             header("Location: QRHomework.php");
+             header("Location: QRhomework.php");
 			return; 
 		}
         

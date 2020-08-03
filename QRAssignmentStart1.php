@@ -341,11 +341,12 @@ $_SESSION['counter']=0;  // this is for the score board
                     <?php echo ($assign_num);?>
                    
                 </br>	
+          <!--      
                 <br>
                   <font color=#003399>new_flag: &nbsp; </font>
-                    <?php echo ($new_flag);?>
+                    <?php //echo ($new_flag);?>
                    
-              
+              -->
                 
   
                 <br>

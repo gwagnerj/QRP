@@ -1950,9 +1950,6 @@ ALTER TABLE Activity
          ADD `pp1_pts` INT(4) AFTER `society_pts`,
          ADD `pp2_pts` INT(4) AFTER `pp1_pts`,
          ADD `pp3_pts` INT(4) AFTER `pp2_pts`,
-         
-         
-        ALTER TABLE Activity  
         ADD `wcount_bc_a` INT(4) AFTER `count_tot`,
         ADD `wcount_bc_b` INT(4) AFTER `wcount_bc_a`,
         ADD `wcount_bc_c` INT(4) AFTER `wcount_bc_b`,
