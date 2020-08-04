@@ -1,6 +1,7 @@
 <?php
  session_start();
-  Require_once "pdo.php";
+  require_once "pdo.php";
+  include 'phpqrcode/qrlib.php'; 
 
 if(isset($_GET['activity_id'])){
     $activity_id = $_GET['activity_id'];
@@ -55,7 +56,7 @@ if(isset($_POST['submit_button'])){
         
        }
    
-       $_SESSION['success'] = 'Your work has been successfully uploaded';
+       $_SESSION['success'] = 'Your work has been successfully uploaded - '.$i.' files uploaded';
         echo('Your work has been successfully uploaded');
         // probably go somewhere else maybe apply the points so that they recieve the provisional points
    
@@ -68,8 +69,18 @@ if(isset($_POST['submit_button'])){
 }
 
 
+       $qrchecker_text = 'https://www.qrproblems.org/QRP/upload_work.php?activity_id='.$activity_id;
 
-
+        $file = 'uploads/temp2 png'; 
+        // $ecc stores error correction capability('L') 
+        $ecc = 'M'; 
+        $pixel_size = 2; 
+        $frame_size = 1; 
+          
+        // Generates QR Code and Stores it in directory given 
+          QRcode::png($qrchecker_text, $file, $ecc, $pixel_size, $frame_size); 
+         
+          $qrcode = "<span id = 'qrcode_id'><right><img src='".$file."'><p> Upload Files from Mobile Device by scanning the QRcode </p></right></span>"; 
 
 
 
@@ -109,6 +120,13 @@ if(isset($_POST['submit_button'])){
 			unset($_SESSION['success']);
 		}
 ?>	
+
+<?php
+
+        echo $qrcode;
+
+?>
+
 
  <form method = "POST" enctype = "multipart/form-data" >
     <input type="file" name = "files[]" multiple = "multiple"> &nbsp;

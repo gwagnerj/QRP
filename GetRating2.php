@@ -486,7 +486,7 @@
 		</div>	
 
 		
-
+</form>
 	 
 	 <!--<div id = "qr_comments_div"> 
 	 <br>
@@ -494,7 +494,7 @@
 			&nbsp &nbsp <textarea name="qr_comments" id = "one" cols = "100" rows = "2" placeholder = "optional" maxlength = "2000" ></textarea>
 		</div>		
 	
-	</form>
+	
 
 
 
