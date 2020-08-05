@@ -252,7 +252,7 @@ $stmt = $pdo->prepare($sql);
         if($BC_row['v_'.($i+1)]!='Null' ){
             $vari[$i] = $BC_row['v_'.($i+1)];
             $BC_vari[$i] = $BC_row['v_'.($i+1)];
-            $pattern[$i]= '/##'.$nvar[$i].'.+?##/';
+            $pattern[$i]= '/##'.$nvar[$i].',.+?##/';
         }
     }
 ?>

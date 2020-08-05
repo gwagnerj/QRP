@@ -116,9 +116,23 @@ session_start();
          }
     }
 //end section-------------------------------------------------------------------------------------------
-       
-        
-         
+          if ($progress == 9){// submitted the work files go back to the frontpage after ressetting the progress variable
+              
+             
+             
+             $sql ='UPDATE `Activity` SET `progress` = :progress  WHERE activity_id = :activity_id';
+                $stmt = $pdo -> prepare($sql);
+                $stmt -> execute(array(
+                        ':progress' => 6,
+                        ':activity_id' => $activity_id
+                     )); 
+
+                header('Location: stu_frontpage.php?activity_id='.$activity_id);
+               die();                     
+          }
+          
+          
+          
 			if ($progress == 4 || $progress == 5 ){  // first time through so initialize response and previous response to zero - student never saw this problem before - 
              
              $sql ='UPDATE `Activity` SET `progress` = :progress  WHERE activity_id = :activity_id';

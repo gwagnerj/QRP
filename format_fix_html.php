@@ -68,11 +68,11 @@ require_once "simple_html_dom.php";
                 foreach($tags as $tag){
                    
                    // if (strpos(str_replace(' ','',$tag->plaintext),'i)Reflect')!== false) { $html = str_replace($tag->outertext,'<div id="reflect">' . $tag->outertext,$html);}
-                    if (strpos(str_replace(' ','',$tag->plaintext),'i)Reflect')!== false && strpos(str_replace(' ','',$tag->outertext),'</div><div id="explore">' && strpos(str_replace(' ','',$tag->outertext),'<div id="reflect">' ) == false) { $html = str_replace($tag->outertext,'<div id="reflect">' . $tag->outertext,$html);}
+                    if (strpos( strpos(str_replace(' ','',$tag->outertext),'</div><div id="explore">' ) == false ) { $html = str_replace($tag->outertext,'<div id="reflect">' . $tag->outertext,$html);}
                     
-                    if (strpos(str_replace(' ','',$tag->plaintext),'ii)Explore')!== false) { $html = str_replace($tag->outertext,'</div><div id="explore">' . $tag->outertext,$html);}
-                    if (strpos(str_replace(' ','',$tag->plaintext),'iii)Connect')!== false) { $html = str_replace($tag->outertext,'</div><div id="connect">' . $tag->outertext,$html);}
-                    if (strpos(str_replace(' ','',$tag->plaintext),'iv)S')!== false) { $html = str_replace($tag->outertext,'</div><div id="society">' . $tag->outertext.'</div>',$html);}
+                 //   if (strpos(str_replace(' ','',$tag->plaintext),'ii)Explore')!== false) { $html = str_replace($tag->outertext,'</div><div id="explore">' . $tag->outertext,$html);}
+                //    if (strpos(str_replace(' ','',$tag->plaintext),'iii)Connect')!== false) { $html = str_replace($tag->outertext,'</div><div id="connect">' . $tag->outertext,$html);}
+                 //   if (strpos(str_replace(' ','',$tag->plaintext),'iv)S')!== false) { $html = str_replace($tag->outertext,'</div><div id="society">' . $tag->outertext.'</div>',$html);}
                 }
                 // Take care of the images and captions if any then variable images if any
                 

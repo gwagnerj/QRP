@@ -1070,7 +1070,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                 foreach($tags as $tag){
                    
                     if (strpos(str_replace(' ','',$tag->plaintext),'i)Reflect')!== false) { $html = str_replace($tag->outertext,'<div id="reflect">' . $tag->outertext,$html);}
-                    if (strpos(str_replace(' ','',$tag->plaintext),'ii)Explore')!== false) { $html = str_replace($tag->outertext,'<div id="explore">' . $tag->outertext,$html);}
+                    if (strpos(str_replace(' ','',$tag->plaintext),'ii)Explore')!== false) { $html = str_replace($tag->outertext,'</div><div id="explore">' . $tag->outertext,$html);}
                     if (strpos(str_replace(' ','',$tag->plaintext),'iii)Connect')!== false) { $html = str_replace($tag->outertext,'</div><div id="connect">' . $tag->outertext,$html);}
                     if (strpos(str_replace(' ','',$tag->plaintext),'iv)S')!== false) { $html = str_replace($tag->outertext,'</div><div id="society">' . $tag->outertext.'</div>',$html);}
                 }

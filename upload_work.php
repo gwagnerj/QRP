@@ -10,7 +10,22 @@ if(isset($_GET['activity_id'])){
     
 }
 
-
+/* 
+if (isset($_POST['finished_button'])){
+    
+        
+             $sql ='UPDATE `Activity` SET `progress` = :progress  WHERE activity_id = :activity_id';
+                $stmt = $pdo -> prepare($sql);
+                $stmt -> execute(array(
+                        ':progress' => 9,  // this should reset the page pack to the frontpage
+                        ':activity_id' => $activity_id
+                     )); 
+        
+    console.log('trying to close');
+    echo '<script> window.top.location.reload(); </script>';
+    
+}
+ */
 if(isset($_POST['submit_button'])){
     $files = array_filter($_FILES['files']['name']);
  //echo (' files '.$files);
@@ -135,7 +150,14 @@ if(isset($_POST['submit_button'])){
      <form method = "POST" enctype = "multipart/form-data" >
         <input type="file" id = "files" name = "files[]" multiple = "multiple"> &nbsp;
         (Accepted file types: jpg, jpeg, png and pdf)<br><br>
-        <button type = "submit" style = "width: 30%; background-color: red; color: white" id = "submit_button" name = "submit_button">Submit Work Files</button>
+       
+
+       <button type = "submit" style = "width: 30%; background-color: red; color: white" id = "submit_button" name = "submit_button">Submit Work Files</button> <br><br><br>
+        
+    <!--            <button type = "submit" style = "width: 30%; background-color: blue; color: white" id = "finished_button" name = "finished_button">Finished with Problem</button>
+-->
+<h3> When Finished use the "back" button at the top of the page</h3>
+
      </form>
      
      <script>
