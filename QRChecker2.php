@@ -606,7 +606,7 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
 --> 
 <br> numerical score possible  <?php echo (round($num_score_possible)) ?> %&nbsp;  
 
-<?php if ( $pscore_less==$num_score_possible && $now_int < $due_date_ec_int){$ec_elgible_flag =1;} else {$ec_elgible_flag =0;} ?>
+<?php if ( $pscore_less==$num_score_possible && $pscore_less !=0 && $pscore_less !='' && $now_int < $due_date_ec_int){$ec_elgible_flag =1;} else {$ec_elgible_flag =0;} ?>
          <span id ="t_delay_message"></span>
 	<p><input type = "submit" id = "check_submit" name = "check" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p><br>
              <input type="hidden" name="activity_id" value="<?php echo ($activity_id)?>" >
@@ -623,7 +623,6 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
             <input type="hidden" name="problem_id" value="<?php echo ($problem_id)?>" >
             <input type="hidden" id = "changed_flag" name="changed_flag" value="<?php echo ($changed_flag)?>" >
             <input type="hidden" id = "count_from_check" name="count" value="<?php echo ($count_tot)?>" >
-            <input type="hidden" name="problem_id" value="<?php echo ($problem_id)?>" >
             <input type="hidden" id = "PScore" name="PScore" value="<?php echo ($PScore)?>" >
              <input type="hidden" name="perc_late_p_prob" value="<?php echo ($perc_late_p_prob)?>" >
              <input type="hidden" name="num_score_possible" value="<?php echo ($num_score_possible)?>" >

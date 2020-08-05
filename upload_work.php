@@ -13,8 +13,12 @@ if(isset($_GET['activity_id'])){
 
 if(isset($_POST['submit_button'])){
     $files = array_filter($_FILES['files']['name']);
-    $total = count($_FILES['files']['name']);
-   if ($total>0){
+ //echo (' files '.$files);
+        @$total = count($files);
+
+ // echo(' $total   '.$total);
+
+  if ($total>=1){  
    
        for( $i=0 ; $i < $total ; $i++ ) {
 
@@ -80,7 +84,7 @@ if(isset($_POST['submit_button'])){
         // Generates QR Code and Stores it in directory given 
           QRcode::png($qrchecker_text, $file, $ecc, $pixel_size, $frame_size); 
          
-          $qrcode = "<span id = 'qrcode_id'><right><img src='".$file."'><p> Upload Files from Mobile Device by scanning the QRcode </p></right></span>"; 
+          $qrcode = "<span id = 'qrcode_id'><right><img src='".$file."'><p> You can upload work from a Mobile Device by scanning the QRcode then Selecting Choose Files or from you computer </p></right></span>"; 
 
 
 
@@ -128,11 +132,21 @@ if(isset($_POST['submit_button'])){
 ?>
 
 
- <form method = "POST" enctype = "multipart/form-data" >
-    <input type="file" name = "files[]" multiple = "multiple"> &nbsp;
-    (Accepted file types: jpg, jpeg, png and pdf)<br><br>
-    <button type = "submit" name = "submit_button">Subit Work Files</button>
- </form>
- 
- </body>
- </html>
+     <form method = "POST" enctype = "multipart/form-data" >
+        <input type="file" id = "files" name = "files[]" multiple = "multiple"> &nbsp;
+        (Accepted file types: jpg, jpeg, png and pdf)<br><br>
+        <button type = "submit" style = "width: 30%; background-color: red; color: white" id = "submit_button" name = "submit_button">Submit Work Files</button>
+     </form>
+     
+     <script>
+     	$(document).ready(function(){
+              $('#submit_button').hide();
+             $('#files').change(function(){
+                   $('#submit_button').show(); 
+             })
+      });
+     </script>
+     </body>
+     
+    
+     </html>

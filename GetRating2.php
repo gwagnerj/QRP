@@ -258,7 +258,7 @@
 			 
 			 
 			 }
-	  		if($num_score_possible == $p_num_score_net){$perf_num_score_flag = 1;} else {$perf_num_score_flag = 0;}		
+	  		if($num_score_possible == $p_num_score_net && $p_num_score_net != 0 && $p_num_score_net != '' && $p_num_score_net != null ){$perf_num_score_flag = 1;} else {$perf_num_score_flag = 0;}		
 
 	?>
 
