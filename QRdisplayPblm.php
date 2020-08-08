@@ -624,6 +624,7 @@ $pass = array(
                     $("#BC_checker").hide();
                     $('#qrcode_id').show();
                     $('#qrcode_id_bc').hide();
+                      $('#reflections').show();
                     $('#basecasebutton').prop('value','to Base-case');
             }else if(bc_display && !qr_code){
                     $("#problem").hide(); 
@@ -642,6 +643,7 @@ $pass = array(
                     $("#BC_checker").hide();
                     $('#qrcode_id').hide();
                     $('#qrcode_id_bc').hide();
+                    $('#reflections').show();
                      $('#basecasebutton').prop('value','to Base-case');
             }
 
@@ -670,6 +672,7 @@ $pass = array(
                     $("#BC_checker").hide();
                     $('#qrcode_id').show();
                     $('#qrcode_id_bc').hide();
+                     $('#reflections').show();
                     $('#checkerbutton').prop('value','to Checker'); 
             }else if(bc_display && !qr_code){
                     $("#problem").hide(); 
@@ -688,6 +691,7 @@ $pass = array(
                     $("#BC_checker").hide();
                     $('#qrcode_id').hide();
                     $('#qrcode_id_bc').hide();
+                     $('#reflections').show();
                     $('#checkerbutton').prop('value','to QR code'); 
             }
 

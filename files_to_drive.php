@@ -1,11 +1,10 @@
 <?php
  session_start();
   require_once "pdo.php";
-  include 'phpqrcode/qrlib.php'; 
-/* 
-$url_array = explode('?','http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-$url = $url_array[0].'&output=embed';
 
+$url_array = explode('?','http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+$url = $url_array[0];
+//My First Project-db99265600f4.json allows access to your cloud resources, so store it securely. 
 // include your composer dependencies
 //require_once 'vendor/autoload.php';
 require_once 'google-api-php-client/src/Google_Client.php';
@@ -28,7 +27,7 @@ if (isset($_GET['code'])) {
 
 
 
- */
+
 
 /* 
 $client->setApplicationName("Client_Library_Examples");
@@ -70,7 +69,7 @@ if (isset($_POST['finished_button'])){
     echo '<script> window.top.location.reload(); </script>';
     
 }
- */
+ 
 if(isset($_POST['submit_button'])){
     $files = array_filter($_FILES['files']['name']);
  //echo (' files '.$files);
@@ -150,8 +149,10 @@ if(isset($_POST['submit_button'])){
 
 
 
-
+*/
 ?>
+
+
 <!DOCTYPE html>
 <html lang = "en">
 <head>
@@ -184,12 +185,8 @@ if(isset($_POST['submit_button'])){
 			unset($_SESSION['success']);
 		}
 ?>	
+<!--
 
-<?php
-
-        echo $qrcode;
-
-?>
 
 
      <form method = "POST" enctype = "multipart/form-data" >
@@ -198,9 +195,11 @@ if(isset($_POST['submit_button'])){
        
 
        <button type = "submit" style = "width: 30%; background-color: red; color: white" id = "submit_button" name = "submit_button">Submit Work Files</button> <br><br><br>
-        
+ -->       
     <!--            <button type = "submit" style = "width: 30%; background-color: blue; color: white" id = "finished_button" name = "finished_button">Finished with Problem</button>
 -->
+<!-- 
+
 <h3> When Finished use the "back" button at the top of the page</h3>
 
      </form>
@@ -213,6 +212,8 @@ if(isset($_POST['submit_button'])){
              })
       });
      </script>
+   --> 
+     
      </body>
      
     

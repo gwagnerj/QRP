@@ -22,7 +22,7 @@ session_start();
 
 	<body>
 		<form action="stu_reset-request.php" method="post">
-					Enter School email in system to recieve information on your password or username
+					Enter School email in system to recieve information on your password or username - check inbox and spam folder
 					<input type="email" class="text" id = "email" name="email" placeholder="email" required> </br>
 					<input type="submit" class="submit" name = "reset-request-submit" value="Submit">
 				</div>
