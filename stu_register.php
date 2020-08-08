@@ -177,7 +177,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 //$mail -> setFrom($email);
                 $mail->setFrom('wagnerj@excelproblempedia.org', 'John');
                 $mail->addAddress($school_email);     // Add a recipient
-                $mail->addAddress('wagnerj@trine.edu');               // Name is optional	
+               // $mail->addAddress('wagnerj@trine.edu');               // Name is optional	
                 $mail->addAddress('gwagnerj@gmail.com');               // Name is optional	
                         
                 
@@ -220,8 +220,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 //$mail -> setFrom($email);
                 $mail2->setFrom('wagnerj@excelproblempedia.org', 'John');
                 $mail2->addAddress($email2);     // Add a recipient
-                $mail2->addAddress('gwagnerj@gmail.com');               // Name is optional	
-                $mail2->addAddress('wagnerj@trine.edu');               // Name is optional			
+            //    $mail2->addAddress('gwagnerj@gmail.com');               // Name is optional	
+           //     $mail2->addAddress('wagnerj@trine.edu');               // Name is optional			
                 
                 $mail2->isHTML(true);  	
                 $mail2 -> Subject = $subject;
