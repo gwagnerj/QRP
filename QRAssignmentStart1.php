@@ -388,10 +388,10 @@ $_SESSION['counter']=0;  // this is for the score board
            </br>
                 <font color=#003399>Work Flow: &nbsp; </font><br>
                 &nbsp;&nbsp; <input type="radio" name="work_flow" id = "work_flow"
-                    <?php if (isset($work_flow) && $work_flow=="open"  ) echo "checked";?>
+                    <?php if (isset($work_flow) && $work_flow=="open" ||!isset($work_flow)  ) echo "checked";?>
                     value="open"> Open - students can freely move between base-case and their problem &nbsp;&nbsp;&nbsp;&nbsp;
                     <br>&nbsp;&nbsp;&nbsp;<input type="radio" name="work_flow"
-                    <?php if ((isset($work_flow) && $work_flow=="bc_if")||!isset($work_flow)) echo "checked";?>
+                    <?php if ((isset($work_flow) && $work_flow=="bc_if")) echo "checked";?>
                     value="bc_if" id = "bc_if"> Base-Case If - Students are routed to the base-case they get stuck on their problem &nbsp;&nbsp;&nbsp;&nbsp;
                    
 
@@ -443,11 +443,11 @@ $_SESSION['counter']=0;  // this is for the score board
                     
             <br><font color=#003399> Late Policy &nbsp; </font><br>
            &nbsp;&nbsp; <input type="radio" name="late_points" id = "late_points"
-                    <?php if ((isset($late_points) && $late_points=="linear") || !isset($late_points) ) echo "checked";?>
+                    <?php if ((isset($late_points) && $late_points=="linear")  ) echo "checked";?>
                     value="linear"> Linear decline from Due date to Window Close &nbsp;&nbsp;&nbsp;&nbsp;
 
            &nbsp;&nbsp; <input type="radio" name="late_points" id = "late_points"
-                    <?php if (isset($late_points) && $late_points=="fixedpercent"  ) echo "checked";?>
+                    <?php if ((isset($late_points) && $late_points=="fixedpercent") || !isset($late_points)  ) echo "checked";?>
                     value="fixedpercent"> Fixed Percent of Maximum per day after Due date of: &nbsp;
                 <span id = "fixed_percent_per_day">
                    
