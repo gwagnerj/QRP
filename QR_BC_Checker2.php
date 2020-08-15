@@ -68,14 +68,45 @@ session_start();
      $assign_data = $stmt -> fetch();
      $assignment_num = $assign_data['assign_num'];
      $alias_num = $assign_data['alias_num'];    
-      
+     
+       $sql = 'SELECT * FROM Assigntime WHERE assign_num = :assign_num AND currentclass_id = :currentclass_id'; // may not want everything here
+     $stmt = $pdo->prepare($sql);
+     $stmt->execute(array(':assign_num' => $assignment_num,
+                          ':currentclass_id' => $currentclass_id));
+     $assigntime_data = $stmt -> fetch();
+     
+     $work_flow =  $assigntime_data['work_flow'];
+     $bc_ans_t = $assigntime_data['bc_ans_t'];  // how long before we can show the answers
+      $bc_ans_n = $assigntime_data['bc_ans_n'];
+     
+     $perc_of_assign = $assigntime_data['perc_'.$alias_num];
+     $due_date = new DateTime($assigntime_data['due_date']);
+     $due_date = $due_date->format(' D, M d,  g:i A');
+     $due_date_int = strtotime($due_date);
+     $window_closes = new DateTime($assigntime_data['window_closes']);
+     $window_closes = $window_closes->format(' D, M d,  g:i A');
+     $window_closes_int = strtotime($window_closes);
+     $late_points = $assigntime_data['late_points'];
+     $credit = $assigntime_data['credit'];
+     $fixed_percent_decline = $assigntime_data['fixed_percent_decline'];
+      $now = new DateTime($activity_data['last_updated_at']);
+      $now = $now->format(' D, M d,  g:i A');
+
+     
+     
+     
+     
+     /*  
          $sql = 'SELECT * FROM Assigntime WHERE assign_num = :assign_num AND currentclass_id = :currentclass_id'; // may not want everything here
      $stmt = $pdo->prepare($sql);
      $stmt->execute(array(':assign_num' => $assignment_num,
                           ':currentclass_id' => $currentclass_id));
      $assigntime_data = $stmt -> fetch();
      $perc_of_assign = $assigntime_data['perc_'.$alias_num];
+      */
+     
       
+
          
         if ($progress == 4 ){  // first time through so initialize response and previous response to zero - student never saw this problem before - and is doing the basecase first
          $sql ='UPDATE `Activity` SET `progress` = :progress  WHERE activity_id = :activity_id';
@@ -253,7 +284,17 @@ session_start();
             ));
              $count_data = $stmt -> fetchColumn();
              $wrongCount[$i] = $count_data;
-           
+             $count_tot = $count_tot + $count_data;
+             
+            
+             
+               // put the wrong count values in activity table for easy access by other files
+            $sql = 'UPDATE `Activity` SET wcount_bc_'.$v.'= :wcount_x WHERE activity_id = :activity_id';
+            $stmt = $pdo->prepare($sql);
+             $stmt ->execute(array(
+                    ':activity_id' => $activity_id,
+                    ':wcount_x' => $count_data,
+                 ));
             
         
             
@@ -270,16 +311,43 @@ session_start();
                     ':resp_value' => $resp[$v],
                     ':part_name' => $v
                  ));
+                 
+                 
+                 // get the time they have been working on each part in minutes
+                 $diff_time_min = array();
+                 
+                  $sql = 'SELECT UNIX_TIMESTAMP(`created_at`) AS created_at FROM Bc_resp WHERE activity_id = :activity_id AND part_name = :part_name ORDER BY bc_resp_id DESC LIMIT 1';
+                $stmt = $pdo->prepare($sql);
+                $stmt ->execute(array(
+                    ':activity_id' => $activity_id,
+                    ':part_name' => $v,
+                 ));
+                 $original_dates = $stmt -> fetch();                
+                 $last_date = $original_dates['created_at'];
+               
+                // get the time they have been working on this part from the Bc_resp table
+                $sql = 'SELECT UNIX_TIMESTAMP(`created_at`) AS created_at FROM Bc_resp WHERE activity_id = :activity_id AND part_name = :part_name ORDER BY bc_resp_id ASC LIMIT 1';
+                $stmt = $pdo->prepare($sql);
+                $stmt ->execute(array(
+                    ':activity_id' => $activity_id,
+                    ':part_name' => $v,
+                 ));
+                 $original_dates = $stmt -> fetch();                
+                 $first_date = $original_dates['created_at'];
+                 
+                if (is_numeric($last_date) && is_numeric($first_date))
+                {$diff_time_min[$i] = round(($last_date - $first_date)/60);} else {$diff_time_min[$i]=0;}
+                 
             }
         $i++;  
         }
       }
-      
+     /*  
       if ($changed_flag){
             $count_tot++;
             $_SESSION['count_tot'] = $count_tot;
       }
-		
+		 */
 		for ($j=0; $j<=9; $j++) {
 			if($partsFlag[$j] ) {
 					//If ($soln[$j]>((1-$tol[$tol_key[$j]])*$resp[$resp_key[$j]]) and ($soln[$j]<((1+$tol[$tol_key[$j]]))*($resp[$resp_key[$j]]))) //if the correct value is within the response plus or minus the tolerance
@@ -303,18 +371,7 @@ session_start();
                 else  // got it wrong or did not attempt
                 {
                     
-  /*                        
-                    if(!(isset($_SESSION['wrongC'[$j]])))  // needs initialized
-                    {
-                        
-                        $_SESSION['$wrongC'[$j]] = 0;
-                        $wrongCount[$j]=0;
-                        //echo 'im here';
-                        //echo $_SESSION['wrongC'[$j]];
-                    
-                        
-                   }
-   */
+  
                     if ($resp[$resp_key[$j]]==0)  // did not attempt it
                     {
                         
@@ -336,31 +393,27 @@ session_start();
 			}
 		}
      
-     
-     
-     
-    /*  
-		
-		$PScore=$score/$probParts*100; 
-    
-     $sql ='UPDATE `Activity` SET `score` = :score, `count_tot` = :count_tot WHERE activity_id = :activity_id';
+    $switch_to_bc = 0;  // need to put in logic to cahnge this if necessary!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ 
+ 
+     $sql ='UPDATE `Activity` SET  bc_correct_a = :bc_correct_a,bc_correct_b = :bc_correct_b,bc_correct_c = :bc_correct_c,bc_correct_d = :bc_correct_d,bc_correct_e = :bc_correct_e,bc_correct_f = :bc_correct_f,bc_correct_g = :bc_correct_g,bc_correct_h = :bc_correct_h,bc_correct_i = :bc_correct_i,bc_correct_j = :bc_correct_j, switch_to_bc = :switch_to_bc
+                              WHERE activity_id = :activity_id';
         $stmt = $pdo -> prepare($sql);
         $stmt -> execute(array(
-                ':score' => $score,
-                ':count_tot' => $count_tot,
-                ':activity_id' => $activity_id
+                ':activity_id' => $activity_id,
+                ':bc_correct_a' => $corr_num['a'],
+                ':bc_correct_b' => $corr_num['b'],
+                ':bc_correct_c' => $corr_num['c'],
+                ':bc_correct_d' => $corr_num['d'],
+                ':bc_correct_e' => $corr_num['e'],
+                ':bc_correct_f' => $corr_num['f'],
+                ':bc_correct_g' => $corr_num['g'],
+                ':bc_correct_h' => $corr_num['h'],
+                ':bc_correct_i' => $corr_num['i'],
+                ':bc_correct_j' => $corr_num['j'],
+                ':switch_to_bc' => $switch_to_bc,
                  ));
-    
-    
-		$_SESSION['points']=$score; // this will cause problems if running multiple browser windows on the same machine - testing on localhost
-		$corr_num_st = implode(",",$corr_num);
-         */
-        
-     
-    
-    
-    // time delay on total tries for the problem - try this in the JS
-    
+ 
             
     }
   
@@ -403,10 +456,8 @@ session_start();
 	<body>
 	<header>
 	<h3>Base-Case Checker &nbsp;&nbsp;&nbsp;
-            <span>
-            <input type="button" id="show_answer_button" class="btn-default" value="Show Answer">
-            </span>&nbsp;
-              <input type="button" id="review_concepts_button" class="btn-default" value="Review Concepts">
+             <!--     <span><input type="button" id="show_answer_button" class="btn-default" value="Show Answer"> </span>&nbsp;
+        <input type="button" id="review_concepts_button" class="btn-default" value="Review Concepts">
             </span>&nbsp;
               <input type="button" id="peer_discuss_button" class="btn-default" value="Forum">
             </span>&nbsp;&nbsp;
@@ -424,11 +475,12 @@ session_start();
             <input type="button" id="instructor_help_button" class="btn-default" value="Instructor">
             </span>&nbsp;
             <span>
-            
+        -->    
             </h3>
 	</header>
 	<main>
-	<h4> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h4>
+	<h4> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> &nbsp; &nbsp; Answer Thresholds: &nbsp; count = <?php echo($assigntime_data['bc_ans_n']);?>&nbsp; time = <?php echo($assigntime_data['bc_ans_t']);?>&nbsp; minutes&nbsp;  </h4>
+   
  <!--
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
     <div id = "test"> test <?php print_r ($wrongCount);?></div>
@@ -451,92 +503,167 @@ session_start();
     if($attempt_type ==1 || ($attempt_type ==2 && $count_tot <= $num_attempts)){
 	if ($partsFlag[0]){ ?> 
 	<div id = "part_a">
-    <p> a): <input  [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b>
+    <p> a): <input  [ type=number]{width: 5%;} id = "a" name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> count <?php echo(@$wrongCount[0].' '); ?> 
+	 <?php 
+    if ( (( $activity_data['wcount_bc_a']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[0]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_a']==1 ) && $corr['a']!="Correct")
+     { echo('<span><input type="button" id="show_answer_button_a" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     if ($corr['a']=="Correct")
+    {echo '<span id = "show_ans_a" class = "show_ans"> - Computed value is: '.$soln[0].'</span>';} 
+  /* 
+  echo ('  diff_time_min[0]: '.@$diff_time_min["0"]);
+    echo ('  activity_data[wcount_bc_a]: '.$activity_data['wcount_bc_a']);
+    echo ('  assigntime_data[bc_ans_n]: '.$assigntime_data['bc_ans_n']);
+    echo ('  activity_data[correct_a]: '.$activity_data['correct_a']);
+ */
+      ?>  
+          <input type="hidden" id="ans_a" value="<?php echo ($soln[0])?>" >
 	
-    <?php if (isset($_POST['pin']) and $corr['a']=="Correct" ){echo '- Computed value is: '.$soln[0];} ?>  
-	<?php if (isset($_POST['pin']) and @$wrongCount[0]>$hintLimit and $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
+    
+    
+    
+    <!--
+    <?php if (isset($_POST['pin']) and @$wrongCount[0]>$hintLimit and $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>$time_sleep1_trip and @$wrongCount[0]< $time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>=$time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
-	  </p></div>
+	 -->
+
+     </p></div>
 	<?php } 
     
 
 	if ($partsFlag[1]){ ?> 
-	<p> b): <input [ type=number]{width: 5%;} name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?> &nbsp - <b><?php echo ($corr['b']) ?> </b>
-	<?php if (isset($_POST['pin']) and $corr['b']=="Correct" ){echo '- Computed value is: '.$soln[1];} ?>  
-	<?php if (isset($_POST['pin']) and @$wrongCount[1]>$hintLimit and $corr['b']=="Not Correct" && $hintbPath != "uploads/default_hints.html" ){echo '<a href="'.$hintbPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if (isset($_POST['pin']) and $changed[1] and @$wrongCount[1]>$time_sleep1_trip and @$wrongCount[1]< $time_sleep2_trip and $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if (isset($_POST['pin']) and $changed[1] and @$wrongCount[1]>=$time_sleep2_trip and $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+	<p> b): <input [ type=number]{width: 5%;} id = "b" name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?> &nbsp - <b><?php echo ($corr['b']) ?> </b>  count <?php echo(@$wrongCount[1].' '); ?> 
+     <?php 
+    if ( (( $activity_data['wcount_bc_b']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[1]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_b']==1 ) && $corr['b']!="Correct")
+     { echo('<span><input type="button" id="show_answer_button_b" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     if ($corr['b']=="Correct")
+    {echo '<span id = "show_ans_b" class = "show_ans"> - Computed value is: '.$soln[1].'</span>';} 
+      ?>  
+          <input type="hidden" id="ans_b" value="<?php echo ($soln[1])?>" >
 	</p>
 	<?php } 
   
 	if ($partsFlag[2]){ ?> 
-	<p> c): <input [ type=number]{width: 5%;} name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b>
-	<?php if (isset($_POST['pin']) and $corr['c']=="Correct" ){echo '- Computed value is: '.$soln[2];} ?>  
-	<?php if (isset($_POST['pin']) and @$wrongCount[2]>$hintLimit and $corr['c']=="Not Correct"&& $hintcPath != "uploads/default_hints.html" ){echo '<a href="'.$hintcPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<p> c): <input [ type=number]{width: 5%;} id="c" name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b>  count <?php echo(@$wrongCount[2].' '); ?> 
+     <?php 
+    if ( (( $activity_data['wcount_bc_c']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[2]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_c']==1 ) && $corr['c']!="Correct")
+     { echo('<span><input type="button" id="show_answer_button_c" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     if ($corr['c']=="Correct")
+    {echo '<span id = "show_ans_c" class = "show_ans"> - Computed value is: '.$soln[2].'</span>';} 
+      ?>  
+          <input type="hidden" id="ans_c" value="<?php echo ($soln[2])?>" >	
+    
+    
+    <?php if (isset($_POST['pin']) and @$wrongCount[2]>$hintLimit and $corr['c']=="Not Correct"&& $hintcPath != "uploads/default_hints.html" ){echo '<a href="'.$hintcPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[2] and @$wrongCount[2]>$time_sleep1_trip and @$wrongCount[2]< $time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[2] and @$wrongCount[2]>=$time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[3]){ ?> 
-	<p> d): <input [ type=number]{width: 5%;} name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b>
-	<?php if (isset($_POST['pin']) and $corr['d']=="Correct" ){echo '- Computed value is: '.$soln[3];} ?>  
-	<?php if (isset($_POST['pin']) and @$wrongCount[3]>$hintLimit and $corr['d']=="Not Correct"&& $hintdPath != "uploads/default_hints.html" ){echo '<a href="'.$hintdPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<p> d): <input [ type=number]{width: 5%;} id = "d" name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b>  count <?php echo(@$wrongCount[3].' '); ?> 
+    <?php 
+    if ( (( $activity_data['wcount_bc_d']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[3]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_d']==1 ) && $corr['d']!="Correct")
+     { echo('<span><input type="button" id="show_answer_button_d" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     if ($corr['d']=="Correct")
+    {echo '<span id = "show_ans_d" class = "show_ans"> - Computed value is: '.$soln[3].'</span>';} 
+      ?>  
+          <input type="hidden" id="ans_d" value="<?php echo ($soln[3])?>" >		
+    <?php if (isset($_POST['pin']) and @$wrongCount[3]>$hintLimit and $corr['d']=="Not Correct"&& $hintdPath != "uploads/default_hints.html" ){echo '<a href="'.$hintdPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[3] and @$wrongCount[3]>$time_sleep1_trip and @$wrongCount[3]< $time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[3] and @$wrongCount[3]>=$time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[4]){ ?> 
-	<p> e): <input [ type=number]{width: 5%;} name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b>
-	<?php if (isset($_POST['pin']) and $corr['e']=="Correct" ){echo '- Computed value is: '.$soln[4];} ?>  
-	<?php if (isset($_POST['pin']) and @$wrongCount[4]>$hintLimit and $corr['e']=="Not Correct"&& $hintePath != "uploads/default_hints.html" ){echo '<a href="'.$hintePath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<p> e): <input [ type=number]{width: 5%;} id = "e" name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b>  count <?php echo(@$wrongCount[4].' '); ?> 
+     <?php 
+    if ( (( $activity_data['wcount_bc_e']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[4]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_e']==1 ) && $corr['e']!="Correct")
+     { echo('<span><input type="button" id="show_answer_button_e" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     if ($corr['e']=="Correct")
+    {echo '<span id = "show_ans_e" class = "show_ans"> - Computed value is: '.$soln[4].'</span>';} 
+      ?>  
+          <input type="hidden" id="ans_e" value="<?php echo ($soln[4])?>" >	
+          
+    <?php if (isset($_POST['pin']) and @$wrongCount[4]>$hintLimit and $corr['e']=="Not Correct"&& $hintePath != "uploads/default_hints.html" ){echo '<a href="'.$hintePath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[4] and @$wrongCount[4]>$time_sleep1_trip and @$wrongCount[4]< $time_sleep1_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[4] and @$wrongCount[4]>=$time_sleep2_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[5]){ ?> 
-	<p> f): <input [ type=number]{width: 5%;} name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b>
-	<?php if (isset($_POST['pin']) and $corr['f']=="Correct" ){echo '- Computed value is: '.$soln[5];} ?>  
-	<?php if (isset($_POST['pin']) and @$wrongCount[5]>$hintLimit and $corr['f']=="Not Correct"&& $hintfPath != "uploads/default_hints.html" ){echo '<a href="'.$hintfPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<p> f): <input [ type=number]{width: 5%;} id = "f" name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b>  count <?php echo(@$wrongCount[5].' '); ?> 
+    <?php 
+    if ( (( $activity_data['wcount_bc_f']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[5]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_f']==1 ) && $corr['f']!="Correct")
+     { echo('<span><input type="button" id="show_answer_button_f" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     if ($corr['f']=="Correct")
+    {echo '<span id = "show_ans_f" class = "show_ans"> - Computed value is: '.$soln[5].'</span>';} 
+      ?>  
+          <input type="hidden" id="ans_f" value="<?php echo ($soln[5])?>" >	
+          
+          
+          	<?php if (isset($_POST['pin']) and @$wrongCount[5]>$hintLimit and $corr['f']=="Not Correct"&& $hintfPath != "uploads/default_hints.html" ){echo '<a href="'.$hintfPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[5] and @$wrongCount[5]>$time_sleep1_trip and @$wrongCount[5]< $time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[5] and @$wrongCount[5]>=$time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[6]){ ?> 
-	<p> g): <input [ type=number]{width: 5%;} name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b>
-	<?php if (isset($_POST['pin']) and $corr['g']=="Correct" ){echo '- Computed value is: '.$soln[6];} ?>  
-	<?php if (isset($_POST['pin']) and @$wrongCount[6]>$hintLimit and $corr['g']=="Not Correct"&& $hintgPath != "uploads/default_hints.html" ){echo '<a href="'.$hintgPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<p> g): <input [ type=number]{width: 5%;} id = "g" name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b>  count <?php echo(@$wrongCount[6].' '); ?> 
+    <?php 
+    if ( (( $activity_data['wcount_bc_g']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[6]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_g']==1 ) && $corr['g']!="Correct")
+     { echo('<span><input type="button" id="show_answer_button_g" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     if ($corr['g']=="Correct")
+    {echo '<span id = "show_ans_g" class = "show_ans"> - Computed value is: '.$soln[6].'</span>';} 
+      ?>  
+          <input type="hidden" id="ans_g" value="<?php echo ($soln[6])?>" >		<?php if (isset($_POST['pin']) and @$wrongCount[6]>$hintLimit and $corr['g']=="Not Correct"&& $hintgPath != "uploads/default_hints.html" ){echo '<a href="'.$hintgPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[6] and @$wrongCount[6]>$time_sleep1_trip and @$wrongCount[6]< $time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[6] and @$wrongCount[6]>=$time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[7]){ ?> 
-	<p> h): <input [ type=number]{width: 5%;} name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo($unit[7]) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b>
-	<?php if (isset($_POST['pin']) and $corr['h']=="Correct" ){echo '- Computed value is: '.$soln[7];} ?>  
-	<?php if (isset($_POST['pin']) and @$wrongCount[7]>$hintLimit and $corr['h']=="Not Correct"&& $hinthPath != "uploads/default_hints.html" ){echo '<a href="'.$hinthPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<p> h): <input [ type=number]{width: 5%;} id = "h" name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > 
+    <?php echo($unit[7]) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b>  count <?php echo(@$wrongCount[7].' '); ?> 
+    <?php 
+    if ( (( $activity_data['wcount_bc_h']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[7]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_h']==1 ) && $corr['h']!="Correct")
+     { echo('<span><input type="button" id="show_answer_button_h" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     if ($corr['h']=="Correct")
+    {echo '<span id = "show_ans_h" class = "show_ans"> - Computed value is: '.$soln[7].'</span>';} 
+      ?>  
+          <input type="hidden" id="ans_h" value="<?php echo ($soln[7])?>" >	
+    <?php if (isset($_POST['pin']) and @$wrongCount[7]>$hintLimit and $corr['h']=="Not Correct"&& $hinthPath != "uploads/default_hints.html" ){echo '<a href="'.$hinthPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[7] and @$wrongCount[7]>$time_sleep1_trip and @$wrongCount[7]< $time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[7] and @$wrongCount[7]>=$time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[8]){ ?> 
-	<p> i): <input [ type=number]{width: 5%;} name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b>
-	<?php if (isset($_POST['pin']) and $corr['i']=="Correct" ){echo '- Computed value is: '.$soln[8];} ?>  
-	<?php if (isset($_POST['pin']) and @$wrongCount[8]>$hintLimit and $corr['i']=="Not Correct"&& $hintiPath != "uploads/default_hints.html" ){echo '<a href="'.$hintiPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<p> i): <input [ type=number]{width: 5%;} id = "i" name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b>  count <?php echo(@$wrongCount[8].' '); ?> 
+<?php 
+    if ( (( $activity_data['wcount_bc_i']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[8]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_i']==1 ) && $corr['i']!="Correct")
+     { echo('<span><input type="button" id="show_answer_button_i" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     if ($corr['i']=="Correct")
+    {echo '<span id = "show_ans_i" class = "show_ans"> - Computed value is: '.$soln[8].'</span>';} 
+      ?>  
+          <input type="hidden" id="ans_i" value="<?php echo ($soln[8])?>" >	
+    <?php if (isset($_POST['pin']) and @$wrongCount[8]>$hintLimit and $corr['i']=="Not Correct"&& $hintiPath != "uploads/default_hints.html" ){echo '<a href="'.$hintiPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[8] and @$wrongCount[8]>$time_sleep1_trip and @$wrongCount[8]< $time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[8] and @$wrongCount[8]>=$time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[9]){ ?> 
-	<p> j): <input [ type=number]{width: 5%;} name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b>
-	<?php if (isset($_POST['pin']) and @$wrongCount[9]>$hintLimit and $corr['j']=="Not Correct"&& $hintjPath != "uploads/default_hints.html" ){echo '<a href="'.$hintjPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if (isset($_POST['pin']) and $changed[9] and @$wrongCount[9]>$time_sleep1_trip and @$wrongCount[9]< $time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+	<p> j): <input [ type=number]{width: 5%;} id = "j" name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b>  count <?php echo(@$wrongCount[9].' '); ?> 
+   <?php 
+    if ( (( $activity_data['wcount_bc_j']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[9]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_j']==1 ) && $corr['j']!="Correct")
+     { echo('<span><input type="button" id="show_answer_button_j" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     if ($corr['j']=="Correct")
+    {echo '<span id = "show_ans_j" class = "show_ans"> - Computed value is: '.$soln[9].'</span>';} 
+      ?>  
+          <input type="hidden" id="ans_j" value="<?php echo ($soln[9])?>" >	
+
+          <?php if (isset($_POST['pin']) and $changed[9] and @$wrongCount[9]>$time_sleep1_trip and @$wrongCount[9]< $time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[9] and @$wrongCount[9]>=$time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
@@ -587,11 +714,70 @@ session_start();
 	<script>
   
   
+  $('#show_answer_button_a').click(function(){
+        $(this).css('color','red');
+       var ans_a = $('#ans_a').val();
+        $('#a').val(ans_a);
+    });
+    
+    
+   $('#show_answer_button_b').click(function(){
+        $(this).css('color','red');
+       var ans_b = $('#ans_b').val();
+        $('#b').val(ans_b);
+    });
+    
+    $('#show_answer_button_c').click(function(){
+        $(this).css('color','red');
+       var ans_c = $('#ans_c').val();
+        $('#c').val(ans_c);
+    });
+
+     $('#show_answer_button_d').click(function(){
+        $(this).css('color','red');
+       var ans_d = $('#ans_d').val();
+        $('#d').val(ans_d);
+    });
+
+
+    $('#show_answer_button_e').click(function(){
+        $(this).css('color','red');
+       var ans_e = $('#ans_e').val();
+        $('#e').val(ans_e);
+    });
+
+    $('#show_answer_button_f').click(function(){
+        $(this).css('color','red');
+       var ans_f = $('#ans_f').val();
+        $('#f').val(ans_f);
+    });
+
+    $('#show_answer_button_g').click(function(){
+        $(this).css('color','red');
+       var ans_g = $('#ans_g').val();
+        $('#g').val(ans_g);
+    });
+
+    $('#show_answer_button_h').click(function(){
+        $(this).css('color','red');
+       var ans_h = $('#ans_h').val();
+        $('#h').val(ans_h);
+    });
+
+    $('#show_answer_button_i').click(function(){
+        $(this).css('color','red');
+       var ans_i = $('#ans_i').val();
+        $('#i').val(ans_i);
+    });
+
+    $('#show_answer_button_j').click(function(){
+        $(this).css('color','red');
+       var ans_j = $('#ans_j').val();
+        $('#j').val(ans_j);
+    });
+
+ 
   
-  $('#show_answer_button').click(function(){
-    $(this).css('color','red');
-    $('#test').toggle(); 
-  });
    $('#peer_help_button').click(function(){
      $('#part_a').toggle(); 
   });

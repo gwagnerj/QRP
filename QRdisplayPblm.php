@@ -26,8 +26,7 @@ session_start();
      $stmt->execute(array(':activity_id' => $activity_id));
      $activity_data = $stmt -> fetch();
      
-     
-     $switch_to_bc = $activity_data['switch_to_bc'];   
+    $switch_to_bc = $activity_data['switch_to_bc']; 
      $problem_id = $activity_data['problem_id'];   
      $iid = $activity_data['iid'];   
      $pin = $activity_data['pin'];   
@@ -530,7 +529,6 @@ $pass = array(
       var perc_con = pass['perc_con'];
       var perc_soc = pass['perc_soc'];
       var switch_to_bc = pass['switch_to_bc'];
-       
        if (switch_to_bc == 1){
          $('#base_case').show();
          $('#BC_checker').show();
@@ -554,8 +552,9 @@ $pass = array(
                $('#basecasebutton').prop('value','to Base-case');
                 $('#checkerbutton').prop('value','to QR code'); 
         }
-      
-        
+         //Turn this off for now - will release this feature later   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  
+          
     
     
      var qr_code = false;
@@ -593,7 +592,7 @@ $pass = array(
                 }
         });
    
-     
+    
      
     
     

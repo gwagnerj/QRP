@@ -38,8 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
             $assign_num = $assigntime_data['assign_num'];
             $iid = $assigntime_data['iid'];
             $currentclass_id = $assigntime_data['currentclass_id'];
-    
-     
      
      
      
@@ -94,69 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
          }
          
      }
- /*    
-  
-     for ($i=1;$i<=$n;$i++){
-      
-         
-         if(isset($_POST['perc_'.$i])) {$data_init['perc_'.$i]= $_POST['perc_'.$i] ;}
-         if(isset($_POST['perc_pp1_'.$i])) {$data_init['perc_pp1_'.$i]= $_POST['perc_pp1_'.$i] ;}
-         if(isset($_POST['perc_pp2_'.$i])) {$data_init['perc_pp2_'.$i]= $_POST['perc_pp2_'.$i] ;}
-
-         if(isset($_POST['perc_ref_'.$i])) {$data_init['perc_ref_'.$i]= $_POST['perc_ref_'.$i] ;}
-         if(isset($_POST['perc_exp_'.$i])) {$data_init['perc_exp_'.$i]= $_POST['perc_exp_'.$i] ;}
-         if(isset($_POST['perc_con_'.$i])) {$data_init['perc_con_'.$i]= $_POST['perc_con_'.$i] ;}
-         if(isset($_POST['perc_soc_'.$i])) {$data_init['perc_soc_'.$i]= $_POST['perc_soc_'.$i] ;}
-         if(isset($_POST['perc_anyref_'.$i])) {$data_init['perc_any1_ref_'.$i]= $_POST['perc_anyref_'.$i] ;}
-         if(isset($_POST['survey_'.$i])) {$data_init['survey_'.$i]= $_POST['survey_'.$i] ;}
-        
-         
-        foreach(range('a','j') as $x){ 
-              if(isset($_POST['perc_'.$x.'_'.$i])) {$data_init['perc_'.$x.'_'.$i]= $_POST['perc_'.$x.'_'.$i] ;}
-        
-           $data_init += array('perc_'.$x.'_'.$i => '');   
-         }
-         
-     }
-    
-    
-    
-    $data = array();
-    $sql = 'UPDATE Assigntime SET ';
-    $data += array(':assigntime_id' => $assigntime_id);
-    
-    for ($i=1;$i<=$n;$i++){
-        $sql = $sql.'perc_pp1_'.$i.'=:perc_pp1_'.$i.', ';
-        $sql = $sql.'perc_pp2_'.$i.'=:perc_pp2_'.$i.', ';
-        $sql = $sql.'perc_ref_'.$i.'=:perc_ref_'.$i.', ';
-        $sql = $sql.'perc_exp_'.$i.'=:perc_exp_'.$i.', ';
-        $sql = $sql.'perc_con_'.$i.'=:perc_con_'.$i.', ';
-        $sql = $sql.'perc_soc_'.$i.'=:perc_soc_'.$i.', ';
-        $sql = $sql.'perc_any1_ref_'.$i.'=:perc_any1_ref_'.$i.', ';
-        $sql = $sql.'survey_'.$i.'=:survey_'.$i.', ';
-        
-      $data += array(':perc_'.$i => $data_init['perc_'.$i]);
-      $data += array(':perc_pp1_'.$i => $data_init['perc_pp1_'.$i]); 
-      $data += array(':perc_pp2_'.$i => $data_init['perc_pp2_'.$i]); 
-      $data += array(':perc_ref_'.$i => $data_init['perc_ref_'.$i]); 
-      $data += array(':perc_exp_'.$i => $data_init['perc_exp_'.$i]); 
-      $data += array(':perc_con_'.$i => $data_init['perc_con_'.$i]); 
-      $data += array(':perc_soc_'.$i => $data_init['perc_soc_'.$i]); 
-      $data += array(':perc_any1_ref_'.$i => $data_init['perc_any1_ref_'.$i]); 
-      $data += array(':survey_'.$i => $data_init['survey_'.$i]); 
-      
-        
-        foreach(range('a','j') as $x){  
-            $sql = $sql.'perc_'.$x.'_'.$i.'=:perc_'.$x.'_'.$i.', ';
-             $data += array(':perc_'.$x.'_'.$i => $data_init['perc_'.$x.'_'.$i]); 
-        }
-
-        if ($i != $n){
-            $sql = $sql.'perc_'.$i.'=:perc_'.$i.', ';
-        } else {
-            $sql = $sql.'perc_'.$i.'=:perc_'.$i.' ';  // need this one so we don't put a comma on the last one
-        }
- */
+ 
   
     $data = array();
     $sql = 'UPDATE Assigntime SET ';
@@ -194,10 +130,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
         } else {
             $sql = $sql.'perc_'.$alias_num.'=:perc_'.$alias_num.' ';  // need this one so we don't put a comma on the last one
         }
-
-
-        
- 
         
     } 
     $sql = $sql.' WHERE assigntime_id = :assigntime_id ';
@@ -207,9 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
      
      $stmt->execute($data);
      
-     
-                
-                  
                 $_SESSION['success'] = 'Assignment set';
        			header( 'Location: QRPRepo.php' ) ;
 				die();
@@ -313,7 +242,7 @@ echo ('<form method = "POST">');
             $ns = $stmt->fetch();
            
 
-           $n = $ns['cnt'];  // the number of problems in the assignment
+           $n = $ns['cnt'];  // the number of QR problems in the assignment
            $point_p_pblm_default = round(100/$n);
            $points_last_p = 100 - $point_p_pblm_default*($n-1);
          
@@ -337,16 +266,7 @@ echo ('<form method = "POST">');
            $problem_id = $assign_data['prob_num'];
            $assign_id = $assign_data['assign_id'];
            $i = $assign_data['alias_num']+0;
-         /*   
-           $sql = "SELECT users_id FROM `Problem` WHERE problem_id = :problem_id";  // put this in to get userid for removing problem
-           $stmt = $pdo->prepare($sql);
-           $stmt -> execute(array(
-				':problem_id' => $problem_id,
-				)); 
-            $problem_data = $stmt->fetch();
-            $users_id = $problem_data['users_id'];
- */
-       //  echo   ('assign_data[prob_num]: '.$assign_data['prob_num']);
+    
     
             echo "<tr><td>";
 			echo(htmlentities($assign_data['alias_num']));
@@ -364,10 +284,9 @@ echo ('<form method = "POST">');
            echo("</td>");
             
             echo "<td>";
- //           echo ('<form action = "QRactivatePblm.php" method = "GET" target = "_blank"> '); // not sure why I need this but first one wont work w/o it
-            echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = '.$problem_id.'><input type = "hidden" name = "index" value = "1" ></form>');
+            echo('<form action = "bc_preview.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = '.$problem_id.'><input type = "hidden" name = "index" value = "1" ></form>');
 
-            echo('<form action = "getBC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = '.$problem_id.'><input type = "hidden" name = "index" value = "1" ><input type = "submit" value = '.$problem_id.'></form>');
+            echo('<form action = "bc_preview.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = '.$problem_id.'><input type = "hidden" name = "index" value = "1" ><input type = "submit" value = '.$problem_id.'></form>');
 			echo("</td>");	
             
            
@@ -413,15 +332,7 @@ echo ('<form method = "POST">');
                       else {$perc_per_part = $perc_per_part_last;}
                       echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required value ='.$perc_per_part.' > </input>');
 
-/*                        
-                       if($j != $n_parts)
-                       {
-                            echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required value ='.$perc_per_part.' > </input>');
-                       } else {
-                           
-                            echo('<input type = "number" min = "0" max = "100" id="perc_'.$x.'_'.$i.'" name = "perc_'.$x.'_'.$i.'" required value ='.$perc_per_part_last.' > </input>');
-                       }
- */
+
 
 
                        echo("</td>");
@@ -506,12 +417,12 @@ echo ('<form method = "POST">');
         echo('<input type="submit" class="btn btn-primary"  name = "submit_name" style="width:20%"    value="Submit">');
        // put in the hidden fields for the submission
         echo ('<input type="hidden" name="assigntime_id"  value='.$assigntime_id.' >');
-  //       echo ('<input type="hidden" name="n"  value='.$n.' >'); // number of problems in the assignment
+  //       echo ('<input type="hidden" name="n"  value='.$n.' >'); // number of QR problems in the assignment
        echo ('</form>');
 
 
 
-$_SESSION['counter']=0;  // this is for the score board
+//$_SESSION['counter']=0;   this is for the score board
 
 
 	?>

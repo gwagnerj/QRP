@@ -168,20 +168,5 @@ if (isset($_POST['problem_id'])){
 ?>
 
 
-<!--
-<form id="ranking_form" action="result.php" method="post" > 
-    &nbsp;Student 1:<select id='option1' required><option value=''><option value='1'>1<option value='2'>2<option value='3'>3<option value='4'>4<option value='5'>5</select>
-    &nbsp;&nbsp;Student 2:<select id='option2' required><option value=''><option value='1'>1<option value='2'>2<option value='3'>3<option value='4'>4<option value='5'>5</select>
-    &nbsp;&nbsp;Job C<select id='option3' required><option value=''><option value='1'>1<option value='2'>2<option value='3'>3<option value='4'>4<option value='5'>5</select>
-    &nbsp;&nbsp;Job D:<select id='option4' required><option value=''><option value='1'>1<option value='2'>2<option value='3'>3<option value='4'>4<option value='5'>5</select>
-    &nbsp;&nbsp;Job E:<select id='option5' required><option value=''><option value='1'>1<option value='2'>2<option value='3'>3<option value='4'>4<option value='5'>5</select> 
-    <button class="button3" name="click" >Submit</button>
-    </form>
--->
-<script>
-
-
-</script>
-
 
 

@@ -9,6 +9,15 @@
  
  if (isset($_GET['iid'])) {
 	$iid = $_GET['iid'];
+    
+    // fix this sloppy programming later
+      if ((@$_POST['currentclass_id']==0 || @$_POST['currentclass_id']=='' || @$_POST['iid']==0 || @$_POST['iid']=='' )
+          && (@$_GET['currentclass_id']==0 || @$_GET['currentclass_id']=='' || @$_GET['iid']==0 || @$_GET['iid']=='')) {
+        $_SESSION['error'] = 'Class must be Selected';
+        header( 'Location: QRAssignmentStart0.php?iid='.$iid ) ;
+	   die();
+    }
+    
 } else {
 	 $_SESSION['error'] = 'invalid iid in QRAssignmentStart11.php ';
       header( 'Location: QRPRepo.php' ) ;
@@ -42,9 +51,13 @@
     $bc_ans_n = 1;
     $p_bc_n = 3;
     $p_bc_t = 10;
-    $help_n_stu = 2;
-    $help_n_ta = 4;
-    $help_n_instruct = 5;
+    
+    
+    $help_n_stu = 99;
+    $help_n_ta = 99;
+    $help_n_instruct = 99;
+    
+    
     $help_t_stu = 2;
     $help_t_ta = 5;
     $help_t_instruct = 10;
@@ -55,7 +68,7 @@
     $perc_ec_max_person_to_person = 5;
     $fixed_percent_decline = 20;
     
-    $ec_daysb4due_elgible = 2;
+    $ec_daysb4due_elgible = 10;
     
     $perc_ec_base_video = 3;
     $perc_ec_base_audio = 2;
@@ -360,13 +373,13 @@ $_SESSION['counter']=0;  // this is for the score board
                 <font color=#003399>Effort on base-case per problem part before help from: &nbsp; </font><br>
                      &nbsp;&nbsp; Other Students:<br>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time(minutes): <input type = "number" min = "0" max = "20" id="help_t_stu" name = "help_t_stu" required value = <?php echo $help_t_stu; ?> > </input><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "20" id="help_n_stu" name = "help_n_stu" required value = <?php echo $help_n_stu; ?>> </input><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "100" id="help_n_stu" name = "help_n_stu" required value = <?php echo $help_n_stu; ?>> </input><br>
                       &nbsp;&nbsp; Teaching Assistants or Tutors:<br>
                        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Time(minutes): <input type = "number" min = "0" max = "20" id="help_t_ta" name = "help_t_ta" required value = <?php echo $help_t_ta; ?> > </input><br>
-                       &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "20" id="help_n_ta" name = "help_n_ta" required value = <?php echo $help_n_ta; ?>> </input><br>
+                       &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "100" id="help_n_ta" name = "help_n_ta" required value = <?php echo $help_n_ta; ?>> </input><br>
                       &nbsp;&nbsp; Instructors:<br>
                        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Time(minutes): <input type = "number" min = "0" max = "20" id="help_t_instruct" name = "help_t_instruct" required value = <?php echo $help_t_instruct; ?> > </input><br>
-                      &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "20" id="help_n_instruct" name = "help_n_instruct" required value = <?php echo $help_n_instruct; ?>> </input><br>
+                      &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "100" id="help_n_instruct" name = "help_n_instruct" required value = <?php echo $help_n_instruct; ?>> </input><br>
                         
               <br>
               <font color=#003399>Absolute Limits on Problem: &nbsp; </font><br>

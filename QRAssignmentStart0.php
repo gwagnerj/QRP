@@ -37,8 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name']) ) {
            if ($assigntime_data == false){
                 $new_flag = 1;
            }
-        
-          // echo('assigntime_id: '.$assigntime_id);
+    /*     
+         //  echo(' assigntime_id: '.$assigntime_id);
+           echo(' currentclass_id: '.$_POST['currentclass_id']);
+           echo(' assign_num: '.$_POST['active_assign']);
+           echo(' iid: '.$_POST['iid']);
+           echo(' new_flag: '.$new_flag);
+           die();
+          */  
           // now go to the QRAssignmentStart2 with the assigntime_id 
                         header( 'Location: QRAssignmentStart1.php?currentclass_id='.$_POST["currentclass_id"].'&assign_num='.$_POST['active_assign'].'&iid='.$_POST['iid'].'&new_flag='.$new_flag);
                         die();

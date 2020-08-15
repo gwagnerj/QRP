@@ -19,7 +19,7 @@
      // if (isset($_POST['stu_name'])){$stu_name = $_POST['stu_name']}
       
       
-    if (isset($_GET['student_id'])){
+    if (isset($_GET['student_id'])){ 
       $student_id =   $_GET['student_id'];
       
        $sql = 'SELECT * FROM Student WHERE `student_id` = :student_id';
@@ -66,9 +66,39 @@
             
         } else {
    
-              $sql = 'SELECT * FROM `StudentCurrentClassConnect` WHERE `student_id` = :student_id';
+   // use a join here 
+     /*           
+
+             $sql = 'SELECT * FROM `StudentCurrentClassConnect` INNER JOIN `CurrentClass` ON  StudentCurrentClassConnect.student_id = CurrentClass.student_id WHERE student_id = :student_id';
             $stmt = $pdo->prepare($sql);
              $stmt->execute(array(':student_id' => $student_id));
+             $class_data = $stmt -> fetch();
+             $pin = $class_data['pin'];   
+            // $currentclass_id = $class_data['currentclass_id'];
+             
+          
+            SELECT 
+    productCode, 
+    productName, 
+    textDescription
+FROM
+    products t1
+INNER JOIN productlines t2 
+    ON t1.productline = t2.productline;
+   
+    */
+   
+       //     echo (' student_id '.$student_id);
+       //     echo (' currentclass_id '.$currentclass_id);
+       //  die(); //  echo (' student_id '.$student_id);
+            
+   
+              $sql = 'SELECT * FROM `StudentCurrentClassConnect` WHERE `student_id` = :student_id AND `currentclass_id` = :currentclass_id';
+            $stmt = $pdo->prepare($sql);
+             $stmt->execute(array(
+             ':student_id' => $student_id,
+             ':currentclass_id' => $currentclass_id
+             ));
              $class_data = $stmt -> fetch();
              $pin = $class_data['pin'];   
             // $currentclass_id = $class_data['currentclass_id'];
@@ -77,6 +107,8 @@
             $stmt = $pdo->prepare($sql);
              $stmt->execute(array(':currentclass_id' => $currentclass_id));
              $cclass_data = $stmt -> fetch();
+             
+             
              $iid = $cclass_data['iid'];   
              $cclass_name = $cclass_data['name']; 
              // echo('$iid: '.$iid);
@@ -182,11 +214,12 @@
           $assign_id = $assign_data['assign_id'];   
         
         // check to see if we already have activity if we do we can get the activity id and move on to controller
-       $sql = 'SELECT `activity_id` FROM `Activity` WHERE `problem_id` = :problem_id AND `currentclass_id` = :cclass_id AND `pin` = :pin AND `iid`=:iid AND `assign_id` = :assign_id ';
+       $sql = 'SELECT `activity_id` FROM `Activity` WHERE `problem_id` = :problem_id AND `currentclass_id` = :cclass_id AND student_id = :student_id AND `pin` = :pin AND `iid`=:iid AND `assign_id` = :assign_id ';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(array(':problem_id' => $problem_id,
                                 ':cclass_id' => $cclass_id,
                                 ':pin' => $pin,
+                                ':student_id' => $student_id,
                                 ':iid' => $iid,
                                 ':assign_id' => $assign_id
          ));
@@ -197,8 +230,8 @@
            
            // make a new entry in the activity table 
            
-           if ($pin>10000 or $pin<0){
-                 $_SESSION['error']='Your PIN should be between 1 and 10000.';	
+           if (!is_numeric($pin) || $pin>10000 || $pin<=0){
+                 $_SESSION['error']='Your PIN is nonnumeric less than 1 or out of range 1st.';	
             } else {
                 $dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
             }
@@ -234,7 +267,25 @@
                     
 
                         // go the controller
-                  /*       
+                        //cludge - look up the pin from the table again before we pout it in the table this is a patch _______________________________________________________________________
+            $sql = 'SELECT * FROM `StudentCurrentClassConnect` WHERE `student_id` = :student_id AND `currentclass_id` = :currentclass_id';
+            $stmt = $pdo->prepare($sql);
+             $stmt->execute(array(
+             ':student_id' => $student_id,
+             ':currentclass_id' => $cclass_id
+             ));
+             $class_data = $stmt -> fetch();
+             $pin = $class_data['pin'];  
+
+              if (!is_numeric($pin) || $pin>10000 || $pin<=0){
+                     $_SESSION['error']='Your PIN is nonnumeric less than 1 or out of range 2nd.';	
+                     
+                     
+                } else {
+                    $dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
+                }             
+                /*         
+                        
                         echo (' pin: '.$pin);
                         echo (' iid: '.$iid);
                         echo (' dex: '.$dex);
@@ -251,7 +302,7 @@
                      */
                     // check the activity table and see if there is an entry if not make a new entry and go to the controller
                          
-                        $sql = 'INSERT INTO Activity (problem_id, pin, iid, dex, student_id,    assign_id, assigntime_id,  instr_last, university, pp1, pp2, pp3, pp4, post_pblm1, post_pblm2, post_pblm3, score, progress, stu_name, alias_num, currentclass_id, count_tot)	
+                        $sql = 'INSERT INTO Activity (problem_id, pin, iid, dex, student_id,  assign_id, assigntime_id,  instr_last, university, pp1, pp2, pp3, pp4, post_pblm1, post_pblm2, post_pblm3, score, progress, stu_name, alias_num, currentclass_id, count_tot)	
                                              VALUES (:problem_id, :pin, :iid, :dex,:student_id, :assign_id, :assigntime_id, :instr_last,:university,:pp1,:pp2,:pp3,:pp4,:post_pblm1,:post_pblm2,:post_pblm3, :score,:progress, :stu_name, :alias_num, :cclass_id, :count_tot)';
                         $stmt = $pdo->prepare($sql);
                         $stmt -> execute(array(
@@ -279,19 +330,21 @@
                          ':count_tot' => 0
                         ));
                                     
-                          $sql = 'SELECT `activity_id` FROM `Activity` WHERE `problem_id` = :problem_id AND `currentclass_id` = :cclass_id AND `pin` = :pin AND `iid`=:iid AND `assign_id` = :assign_id ';
+                          $sql = 'SELECT `activity_id` FROM `Activity` WHERE `problem_id` = :problem_id AND student_id = :student_id AND `currentclass_id` = :cclass_id AND `pin` = :pin AND `iid`=:iid AND `assign_id` = :assign_id ';
                             $stmt = $pdo->prepare($sql);
                             $stmt->execute(array(':problem_id' => $problem_id,
                                 ':cclass_id' => $cclass_id,
                                 ':pin' => $pin,
                                 ':iid' => $iid,
+                                ':student_id' => $student_id,
                                 ':assign_id' => $assign_id
                                 ));
                                 $activity_row =$stmt ->fetch();		
                                 $activity_id = $activity_row['activity_id'];
                   //   echo (" activity_data (new value):  ".$activity_id;     
          }   
-
+       // echo(' $activity_id  '.$activity_id);
+      //  die();
           header("Location: QRcontroller.php?activity_id=".$activity_id);
 			return; 
 		

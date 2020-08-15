@@ -73,7 +73,7 @@ session_start();
      $assigntime_data = $stmt -> fetch();
      
      $work_flow =  $assigntime_data['work_flow'];
-     $p_bc_n = $assigntime_data['p_bc_n'];
+     $p_bc_n = $assigntime_data['p_bc_n'];  // when it converts from problem to basecase
      $p_bc_t = $assigntime_data['p_bc_t'];
      
      $perc_of_assign = $assigntime_data['perc_'.$alias_num];
@@ -131,7 +131,7 @@ session_start();
                die();                     
           }
           
-          
+        //  echo ('  progress '.$progress);
           
 			if ($progress == 4 || $progress == 5 ){  // first time through so initialize response and previous response to zero - student never saw this problem before - 
              
@@ -177,6 +177,8 @@ session_start();
                 $get_flag=0;  // checking - coming in on a normal post
             }                
 			
+           // echo('  $get_flag:  '.$get_flag);
+            
 			$score = 0;
             $num_score_possible = 0;
 			$PScore = 0;  // percent score without a post
@@ -200,11 +202,13 @@ session_start();
 			$corr_key=array_keys($corr);
 			$ansFormat_key=array_keys($ansFormat);
 			
+           // Will take care of this with JS so the delay is on their machine
 			$time_sleep1 = 10;  // time delay in seconds
 			$time_sleep1_trip = 5;  // number of trials it talkes to trip the time delay
 			$time_sleep2 = 10;  // additional time if hit the next limit
 			$time_sleep2_trip = 30;	
-			
+			$trip_1_flag = 0;
+            $trip_2_flag =0;
 			// see if the problem has been suspended	
 				
 			$stmt = $pdo->prepare("SELECT * FROM Problem where problem_id = :problem_id");
@@ -299,8 +303,14 @@ session_start();
       $changed_flag = false;
       $count_tot = 0;
       $switch_to_bc = 0;
+    //  var_dump($partsFlag);
+    
       foreach(range('a','j') as $v){
+          
+        
           if( $partsFlag[$i]){ 
+         
+          
                 $sql = 'SELECT `resp_value` FROM Resp WHERE `activity_id` = :activity_id AND `part_name` = :part_name ORDER BY `resp_id` DESC LIMIT 1';
                  $stmt = $pdo->prepare($sql);
                   $stmt ->execute(array(
@@ -310,6 +320,8 @@ session_start();
             $resp_data = $stmt -> fetch();
             $old_resp[$i] = $resp_data['resp_value'];
             $resp[$v]=(float)$_POST[$v]+0.0;
+ //           echo('  resp[$v]:  '.$resp[$v]);
+ //           echo('  partsFlag[$i]:  '.$partsFlag[$i]);
             // now get the counts for all of the previous tries from the table
       
 
@@ -374,10 +386,11 @@ session_start();
                 {$diff_time_min = round(($last_date - $first_date)/60);} else {$diff_time_min=0;}
                  
                    if($work_flow == 'bc_if' && $count_data >= $p_bc_n && $diff_time_min > $p_bc_t && $activity_data["bc_correct_".$v] != 1)
-                   {$go_to_bc[$i] = 1; $switch_to_bc = 1;} else {$go_to_bc[$i] = 0;}                 
+                   {$go_to_bc[$i] = 1; $switch_to_bc = 1;} else {$go_to_bc[$i] = 0;}   
             }
-        $i++;  
+         
         }
+         $i++;
       }
      
         
@@ -494,7 +507,7 @@ session_start();
 	<h3>Quick Response Checker</h3>
 	</header>
 	<main>
-	<h4> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h4>
+	<h4> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> &nbsp; &nbsp; Time delay starts at count = <?php echo ($time_sleep1_trip); ?> </h4>  
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
      <!-- <div id = "test"> test <?php print_r ($wrongCount);?></div>
@@ -511,9 +524,9 @@ session_start();
 	<p> a)(<?php echo $assigntime_data['perc_a_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> count <?php echo(@$wrongCount[0].' '); ?> 
 	 
     <?php if ( $corr['a']=="Correct" ){echo '- Computed value is: '.$soln[0];} ?>  
-	<?php if ( @$wrongCount[0]>$hintLimit and $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if ( @$changed[0] and @$wrongCount[0]>$time_sleep1_trip and @$wrongCount[0]< $time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if ( @$changed[0] and @$wrongCount[0]>=$time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+	<?php if ( @$wrongCount[0]>$hintLimit && $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$changed[0] && @$wrongCount[0]>$time_sleep1_trip && @$wrongCount[0]< $time_sleep2_trip && $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+	<?php if ( @$changed[0] && @$wrongCount[0]>=$time_sleep2_trip && $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	  </p>
 	<?php } 
 
@@ -521,80 +534,80 @@ session_start();
 	if ($partsFlag[1]){ ?> 
 	<p> b)(<?php echo $assigntime_data['perc_b_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?> &nbsp - <b><?php echo ($corr['b']) ?> </b> count <?php echo(@$wrongCount[1].' '); ?> 
 	<?php if ( $corr['b']=="Correct" ){echo '- Computed value is: '.$soln[1];} ?>  
-	<?php if ( @$wrongCount[1]>$hintLimit and $corr['b']=="Not Correct" && $hintbPath != "uploads/default_hints.html" ){echo '<a href="'.$hintbPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if ( @$changed[1] and @$wrongCount[1]>$time_sleep1_trip and @$wrongCount[1]< $time_sleep2_trip and $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if ( @$changed[1] and @$wrongCount[1]>=$time_sleep2_trip and $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+	<?php if ( @$wrongCount[1]>$hintLimit && $corr['b']=="Not Correct" && $hintbPath != "uploads/default_hints.html" ){echo '<a href="'.$hintbPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$changed[1] && @$wrongCount[1]>$time_sleep1_trip && @$wrongCount[1]< $time_sleep2_trip && $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+	<?php if ( @$changed[1] && @$wrongCount[1]>=$time_sleep2_trip && $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
   
 	if ($partsFlag[2]){ ?> 
 	<p> c)(<?php echo $assigntime_data['perc_c_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b> count <?php echo(@$wrongCount[2].' '); ?>
 	<?php if ( $corr['c']=="Correct" ){echo '- Computed value is: '.$soln[2];} ?>  
-	<?php if ( @$wrongCount[2]>$hintLimit and $corr['c']=="Not Correct"&& $hintcPath != "uploads/default_hints.html" ){echo '<a href="'.$hintcPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if ( @$changed[2] and @$wrongCount[2]>$time_sleep1_trip and @$wrongCount[2]< $time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if ( @$changed[2] and @$wrongCount[2]>=$time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+	<?php if ( @$wrongCount[2]>$hintLimit && $corr['c']=="Not Correct"&& $hintcPath != "uploads/default_hints.html" ){echo '<a href="'.$hintcPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$changed[2] && @$wrongCount[2]>$time_sleep1_trip && @$wrongCount[2]< $time_sleep2_trip && $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+	<?php if ( @$changed[2] && @$wrongCount[2]>=$time_sleep2_trip && $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[3]){ ?> 
 	<p> d)(<?php echo $assigntime_data['perc_d_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b> count <?php echo(@$wrongCount[3].' '); ?>
 	<?php if ( $corr['d']=="Correct" ){echo '- Computed value is: '.$soln[3];} ?>  
-	<?php if ( @$wrongCount[3]>$hintLimit and $corr['d']=="Not Correct"&& $hintdPath != "uploads/default_hints.html" ){echo '<a href="'.$hintdPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if ( @$changed[3] and @$wrongCount[3]>$time_sleep1_trip and @$wrongCount[3]< $time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if ( @$changed[3] and @$wrongCount[3]>=$time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+	<?php if ( @$wrongCount[3]>$hintLimit && $corr['d']=="Not Correct"&& $hintdPath != "uploads/default_hints.html" ){echo '<a href="'.$hintdPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$changed[3] && @$wrongCount[3]>$time_sleep1_trip && @$wrongCount[3]< $time_sleep2_trip && $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+	<?php if ( @$changed[3] && @$wrongCount[3]>=$time_sleep2_trip && $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[4]){ ?> 
 	<p> e)(<?php echo $assigntime_data['perc_e_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b> count <?php echo(@$wrongCount[4].' '); ?>
 	<?php if ( $corr['e']=="Correct" ){echo '- Computed value is: '.$soln[4];} ?>  
-	<?php if ( @$wrongCount[4]>$hintLimit and $corr['e']=="Not Correct"&& $hintePath != "uploads/default_hints.html" ){echo '<a href="'.$hintePath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if ( @$changed[4] and @$wrongCount[4]>$time_sleep1_trip and @$wrongCount[4]< $time_sleep1_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if ( @$changed[4] and @$wrongCount[4]>=$time_sleep2_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+	<?php if ( @$wrongCount[4]>$hintLimit && $corr['e']=="Not Correct"&& $hintePath != "uploads/default_hints.html" ){echo '<a href="'.$hintePath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$changed[4] && @$wrongCount[4]>$time_sleep1_trip && @$wrongCount[4]< $time_sleep1_trip && $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+	<?php if ( @$changed[4] && @$wrongCount[4]>=$time_sleep2_trip && $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[5]){ ?> 
 	<p> f)(<?php echo $assigntime_data['perc_f_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b> count <?php echo(@$wrongCount[5].' '); ?>
 	<?php if ( $corr['f']=="Correct" ){echo '- Computed value is: '.$soln[5];} ?>  
-	<?php if ( @$wrongCount[5]>$hintLimit and $corr['f']=="Not Correct"&& $hintfPath != "uploads/default_hints.html" ){echo '<a href="'.$hintfPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if ( @$changed[5] and @$wrongCount[5]>$time_sleep1_trip and @$wrongCount[5]< $time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if ( @$changed[5] and @$wrongCount[5]>=$time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+	<?php if ( @$wrongCount[5]>$hintLimit && $corr['f']=="Not Correct"&& $hintfPath != "uploads/default_hints.html" ){echo '<a href="'.$hintfPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$changed[5] && @$wrongCount[5]>$time_sleep1_trip && @$wrongCount[5]< $time_sleep2_trip && $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+	<?php if ( @$changed[5] && @$wrongCount[5]>=$time_sleep2_trip && $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[6]){ ?> 
 	<p> g)(<?php echo $assigntime_data['perc_g_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b> count <?php echo(@$wrongCount[6].' '); ?>
 	<?php if ( $corr['g']=="Correct" ){echo '- Computed value is: '.$soln[6];} ?>  
-	<?php if ( @$wrongCount[6]>$hintLimit and $corr['g']=="Not Correct"&& $hintgPath != "uploads/default_hints.html" ){echo '<a href="'.$hintgPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if ( @$changed[6] and @$wrongCount[6]>$time_sleep1_trip and @$wrongCount[6]< $time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if ( @$changed[6] and @$wrongCount[6]>=$time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+	<?php if ( @$wrongCount[6]>$hintLimit && $corr['g']=="Not Correct"&& $hintgPath != "uploads/default_hints.html" ){echo '<a href="'.$hintgPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$changed[6] && @$wrongCount[6]>$time_sleep1_trip && @$wrongCount[6]< $time_sleep2_trip && $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+	<?php if ( @$changed[6] && @$wrongCount[6]>=$time_sleep2_trip && $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[7]){ ?> 
 	<p> h)(<?php echo $assigntime_data['perc_h_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo($unit[7]) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b> count <?php echo(@$wrongCount[7].' '); ?>
 	<?php if ( $corr['h']=="Correct" ){echo '- Computed value is: '.$soln[7];} ?>  
-	<?php if ( @$wrongCount[7]>$hintLimit and $corr['h']=="Not Correct"&& $hinthPath != "uploads/default_hints.html" ){echo '<a href="'.$hinthPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if ( @$changed[7] and @$wrongCount[7]>$time_sleep1_trip and @$wrongCount[7]< $time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if ( @$changed[7] and @$wrongCount[7]>=$time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+	<?php if ( @$wrongCount[7]>$hintLimit && $corr['h']=="Not Correct"&& $hinthPath != "uploads/default_hints.html" ){echo '<a href="'.$hinthPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$changed[7] && @$wrongCount[7]>$time_sleep1_trip && @$wrongCount[7]< $time_sleep2_trip && $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+	<?php if ( @$changed[7] && @$wrongCount[7]>=$time_sleep2_trip && $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[8]){ ?> 
 	<p> i)(<?php echo $assigntime_data['perc_i_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b> count <?php echo(@$wrongCount[8].' '); ?>
 	<?php if ( $corr['i']=="Correct" ){echo '- Computed value is: '.$soln[8];} ?>  
-	<?php if ( @$wrongCount[8]>$hintLimit and $corr['i']=="Not Correct"&& $hintiPath != "uploads/default_hints.html" ){echo '<a href="'.$hintiPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if ( @$changed[8] and @$wrongCount[8]>$time_sleep1_trip and @$wrongCount[8]< $time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if ( @$changed[8] and @$wrongCount[8]>=$time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+	<?php if ( @$wrongCount[8]>$hintLimit && $corr['i']=="Not Correct"&& $hintiPath != "uploads/default_hints.html" ){echo '<a href="'.$hintiPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$changed[8] && @$wrongCount[8]>$time_sleep1_trip && @$wrongCount[8]< $time_sleep2_trip && $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+	<?php if ( @$changed[8] && @$wrongCount[8]>=$time_sleep2_trip && $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
 
 	if ($partsFlag[9]){ ?> 
 	<p> j)(<?php echo $assigntime_data['perc_j_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b> count <?php echo(@$wrongCount[9].' '); ?>
-	<?php if ( @$wrongCount[9]>$hintLimit and $corr['j']=="Not Correct"&& $hintjPath != "uploads/default_hints.html" ){echo '<a href="'.$hintjPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if ( @$changed[9] and @$wrongCount[9]>$time_sleep1_trip and @$wrongCount[9]< $time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if ( @$changed[9] and @$wrongCount[9]>=$time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+	<?php if ( @$wrongCount[9]>$hintLimit && $corr['j']=="Not Correct"&& $hintjPath != "uploads/default_hints.html" ){echo '<a href="'.$hintjPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$changed[9] && @$wrongCount[9]>$time_sleep1_trip && @$wrongCount[9]< $time_sleep2_trip && $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+	<?php if ( @$changed[9] && @$wrongCount[9]>=$time_sleep2_trip && $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p>
 	<?php } 
     }
@@ -739,7 +752,7 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
                              console.log ("prob_parts = "+prob_parts);
                           
                             
-
+/* time delay stuff on JS works but should take care of it for each part not on the total count
                             var check_form = document.getElementById("check_form"), check_submit = document.getElementById("check_submit");
                             check_form.onsubmit = function() {
                                 return false;
@@ -765,14 +778,14 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
                                       return false; 
                                   }
                             }       
-                                 
-                                 
+                                  */
+        /*      unpredictable results - changed to QR_checker but left the problem up                   
           if($('#switch_to_bc').val() ==1){
             window.location.replace("QR_BC_Checker2.php?activity_id="+activity_id);
 
           }              
                                  
-                                 
+   */                               
                                
 
 /* 

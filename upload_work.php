@@ -95,7 +95,7 @@ if(isset($_POST['submit_button'])){
             
             if(in_array($file_actual_ext,$allow)){
                 if($file_error ==0){
-                    if ($file_size < 10000000){
+                    if ($file_size < 20000000){
                        $file_new_name = $activity_id.'-'.$i.'-'.$file_name.'.'.$file_actual_ext; 
                         $file_destination = 'student_work/'.$file_new_name;
                         // CHeck to see if there is a file by the same name
@@ -109,7 +109,7 @@ if(isset($_POST['submit_button'])){
                      
                         
                     }else {
-                         $_SESSION['error'] = 'File size is too large max file size is 10Mb'; 
+                         $_SESSION['error'] = 'File size is too large max file size is 20Mb'; 
                     }
                 } else {
                         $_SESSION['error'] = 'This error in file of type'.$file_error; 
