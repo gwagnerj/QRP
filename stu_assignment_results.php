@@ -127,15 +127,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                      echo("</th><th>");
                       $text_for_field = 'survey_'.$alias_num;
                       $survey_perc_of_pblm = $assigntime_data[$text_for_field];
-                    echo ('Survey / Xtra Cred<p style="color:blue;font-size:10px;">'.$survey_perc_of_pblm.'% of pblm / </p>');
+                    echo ('Xtra Cred / Survey<p style="color:blue;font-size:10px;">'.$survey_perc_of_pblm.'% of pblm / </p>');
                     
                     
                     if($assign_datum['reflect_flag']==1){$text_for_field = 'perc_ref_'.$alias_num; echo('</th><th>Reflect <p style="color:blue;font-size:10px;"> '.$assigntime_data[$text_for_field].'% of pblm </p>');}
                     if($assign_datum['explore_flag']==1){$text_for_field = 'perc_exp_'.$alias_num; echo('</th><th>Explore <p style="color:blue;font-size:10px;"> '.$assigntime_data[$text_for_field].'% of pblm </p>');}
                     if($assign_datum['connect_flag']==1){$text_for_field = 'perc_con_'.$alias_num; echo('</th><th>Connect <p style="color:blue;font-size:10px;"> '.$assigntime_data[$text_for_field].'% of pblm </p>');}
                     if($assign_datum['society_flag']==1){$text_for_field = 'perc_soc_'.$alias_num; echo('</th><th>Society <p style="color:blue;font-size:10px;"> '.$assigntime_data[$text_for_field].'% of pblm </p>');}
-                     echo("</th><th>");
-                    echo ('Work'); 
+  /*                    echo("</th><th>");
+                    echo ('Work');  */
                     echo("</th><th>");
                       $text_for_field = 'perc_'.$alias_num;
                       $perc_of_Assign = $assigntime_data[$text_for_field];
@@ -227,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                       
                                 echo('<td style="vertical-align: top;">');
                                  if($stu_activity['p_num_score_net']>0){
-                                       echo($stu_activity["p_num_score_net"]);
+                                  //    echo($stu_activity["p_num_score_net"]);
                                        echo('<input type = "number" min = "0" max = "'.$prob_weight[$i].'" id = "pNumScoreNet_'.$student_id.'_'.$activity_id.'" name = "p_num_score_net_'.$student_id.'_'.$activity_id.'" value = '.$stu_activity["p_num_score_net"].'></input>');
                                    //     echo('<br><input type = "text" id="fb_reflect_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="fb_reflect_'.$student_id.'_'.$stu_activity['activity_id'].'" placeholder = "Feedback to Student" > </input>');
                                      
@@ -235,12 +235,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                            echo('<form action = "activity_details.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Details"></form>');
                                         } 
                                         $i=$i+1;
+                                        echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Show Work"></form>');
+                               //        echo('<br>');
+                                       echo('<form action = "help_student.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Help Student"></form>');
+
                                 echo('</td>');
                                             if ($stu_activity['survey_pts']!=null){
                                                  echo('<td style="vertical-align: top;">');
+                                              // echo'<br>&nbsp;&nbsp;&nbsp;/<br>';
+                                               echo('<input type = "number" min = "-100" max = "200" id = "ecPts_'.$student_id.'_'.$activity_id.'" name = "ecPts_'.$student_id.'_'.$activity_id.'" placeholder = "E.C." value = '.$stu_activity["ec_pts"].'></input>');
                                                echo('<span class = "'.$student_id.'" id = "survey_pts_'.$student_id.'_'.$activity_id.'" >'.$stu_activity['survey_pts'].'</span>');
-                                               echo'<br>&nbsp;&nbsp;&nbsp;/<br>';
-                                               echo('<input type = "number" min = "-100" max = "200" id = "ecPts_'.$student_id.'_'.$activity_id.'" name = "ecPts_'.$student_id.'_'.$activity_id.'" placeholder = "Extra C." value = '.$stu_activity["ec_pts"].'></input>');
 
                                                 echo('</td>');
                                     }else {echo'<td></td>';}
@@ -295,11 +299,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                //                 echo ('<form action = "get_pdf.php" method = "GET" target = "_blank"> ');
                 //               echo(' <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"></form>');
               
-                             echo('<td style="vertical-align: top;">');
-                              echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Show Work"></form>');
-                            echo('<br>');
-                              echo('<form action = "help_student.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Help Student"></form>');
-                            echo('</td>');
+                          //   echo('<td style="vertical-align: top;">');
+                          //  echo('</td>');
                            //  echo('<td>link to work</td>');
                                 //echo('<td>prob_t input</td>');
                                   echo('<td style="vertical-align: top;">');
