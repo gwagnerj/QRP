@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
    echo ('<table id="table" class = "a" border="2" >'."\n");
         echo("<thead>");
 
-		echo("</td><th>");
+		echo("<th>");
 		echo('First');
           echo("</th><th>");
         echo('Last');
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
      
 		echo("</th><th>");
        echo(' student_id '); */
-       echo("</th><th>");
+       echo('</th><th style="vertical-align: top; border-right-color:#B22222; border-right:solid 2px red; ">');
        echo(' dex ');
 
    
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                     if($assign_datum['society_flag']==1){$text_for_field = 'perc_soc_'.$alias_num; echo('</th><th>Society <p style="color:blue;font-size:10px;"> '.$assigntime_data[$text_for_field].'% of pblm </p>');}
   /*                    echo("</th><th>");
                     echo ('Work');  */
-                    echo("</th><th>");
+                    echo('</th><th style="vertical-align: top; border-right-color:#B22222; border-right:solid 2px red; ">');
                       $text_for_field = 'perc_'.$alias_num;
                       $perc_of_Assign = $assigntime_data[$text_for_field];
                     echo (' <p style="color:red;font-size:14px;">Prob '.$alias_num.' Tot</p>  <p <span class = "pblm_weight" style="color:red;font-size:10px;"> '. $perc_of_Assign.'% of Assign </span> </p>');
@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                            //  echo($class_student_datum['last_name']);
                             //    echo('</td><td style="vertical-align: top;">');
                                  echo('<a href ="mailto: '.$class_student_datum['school_email'].'">'.$class_student_datum['last_name'].'</a>');
-                                echo('</td><td style="vertical-align: top;">');
+                                echo('</td><td style="vertical-align: top; border-right-color:#B22222; border-right:solid 2px red; ">');
                              /*   echo($student_id);
                                 echo('</td><td>'); */
                                echo('&nbsp;'.$dex);
@@ -237,8 +237,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                         $i=$i+1;
                                         echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Show Work"></form>');
                                //        echo('<br>');
-                                       echo('<form action = "help_student.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Help Student"></form>');
-
+                                       echo('<form action = "QRproblem_preview.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "hidden" name = "problem_id" value = "'.$assign_datum['prob_num'].'"><input type = "hidden" name = "dex" value = "'.$dex.'"><input type = "submit" value ="Help Student"></form>');
+                              //          echo'what is this';
                                 echo('</td>');
                                             if ($stu_activity['survey_pts']!=null){
                                                  echo('<td style="vertical-align: top;">');
@@ -303,7 +303,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                           //  echo('</td>');
                            //  echo('<td>link to work</td>');
                                 //echo('<td>prob_t input</td>');
-                                  echo('<td style="vertical-align: top;">');
+                                  echo('<td style="vertical-align: top; border-right-color:#B22222; border-right:solid 2px red; ">');
                                 echo('<input class = "probtot_'.$student_id.'" type = "number" min = "0" max = "100" id="probtot_'.$student_id.'_'.$stu_activity['activity_id'].'" name = "probtot_'.$stu_activity['activity_id'].'" readonly value = '.$prob_default_tot.' > </input>');
                                   echo('</td>');
                         
