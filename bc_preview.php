@@ -95,7 +95,9 @@ if (isset($_POST['problem_id'])){
     // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
 
       for( $i=0;$i<$nv;$i++){
+          if($BC_row['v_'.($i+1)]!='Null' ){
             $base_case = preg_replace($pattern[$i],$BC_vari[$i],$base_case);
+          }
         }
        
         
@@ -112,8 +114,10 @@ if (isset($_POST['problem_id'])){
             
          // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
+           if($BC_row['v_'.($i+1)]!='Null' ){
             $base_case = preg_replace($pattern[$i],$vari[$i],$base_case);
-        }
+           }
+       }
          
           $dom = new DOMDocument();
    libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly

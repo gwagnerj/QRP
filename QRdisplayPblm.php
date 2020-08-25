@@ -308,8 +308,10 @@ $pass = array(
              // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
 
       for( $i=0;$i<$nv;$i++){
+           if($row['v_'.($i+1)]!='Null' ){
             $problem = preg_replace($pattern[$i],$vari[$i],$problem);
             $base_case = preg_replace($pattern[$i],$BC_vari[$i],$base_case);
+           }
         }
          // put in the special personalized variables into the problem statement
          $stu_city = 'Angola';   // will read these from the table once we have a student login ---------------------
@@ -389,7 +391,9 @@ $pass = array(
      
          // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
-            $base_case = preg_replace($pattern[$i],$vari[$i],$base_case);
+             if($row['v_'.($i+1)]!='Null' ){
+                $base_case = preg_replace($pattern[$i],$vari[$i],$base_case);
+             }
         }
          
           $dom = new DOMDocument();
@@ -433,7 +437,9 @@ $pass = array(
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
-            $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+             if($row['v_'.($i+1)]!='Null' ){
+                $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+             }
         }
  
   echo $this_html; //-------------------------------------------------------display first part ------------------------------------------------------------------
@@ -453,14 +459,18 @@ $pass = array(
   $this_html = '<hr><div id = "reflections">'.$reflect.$explore.$connect.$society.'</div>';
   // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
-            $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+             if($row['v_'.($i+1)]!='Null' ){
+                $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+             }
         }
    // substitute for all of the varables, images and varaible images that might be in the reflections portion
    
    
           // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
-            $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+             if($row['v_'.($i+1)]!='Null' ){
+                $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+             }
         }
          
           $dom = new DOMDocument();
