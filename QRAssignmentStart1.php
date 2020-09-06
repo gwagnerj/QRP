@@ -66,7 +66,7 @@
     $perc_ec_max_p_assign = 20;
     $perc_ec_max_p_pblm = 20;
     $perc_ec_max_person_to_person = 5;
-    $fixed_percent_decline = 20;
+    $fixed_percent_decline = 30;
     
     $ec_daysb4due_elgible = 10;
     
@@ -128,6 +128,18 @@ if($new_flag == 0){
            $due_date = new DateTime($due_date);
           }
 
+
+
+        // get the exp date from the CurrentClass table to set the default assignment clase date
+            $sql = 'SELECT exp_date, DATE_FORMAT(exp_date, "%Y-%m-%dT%H:%i")  FROM CurrentClass WHERE currentclass_id = :currentclass_id ';     
+          $stmt = $pdo->prepare($sql);
+           $stmt -> execute(array (
+           ':currentclass_id' => $currentclass_id,
+           )); 
+            $current_class_exp_date = $stmt->fetch();   
+            $current_class_exp_date = $current_class_exp_date['exp_date'];
+             $current_class_exp_date = strtotime($current_class_exp_date);
+   //         echo('$current_class_exp_date '.$current_class_exp_date);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
     
@@ -423,15 +435,17 @@ $_SESSION['counter']=0;  // this is for the score board
             <font color=#003399> Assignment Timing: &nbsp; </font><br>
             <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Opens <input type="datetime-local" id="window_opens" name = "window_opens" required value="<?php if ($window_opens!=''){echo $window_opens->format('Y-m-d\TH:i');}
             else {$date = new DateTime();$timezone = new DateTimeZone('America/New_York');
-            $date->setTimezone($timezone); echo($date->format('Y-m-d\TH:i'));} 
+            $date->setTimezone($timezone);  $interval = new DateInterval('P1D');   $date->sub($interval);  echo($date->format('Y-m-d\TH:i'));} 
             ?>"> </input><br><br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Due for Full Credit <input type="datetime-local" id="due_date" name = "due_date" required value="<?php if($due_date !=''){ echo $due_date->format('Y-m-d\TH:i'); }
             else {$date = new DateTime(); $timezone = new DateTimeZone('America/New_York');
             $date->setTimezone($timezone); $interval = new DateInterval('P7D');   $date->add($interval); echo($date->format('Y-m-d\TH:i'));}
             ?>"> </input><br><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Closes - No Access After <input type="datetime-local" id="window_closes" name = "window_closes" required value="<?php if($window_closes!=''){echo $window_closes->format('Y-m-d\TH:i');}
-            else {$date = new DateTime(); $timezone = new DateTimeZone('America/New_York');
-            $date->setTimezone($timezone); $interval = new DateInterval('P7D');   $date->add($interval); echo($date->format('Y-m-d\TH:i'));}
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Closes - No Access After <input type="datetime-local" id="window_closes" name = "window_closes" required value="<?php
+            if($window_closes!='')
+            {echo $window_closes->format('Y-m-d\TH:i');}
+            else { 
+            $date = date('Y-m-d\TH:i',$current_class_exp_date);  echo($date);}
             ?>"> </input><br><br>
             
               <font color=#003399> Peer Rating of Reflections: &nbsp; </font><br>
@@ -464,7 +478,7 @@ $_SESSION['counter']=0;  // this is for the score board
                     value="fixedpercent"> Fixed Percent of Maximum per day after Due date of: &nbsp;
                 <span id = "fixed_percent_per_day">
                    
-                       &nbsp;&nbsp;  <input type = "number" min = "0" max = "100" id = "fixed_percent_decline" name = "fixed_percent_decline" value = 30 > </input><br>
+                       &nbsp;&nbsp;  <input type = "number" min = "0" max = "100" id = "fixed_percent_decline" name = "fixed_percent_decline" <?php echo ("value = ".$fixed_percent_decline); ?> > </input><br>
                     </span>
            <p><input type="hidden" name="currentclass_id" id="currentclass_id" value=<?php echo($currentclass_id);?> ></p>
             <p><input type="hidden" name="assign_num" id="assign_num" value=<?php echo($assign_num);?> ></p>

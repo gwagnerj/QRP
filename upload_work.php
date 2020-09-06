@@ -95,24 +95,30 @@ if(isset($_POST['submit_button'])){
             
             if(in_array($file_actual_ext,$allow)){
                 if($file_error ==0){
-                    if ($file_size < 20000000){
-                       $file_new_name = $activity_id.'-'.$i.'-'.$file_name; 
-                        $file_destination = 'student_work/'.$file_new_name;
-                        // CHeck to see if there is a file by the same name
-                        if (file_exists($file_destination)){
-                            $_SESSION['error'] = 'File by the name, '.$file_name.', was already in system and  was overwritten';  
-                        }  
+                    if ($file_size > 2){
+                        if ($file_size < 20000000){
+                           $file_new_name = $activity_id.'-'.$i.'-'.$file_name; 
+                            $file_destination = 'student_work/'.$file_new_name;
+                            // CHeck to see if there is a file by the same name
+                            if (file_exists($file_destination)){
+                                $_SESSION['error'] = 'File by the name, '.$file_name.', was already in system and  was overwritten';  
+                            }  
+                            
+                            move_uploaded_file($file_tmp_name,$file_destination);
+                           
                         
-                        move_uploaded_file($file_tmp_name,$file_destination);
-                       
-                    
-                     
+                         
+                            
+                        }else {
+                             $_SESSION['error'] = 'Error - File size is too large max file size is 20Mb'; 
+                        }
+                    } else {
+                             $_SESSION['error'] = 'Error - File size is less that 2 bites'; 
+                    }                        
                         
-                    }else {
-                         $_SESSION['error'] = 'File size is too large max file size is 20Mb'; 
-                    }
+                        
                 } else {
-                        $_SESSION['error'] = 'This error in file of type'.$file_error; 
+                        $_SESSION['error'] = ' Error in file of type'.$file_error; 
                 }
             } else {
                     $_SESSION['error'] = 'This file type is not allowed (only image and pdf files)';
@@ -121,8 +127,11 @@ if(isset($_POST['submit_button'])){
        }
    
        $_SESSION['success'] = 'Your work has been successfully uploaded - '.$i.' files uploaded';
-        echo('Your work has been successfully uploaded');
+     //   echo('Your work has been successfully uploaded');
         // probably go somewhere else maybe apply the points so that they recieve the provisional points
+                header("Location: finished_uploading.php");
+                 die();
+
    
    } else {
         $_SESSION['error'] = 'no files were selected';
@@ -161,7 +170,12 @@ if(isset($_POST['submit_button'])){
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <style>
- 
+ #spinner {
+    position:fixed;
+    top:50%;
+    left:50%;
+    
+}
 </style>
 
 
@@ -190,7 +204,9 @@ if(isset($_POST['submit_button'])){
         echo $qrcode;
 
 ?>
-
+<div di = "spinner" style = "display:none;"> 
+    <img id = "img_spinner" src = "spinner.gif" alt = "loading" >
+</div>
 
      <form method = "POST" enctype = "multipart/form-data" >
         <input type="file" id = "files" name = "files[]" multiple = "multiple"> &nbsp;
@@ -210,6 +226,7 @@ if(isset($_POST['submit_button'])){
               $('#submit_button').hide();
              $('#files').change(function(){
                    $('#submit_button').show(); 
+                   $('#spinner').show(); 
              })
       });
      </script>

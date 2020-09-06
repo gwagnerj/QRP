@@ -2024,4 +2024,31 @@ ALTER TABLE Activity
         ADD `connect_pr_flag` INT(3) DEFAULT 0 AFTER `explore_pr_flag`,
        ADD `society_pr_flag` INT(3) DEFAULT 0 AFTER `connect_pr_flag`;
 
-    
+ 
+CREATE TABLE Assignscore (
+	`assignscore_id` INT(11) NOT NULL AUTO_INCREMENT,
+	`student_id` INT(11),
+	`assigntime_id` INT(11),
+    `qr_tot` INT(3),
+	`other_pblm` INT(3),
+	`assign_ec` INT(3),
+	`assign_tot` INT(3),
+	CONSTRAINT FOREIGN KEY (`student_id`) REFERENCES Student (`student_id`),
+	PRIMARY KEY (`assignscore_id`),
+    UNIQUE KEY (`student_id`,`assigntime_id`)
+) ENGINE=InnoDB CHARACTER SET = utf8;
+
+   
+  ALTER TABLE Activity
+      ADD `fb_p_num_score_net` INT(3) AFTER `society_pts`,
+      ADD `fb_probtot_pts` INT(3) AFTER `fb_p_num_score_net`,
+      ADD `fb_reflect` VARCHAR(1000) AFTER `fb_probtot_pts`,
+      ADD `fb_explore` VARCHAR(1000) AFTER `fb_reflect`,
+      ADD `fb_connect` VARCHAR(1000) AFTER `fb_explore`,
+      ADD `fb_society` VARCHAR(1000) AFTER `fb_connect`;
+      
+      
+   
+   
+   
+   

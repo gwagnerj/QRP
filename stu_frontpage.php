@@ -401,8 +401,19 @@ if (isset($_SESSION['error'])){
 <meta Charset = "utf-8">
 <title>QRHomework</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+table.main_table{
+  table-layout: fixed;
+  width: 100%;  
+}
+ 
+
+
+ 
+
+</style>
 </head>
 
 <body>
@@ -559,7 +570,7 @@ $(document).ready( function () {
                              p_num_score_net[i] = result["p_num_score_net"];
                              p_num_score_raw[i] = result["p_num_score_raw"];
                              survey_pts[i] = result["survey_pts"];
-                              console.log('p_num_score_net1  '+ p_num_score_net[i]);
+   //                           console.log('p_num_score_net1  '+ p_num_score_net[i]);
                        });
                         
                      }
@@ -572,7 +583,7 @@ $(document).ready( function () {
 	// already been through and worked a problem and now getting another one all of the input fields should be defined just need another problem
 		if($('#have_assign_num').val()!= undefined){
           var assign_num = $('#have_assign_num').val();	
-        console.log("assign_num: "+assign_num);
+ //       console.log("assign_num: "+assign_num);
         }
         
     if($('#have_iid').val()!= undefined && $('#have_cclass_id').val()!= undefined && $('#have_cclass_name').val()!= undefined && $('#have_assign_num').val()!= undefined){
@@ -581,9 +592,9 @@ $(document).ready( function () {
  		var cclass_id = $('#have_cclass_id').val();
 		var cclass_name = $('#have_cclass_name').val();
 	
-			console.log("iid: "+iid);
-			console.log("cclass_id: "+cclass_id);
-			console.log("cclass_name: "+cclass_name);
+//			console.log("iid: "+iid);
+//			console.log("cclass_id: "+cclass_id);
+//			console.log("cclass_name: "+cclass_name);
 			
 			$.ajax({
 					url: 'getactivealias.php',
@@ -591,16 +602,17 @@ $(document).ready( function () {
 					data: {assign_num:assign_num,currentclass_id:cclass_id}
 				
 				}).done(function(activealias){
-				console.log('Im at 594');
+//				console.log('Im at 594');
 					activealias = JSON.parse(activealias);
 					 	 $('#alias_num_div').empty();
+                         
 					n = activealias.length;
 						$('#alias_num_div').append(" <font color=#003399> Select Problem for this Assignment : </font></br> </br>&nbsp;&nbsp;&nbsp;&nbsp;") ;
 						for (i=0;i<n;i++){
 							$('#alias_num_div').append('<input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'&nbsp; &nbsp; &nbsp;') ;
                             alias_nums[i] = activealias[i];
                     }
-                    console.log(' alias_nums1 '+alias_nums);
+   //                 console.log(' alias_nums1 '+alias_nums);
                    /*  
                     	$.ajax({
                             url: 'getresults.php',
@@ -643,15 +655,15 @@ $(document).ready( function () {
         
        if($('#have_cclass_id2').val()!= undefined){
           var cclass_id = $('#have_cclass_id2').val();	
-        console.log("cclass_id: "+cclass_id);
+//        console.log("cclass_id: "+cclass_id);
         }
         else if($('#have_cclass_id').val()!= undefined){
           var cclass_id = $('#have_cclass_id').val();	
-        console.log("cclass_id:----- "+cclass_id);
+//        console.log("cclass_id:----- "+cclass_id);
         }
         
         // var cclass_id = $('#have_cclass_id').val(); 
-            console.log("cclass_id: "+cclass_id);
+  //          console.log("cclass_id: "+cclass_id);
             
             var currentclass_id = cclass_id;
       if (!isNaN(cclass_id))  {
@@ -677,13 +689,13 @@ $(document).ready( function () {
                     if (!isNaN(assign_num))  { $('#assign_num').val(assign_num).change();}
 				}) 
       } else {
-                   console.log('need to get ir from drop down');
+ //                  console.log('need to get ir from drop down');
                    
                  
 		
         $("#current_class_dd").change(function(){
             var currentclass_id = $("#current_class_dd").val();
-			console.log ('currentclass_id: '+currentclass_id);
+//			console.log ('currentclass_id: '+currentclass_id);
       
             $.ajax({
 					url: 'getactiveassignments2.php',
@@ -694,8 +706,8 @@ $(document).ready( function () {
 					 $('#assign_num').empty();
 				
 					n = activeass.length;
-                    console.log ('typeof activeass '+typeof activeass);
-                     console.log ('n '+n);
+  //                  console.log ('typeof activeass '+typeof activeass);
+ //                    console.log ('n '+n);
 					$('#assign_num').append("<option selected disabled hidden>  </option>") ;
 					for (i=0;i<n;i++){
 							  $('#assign_num').append('<option  value="' + activeass[i] + '">' + activeass[i] + '</option>');
@@ -703,90 +715,11 @@ $(document).ready( function () {
                     }
 				
                 
-                
-                
-                
-                
-                
-                
-                
                 }) 
 		}) 
       }	
       
-//+===++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++     
-      
-  /*     
-			// this is getting the problem numbers (alias number) once the course has been selected
-			$("#assign_num").change(function(){
-                var	 assign_num = $("#assign_num").val();
-                //   $('#have_assign_num').val(assign_num);
-                if (!isNaN(cclass_id))  {currentclass_id = cclass_id;} else {
-          
-                var currentclass_id = $("#current_class_dd").val();}
-           
-            console.log('assign_num: '+assign_num);
-            console.log(' currentclass_id: '+currentclass_id);
-        //	var	 currentclass_id = $("#current_class_dd").val();
-            
-        $.when($.ajax({
-               url: 'getactivealias.php',
-               method: 'post',
-               data: {assign_num:assign_num,currentclass_id:currentclass_id}
-                
-            }),
-            $.ajax({
-                    url: 'getresults.php',
-					method: 'post',
-					data: {assign_num:assign_num,currentclass_id:currentclass_id,student_id:student_id}
-                
-            })).then(function(activealias, results){
-         //   console.log(' activealias  '+activealias);
-         //   console.log(' results  '+results);
-          //  console.log(' num_files  '+num_files);
-            console.log(' im here as 687 ');
-            
 
-
-
-  // the code here will be executed when all four ajax requests resolve.
-    // a1, a2, a3 and a4 are lists of length 3 containing the response text,
-    // status, and jqXHR object for each of the four ajax calls respectively.
-        });
-
-        function ajax1() {
-            // NOTE:  This function must return the value 
-            //        from calling the $.ajax() method.
-            return $.ajax({
-               url: 'getactivealias.php',
-               method: 'post',
-               data: {assign_num:assign_num,currentclass_id:currentclass_id}
-                
-            });
-        }
-        
-        
-         function ajax2() {
-            // NOTE:  This function must return the value 
-            //        from calling the $.ajax() method.
-            return $.ajax({
-                    url: 'getresults.php',
-					method: 'post',
-					data: {assign_num:assign_num,currentclass_id:currentclass_id,student_id:student_id}
-                
-            });
-        }
-      
-        function ajax3() {
-            return $.ajax({
-                    url: 'getfilenumber.php',
-                    method: 'post',
-                    data: {activity_ids:activityIds}
-                
-            });
-        }
-         */
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    
      	$("#assign_num").change(function(){
                 var	 assign_num = $("#assign_num").val();
                 //   $('#have_assign_num').val(assign_num);
@@ -794,27 +727,10 @@ $(document).ready( function () {
           
                 var currentclass_id = $("#current_class_dd").val();}
            
-            console.log('assign_num: '+assign_num);
-            console.log(' currentclass_id: '+currentclass_id);
-			 console.log ('currentclass_id 2nd time: '+currentclass_id);
+ //           console.log('assign_num: '+assign_num);
+ //           console.log(' currentclass_id: '+currentclass_id);
+//			 console.log ('currentclass_id 2nd time: '+currentclass_id);
            
-
-/* 
-$.ajax('/jquery/getjsondata', 
-{
-    dataType: 'json', // type of response data
-    timeout: 500,     // timeout milliseconds
-    success: function (data,status,xhr) {   // success callback function
-        $('p').append(data.firstName + ' ' + data.middleName + ' ' + data.lastName);
-    },
-    error: function (jqXhr, textStatus, errorMessage) { // error callback 
-        $('p').append('Error: ' + errorMessage);
-    }
-});
-
- */
-
-
 
 
 
@@ -824,26 +740,29 @@ $.ajax('/jquery/getjsondata',
 					data: {assign_num:assign_num,currentclass_id:currentclass_id},
 				 
                     success: function(activealias,status,xhr){
-                      console.log ('Im on 809 really'); 
-                      console.log (activealias);
+  //                    console.log ('Im on 827 really'); 
+  //                    console.log (activealias);
                       activealias = JSON.parse(activealias);
-                      console.log (activealias);    
+    //                  console.log (activealias);    
 			 	      $('#alias_num_div').empty();
 					    n = activealias.length;
 						$('#alias_num_div').append(" <font color=#003399> Select Problem for this Assignment : </font></br> </br>&nbsp;&nbsp;&nbsp;&nbsp;") ;
-						$('#alias_num_div').append('<th>&nbsp; &nbsp; Select &nbsp;</th>') ;
+                       $('#alias_num_div').append('<div style = "overflow-x:auto;">');
+
+                       $('#alias_num_div').append('<table class = "main_table">');
+						$('#alias_num_div').append('<th  style="text-align:center" width="20%"> Select</th>') ;
                       
                          
                         for (i=0;i<n;i++){
 							//could put in code to get from the activity table which problems have been attempted and which are complete and color the radio buttons different
                         
-                               $('#alias_num_div').append('<th><input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'&nbsp; &nbsp; &nbsp;</th>') ;
+                               $('#alias_num_div').append('<th  style="text-align:center" width="10%" ><input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'</th>') ;
                         
                                 alias_nums[i] = activealias[i];
                         
  
                            }
-                           console.log('alias_nums 846 two ' + alias_nums); 
+   //                        console.log('alias_nums 846 two ' + alias_nums); 
                              // console.log(' assign_num: '+assign_num);
                              // console.log(' currentclass_id: '+currentclass_id);
                               student_id = $("#student_id").val();
@@ -858,103 +777,186 @@ $.ajax('/jquery/getjsondata',
                                       //  console.log ('Im on 842');
                                         
                                         
-                                       console.log('alias_nums 846 three ' + alias_nums); 
+    //                                   console.log('alias_nums 861 three ' + alias_nums); 
 
                                         results = JSON.parse(results);
                                         n2 = results.length;
-                                              console.log(' alias_nums three '+alias_nums);   
-                                            console.log('  n2 '+n2);
-                                            console.log('  n '+n);
-                                            console.log(results);
-                                            
-                                            
-                                            
-                                        $('#alias_num_div').append('<tr><td>&nbsp; &nbsp; &nbsp;</td></tr>') ;
-                                        $('#alias_num_div').append('<td>&nbsp; &nbsp; Pblm Points &nbsp;</td>') ;
+  //                                            console.log(' alias_nums three '+alias_nums);   
+   //                                        console.log('  n2 '+n2);
+    //                                    console.log('  n '+n);
+    //                                       console.log(results);
+  //                                          
+                                      // write the net score in the table 
+                                        $('#alias_num_div').append('<tr><td>&nbsp;</td></tr>') ;
+                                        $('#alias_num_div').append('<td  style="text-align:center" > Provisional Pts </td>') ;
                                         for (i=0;i<n;i++){
                                             var found = false;
                                              for (j=0;j<n2;j++){ 
                                                 var row = results[j];
                                                    if (typeof row.alias_num != "undefined"  ){
-                                                         if(row.alias_num == i+1){
+                                                         if(row.alias_num ==activealias[i]){
                                                              found = true;
+                                                             var row_found = row;
                                                          }
                                                     }                                                       
                                              }
                                              if (found){
-                                                if (row["p_num_score_net"] != null){
-                                                  $('#alias_num_div').append('<td>&nbsp; &nbsp;'+row["p_num_score_net"]+'&nbsp;</td>') ;
+                                                if (row_found["p_num_score_net"] != null){
+                                                  $('#alias_num_div').append('<td  style="text-align:center" >'+row_found["p_num_score_net"]+'</td>') ;
                                                 } else {
-                                                  $('#alias_num_div').append('<td>&nbsp; &nbsp; 0 &nbsp;</td>') ;
+                                                  $('#alias_num_div').append('<td style="text-align:center"  > 0 </td>') ;
+                                                }
+                                             } else 
+                                             {
+                                                 $('#alias_num_div').append('<td></td>') ;  
+                                             }                                                           
+                                        }   
+                                        
+                                        // write the extra credit from the feedback
+                                        $('#alias_num_div').append('<tr><td>&nbsp;</td></tr>') ;
+                                        $('#alias_num_div').append('<td  style="text-align:center"> Extra Credit </td>') ;
+                                        for (i=0;i<n;i++){
+                                            var found = false;
+                                             for (j=0;j<n2;j++){ 
+                                                var row = results[j];
+                                                   if (typeof row.alias_num != "undefined"  ){
+                                                         if(row.alias_num ==activealias[i]){
+                                                             found = true;
+                                                             var row_found = row;
+                                                         }
+                                                    }                                                       
+                                             }
+                                             if (found){
+                                                if (row_found["ec_pts"] != null){
+                                                  $('#alias_num_div').append('<td  style="text-align:center" >'+row_found["ec_pts"]+'</td>') ;
+                                                } else {
+                                                  $('#alias_num_div').append('<td  style="text-align:center"> &nbsp; </td>') ;
+                                                }
+                                             } else 
+                                             {
+                                                 $('#alias_num_div').append('<td></td>') ;  
+                                             }                                                           
+                                        }                                        
+                                            
+                                        
+                       
+                                            
+    
+    
+                                        $('#alias_num_div').append('<tr><td>&nbsp; </td></tr>') ;
+                                        $('#alias_num_div').append('<td  style="text-align:center"> Late Penalty </td>') ;
+                                        for (i=0;i<n;i++){
+                                            var found = false;
+                                             for (j=0;j<n2;j++){ 
+                                                var row = results[j];
+                                                   if (typeof row.alias_num != "undefined"  ){
+                                                         if(row.alias_num == activealias[i]){
+                                                             found = true;
+                                                             var row_found = row;
+                                                         }
+                                                    }                                                       
+                                             }
+                                             if (found){
+  //                                               console.log('late p '+row_found.late_penalty );
+ //                                               console.log('raw p '+row_found["p_num_score_raw"] );
+                                                if (row_found["late_penalty"] != null){
+                                                    if (row_found["late_penalty"] > row_found["p_num_score_raw"]){var late_penalty = row_found["p_num_score_raw"];} else {var late_penalty = row_found["late_penalty"];}
+                                                    $('#alias_num_div').append('<td  style="text-align:center">'+late_penalty+'</td>') ;
+                                                } else {
+                                                  $('#alias_num_div').append('<td>&nbsp; </td>') ;
                                                 }
                                              } else 
                                              {
                                                  $('#alias_num_div').append('<td></td>') ;  
                                              }                                                           
                                         }
+                                 
                                         
-                                       $('#alias_num_div').append('<tr><td>&nbsp; &nbsp; &nbsp;</td></tr>') ;
-                                       $('#alias_num_div').append('<td>&nbsp; &nbsp; Survey &nbsp;</td>') ;
+                                       $('#alias_num_div').append('<tr><td>&nbsp; </td></tr>') ;
+                                       $('#alias_num_div').append('<td style="text-align:center" > Survey </td>') ;
                                         for (i=0;i<n;i++){
                                             var found = false;
                                             for (j=0;j<n2;j++){ 
                                                 var row = results[j];
                                                    if (typeof row.alias_num != "undefined" ){
-                                                         if(row.alias_num == i+1 && row.survey_pts > 0){
+                                                         if(row.alias_num == activealias[i] && row.survey_pts > 0 && row.survey_pts != null ){
+                                                             var row_found = row;
+                                                             console.log (row.survey_pts);
                                                              found = true;
                                                          }
                                                     }                                                       
                                             }
                                              if (found){
-                                                 $('#alias_num_div').append('<td>&nbsp; &check; &nbsp;&nbsp;</td>') ;
+                                                 $('#alias_num_div').append('<td  style="text-align:center"> '+row_found["survey_pts"]+' </td>') ;
                                              } else 
                                              {
                                                  $('#alias_num_div').append('<td></td>') ;  
                                              }                                                           
                                         }
-        
-                                        $('#alias_num_div').append('<tr><td>&nbsp; &nbsp; &nbsp;</td></tr>') ;
-                                        $('#alias_num_div').append('<td>&nbsp; &nbsp; Reflect &nbsp;</td>') ;
+        // start reflection part of the feedback
+                                        $('#alias_num_div').append('<tr><td>&nbsp;</td></tr>') ;
+                                        $('#alias_num_div').append('<td style="text-align:center">Reflect </td>') ;
                                         for (i=0;i<n;i++){
                                             var found = false;
                                             var wrote = false;
+                                            var fbpts = false;
+                                            var fbtext = false;
                                             for (j=0;j<n2;j++){ 
                                                 var row = results[j];
                                                    if (typeof row.alias_num != "undefined" ){
-                                                         if(row.alias_num == i+1 && row.reflect_flag ==1){
+                                                         if(row.alias_num == activealias[i] && row.reflect_flag ==1){
                                                               found = true;
-                                                              if (row.reflect_text != null){
+                                                             if (row.reflect_pts > 0 ) { var row_found = row; fbpts = true;}
+                                                             if (row.fb_reflect != null){
+                                                                if (row.fb_reflect.length > 1 ) { var row_found = row; fbtext = true;}
+                                                             }
+                                                             if (row.reflect_text != null){
                                                                  if (row.reflect_text.length > 2){
                                                                      wrote = true;
+                                                                     if (row.reflect_pts > 0 ) { var row_found = row; fbpts = true;}
+                                                                     if (row.fb_reflect.length > 1 ) { var row_found = row; fbtext = true;}
                                                                   }
                                                               }
                                                          }                                                       
                                                     }
                                                     
                                             }
-                                             if (found && wrote){
-                                                 $('#alias_num_div').append('<td>&nbsp; &check; &nbsp;&nbsp;</td>') ;
+                                             if(fbpts && fbtext){
+                                                  $('#alias_num_div').append('<td  style="text-align:center">'+row_found["reflect_pts"]+'  <br> '+row_found["fb_reflect"].replace(/_/g, ' ')+'</td>') ;
+                                             } else if (fbpts) {
+                                                  $('#alias_num_div').append('<td  style="text-align:center">'+row_found["reflect_pts"]+'  </td>') ;
+                                             } else if (fbtext) {
+                                                  $('#alias_num_div').append('<td  style="text-align:center"> '+row_found["fb_reflect"].replace(/_/g, ' ')+'</td>') ;
+                                             }
+                                             else if (found && wrote){
+                                                 $('#alias_num_div').append('<td style="text-align:center"> &check; </td>') ;
                                              } else if(found){
-                                                   $('#alias_num_div').append('<td>&nbsp; x &nbsp;&nbsp;</td>') ;
-                                             } else 
-                                             {
-                                                 $('#alias_num_div').append('<td></td>') ;  
-                                             }                                                           
+                                                   $('#alias_num_div').append('<td style="text-align:center"> x </td>') ;
+                                             } else {
+                                            
+                                             $('#alias_num_div').append('<td> </td>') ;  
+                                             }                                                          
                                         }
 
 
 
-                               
-                                       $('#alias_num_div').append('<tr><td>&nbsp; &nbsp; &nbsp;</td></tr>') ;
-                                       $('#alias_num_div').append('<td>&nbsp; &nbsp; Explore &nbsp;</td>') ;
+                    // explore feedback           
+                                       $('#alias_num_div').append('<tr><td>&nbsp; </td></tr>') ;
+                                       $('#alias_num_div').append('<td  style="text-align:center"> Explore </td>') ;
                                         for (i=0;i<n;i++){
                                             var found = false;
                                             var wrote = false;
+                                            var fbpts = false;
+                                            var fbtext = false;
                                             for (j=0;j<n2;j++){ 
                                                 var row = results[j];
                                                    if (typeof row.alias_num != "undefined" ){
-                                                         if(row.alias_num == i+1 && row.explore_flag ==1){
+                                                         if(row.alias_num == activealias[i] && row.explore_flag ==1){
                                                               found = true;
+                                                             if (row.explore_pts > 0 ) { var row_found = row; fbpts = true;}
+                                                             if (row.fb_explore != null){
+                                                                 if (row.fb_explore.length > 2 ) { var row_found = row; fbtext = true;}
+                                                             }
                                                               if (row.explore_text != null){
                                                                  if (row.explore_text.length > 2){
                                                                      wrote = true;
@@ -963,26 +965,39 @@ $.ajax('/jquery/getjsondata',
                                                          }                                                       
                                                     }
                                             }
-                                             if (found && wrote){
-                                                 $('#alias_num_div').append('<td>&nbsp; &check; &nbsp;&nbsp;</td>') ;
+                                             if(fbpts && fbtext){
+                                                  $('#alias_num_div').append('<td  style="text-align:center">'+row_found["explore_pts"]+'  <br> '+row_found["fb_explore"].replace(/_/g, ' ')+'</td>') ;
+                                             } else if (fbpts) {
+                                                  $('#alias_num_div').append('<td  style="text-align:center">'+row_found["explore_pts"]+'  </td>') ;
+                                             } else if (fbtext) {
+                                                  $('#alias_num_div').append('<td  style="text-align:center"> '+row_found["fb_explore"].replace(/_/g, ' ')+'</td>') ;
+                                             }
+                                             else if (found && wrote){
+                                                 $('#alias_num_div').append('<td style="text-align:center"> &check; </td>') ;
                                              } else if(found){
-                                                   $('#alias_num_div').append('<td>&nbsp; x &nbsp;&nbsp;</td>') ;
-                                             } else 
-                                             {
-                                                 $('#alias_num_div').append('<td></td>') ;  
-                                             }                                                           
+                                                   $('#alias_num_div').append('<td style="text-align:center"> x </td>') ;
+                                             } else {
+                                            
+                                             $('#alias_num_div').append('<td> </td>') ;  
+                                             }                                                          
                                         }
-                               
-                                       $('#alias_num_div').append('<tr><td>&nbsp; &nbsp; &nbsp;</td></tr>') ;
-                                       $('#alias_num_div').append('<td>&nbsp; &nbsp; Connect &nbsp;</td>') ;
+                   // connect feedback            
+                                       $('#alias_num_div').append('<tr><td> &nbsp;</td></tr>') ;
+                                       $('#alias_num_div').append('<td style="text-align:center"> Connect </td>') ;
                                         for (i=0;i<n;i++){
                                             var found = false;
                                             var wrote = false;
+                                            var fbpts = false;
+                                            var fbtext = false;
                                             for (j=0;j<n2;j++){ 
                                                 var row = results[j];
                                                    if (typeof row.alias_num != "undefined" ){
-                                                         if(row.alias_num == i+1 && row.connect_flag ==1){
+                                                         if(row.alias_num == activealias[i] && row.connect_flag ==1){
                                                               found = true;
+                                                             if (row.connect_pts > 0 ) { var row_found = row; fbpts = true;}
+                                                             if (row.fb_connect != null){
+                                                                 if (row.fb_connect.length > 2 ) { var row_found = row; fbtext = true;}
+                                                             }
                                                               if (row.connect_text != null){
                                                                  if (row.connect_text.length > 2){
                                                                      wrote = true;
@@ -991,26 +1006,39 @@ $.ajax('/jquery/getjsondata',
                                                          }                                                       
                                                     }
                                             }
-                                             if (found && wrote){
-                                                 $('#alias_num_div').append('<td>&nbsp; &check; &nbsp;&nbsp;</td>') ;
+                                             if(fbpts && fbtext){
+                                                  $('#alias_num_div').append('<td  style="text-align:center">'+row_found["connect_pts"]+'  <br> '+row_found["fb_connect"].replace(/_/g, ' ')+'</td>') ;
+                                             } else if (fbpts) {
+                                                  $('#alias_num_div').append('<td  style="text-align:center">'+row_found["connect_pts"]+'  </td>') ;
+                                             } else if (fbtext) {
+                                                  $('#alias_num_div').append('<td  style="text-align:center"> '+row_found["fb_connect"].replace(/_/g, ' ')+'</td>') ;
+                                             }
+                                             else if (found && wrote){
+                                                 $('#alias_num_div').append('<td style="text-align:center"> &check; </td>') ;
                                              } else if(found){
-                                                   $('#alias_num_div').append('<td>&nbsp; x &nbsp;&nbsp;</td>') ;
-                                             } else 
-                                             {
-                                                 $('#alias_num_div').append('<td></td>') ;  
-                                             }                                                           
+                                                   $('#alias_num_div').append('<td style="text-align:center"> x </td>') ;
+                                             } else {
+                                            
+                                             $('#alias_num_div').append('<td> </td>') ;  
+                                             }                                                          
                                         }
-
-                                       $('#alias_num_div').append('<tr><td>&nbsp; &nbsp; &nbsp;</td></tr>') ;
-                                       $('#alias_num_div').append('<td>&nbsp; &nbsp; Society &nbsp;</td>') ;
+                        // society
+                                       $('#alias_num_div').append('<tr><td> &nbsp;</td></tr>') ;
+                                       $('#alias_num_div').append('<td style="text-align:center"> Society </td>') ;
                                         for (i=0;i<n;i++){
                                             var found = false;
                                             var wrote = false;
+                                            var fbpts = false;
+                                            var fbtext = false;
                                             for (j=0;j<n2;j++){ 
                                                 var row = results[j];
                                                    if (typeof row.alias_num != "undefined" ){
-                                                         if(row.alias_num == i+1 && row.society_flag ==1){
+                                                         if(row.alias_num == activealias[i] && row.society_flag ==1){
                                                               found = true;
+                                                             if (row.society_pts > 0 ) { var row_found = row; fbpts = true;}
+                                                             if (row.fb_society != null){
+                                                                 if (row.fb_society.length > 2 ) { var row_found = row; fbtext = true;}
+                                                             }
                                                               if (row.society_text != null){
                                                                  if (row.society_text.length > 2){
                                                                      wrote = true;
@@ -1019,34 +1047,90 @@ $.ajax('/jquery/getjsondata',
                                                          }                                                       
                                                     }
                                             }
-                                             if (found && wrote){
-                                                 $('#alias_num_div').append('<td>&nbsp; &check; &nbsp;&nbsp;</td>') ;
+                                             if(fbpts && fbtext){
+                                                  $('#alias_num_div').append('<td  style="text-align:center">'+row_found["society_pts"]+'  <br> '+row_found["fb_society"].replace(/_/g, ' ')+'</td>') ;
+                                             } else if (fbpts) {
+                                                  $('#alias_num_div').append('<td  style="text-align:center">'+row_found["society_pts"]+'  </td>') ;
+                                             } else if (fbtext) {
+                                                  $('#alias_num_div').append('<td  style="text-align:center"> '+row_found["fb_society"].replace(/_/g, ' ')+'</td>') ;
+                                             }
+                                             else if (found && wrote){
+                                                 $('#alias_num_div').append('<td style="text-align:center"> &check; </td>') ;
                                              } else if(found){
-                                                   $('#alias_num_div').append('<td>&nbsp; x &nbsp;&nbsp;</td>') ;
+                                                   $('#alias_num_div').append('<td style="text-align:center"> x </td>') ;
+                                             } else {
+                                            
+                                             $('#alias_num_div').append('<td> </td>') ;  
+                                             }                                                          
+                                        }
+                                        
+             // write the score from the feedback
+                                        $('#alias_num_div').append('<tr><td>&nbsp;</td></tr>') ;
+                                        $('#alias_num_div').append('<td  style="text-align:center"> Actual Pts</td>') ;
+                                        for (i=0;i<n;i++){
+                                            var found = false;
+                                             for (j=0;j<n2;j++){ 
+                                                var row = results[j];
+                                                   if (typeof row.alias_num != "undefined"  ){
+                                                         if(row.alias_num ==activealias[i]){
+                                                             found = true;
+                                                             var row_found = row;
+                                                         }
+                                                    }                                                       
+                                             }
+                                             if (found){
+                                                if (row_found["fb_p_num_score_net"] != null){
+                                                  $('#alias_num_div').append('<td  style="text-align:center" >'+row_found["fb_p_num_score_net"]+'</td>') ;
+                                                } else {
+                                                  $('#alias_num_div').append('<td  style="text-align:center"> &nbsp; </td>') ;
+                                                }
                                              } else 
                                              {
                                                  $('#alias_num_div').append('<td></td>') ;  
                                              }                                                           
-                                        }
-                                   /*      
-                                         $('#alias_num_div').append('<hr>') ;
-                                         $('#alias_num_div').append('</table>') ;
-                                          $('#alias_num_div').append('Note - Problem points recorded when Finish button is selected ') ;
+                                        }                                       
+
+
+                  // write the score from the feedback
+                                        $('#alias_num_div').append('<tr><td>&nbsp;</td></tr>') ;
+                                        $('#alias_num_div').append('<td  style="text-align:center; background-color: lightgray" > Total Pts </td>') ;
+                                        for (i=0;i<n;i++){
+                                            var found = false;
+                                             for (j=0;j<n2;j++){ 
+                                                var row = results[j];
+                                                   if (typeof row.alias_num != "undefined"  ){
+                                                         if(row.alias_num ==activealias[i]){
+                                                             found = true;
+                                                             var row_found = row;
+                                                         }
+                                                    }                                                       
+                                             }
+                                             if (found){
+                                                if (row_found["fb_probtot_pts"] != null){
+                                                  $('#alias_num_div').append('<td  style="text-align:center ; background-color: lightgray" >'+row_found["fb_probtot_pts"]+'</td>') ;
+                                                } else {
+                                                  $('#alias_num_div').append('<td  style="text-align:center ; background-color: lightgray"> &nbsp; </td>') ;
+                                                }
+                                             } else 
+                                             {
+                                                 $('#alias_num_div').append('<td style="text-align:center ; background-color: lightgray"></td>') ;  
+                                             }                                                           
+                                        }                                       
                                         
-                                          $('#files_section').append('<table>') ;
-                                        */ 
-                                        // look for files that have been submitted to the system for the problem need to do this with AJAX i think
+                                        
+                                                    $('#alias_num_div').append('<tr ></tr>') ;
+                   // look for files that have been submitted to the system for the problem need to do this with AJAX i think
                                         //  $('#files_section').append('</tr><tr>') ;
                                         //  $('#alias_num_div').append('</tr><tr>') ;
-                                       $('#alias_num_div').append('<tr><td>&nbsp; &nbsp; &nbsp;</td></tr>') ;
-                                       $('#alias_num_div').append('<td>&nbsp; Files Uploaded &nbsp;</td>') ;
+                                       $('#alias_num_div').append('<tr><td>&nbsp;</td></tr>') ;
+                                       $('#alias_num_div').append('<td style="text-align:center"> Files Uploaded </td>') ;
                                         
                                         
                                         var activityIds = [];
                                          for (j=0;j<n2;j++){ 
                                              var row = results[j];
                                              activityIds[j] =  row.activity_id ;
-                                              console.log(' activityIds  '+activityIds);
+   //                                           console.log(' activityIds  '+activityIds);
                                          }  
                                         $.ajax({
                                         url: 'getfilenumber.php',
@@ -1055,14 +1139,14 @@ $.ajax('/jquery/getjsondata',
                                         
                                             success: function(num_files,status,xhr){
                                                 num_files = JSON.parse(num_files);
-                                                  console.log (' num files '+ num_files);
+      //                                            console.log (' num files '+ num_files);
                                                   var position = '';
                                                  for (i=0;i<n;i++){
                                                     var found = false;
                                                      for (j=0;j<n2;j++){ 
                                                         var row = results[j];
                                                            if (typeof row.alias_num != "undefined"  ){
-                                                                 if(row.alias_num == i+1){
+                                                                 if(row.alias_num == activealias[i]){
                                                                      found = true;
                                                                      position = j;
                                                                  }
@@ -1071,151 +1155,39 @@ $.ajax('/jquery/getjsondata',
                                                      if (found){
                                                          
                                                         if (num_files[position] != null){
-                                                          $('#alias_num_div').append('<td>&nbsp; &nbsp;'+num_files[position]+'&nbsp;</td>') ;
+                                                          $('#alias_num_div').append('<td style="text-align:center">'+num_files[position]+'</td>') ;
                                                           position = '';
                                                         } else {
-                                                          $('#alias_num_div').append('<td>&nbsp; &nbsp; 0 &nbsp;</td>') ;
+                                                          $('#alias_num_div').append('<td style="text-align:center"> 0 </td>') ;
                                                         }
                                                      } else 
                                                      {
                                                          $('#alias_num_div').append('<td></td>') ;  
                                                      }                                                           
-                                        }
+                                                }
+     
+// should put in stuff from the assignscore for the points for the overall assignment and the weights for each part from assigntime table
 
-/* 
-
-                                               for (i=0;i<n;i++){
-                                                      
-                                                            $('#alias_num_div').append('<td>&nbsp;'+num_files[i]+' &nbsp;&nbsp;&nbsp;</td>') ;
-                                                    }
-                                                     */
-                                                    
-                                                    
-                                                    
-                                                    
-                                                    
-                                                    
                                                     
                                                     $('#alias_num_div').append('</table>') ;
+                                                    $('#alias_num_div').append('</div>') ;
                                              }
                                         
                                         });
-
-                                        
-                                                
-                                      /*         
-
-                                           
-                                         */
-                                    // $('#alias_num_div').empty();
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
                                     
                                     }   
                               
                                });
 
-
-
                         }
-                 
-                 
-                 
                  
                  });
 				
-               
-
-                  
-     //  gettheactivealias();  
-
-        
-		   /*   		   
-             	       
-					 	 $('#alias_num_div').empty();
-					    n = activealias.length;
-						$('#alias_num_div').append(" <font color=#003399> Select Problem for this Assignment : </font></br> </br>&nbsp;&nbsp;&nbsp;&nbsp;") ;
-						$('#alias_num_div').append('<th>&nbsp; &nbsp; Select &nbsp;</th>') ;
-                      
-                         
-                        for (i=0;i<n;i++){
-							//could put in code to get from the activity table which problems have been attempted and which are complete and color the radio buttons different
-                        
-                               $('#alias_num_div').append('<th><input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'&nbsp; &nbsp; &nbsp;</th>') ;
-                        
-                                alias_nums[i] = activealias[i];
-                        
- 
-                     }
-                       console.log('alias_nums 833 two ' + alias_nums); 
-                       
- 
-                       $.ajax({
-                            url: 'getresults.php',
-                            method: 'post',
-                            data: {assign_num:assign_num,currentclass_id:currentclass_id,student_id:student_id}
-				
-                            }).done(function(results){
-                        	  
-
-
-                              console.log ('Im on 842');
-                              
-                              
-                               });
-                            
-                               
-                               results = JSON.parse(results);
-                                    // $('#alias_num_div').empty();
-                                    n = results.length;
-                                      console.log(' alias_nums three '+alias_nums);   
-                                    console.log('  n2 '+n);
-                                 $('#alias_num_div').append('<tr><td>&nbsp; &nbsp; &nbsp;</td></tr>') ;
-                                 $('#alias_num_div').append('<td>&nbsp; &nbsp; Pblm Points &nbsp;</td>') ;
-                   //             console.log('typeof results'+typeof results);
-                   //             console.log(' results'+results.activity_id);
-                                //console.log('typeof results'+typeof results);
-                                console.log(results);
-                                    for (i=0;i<n;i++){
-                                    var row = results[i];
-                                        if(row.p_num_score_net != null){
-                                            $('#alias_num_div').append('<td>&nbsp; &nbsp;'+row["p_num_score_net"]+'&nbsp;</td>') ;
-                                        } else {
-                                            
-                                             $('#alias_num_div').append('<td></td>') ;
-                                            
-                                        }
-                                        
-                                    }
-                            });
-                       
-                        */
-                       
-                       
-                       
-                       
                        
                 });
-                
-                
-                
-                
             });
              
-                    // this should get the student previous results
-                   // Get all the information to Query the activity data
-                   
-                   
     
-                    
-                    
-                    
-                    
-                    
                     
                        // this bit should get the peer rating reflections from the assignment
             /*               
@@ -1244,228 +1216,7 @@ $.ajax('/jquery/getjsondata',
                         }
                     })
                     
-             */
-            
-       //     })
-            
-  /*           
-       		$("#assign_num").change(function(){
-		var	 assign_num = $("#assign_num").val();
-     //   $('#have_assign_num').val(assign_num);
-           if (!isNaN(cclass_id))  {currentclass_id = cclass_id;} else {
-          
-           var currentclass_id = $("#current_class_dd").val();}
-             var student_id = $("#student_id").val();
-    //        console.log('sudent_id2: '+student_id);    
-    //    console.log('assign_num2: '+assign_num);
-    //    console.log(' currentclass_id2: '+currentclass_id);
-	//	var	 currentclass_id = $("#current_class_dd").val();
-		
-			// console.log ('currentclass_id 2nd time: '+currentclass_id);
-			$.ajax({
-					url: 'getresults.php',
-					method: 'post',
-					data: {assign_num:assign_num,currentclass_id:currentclass_id,student_id:student_id}
-				
-				}).done(function(results){
-			//	    console.log ('Im on 856');
-				   results = JSON.parse(results);
-					 	// $('#alias_num_div').empty();
-					    n = results.length;
-                        
-                        console.log('  n2 '+n);
-                     $('#alias_num_div').append('<tr><td>&nbsp; &nbsp; &nbsp;</td></tr>') ;
-                     $('#alias_num_div').append('<td>&nbsp; &nbsp; Pblm Points &nbsp;</td>') ;
-       //             console.log('typeof results'+typeof results);
-       //             console.log(' results'+results.activity_id);
-                    //console.log('typeof results'+typeof results);
-                   console.log(results);
-                    	for (i=0;i<n;i++){
-                        var row = results[i];
-                            if(row.p_num_score_net != null){
-                                $('#alias_num_div').append('<td>&nbsp; &nbsp;'+row["p_num_score_net"]+'&nbsp;</td>') ;
-                            } else {
-                                
-                                 $('#alias_num_div').append('<td></td>') ;
-                                
-                            }
-                            
-                        }
-                           $('#alias_num_div').append('</tr><tr>') ;
-                        for (i=0;i<n;i++){
-                           var row = results[i];
-                           if (i==0){
-                                 $('#alias_num_div').append('<td>&nbsp; &nbsp; Survey &nbsp</td>') ;
-                            } 
-                          if (row.survey_pts != null && row.survey_pts > 0 ){
-                                    $('#alias_num_div').append('<td>&nbsp; &check; &nbsp;&nbsp;</td>') ;
-                           } else {
-                               
-                                $('#alias_num_div').append('<td></td>') ;
-                           }
-                        }
-                      
-                        $('#alias_num_div').append('</tr><tr>') ;
-                        for (i=0;i<n;i++){
-                            var row = results[i];
-                               if (i==0){
-                                     $('#alias_num_div').append('<td>&nbsp; &nbsp; Reflect &nbsp</td>') ;
-                                }
-                                if (row.reflect_flag ==1){  // student was assigned reflect
-                                      if (row.reflect_text != null ){
-                                          if (row.reflect_text.length > 2){
-                                               $('#alias_num_div').append('<td>&nbsp; &check; &nbsp;&nbsp;</td>') ;
-                                          } else {
-                                              
-                                               $('#alias_num_div').append('<td>&nbsp; x &nbsp;&nbsp;</td>') ;
-                                          }
-                                        
-                                    } else {
-                                        
-                                        $('#alias_num_div').append('<td>&nbsp; x &nbsp;&nbsp;</td>') ;
-                                    }
-                                
-                                } else { // reflect was not assigned
-                                  $('#alias_num_div').append('<td></td>') ;
-                                }
-                        }
-                        
-                         $('#alias_num_div').append('</tr><tr>') ;
-                        for (i=0;i<n;i++){
-                            var row = results[i];
-                               if (i==0){
-                                     $('#alias_num_div').append('<td>&nbsp; &nbsp; Explore &nbsp</td>') ;
-                                }
-                                if (row.explore_flag ==1){  // student was assigned explore
-                                      if (row.explore_text != null ){
-                                          if (row.explore_text.length > 2){
-                                               $('#alias_num_div').append('<td>&nbsp; &check; &nbsp;&nbsp;</td>') ;
-                                          } else {
-                                              
-                                               $('#alias_num_div').append('<td>&nbsp; x &nbsp;&nbsp;</td>') ;
-                                          }
-                                        
-                                    } else {
-                                        
-                                        $('#alias_num_div').append('<td>&nbsp; x &nbsp;&nbsp;</td>') ;
-                                    }
-                                
-                                } else { // explore was not assigned
-                                  $('#alias_num_div').append('<td></td>') ;
-                                }
-                        }
-                     
-                         $('#alias_num_div').append('</tr><tr>') ;
-                        for (i=0;i<n;i++){
-                            var row = results[i];
-                               if (i==0){
-                                     $('#alias_num_div').append('<td>&nbsp; &nbsp; Connect &nbsp</td>') ;
-                                }
-                                if (row.connect_flag ==1){  // student was assigned connect
-                                      if (row.connect_text != null ){
-                                          if (row.connect_text.length > 2){
-                                               $('#alias_num_div').append('<td>&nbsp; &check; &nbsp;&nbsp;</td>') ;
-                                          } else {
-                                              
-                                               $('#alias_num_div').append('<td>&nbsp; x &nbsp;&nbsp;</td>') ;
-                                          }
-                                        
-                                    } else {
-                                        
-                                        $('#alias_num_div').append('<td>&nbsp; x &nbsp;&nbsp;</td>') ;
-                                    }
-                                
-                                } else { // connect was not assigned
-                                  $('#alias_num_div').append('<td></td>') ;
-                                }
-                        }
-
-
-                         $('#alias_num_div').append('</tr><tr>') ;
-                        for (i=0;i<n;i++){
-                            var row = results[i];
-                               if (i==0){
-                                     $('#alias_num_div').append('<td>&nbsp; &nbsp; Society &nbsp</td>') ;
-                                }
-                                if (row.society_flag ==1){  // student was assigned society
-                                      if (row.society_text != null ){
-                                          if (row.society_text.length > 2){
-                                               $('#alias_num_div').append('<td>&nbsp; &check; &nbsp;&nbsp;</td>') ;
-                                          } else {
-                                              
-                                               $('#alias_num_div').append('<td>&nbsp; x &nbsp;&nbsp;</td>') ;
-                                          }
-                                        
-                                    } else {
-                                        
-                                        $('#alias_num_div').append('<td>&nbsp; x &nbsp;&nbsp;</td>') ;
-                                    }
-                                
-                                } else { // society was not assigned
-                                  $('#alias_num_div').append('<td></td>') ;
-                                }
-                        }
-
-                    $('#alias_num_div').append('<hr>') ;
-                     $('#alias_num_div').append('</table>') ;
-                      $('#alias_num_div').append('Note - Problem points recorded when Finish button is selected ') ;
-                    
-                      $('#files_section').append('<table>') ;
-                    
-                    // look for files that have been submitted to the system for the problem need to do this with AJAX i think
-                      $('#files_section').append('</tr><tr>') ;
-                      var activityIds = [];
-                     for (i=0;i<n;i++){
-                          var row = results[i];
-                          activityIds[i] =  row.activity_id ;
-                     }  
-                        console.log (' activityIds '+activityIds); 
-                        
-                       
-                       
-                        $.ajax({
-                            url: 'getfilenumber.php',
-                            method: 'post',
-                            data: {activity_ids:activityIds}
-                        
-                        }).done(function(num_files){
-                             num_files = JSON.parse(num_files);
-                          console.log (' num files for  '+ num_files);
-                          
-
-                        for (i=0;i<n;i++){
-                             if (i == 0){
-                                    $('#files_section').append('<td>&nbsp; Files Uploaded &nbsp</td>');
-                                    }
-                              
-                                    $('#files_section').append('<td>&nbsp;&nbsp;&nbsp;'+num_files[i]+' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>') ;
-                            }
-                        });
-
-     */
-                       //  $('#files_section').append('</table>') ;  
-                          
-                         
-/* 
-
-                      for (i=0;i<n;i++){
-							//could put in code to get from the activity table which problems have been attempted and which are complete and color the radio buttons different
-							//$('#alias_num_div').append('<input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'&nbsp; &nbsp; &nbsp;') ;
-							$('#alias_num_div').append('<th><input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'&nbsp; &nbsp; &nbsp;</th>') ;
-					
-                       
-                    }    
-             */
-            
-      //   });   
-            
-    //  });         
-            
- //   });                  
-            
-            
-            
-/* 
+ 
      
     if(isset($assigntime_id)){
        $now = time();

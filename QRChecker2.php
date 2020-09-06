@@ -616,7 +616,7 @@ session_start();
 	
 	?>
 Provisional Score on Problem:  <?php echo (round($PScore)) ?> %&nbsp; 
-<?php if($perc_late_p_prob != 0){$pscore_less = round($PScore - $perc_late_p_prob); echo (' Less Late Penalty of '.$perc_late_p_prob.'% = '.$pscore_less.'%');} else {$pscore_less = $PScore; } ?> &nbsp; &nbsp; 
+<?php if($perc_late_p_prob != 0){if ($PScore >= $perc_late_p_prob){$pscore_less = round($PScore - $perc_late_p_prob); echo (' Less Late Penalty of '.$perc_late_p_prob.'% = '.$pscore_less.'%');} else { echo (' Less Late Penalty of '.$perc_late_p_prob.' % more than points earned'); $pscore_less = 0;}} else {$pscore_less = $PScore; } ?> &nbsp; &nbsp; 
  <br> note - Score only includes quatitative parts of the problem.  These points awarded when work is uploaded. <br>
  
  Total Count:<span id = "total_count" > <?php echo (@$count_tot) ?> </span> <br>
@@ -632,6 +632,8 @@ Provisional Score on Problem:  <?php echo (round($PScore)) ?> %&nbsp;
 Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
 --> 
 <br> numerical score possible  <?php echo (round($num_score_possible)) ?> %&nbsp;  
+
+<?php if ( $pscore_less==$num_score_possible && $pscore_less !=0 && $pscore_less !='' ){$perf_num_score_flag =1;} else {$perf_num_score_flag =0;} ?>
 
 <?php if ( $pscore_less==$num_score_possible && $pscore_less !=0 && $pscore_less !='' && $now_int < $due_date_ec_int){$ec_elgible_flag =1;} else {$ec_elgible_flag =0;} ?>
          <span id ="t_delay_message"></span>
@@ -656,6 +658,7 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
              <input type="hidden" name="pscore_less" value="<?php echo ($pscore_less)?>" >
 
              <input type="hidden" id = "ec_elgible_flag" name="ec_elgible_flag" value="<?php echo $ec_elgible_flag?>" >
+             <input type="hidden" id = "perf_num_score_flag" name="perf_num_score_flag" value="<?php echo $perf_num_score_flag?>" >
 
 
 

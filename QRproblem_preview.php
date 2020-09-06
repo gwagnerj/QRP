@@ -96,34 +96,34 @@ if (isset($_POST['problem_id'])){
    echo($rubric_stuff);
     */
    
-    $base_case = $html->find('#problem',0); 
+    $problem_statement = $html->find('#problem',0); 
     $reflection_text = $html->find('#reflections',0); 
     // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
 
       for( $i=0;$i<$nv;$i++){
-            $base_case = preg_replace($pattern[$i],$BC_vari[$i],$base_case);
+            $problem_statement = preg_replace($pattern[$i],$BC_vari[$i],$problem_statement);
         }
        
         
      // add some markup to specific to the basecase since I just created it from the problem   
-       $base_case = preg_replace('/<div id="problem">/','<div id="BC_problem">',$base_case);
-         $base_case = preg_replace('/<div id="questions">/','<div id="BC_questions">',$base_case);
+       $problem_statement = preg_replace('/<div id="problem">/','<div id="BC_problem">',$problem_statement);
+         $problem_statement = preg_replace('/<div id="questions">/','<div id="BC_questions">',$problem_statement);
          
          foreach(range('a' , 'j') as $m){
              $let_pattern = 'part'.$m;
-              $base_case = preg_replace('/<div id="'.$let_pattern.'">/','<div id="BC_'.$let_pattern.'">',$base_case);
+              $problem_statement = preg_replace('/<div id="'.$let_pattern.'">/','<div id="BC_'.$let_pattern.'">',$problem_statement);
              
          }
          
             
          // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
-            $base_case = preg_replace($pattern[$i],$vari[$i],$base_case);
+            $problem_statement = preg_replace($pattern[$i],$vari[$i],$problem_statement);
         }
          
           $dom = new DOMDocument();
    libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
-       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $base_case);
+       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $problem_statement);
        $images = $dom->getElementsByTagName('img');
         foreach ($images as $image) {
             $src = $image->getAttribute('src');
@@ -132,13 +132,13 @@ if (isset($_POST['problem_id'])){
              $type = pathinfo($src, PATHINFO_EXTENSION);
              $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
              $image->setAttribute("src", $base64); 
-             $base_case = $dom->saveHTML();
+             $problem_statement = $dom->saveHTML();
        }
        
        // turn base-case back into and simple_html_dom object that I can replace the varaible images on 
-       $base_case =str_get_html($base_case); 
+       $problem_statement =str_get_html($problem_statement); 
        $keep = 0;
-       $varImages = $base_case -> find('.var_image');
+       $varImages = $problem_statement -> find('.var_image');
        foreach($varImages as $varImage) {
           $var_image_id = $varImage -> id;  
           
@@ -158,7 +158,7 @@ if (isset($_POST['problem_id'])){
          
          
     // only include the document above the checker
-       $this_html =' <div id = "base_case"><h2>Base Case Problem '.$problem_id.'.</h2>'.$base_case.'</div>';
+       $this_html =' <div id = "problem_statement"><h2> Problem '.$problem_id.' - '.$dex.'</h2>'.$problem_statement.'</div>';
  /* 
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
