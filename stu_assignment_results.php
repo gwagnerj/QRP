@@ -9,6 +9,15 @@
 if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {	
     if (isset($_POST['iid'])) {
 	$iid = $_POST['iid'];
+    
+    if (isset($_POST['load_images'])){
+        
+        $load_images = true;
+       // echo 'checked';
+    } else {
+         $load_images = false;
+        // echo 'not checked';
+    }
    
     if ($_POST['currentclass_id']==0 || $_POST['currentclass_id']=='' || $_POST['iid']==0 || $_POST['iid']=='' ){
         $_SESSION['error'] = 'Class must be Selected';
@@ -295,21 +304,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                             echo('<form action = "activity_details.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Details"></form>');
                                             
                                            // display the thumbnail of the student work 
-                                         
+                                     if($load_images){
                                             $all_files = array();
                                             $dir =  'student_work/';
                                             $prefix = $dir.$activity_id.'-*';
                                             
-                                               foreach (glob($prefix, GLOB_NOCHECK) as $image) {
-                                               
-                                              $newimage = resize(100,$image);
-                                                   
-                                               echo ('<img src="'.$newimage.'" alt = "no image found" style = "width:100px;image-resolution:200dpi;">');
-                                             
-                                             
+                                            foreach (glob($prefix, GLOB_NOCHECK) as $image) {
+                                               //   echo (' image '.$image);
+                                                       $tmp = explode('.', $image);
+                                                    $extension = end($tmp);
+                                                //    echo (' extension '.$extension);
+                                                   if($extension == "pdf"){
+                                                       echo(' <embed src="'.$image.'" style = "width:150px;" type="application/pdf">');
+                                                   } else {  
+                                                        echo ('<img src="'.$image.'" alt = "no image found" style = "width:100px;image-resolution:200dpi;">');
+                                                   }
                                             }
                                        
                                         echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge"></form>');
+                                        
+                                     } else {
+                                        echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Show Work"></form>');
+                                     }
+                                        
+                                        
                                        echo('<br>');
                                    }      
                                         $i=$i+1;
