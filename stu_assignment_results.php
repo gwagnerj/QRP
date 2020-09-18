@@ -56,9 +56,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
           $assigntime_data = $stmt->fetch();
            
             $assigntime_id = $assigntime_data['assigntime_id'];
-            
+        // this is a function from https://stackoverflow.com/questions/13596794/resize-images-with-php-support-png-jpg to try to load my images faster
+       
+       function resize($newWidth, $targetFile) {
+            if (empty($newWidth) || empty($targetFile)) {
+                return false;
+            }
+            $src = imagecreatefromjpeg($this -> originalFile);
+            list($width, $height) = getimagesize($this -> originalFile);
+            $newHeight = ($height / $width) * $newWidth;
+            $tmp = imagecreatetruecolor($newWidth, $newHeight);
+            imagecopyresampled($tmp, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 
-            
+            if (file_exists($targetFile)) {
+                unlink($targetFile);
+            }
+            imagejpeg($tmp, $targetFile, 95);
+        }
+        
+     
 ?>
 <!DOCTYPE html>
 <html lang = "en">
@@ -176,14 +192,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
            // var_dump($class_student_data);
           
           foreach($class_student_data as $class_student_datum){
-              
-    
-                
-               
-
-
-
-
         
                $student_id = $class_student_datum['student_id'];
               
@@ -285,50 +293,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                            echo'<br>';
      
                                             echo('<form action = "activity_details.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Details"></form>');
-                                 
-                                        
+                                            
+                                           // display the thumbnail of the student work 
+                                         
+                                            $all_files = array();
+                                            $dir =  'student_work/';
+                                            $prefix = $dir.$activity_id.'-*';
+                                            
+                                               foreach (glob($prefix, GLOB_NOCHECK) as $image) {
+                                               
+                                              $newimage = resize(100,$image);
+                                                   
+                                               echo ('<img src="'.$newimage.'" alt = "no image found" style = "width:100px;image-resolution:200dpi;">');
+                                             
+                                             
+                                            }
                                        
-                                        echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Show Work"></form>');
+                                        echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge"></form>');
                                        echo('<br>');
                                    }      
                                         $i=$i+1;
-                                       echo('<form action = "QRproblem_preview.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "hidden" name = "problem_id" value = "'.$assign_datum['prob_num'].'"><input type = "hidden" name = "dex" value = "'.$dex.'"><input type = "submit" value ="Help Student"></form>');
-                               /*          
-                                     // trying to display the thumbnail   
-                                        $all_files = array();
-                                        $dir =  'student_work';
-                                        $prefix = $activity_id.'-';
-                                    //    chdir($dir);
-                                        $matches = glob("$prefix*");
-                                        if(is_array($matches) && !empty($matches)){
-                                            foreach($matches as $match){
-                                                $all_files[] = $match;
-                                            }
-                                        }  
-                                        
-                                        foreach($all_files as $all_file){
-                                          // check the extension of the file 
-                                             $tmp = explode('.', $all_file);
-                                             $extension = end($tmp);
-                                            // echo(' $extension '.$extension);
-                                             if ($extension == 'jpg' || $extension == 'jpeg' || $extension == 'png' ){
-                                          
-                                                    echo'<br>';
-                                                    echo '<img src="/student_work/'.$all_file.'"   width="10%" >';
-                                             } elseif($extension == 'pdf'){
-                                               // echo(' all_file  '.$all_file); 
-                                                echo(' <iframe frameborder="0" scrolling="no"');
-                                                 echo('width="10%" ');
-                                                 echo('src="student_work/'.$all_file.'">');
-                                                 
-                                             echo '</iframe>';
-                                             } else {
-                                                 $_SESSION['error'] = $extention.' file type not allowed';
-                                                   echo ($extention.'<h2> file type not allowed </h2>');
-                                             }
-                                        }
-                                        
-                                         */
+                                  //     echo('<form action = "QRproblem_preview.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "hidden" name = "problem_id" value = "'.$assign_datum['prob_num'].'"><input type = "hidden" name = "dex" value = "'.$dex.'"><input type = "submit" value ="Help Student"></form>');
+                              
                                         
                                         
 
