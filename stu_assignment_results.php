@@ -299,6 +299,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                             } 
                                             
                                            echo('<input type = "number" min = "0" max = "'.$prob_weight[$i].'" class = "goestodb_'.$student_id.'" id = "pNumScoreNet_'.$student_id.'_'.$activity_id.'" name = "p_num_score_net_'.$student_id.'_'.$activity_id.'" value = '.$p_num_score_net.'></input>');
+                                        //   echo'<br>';
+                                              echo('<br><input type = "text"  class = "goestodb_'.$student_id.'" id="fb_problem_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="fb_problem_'.$student_id.'_'.$stu_activity['activity_id'].'" placeholder = "__Feedback to Students__"  value = '.$stu_activity["fb_problem"].'  > </input>');
                                            echo'<br>';
      
                                             echo('<form action = "activity_details.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Details"></form>');
@@ -310,10 +312,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                             $prefix = $dir.$activity_id.'-*';
                                             
                                             foreach (glob($prefix, GLOB_NOCHECK) as $image) {
-                                               //   echo (' image '.$image);
+                //                                  echo (' image '.$image);
                                                        $tmp = explode('.', $image);
                                                     $extension = end($tmp);
-                                                //    echo (' extension '.$extension);
+                //                                    echo (' extension '.$extension);
                                                    if($extension == "pdf"){
                                                        echo(' <embed src="'.$image.'" style = "width:150px;" type="application/pdf">');
                                                    } else {  

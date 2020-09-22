@@ -2046,8 +2046,11 @@ CREATE TABLE Assignscore (
       ADD `fb_explore` VARCHAR(1000) AFTER `fb_reflect`,
       ADD `fb_connect` VARCHAR(1000) AFTER `fb_explore`,
       ADD `fb_society` VARCHAR(1000) AFTER `fb_connect`;
-      
-      
+  
+
+  
+   ALTER TABLE Activity
+      ADD `fb_problem` VARCHAR(1000) AFTER `fb_society`; 
    
    
    

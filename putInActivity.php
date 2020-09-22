@@ -43,6 +43,7 @@ session_start();
              if($col_name == "fbexplore"){$col_name = "fb_explore";}
              if($col_name == "fbconnect"){$col_name = "fb_connect";}
              if($col_name == "fbsociety"){$col_name = "fb_society";}
+             if($col_name == "fbproblem"){$col_name = "fb_problem";}
           /*    
              echo (' col_name '.$col_name);
              echo ('<br>');

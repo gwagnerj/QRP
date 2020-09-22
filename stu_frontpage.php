@@ -881,7 +881,7 @@ $(document).ready( function () {
                                                    if (typeof row.alias_num != "undefined" ){
                                                          if(row.alias_num == activealias[i] && row.survey_pts > 0 && row.survey_pts != null ){
                                                              var row_found = row;
-                                                             console.log (row.survey_pts);
+  //                                                           console.log (row.survey_pts);
                                                              found = true;
                                                          }
                                                     }                                                       
@@ -893,6 +893,36 @@ $(document).ready( function () {
                                                  $('#alias_num_div').append('<td></td>') ;  
                                              }                                                           
                                         }
+
+          // start problem  feedback
+                                        $('#alias_num_div').append('<tr><td>&nbsp;</td></tr>') ;
+                                        $('#alias_num_div').append('<td style="text-align:center">Comments</td>') ;
+                                       for (i=0;i<n;i++){  // go through and see if they have attempted that part at all
+                                            var found = false;
+                                            var fbtext = false;
+                                            for (j=0;j<n2;j++){
+                                                  var row = results[j];
+                                                   if (typeof row.alias_num != "undefined" ){
+                                                              found = true;
+                                                             if (row.fb_problem != null){
+                                                                     if (row.fb_problem.length > 1 ) { var row_found = row; fbtext = true;}
+                                                              }
+                                                    }
+                                              }       
+                                            
+                                             if(fbtext && found){
+                                                  $('#alias_num_div').append('<td  style="text-align:center"> '+row_found["fb_problem"].replace(/_/g, ' ')+'</td>') ;
+                                             } else {
+                                             $('#alias_num_div').append('<td> </td>') ;  
+                                             } 
+                                                                                       
+                                        }
+
+                             //  }
+                               
+                               
+                               
+                               
         // start reflection part of the feedback
                                         $('#alias_num_div').append('<tr><td>&nbsp;</td></tr>') ;
                                         $('#alias_num_div').append('<td style="text-align:center">Reflect </td>') ;
