@@ -49,7 +49,7 @@
               header("Location: stu_getclass.php?student_id=".$student_id);
               return; 
         } elseif ($num_classes == 1){
-            echo (' 52 ');
+           // echo (' 52 ');
               // student has just one class so no need to select 
               // we can get there pin and class_id
             $sql = 'SELECT * FROM `StudentCurrentClassConnect` WHERE `student_id` = :student_id';
@@ -70,7 +70,7 @@
             
         } else {
    // we have more than one currentclass - not sure this does anything we took care of it down below it looks like
-            
+   /*          
  
             $sql = 'SELECT * FROM `StudentCurrentClassConnect` WHERE `student_id` = :student_id';
             $stmt = $pdo->prepare($sql);
@@ -79,7 +79,7 @@
             
              
              $pin = $class_data['pin'];   
-            //  echo (' pin '.$pin);
+              echo (' pin '.$pin);
              
              $currentclass_id = $class_data['currentclass_id'];
              
@@ -94,7 +94,7 @@
              // put a while $class data not false and create the drop down list or do it with JS
          //    $pin = $class_data['pin'];   
          //    $currentclass_id = $class_data['currentclass_id'];
-            
+             */
         }
        
        
@@ -178,11 +178,32 @@
 
 
                 // ----------------------- put the entry into the examactivity table for this user  ------------------------------------------------------
-                                       
+                                
+
+                            // get the pin from the student class connect table
+                            
+                               $sql = 'SELECT * FROM `StudentCurrentClassConnect` WHERE `student_id` = :student_id AND currentclass_id = :currentclass_id';
+                                $stmt = $pdo->prepare($sql);
+                                 $stmt->execute(array(
+                                 ':student_id' => $student_id,
+                                 ':currentclass_id' => $cclass_id
+                                 
+                                 ));
+                                 $class_data = $stmt -> fetch();
+                                
+                                 
+                                 $pin = $class_data['pin'];   
+                                  echo (' pin '.$pin);
+                                   $dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
+
+
+
+                                
                                         
-                                $_SESSION['examactivity_id'] = $examactivity_id;
-                                $complete = 'QRExam.php';                              $sql = 'INSERT INTO `Examactivity` (examtime_id, iid, currentclass_id, name, work_time,exam_code, dex, pin, problem_id1, problem_id2, problem_id3, problem_id4, problem_id5,suspend_flag,extend_time_flag,minutes)	
-                            VALUES (:examtime_id, :iid, :currentclass_id,:name ,:work_time, :exam_code, :dex, :pin, :problem_id1, :problem_id2, :problem_id3, :problem_id4, :problem_id5,0,0,:extend_time)';
+                            $_SESSION['examactivity_id'] = $examactivity_id;
+                            $complete = 'QRExam.php'; 
+                            $sql = 'INSERT INTO `Examactivity` (examtime_id, iid, currentclass_id, name, work_time,exam_code, dex, pin, problem_id1, problem_id2, problem_id3, problem_id4, problem_id5,suspend_flag,extend_time_flag,minutes,taker_id)	
+                            VALUES (:examtime_id, :iid, :currentclass_id,:name ,:work_time, :exam_code, :dex, :pin, :problem_id1, :problem_id2, :problem_id3, :problem_id4, :problem_id5,0,0,:extend_time,:taker_id)';
                             $stmt = $pdo->prepare($sql);
                             $stmt -> execute(array(
                             ':examtime_id' => $examtime_id,
@@ -199,6 +220,7 @@
                               ':problem_id4' => $problem_id4,
                               ':problem_id5' => $problem_id5,
                                ':extend_time' => $work_time,
+                               ':taker_id' => $student_id,
                              
                             ));
                                 

@@ -1,5 +1,7 @@
 <?php
 require_once "pdo.php";
+require_once "simple_html_dom.php";
+include 'phpqrcode/qrlib.php'; 
 session_start();
 
 
@@ -137,17 +139,54 @@ session_start();
                     }                     
                     	
 
- $sql = "SELECT `htmlfilenm` FROM Problem WHERE problem_id = :problem_id";
+  $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':problem_id' => $problem_id));
-	$data = $stmt -> fetch();
-	// need to put some error checking here
-		$rows=$data;
+	$pblm_data = $stmt -> fetch();
+    $contrib_id = $pblm_data['users_id'];
+    $nm_author = $pblm_data['nm_author'];
+    $specif_ref = $pblm_data['specif_ref'];
+    $htmlfilenm = $pblm_data['htmlfilenm'];
+
+// this is the old way with substituting the variables in with the JS - now we are going to build this up with the php just like the homework - need to steel code from QRdisplayPblem.php
 
 
-$htmlfilenm = "uploads/".$rows['htmlfilenm'];
+$htmlfilenm = "uploads/".$htmlfilenm;
 
-
+// read in the names of the variables for the problem
+    $nv = 0;  // number of non-null variables
+   for ($i = 0; $i <= 13; $i++) {
+        if($pblm_data['nv_'.($i+1)]!='Null' ){
+            $nvar[$i]=$pblm_data['nv_'.($i+1)];
+            $nv++;
+         }
+   }
+  // $dex = 10;
+  //  echo('dex: '.$dex);  
+    $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
+	$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
+	$row = $stmt->fetch();
+  
+   // Read in the value for the input variables
+   
+    for ($i = 0; $i < $nv; $i++) {
+        if($row['v_'.($i+1)]!='Null' ){
+            $vari[$i] = $row['v_'.($i+1)];
+ //           echo ('  $vari[$i]: '. $vari[$i]);
+            $pattern[$i]= '/##'.$nvar[$i].',.+?##/';
+        }
+    }
+   // see if we need a reflections button
+ // think if we want to add reflection type questions to exam problems - right now they are not in the exam table (they are in the assign table) 
+  /*  
+   if ($ref_choice!=0 || $reflect_flag !=0 || $explore_flag !=0 || $connect_flag !=0 || $society_flag !=0){
+     $reflection_button_flag = 1;  
+   } else {
+     $reflection_button_flag = 0; 
+   }
+    */
+   
+//------------------------------------------------------------------------------------------------------------
 
 // passing my php varables into the js varaibles needed for the script below
 
@@ -238,402 +277,318 @@ echo '</script>';
 
   
 
+ 
 
 
-<div id = substitute_me>  </div>
-<?php  iconv("Windows-1252", "UTF-8", include($htmlfilenm)); 
-			// include($htmlfilenm);
+<?php
 
+  $html = new simple_html_dom();
+      $html->load_file($htmlfilenm);
+      $header_stuff = new simple_html_dom();
+      $header_stuff -> load_file('exam_problem_header_stuff.html');
+            // subbing in the header
+       $header_stuff ->find('#stu_name',0)->innertext = $stu_name;
+    //   $header_stuff ->find('#course',0)->innertext = $class_name;
+    //   $header_stuff ->find('#exam_num',0)->innertext = $assignment_num;
+       $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
+    //   $header_stuff ->find('#perc_of_assign',0)->innertext = $perc_of_assign.'%';
+   //    $header_stuff ->find('#due_date',0)->innertext = $due_date;
+    //   $header_stuff ->find('#due_date_ec',0)->innertext = $due_date_ec;
+
+  $problem = $html->find('#problem',0);
+  
+   for( $i=0;$i<$nv;$i++){
+           if($row['v_'.($i+1)]!='Null' ){
+            $problem = preg_replace($pattern[$i],$vari[$i],$problem);
+           }
+        }
+  // put the images into the problem statement part of the document     
+    $dom = new DOMDocument();
+   libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
+       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $problem);
+       $images = $dom->getElementsByTagName('img');
+        foreach ($images as $image) {
+            $src = $image->getAttribute('src');
+             $src = 'uploads/'.$src;
+             $src = urldecode($src);
+             $type = pathinfo($src, PATHINFO_EXTENSION);
+             $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+             $image->setAttribute("src", $base64); 
+             $problem = $dom->saveHTML();
+       }
+       
+       // turn problem back into and simple_html_dom object that I can replace the varaible images on 
+       $problem =str_get_html($problem); 
+       $keep = 0;
+       $varImages = $problem -> find('.var_image');
+       foreach($varImages as $varImage) {
+          $var_image_id = $varImage -> id;  
+          
+           for( $i=0;$i<$nv;$i++){
+              if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
+            } 
+            
+            If ($keep==0){
+                //  get rid of the caption and the image
+                   $varImage->find('.MsoNormal',0)->outertext = '';
+                   $varImage->find('.MsoCaption',0)->outertext = '';
+            } else {
+                 //  get rid of the caption 
+                $varImage->find('.MsoCaption',0)->outertext = '';
+            }
+             $keep = 0;
+        }
+        
+               
+    // only include the document above the checker
+       $this_html ='<hr>'.$problem;
+ 
+   // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+       for( $i=0;$i<$nv;$i++){
+             if($row['v_'.($i+1)]!='Null' ){
+                $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+             }
+        }
+ echo($header_stuff);
+  echo $this_html; 
  ?>
- <!--
--->
+  <!--  
+   <div id = 'checker'>
+   <iframe name = "checker2" id = "checker2" src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
+ -->
+ <?php
+ 
+ 
+?>
  <div id = 'examchecker'>
  <iframe src="QRExamCheck.php?exam_num=<?php echo($exam_num);?>&cclass_id=<?php echo($cclass_id);?>&alias_num=<?php echo($alias_num);?>&pin=<?php echo($pin);?>&iid=<?php echo($iid);?>&examactivity_id=<?php echo($examactivity_id);?>&problem_id=<?php echo($problem_id);?>&dex=<?php echo($dex);?>" style = "width:70%; height:50%;"></iframe>
 
 </div>
 
-
-
 <script>
-$(document).ready(function(){
-		
-        
-        // disable right mouse click copy and copy paste  From https://www.codingbot.net/2017/03/disable-copy-paste-mouse-right-click-using-javascript-jquery-css.html
-            //Disable cut copy paste
-            $('body').bind('cut copy paste', function (e) {
-                e.preventDefault();
-            });
-            
-            //Disable mouse right click
-            $("body").on("contextmenu",function(e){
-                return false;
-            });
-        
-        
-        var dex = pass['dex'];
-		var problem = pass['problem_id'];
-        var examactivity_id = pass['examactivity_id'];
-		var stu_name = pass['stu_name'];
-		var pin = pass['pin'];
-		var iid = pass['iid'];
-		var assign_num = pass['assign_num'];
-		var alias_num = pass['alias_num'];
-        var exam_num = pass['exam_num'];
-        var cclass_id = pass['cclass_id'];
-        var cclass_name = pass['cclass_name'];
-        var examtime_id = pass['examtime_id'];
-		var statusFlag=true;
-			
-			
-		if($.trim(problem) != '' && problem > 0 && problem < 100000 && dex>=1 && dex<=200){
-                    // alert(1);
-	
-				 $.post('fetchpblminput.php', {problem_id : problem, index : dex }, function(data){
-					
-					try{
-						var arr = JSON.parse(data);
-					}
-					catch(err) {
-						alert ('problem data unavailable');
-					}
-				
-				// Get the html file name from the database
-					
-					var openup = arr.htmlfilenm;
-					
-					openup = escape(openup);
-					
-					// openup = "'"+openup+"'";
-					
-					// alert(openup);
-					//console.log (arr);
-					var game = arr.game_prob_flag;
-					var status = arr.status;
-					var prob_num = arr.problem_id;
-					var contrib_first = arr.first;
-					var contrib_last = arr.last;
-					var contrib_university = arr.university;
-					var static_f = false;
-					
-					
-				
-// next just put the substvars. js script in here but have it use the $('#substitute_me').load("uploads/"+openup+".html");  or something similar  THis should replace the stuff up
-// in the html part of this document and then operate on it with the script file form the substvars stuff.  I need to get rid of all of the localstorage stuff from both this script and the one from substvars
-// The substvars script will should be elliminated from all future uploaded html problem files.
-			
-			//	console.log (openup);
-			
-		//	$('#substitute_me').load("uploads/"+openup, 'document').html();
-			
-			// now change the source of the images so that they are loaded properly
-			//console.log('wtf');
-				
-				
-				
-				
-				
-				
-				
-				// have to put uploads/ in front of file 
-
-					sessionStorage.setItem('contrib_first',contrib_first);
-					sessionStorage.setItem('contrib_last',contrib_last);
-					sessionStorage.setItem('contrib_university',contrib_university);
-					sessionStorage.setItem('nm_author',arr.nm_author);
-					sessionStorage.setItem('specif_ref',arr.specif_ref);
-					
-					console.log(contrib_last);
-					var contrib_last2 = sessionStorage.getItem('contrib_last');
-					console.log('contrib_last 2',contrib_last2);
-				//	console.log('arr', arr);
-					if (status !== 'suspended'){
-							
-							sessionStorage.setItem('MC_flag','false');
-							sessionStorage.setItem('nv_1',arr.nv_1);
-							sessionStorage.setItem(arr.nv_1,arr.v_1);
-							sessionStorage.setItem('nv_2',arr.nv_2);
-							sessionStorage.setItem(arr.nv_2,arr.v_2);
-							sessionStorage.setItem('nv_3',arr.nv_3);
-							sessionStorage.setItem(arr.nv_3,arr.v_3);
-							sessionStorage.setItem('nv_4',arr.nv_4);
-							sessionStorage.setItem(arr.nv_4,arr.v_4);
-							sessionStorage.setItem('nv_5',arr.nv_5);
-							sessionStorage.setItem(arr.nv_5,arr.v_5);
-							sessionStorage.setItem('nv_6',arr.nv_6);
-							sessionStorage.setItem(arr.nv_6,arr.v_6);
-							sessionStorage.setItem('nv_7',arr.nv_7);
-							sessionStorage.setItem(arr.nv_7,arr.v_7);
-							sessionStorage.setItem('nv_8',arr.nv_8);
-							sessionStorage.setItem(arr.nv_8,arr.v_8);
-							sessionStorage.setItem('nv_9',arr.nv_9);
-							sessionStorage.setItem(arr.nv_9,arr.v_9);
-							sessionStorage.setItem('nv_10',arr.nv_10);
-							sessionStorage.setItem(arr.nv_10,arr.v_10);
-							sessionStorage.setItem('nv_11',arr.nv_11);
-							sessionStorage.setItem(arr.nv_11,arr.v_11);
-							sessionStorage.setItem('nv_12',arr.nv_12);
-							sessionStorage.setItem(arr.nv_12,arr.v_12);
-							sessionStorage.setItem('nv_13',arr.nv_13);
-							sessionStorage.setItem(arr.nv_13,arr.v_13);
-							sessionStorage.setItem('nv_14',arr.nv_14);
-							sessionStorage.setItem(arr.nv_14,arr.v_14);
-							
-							sessionStorage.setItem('exam_flag',1);
-                    		sessionStorage.setItem('examactivity_id',examactivity_id);
-                     		sessionStorage.setItem('iid',iid);
-                     		sessionStorage.setItem('pin',pin);
-                      		sessionStorage.setItem('dex',dex);
-
-                     		sessionStorage.setItem('alias_num',alias_num);
-                     		sessionStorage.setItem('cclass_name',cclass_name);
-                     		sessionStorage.setItem('exam_num',exam_num);
-                     		sessionStorage.setItem('assign_num',assign_num);
-                     		sessionStorage.setItem('stu_name',stu_name);
-                     		sessionStorage.setItem('cclass_id',cclass_id);
-                      		sessionStorage.setItem('alias_num',alias_num);
-                            sessionStorage.setItem('problem_id',problem);
-							sessionStorage.setItem('title',arr.title);
-                            
-                        /*      
-							sessionStorage.setItem('stu_name',s_name);
-							
-							sessionStorage.setItem('dex',dex);
-							sessionStorage.setItem('pin',pin);
-							sessionStorage.setItem('iid',iid); 
-							sessionStorage.setItem('reflect_flag',reflect_flag);
-							sessionStorage.setItem('explore_flag',explore_flag);
-							sessionStorage.setItem('connect_flag',connect_flag);
-							sessionStorage.setItem('society_flag',society_flag);
-							sessionStorage.setItem('choice',choice);
-							sessionStorage.setItem('static_flag',static_f);
-							sessionStorage.setItem('pp1',pp1);
-							sessionStorage.setItem('pp2',pp2);
-							sessionStorage.setItem('pp3',pp3);
-							sessionStorage.setItem('pp4',pp4);
-							sessionStorage.setItem('time_pp1',time_pp1);
-							sessionStorage.setItem('time_pp2',time_pp2);
-							sessionStorage.setItem('time_pp3',time_pp3);
-							sessionStorage.setItem('time_pp4',time_pp4);
-					  */
-					
-				 } else {
-					
-						alert('This problem is temporarily suspended, please check back later.');
-						//window.location.href="QRhomework.php";
-						
-						statusFlag=false;
-						//return;
-					
-
-				 }
-
-					 
-					
-		  });
-		  
-		  // get the basecase data
-		   $.post('fetchpblminput.php', {problem_id : problem, index : 1 }, function(data){
-					
-					var arr2 = JSON.parse(data);
-				// Get the html file name from the database
-					
-				//	var openup = arr.htmlfilenm;
-				
-				var openup = arr2.htmlfilenm;		
-				//	alert(openup);
-				
-			//	alert (openup);
-				if (openup == null){
-					
-				alert('problem not present');
-				return;
-					
-				}
-				
-				
-				var game = arr2.game_prob_flag;
-					
-				//	Set up the basecase values into the local variables
-					if (statusFlag){
-						if (game==0){
-							
-							var x = "bc_"+arr2.nv_1;
-							sessionStorage.setItem(x,arr2.v_1);
-							
-							x = "bc_"+arr2.nv_2;
-							sessionStorage.setItem(x,arr2.v_2);
-							
-							x = "bc_"+arr2.nv_3;
-							sessionStorage.setItem(x,arr2.v_3);
-								x = "bc_"+arr2.nv_4;
-							sessionStorage.setItem(x,arr2.v_4);
-							x = "bc_"+arr2.nv_5;
-							sessionStorage.setItem(x,arr2.v_5);
-							x = "bc_"+arr2.nv_6;
-							sessionStorage.setItem(x,arr2.v_6);
-								x = "bc_"+arr2.nv_7;
-							sessionStorage.setItem(x,arr2.v_7);
-							x = "bc_"+arr2.nv_8;
-							sessionStorage.setItem(x,arr2.v_8);
-							x = "bc_"+arr2.nv_9;
-							sessionStorage.setItem(x,arr2.v_9);
-								x = "bc_"+arr2.nv_10;
-							sessionStorage.setItem(x,arr2.v_10);
-							x = "bc_"+arr2.nv_11;
-							sessionStorage.setItem(x,arr2.v_11);
-							x = "bc_"+arr2.nv_12;
-							sessionStorage.setItem(x,arr2.v_12);
-								x = "bc_"+arr2.nv_13;
-							sessionStorage.setItem(x,arr2.v_13);
-							x = "bc_"+arr2.nv_14;
-							sessionStorage.setItem(x,arr2.v_14);
-							
-						
-						
-					// redirect the browser to the problem file
-					
-				// alert (statusFlag);
-
-				// should run the php in the model to test the user input make sure the instructor ID or last name is vaiid and create and entry in the temp table if there 
-				// isnt one and read the status if there is one and put it in the hidden html or get it via Json and AJAX
-				
-			// load the external javascript file to make the magic happen
-			// this comes from https://stackoverflow.com/questions/14644558/call-javascript-function-after-script-is-loaded 		
-				
-				function loadScript( url, callback ) {
-					  var script = document.createElement( "script" )
-					  script.type = "text/javascript";
-					  if(script.readyState) {  // only required for IE <9
-						script.onreadystatechange = function() {
-						  if ( script.readyState === "loaded" || script.readyState === "complete" ) {
-							script.onreadystatechange = null;
-							callback();
-						  }
-						};
-					  } else {  //Others
-						script.onload = function() {
-						  callback();
-						};
-					  }
-
-					  script.src = "SubstvarsExam.js";
-					  document.getElementsByTagName( "head" )[0].appendChild( script );
-					}
-
-					
-					
-		
-					// call the function...
-					loadScript("SubstvarsExam.js", function() {
-					//  alert('script ready!'); 
-					  	var imgPath = '';
-						var indexQRP = '';
-						var addPath = "uploads/";
-					//	alert(addPath);
-								$('img').each(function(){
-									
-									imgPath = $(this).prop('src');
-										console.log('imagepath before',imgPath);
-								//		alert (imgPath);
-										//referrer.toLowerCase().indexOf
-									indexQRP = imgPath.toLowerCase().indexOf('/qrp/')+5;
-									console.log('indexofQRP',indexQRP);
-									imgPath = [imgPath.slice(0, indexQRP), addPath, imgPath.slice(indexQRP)].join('');
-									console.log('imagepath',imgPath);
-									
-									$(this).prop('src', imgPath);
-								
-								});
-					});
-					
-			
-				
-				
-				// window.location.href="uploads/"+openup;
-						} else {
-				
-					alert('not a homework problem');
-						} 
-					} else {
-						
-					// alert('This problem is temporarily suspended, please check back later on2.');
-								return;
-						
-						
-					}
-					
-                });
-		  
-			}
-			else{
-				
-				alert ('invalid user input dex = '+dex+' problem= '+problem);
-				
-// this to the end of this script is from QRExamCheck to shut things down when the globephase changes from 1	
-			}
-    	// get the current phase
-				
-				console.log ('examtime_id = ',examtime_id);
-				
-                     var request;
-                function fetchPhase() {
-                    request = $.ajax({
-                        type: "POST",
-                        url: "fetchGPhase.php",
-                        data: "examtime_id="+examtime_id,
-                        success: function(data){
-                           try{
-                                var arrn = JSON.parse(data);
-                            }
-                            catch(err) {
-                                alert ('game data unavailable Data not found');
-                                alert (err);
-                                return;
-                            }
-                            
-                             var phase = arrn.phase;
-                            var end_of_phase = arrn.end_of_phase;
-                            	console.log ('phase = ',phase);
-                           if(phase != 1){  // submit away work time has eneded this is going to stop game and not back to the router
-                               $("#phase").attr('value', phase);
-                               SubmitAway(); 
-                            }
-                        }
-                    });
-                }
-                setInterval(function() {
-                    if (request) request.abort();
-                    fetchPhase();
-                }, 10000);
-
-                
-                     function SubmitAway() { 
-                        window.close();
-                       // document.getElementById('the_form').submit();
-                    }
-                    
-                    
-                    
-});
-
-</script>
-<script>
-
-	$(document).ready(function(){
-		
-		
-		// comes from https://stackoverflow.com/questions/6985507/one-time-page-refresh-after-first-page-load on reloading the page to get rid of the sometimes error of varaibles not being substituted in
-					window.onload = function() {
-						if(!window.location.hash) {
-							window.location = window.location + '#loaded';
-							window.location.reload();
-						}
-					} 
-
-
-	 });
-</script>
+ $(document).ready(function(){
 
  
+     var examactivity_id = pass['examactivity_id']; 
+     var stu_name = pass['stu_name']; 
+     var reflection_button_flag = pass['reflection_button_flag'];
+
+      var reflect_flag = pass['reflect_flag']; 
+      var explore_flag = pass['explore_flag']; 
+      var connect_flag = pass['connect_flag']; 
+      var society_flag = pass['society_flag']; 
+      var ref_choice = pass['ref_choice']; 
+      var perc_ref = pass['perc_ref'];
+      var perc_exp = pass['perc_exp'];
+      var perc_con = pass['perc_con'];
+      var perc_soc = pass['perc_soc'];
+      var switch_to_bc = pass['switch_to_bc'];
+       
+
+
+
+
+  	$("#backbutton").css({"background-color":"lightyellow",
+            });
+    
+            $("#backbutton").click(function(){
+		  			
+                    // e.preventDefault();
+					// console.log("hello1");
+				
+                     window.location.replace('QRExam.php?examactivity_id='+examactivity_id); // would like to put some parameters here instead of relying on session (like below)
+                  //  window.location.replace('../QRP/QRExam.php'+'?examactivity_id='+examactivity_id); // axam_num and examactivity
+              	
+				 });
+
+
+
+
+
+ /*    
+    var activity_id = pass['activity_id']; 
+     var stu_name = pass['stu_name']; 
+     var reflection_button_flag = pass['reflection_button_flag'];
+
+      var reflect_flag = pass['reflect_flag']; 
+      var explore_flag = pass['explore_flag']; 
+      var connect_flag = pass['connect_flag']; 
+      var society_flag = pass['society_flag']; 
+      var ref_choice = pass['ref_choice']; 
+      var perc_ref = pass['perc_ref'];
+      var perc_exp = pass['perc_exp'];
+      var perc_con = pass['perc_con'];
+      var perc_soc = pass['perc_soc'];
+      var switch_to_bc = pass['switch_to_bc'];
+       if (switch_to_bc == 1){
+         $('#base_case').show();
+         $('#BC_checker').show();
+          $("#problem").hide(); 
+         $('#reflections').hide();
+          $("#checker").hide();
+           $('#basecasebutton').hide();
+          $('#qrcode_id_bc').hide();
+          $('#reflectionsbutton').hide();
+          $('#qrcode_id').hide(); 
+           $('#directions').hide();
+             $('#checkerbutton').prop('value','to QR code'); 
+          var bc_display = true;
+        } else {
+            var bc_display = false;
+                 $('#qrcode_id_bc').hide();
+                 $('#qrcode_id').hide();
+                $('#base_case').hide();
+                $('#directions').hide();
+                $('#BC_checker').hide();
+               $('#basecasebutton').prop('value','to Base-case');
+                $('#checkerbutton').prop('value','to QR code'); 
+        }
+         //Turn this off for now - will release this feature later   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  
+          
+    
+    
+     var qr_code = false;
+     var myFrame = document.getElementById('checker2').contentWindow
+    
+    $("#checker2").on("load", function () {
+               //  var total_count = $("#checker2").contents().find("#total_count").html();
+                var total_count = $("#checker2").contents().find("#total_count").text();
+                 var PScore = $("#checker2").contents().find("#PScore").val();
+                  switch_to_bc = $("#checker2").contents().find("#switch_to_bc").val();
+                 
+                var parent_test = document.getElementById('checker2').contentWindow.test;
+              
+                   var test2 = myFrame.test;
+                
+              //  console.log('test from parent: '+test);  
+             
+                   console.log('blah: '+total_count);
+                  console.log('PScore: '+PScore);
+                    console.log('switch_to_bc: '+switch_to_bc);
+                
+
+                if (switch_to_bc == 1){
+                     $('#base_case').show();
+                     $('#BC_checker').show();
+                      $("#problem").hide(); 
+                     $('#reflections').hide();
+                      $("#checker").hide();
+                      $('#basecasebutton').hide();
+                      $('#qrcode_id_bc').hide();
+                      $('#reflectionsbutton').hide();
+                      $('#qrcode_id').hide();
+                      $('#checkerbutton').prop('value','to QR code'); 
+                      bc_display = true;
+                }
+        });
+   
+    
+     
+    
+    
+    if(reflect_flag == 0 && ref_choice == 0){$("#reflect").hide(); }    
+    if(explore_flag == 0 && ref_choice == 0){$("#explore").hide(); }    
+    if(connect_flag == 0 && ref_choice == 0){$("#connect").hide(); }    
+    if(society_flag == 0 && ref_choice == 0){$("#society").hide(); }    
+    
+    
+  $('#basecasebutton').click(function(){
+        if(bc_display == false){bc_display =true;}else{bc_display =false;}
+      
+            if(bc_display && qr_code){
+                    $("#problem").hide(); 
+                    $("#base_case").show();                        
+                    $("#checker").hide();
+                    $("#BC_checker").hide();
+                    $('#qrcode_id').hide();
+                    $('#qrcode_id_bc').show();
+                    $('#reflections').hide();
+                    $('#reflectionsbutton').hide();
+                    $('#basecasebutton').prop('value','to Problem');
+                   // $("#btnAddProfile").prop('value', 'Save');
+            } else if(!bc_display && qr_code){
+                    $("#problem").show(); 
+                    $("#base_case").hide();                        
+                    $("#checker").hide();
+                    $("#BC_checker").hide();
+                    $('#qrcode_id').show();
+                    $('#qrcode_id_bc').hide();
+                      $('#reflections').show();
+                    $('#basecasebutton').prop('value','to Base-case');
+            }else if(bc_display && !qr_code){
+                    $("#problem").hide(); 
+                    $("#base_case").show();                        
+                    $("#checker").hide();
+                    $("#BC_checker").show();
+                    $('#qrcode_id').hide();
+                    $('#qrcode_id_bc').hide();
+                     $('#reflections').hide();
+                    $('#reflectionsbutton').hide();
+                     $('#basecasebutton').prop('value','to Problem');
+            } else {
+                    $("#problem").show(); 
+                    $("#base_case").hide();                        
+                    $("#checker").show();
+                    $("#BC_checker").hide();
+                    $('#qrcode_id').hide();
+                    $('#qrcode_id_bc').hide();
+                    $('#reflections').show();
+                     $('#basecasebutton').prop('value','to Base-case');
+            }
+
+        
+     });
+   
+      
+     $('#checkerbutton').click(function(){
+        if(qr_code == false){qr_code =true;}else{qr_code =false;}
+        
+
+        if(bc_display && qr_code){
+                    $("#problem").hide(); 
+                    $("#base_case").show();                        
+                    $("#checker").hide();
+                    $("#BC_checker").hide();
+                    $('#qrcode_id').hide();
+                    $('#qrcode_id_bc').show();
+                     $('#reflections').hide();
+                    $('#reflectionsbutton').hide();
+                      $('#checkerbutton').prop('value','to Checker'); 
+            } else if(!bc_display && qr_code){
+                    $("#problem").show(); 
+                    $("#base_case").hide();                        
+                    $("#checker").hide();
+                    $("#BC_checker").hide();
+                    $('#qrcode_id').show();
+                    $('#qrcode_id_bc').hide();
+                     $('#reflections').show();
+                    $('#checkerbutton').prop('value','to Checker'); 
+            }else if(bc_display && !qr_code){
+                    $("#problem").hide(); 
+                    $("#base_case").show();                        
+                    $("#checker").hide();
+                    $("#BC_checker").show();
+                    $('#qrcode_id').hide();
+                    $('#qrcode_id_bc').hide();
+                    $('#reflections').hide();
+                    $('#reflectionsbutton').hide();
+                    $('#checkerbutton').prop('value','to QR code'); 
+            } else {
+                    $("#problem").show(); 
+                    $("#base_case").hide();                        
+                    $("#checker").show();
+                    $("#BC_checker").hide();
+                    $('#qrcode_id').hide();
+                    $('#qrcode_id_bc').hide();
+                     $('#reflections').show();
+                    $('#checkerbutton').prop('value','to QR code'); 
+            }
+
+    });
+ */
+});
+
+ </script>
 </body>
 </html>
