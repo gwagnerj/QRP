@@ -148,7 +148,7 @@ session_start();
 			$count = 0;
 			for ($j=0;$j<=9;$j++){
 					$wrongCount[$j]=0;		// accumulates how many times they missed a part
-					$_SESSION['wrongC'[$j]]=0; // temp
+//				$_SESSION['wrongC'[$j]]=0; // temp
 					$changed[$j]=0;		// 1 if they changed their response ero otherwise
 					$addCount[$j]=0;  // this is zero if they get it right and 1 if they get it wrong
 			}	
@@ -318,7 +318,7 @@ session_start();
          //  print_r('response array 1 =  '.$response[0]);
           $oldresp_flag = 0;
           for ($j=0; $j<=9; $j++) {
-               if ($response[$j]==1){
+               if (@$response[$j]==1){
                    $resp[$resp_key[$j]]=$soln[$j];
                    $oldresp_flag = 1;
                //    echo ($soln[$j]);
@@ -346,7 +346,7 @@ session_start();
 
 		for ($j=0;$j<=9;$j++){
 					$wrongCount[$j]=0;
-					$_SESSION['wrongC'[$j]]=$wrongCount[$j]; 
+					@$_SESSION['wrongC'[$j]]=$wrongCount[$j]; 
 				}
 		
 		
@@ -364,16 +364,16 @@ session_start();
 
     
 	// read the student responses into an array
-		$resp['a']=$_POST['a']+0;
-		$resp['b']=$_POST['b']+0;
-		$resp['c']=$_POST['c']+0;
-		$resp['d']=$_POST['d']+0;
-		$resp['e']=$_POST['e']+0;
-		$resp['f']=$_POST['f']+0;
-		$resp['g']=$_POST['g']+0;
-		$resp['h']=$_POST['h']+0;
-		$resp['i']=$_POST['i']+0;
-		$resp['j']=$_POST['j']+0;
+		@$resp['a']=$_POST['a']+0;
+		@$resp['b']=$_POST['b']+0;
+		@$resp['c']=$_POST['c']+0;
+		@$resp['d']=$_POST['d']+0;
+		@$resp['e']=$_POST['e']+0;
+		@$resp['f']=$_POST['f']+0;
+		@$resp['g']=$_POST['g']+0;
+		@$resp['h']=$_POST['h']+0;
+		@$resp['i']=$_POST['i']+0;
+		@$resp['j']=$_POST['j']+0;
 	
 		
 	//}	 
@@ -416,7 +416,7 @@ session_start();
 								elseif ($resp[$resp_key[$j]]==0)  // did not attempt it
 								{
 									
-									$wrongCount[$j] = ($_SESSION['wrongC'[$j]]);
+									@$wrongCount[$j] = ($_SESSION['wrongC'[$j]]);
 									//$_SESSION['wrongC'[$j]] = $wrongCount[$j];
                                     $corr_num[$corr_key[$j]]=0;
 									$corr[$corr_key[$j]]='';
@@ -543,12 +543,13 @@ session_start();
 	<h2>Quick Response Exam Checker</h2>
 	</header>
 	<main>
-	<h3> Name: <?php echo($name);?> &nbsp; &nbsp; Exam Number: <?php echo($exam_num);?>&nbsp; &nbsp;  PIN: <?php echo($pin);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h3>
+	<h3> Name: <?php echo($name);?> &nbsp; &nbsp; Exam Number: <?php echo($exam_num);?>&nbsp; &nbsp;    Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h3>
     
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
-    <font size = "2"> Get_Flag: <?php echo ($get_flag) ?> </font>
-      <font size = "2"> oldresp_flag: <?php echo ($oldresp_flag) ?> </font>
+ <!--   <font size = "2"> Get_Flag: <?php echo ($get_flag) ?> </font>
+      <font size = "2"> oldresp_flag: <?php echo ($oldresp_flag) ?> </font> 
+      -->
 
 	<form autocomplete="off" id = "check_form" method="POST" >
 	<!--<p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
@@ -670,24 +671,18 @@ session_start();
     
     
     
-	<form action="StopExam.php" method="POST" id = "the_form">
-		    <input type="hidden" name="name"  value="<?php echo ($name)?>" >
-            <input type="hidden" name="pin" value="<?php echo ($pin)?>" >
-            <input type="hidden" name="team_id"  value="<?php echo ($team_id)?>" >
-            <input type="hidden" name="problem_id"  value="<?php echo ($problem_id)?>" >
-            <input type="hidden" name="dex" value="<?php echo ($dex)?>" >
-            <input type="hidden" name="exam_num" value="<?php echo ($exam_num)?>" >
-            <input type="hidden" id = "examtime_id" name="examtime_id" value="<?php echo ($examtime_id)?>" >
+	<form action="upload_exam_work.php" method="GET" id = "the_form">
+    
+
+		
             <input type="hidden" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
             <input type="hidden" name="globephase" id = "globephase" >
-            <input type="hidden" name="iid" value="<?php echo ($iid)?>" >
-           
-        <p><input type="hidden" id = "pblm_score" name="pblm_score" size=3 value="<?php echo($PScore)?>"  
+    
     <hr>
 	<p><b><font Color="red">Finished:</font></b></p>
 	  <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
 	   <?php $_SESSION['score'] = round($PScore);  ?>
-	 <b><input type="submit" value="Finished" name="score" style = "width: 30%; background-color:yellow "></b>
+	 <b><input type="submit" value="Finished / Upload Work" name="score" style = "width: 30%; background-color:yellow "></b>
 	 <p><br> </p>
 	 <hr>
 	</form>
@@ -697,18 +692,22 @@ session_start();
    
     
 		$(document).ready( function () {
+            
+              // disable right mouse click copy and copy paste  From https://www.codingbot.net/2017/03/disable-copy-paste-mouse-right-click-using-javascript-jquery-css.html
+            //Disable cut copy paste
+            $('body').bind('cut copy paste', function (e) {
+                e.preventDefault();
+            });
+            
+            //Disable mouse right click
+            $("body").on("contextmenu",function(e){
+                return false;
+            });
+        
                 
 				// get the current phase
 				var examtime_id = $("#examtime_id").val();
 				console.log ('examtime_id = ',examtime_id);
-				
-                
-                
-                
-                
-                
-                
-                
                 
                      var request;
                 function fetchPhase() {
@@ -729,7 +728,7 @@ session_start();
                              var phase = arrn.phase;
                             var end_of_phase = arrn.end_of_phase;
                             	console.log ('phase = ',phase);
-                           if(phase != 1){  // submit away work time has eneded this is going to stop game and not back to the router
+                           if(phase != 1){  // submit away work time has eneded this is going to stop Exam and not back to the router
                                $("#phase").attr('value', phase);
                                SubmitAway(); 
                             }
@@ -781,27 +780,7 @@ session_start();
                                  
                                  
                                  
-                                 
-                                 
-                               
-
-/* 
-                          if (count_tot > 3*prob_parts){
-                                
-                               var delayInMilliseconds = 1000; //1 second
-
-                            setTimeout(function() {
-                              //your code to be executed after 1 second
-                            }, delayInMilliseconds); 
-                                
-                                
-                            }
-                         */
-                        
-                  
-
-
-
+ 
                 
                      function SubmitAway() { 
                         window.close();

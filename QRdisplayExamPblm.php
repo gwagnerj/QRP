@@ -101,14 +101,17 @@ session_start();
                         $exam_num = $row['exam_num'];
                     } else {
                        $_SESSION['error'] = 'examtime table could not read - Exam over or not Initiated';
-                        header("Location: QRExamRegistration.php");
+                      //  header("Location: QRExamRegistration.php");
+                        header("Location: StopExam.php");
+
                         die();     
                     }
                     
                     if ($globephase !=1){
                          $_SESSION['error'] = 'Exam is not in progress';
-                        header("Location: QRExam.php?examactivity_id=".$examactivity_id
-                        );
+                        header("Location: QRExam.php?examactivity_id=".$examactivity_id );
+                      //  header("Location: StopExam.php" );
+                      
                         die();     
                         
                     }
@@ -260,6 +263,25 @@ echo '</script>';
   top: 0px;
   z-index: 1;
 }
+#backbutton {
+  position: relative;
+  left: 0px;
+  top: 0px;
+  z-index: 1;
+}
+#directionsbutton {
+  position: relative;
+  left: 0px;
+  top: 0px;
+  z-index: 1;
+}
+
+#reflectionsbutton {
+  position: relative;
+  left: 0px;
+  top: 0px;
+  z-index: 1;
+}
 </style>
 
 
@@ -273,7 +295,7 @@ echo '</script>';
 </form>
   <!-- <div style="background-image: url('Water_Mark_for_exam.png');">  -->
    
-<img id = "water_mark" src="Water_Mark_for_exam_trans_bckgrnd.png" >
+<img id = "water_mark" src="uploads/Water_Mark_for_exam_trans_bckgrnd.png" >
 
   
 
@@ -288,8 +310,8 @@ echo '</script>';
       $header_stuff -> load_file('exam_problem_header_stuff.html');
             // subbing in the header
        $header_stuff ->find('#stu_name',0)->innertext = $stu_name;
-    //   $header_stuff ->find('#course',0)->innertext = $class_name;
-    //   $header_stuff ->find('#exam_num',0)->innertext = $assignment_num;
+      $header_stuff ->find('#course',0)->innertext = $cclass_name;
+       $header_stuff ->find('#exam_num',0)->innertext = $exam_num;
        $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
     //   $header_stuff ->find('#perc_of_assign',0)->innertext = $perc_of_assign.'%';
    //    $header_stuff ->find('#due_date',0)->innertext = $due_date;
@@ -341,7 +363,7 @@ echo '</script>';
         
                
     // only include the document above the checker
-       $this_html ='<hr>'.$problem;
+       $this_html ='<hr><br>'.$problem;
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
@@ -385,25 +407,34 @@ echo '</script>';
       var switch_to_bc = pass['switch_to_bc'];
        
 
-
+  $('#questions').prepend('<p> Questions for '+stu_name+':</p>');
 
 
   	$("#backbutton").css({"background-color":"lightyellow",
             });
     
             $("#backbutton").click(function(){
-		  			
-                    // e.preventDefault();
-					// console.log("hello1");
-				
                      window.location.replace('QRExam.php?examactivity_id='+examactivity_id); // would like to put some parameters here instead of relying on session (like below)
-                  //  window.location.replace('../QRP/QRExam.php'+'?examactivity_id='+examactivity_id); // axam_num and examactivity
-              	
-				 });
+			 });
 
-
-
-
+        $('#directions').hide();
+    
+     $('#directionsbutton').click(function(){
+        $("#directions").toggle();
+     });
+     
+    
+        // disable right mouse click copy and copy paste  From https://www.codingbot.net/2017/03/disable-copy-paste-mouse-right-click-using-javascript-jquery-css.html
+            //Disable cut copy paste
+            $('body').bind('cut copy paste', function (e) {
+                e.preventDefault();
+            });
+            
+            //Disable mouse right click
+            $("body").on("contextmenu",function(e){
+                return false;
+            });
+        
 
  /*    
     var activity_id = pass['activity_id']; 
@@ -430,7 +461,7 @@ echo '</script>';
           $('#qrcode_id_bc').hide();
           $('#reflectionsbutton').hide();
           $('#qrcode_id').hide(); 
-           $('#directions').hide();
+         
              $('#checkerbutton').prop('value','to QR code'); 
           var bc_display = true;
         } else {

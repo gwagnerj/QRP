@@ -193,7 +193,7 @@
                                 
                                  
                                  $pin = $class_data['pin'];   
-                                  echo (' pin '.$pin);
+     //                             echo (' pin '.$pin);
                                    $dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
 
 
@@ -249,11 +249,11 @@
            
       } elseif(isset($_POST['submit_form'])) {
             //$_SESSION['cclass_id'] = $_SESSION['cclass_name'] = '';
-             $_SESSION['error']='The Class, Exam number, Problem and instructor ID are all Required ';
+             $_SESSION['error']='The Class, Exam Code, Instructor are all Required ';
             }
 
 // echo(' pin2 - 235 '. $pin);
-
+/* 
     if (!is_numeric($pin)||$pin>10000 || $pin<0){
         $_SESSION['error']='Your PIN should be between 1 and 10000.';	
     } else {
@@ -261,7 +261,7 @@
         $dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
         $_SESSION['dex'] = $dex;
     
-
+ */
 
 // Go get the problem id from the Exam table - this is comming from below and we have all of the infromation
 	if(isset($_POST['submit_form'])&& isset($_POST['iid']) && isset($_POST['cclass_id'])&& isset($_POST['exam_code'])  ){
@@ -380,11 +380,11 @@
    
       } elseif(isset($_POST['submit_form'])) {
             //$_SESSION['cclass_id'] = $_SESSION['cclass_name'] = '';
-             $_SESSION['error']='The Class, Exam number, Problem and instructor ID are all Required ';
+             $_SESSION['error']='The Class, Exam Code, and Instructor are all Required ';
             }
             
             
-       }
+    //   }
  //comming back from exam QRExam - not sure I need this for this file this wqas stole from stu_frontpage that actually gives the problem numbers 
  
  
@@ -544,7 +544,7 @@
 				</br>
 	
 <!--	<div id ="current_class_dd">	-->
-			<font color=#003399>Course: </font>
+			<font color=#003399>Class: </font>
 			
 			<?php
 			//$cclass_id = 2;

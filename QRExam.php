@@ -34,7 +34,7 @@
        $examactivity_id =  $_GET['examactivity_id'];
     } else {
        // $_SESSION['error'] = 'examactivity_id was lost in QRExam.php';
-        header("Location: QRExamRegistration.php");
+        header("Location: QRExamRegistration2.php");
 		die();
         
     }
@@ -56,7 +56,7 @@
 
              } else {
                  $_SESSION['error'] = 'examactivity table could not be read in QRExam.php';
-                header("Location: QRExamRegistration.php");
+                header("Location: QRExamRegistration2.php");
                 die();  
              }
 
@@ -71,7 +71,7 @@
                         $exam_num = $row['exam_num'];
                     } else {
                        $_SESSION['error'] = 'examtime table could not read - Exam over or not Initiated';
-                        header("Location: QRExamRegistration.php");
+                        header("Location: QRExamRegistration2.php");
                         die();     
                     }
                     
@@ -85,7 +85,7 @@
                         $cclass_name = $row['name']; 
                     } else {
                        $_SESSION['error'] = 'Currentclass table could not read - Class Not Valid';
-                        header("Location: QRExamRegistration.php");
+                        header("Location: QRExamRegistration2.php");
                         die();     
                     }        
                     
@@ -153,7 +153,6 @@
     </p>  
        
 	<p><font color=#003399>Your Name: &nbsp;<?php echo($stu_name);?> </font>     </p>
-	<p><font color=#003399>PIN: &nbsp;<?php echo($pin);?>    </font>   </p>
    
 	
 			<p><font color=#003399>Course:&nbsp;<?php echo($cclass_name);?> </font></p>
