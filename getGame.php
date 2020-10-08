@@ -238,6 +238,7 @@ if ( isset($_SESSION['success']) ) {
 	
 	
 $(document).ready(function(){
+    
 		// this next bit makes it so you can not have two columns with two items checked
 		 $(".onePerColumn :radio,:checkbox").change(function(){
 			var col = $(this).attr("value");
@@ -770,9 +771,29 @@ $(document).ready(function(){
 		
 });	  // doc ready
 
-                   
-</script>
+     /*   
+               //  $('#substitute_me').css({"page-break-inside":'avoid'});  // trying to get rid of the new page attr after QRcode from the game problem
 
+       function stateChange() {
+            setTimeout(function () {
+                     //            $('#substitute_me').css({"background-color":"lightblue"});  // trying to get rid of the new page attr after QRcode from the game problem
+
+                 $('#substitute_me').css({"page-break-inside":'avoid'});  // trying to get rid of the new page attr after QRcode from the game problem
+         
+         $("#substitute_me .WordSection1").css({"page-break-inside":'avoid'});; 
+          document.getElementsByClassName("WordSection1").style.display = null;    
+            }, 5000);
+        }
+
+    stateChange();
+  
+     */
+    
+              
+</script>
+<script>
+     
+</script>
 </body>
 </html>
 

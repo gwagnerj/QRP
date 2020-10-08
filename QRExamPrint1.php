@@ -8,61 +8,40 @@ session_start();
 // this strips out the get parameters so they are not in the url - its is not really secure data but I would rather not having people messing with them
 // if they do not what they are doing
 
- if (!empty($_GET)) {
-        $_SESSION['got'] = $_GET;
-        header('Location: QRdisplayExamPblm.php');
-        die;
-    } else{
-        if (!empty($_SESSION['got'])) {
-            $_GET = $_SESSION['got'];
-            unset($_SESSION['got']);
-        }
-    }
-    
-   
-    
-    
+
 // check input and send them back if not proper
-    if( isset($_POST['examactivity_id'])){
-         $examactivity_id = $_POST['examactivity_id'];
-    } elseif (isset($_GET['examactivity_id'])) {
-         $examactivity_id = $_GET['examactivity_id']; 
-    } else {
-        
-        header("Location: QRExamRegistration.php");
+    if( isset($_POST['currentclass_id'])){
+         $currentclass_id = $_POST['currentclass_id'];
+    }else {
+        $_SESSION['error']= 'no currentclass_id in QRExamPrint1';
+        header("Location: QRExamPrint0.php");
         die();    
     }
- /*   
-// if we are only wanting the checker then send then to exam_checker_only.php
-      if( isset($_POST['checker'])){
-         $checker = $_POST['checker'];
-    } elseif (isset($_GET['checker'])) {
-         $checker = $_GET['checker']; 
-    } else {
-       $checker = '42 on the QRdisplayExamPblm';
+     if( isset($_POST['exam_num'])){
+         $exam_num = $_POST['exam_num'];
+     } else {
+        $_SESSION['error']= 'no exam_num in QRExamPrint1';
+        header("Location: QRExamPrint0.php");
+        die();    
     }
- */
+     if( isset($_POST['iid'])){
+         $iid = $_POST['iid'];
+     } else {
+        $_SESSION['error']= 'no iid in QRExamPrint1';
+        header("Location: QRExamPrint0.php");
+        die();    
+    }
+     if( isset($_POST['exam_version'])){
+         $exam_version = $_POST['exam_version'];
+     } else {
+        $_SESSION['error']= 'no exam_version in QRExamPrint1';
+        header("Location: QRExamPrint0.php");
+        die();    
+    }
 
 
 
-   if(isset($_POST['problem_id'])&& isset($_POST['examactivity_id'])){
-        $problem_id = $_POST['problem_id'];
-        $_SESSION['problem_ios'] = $problem_id;
-    
-    }elseif(isset($_SESSION['problem_ios'])){
-    
-        $problem_id = $_SESSION['problem_ios'];
-    
-    
-    } else  {
-      $_SESSION['error'] = 'Problem Not Selected';
-
-
-   header("Location: QRExam.php?examactivity_id=".$examactivity_id
-        );
-        die();   
-         
-    }  
+ 
           
  // initialize some vars
  
@@ -77,73 +56,12 @@ session_start();
 	$instr_last='';
     $cclass_name='';
     $dex='';
-    $globephase = 0;
 
-// get the information needed form the SQL tables
-   $sql = "SELECT * FROM `Examactivity` WHERE examactivity_id = :examactivity_id";
-           $stmt = $pdo->prepare($sql);
-           $stmt -> execute(array(
-             ':examactivity_id' => $examactivity_id,
-          )); 
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-             if($row != false){
-                 $examtime_id = $row['examtime_id']; 
-                $iid = $row['iid'];
-                $dex = $row['dex'];
-                $pin = $row['pin'];
-                $stu_name = $row['name'];
-                $exam_code = $row['exam_code'];
-                $cclass_id = $row['currentclass_id'];
-                $suspend_flag = $row['suspend_flag'];
-
-             } else {
-                 $_SESSION['error'] = 'examactivity table could not be read in QRExam.php';
-                header("Location: QRExamRegistration.php");
-                die();  
-             }
-
-            $sql = " SELECT * FROM `Examtime` WHERE examtime_id = :examtime_id" ;
-                    $stmt = $pdo->prepare($sql);
-                    $stmt -> execute(array(
-                         ':examtime_id' => $examtime_id,
-                    ));
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                    if($row != false){
-                        $globephase = $row['globephase']; 
-                        $exam_num = $row['exam_num'];
-                    } else {
-                       $_SESSION['error'] = 'examtime table could not read - Exam over or not Initiated';
-                      //  header("Location: QRExamRegistration.php");
-                        header("Location: StopExam.php");
-
-                        die();     
-                    }
-                    
-                    if ($globephase !=1){
-                         $_SESSION['error'] = 'Exam is not in progress';
-                        header("Location: QRExam.php?examactivity_id=".$examactivity_id );
-                      //  header("Location: StopExam.php" );
-                      
-                        die();     
-                        
-                    }
-                    
-                // echo (' checker: '.$checker);
-                  if(isset($_POST['checker']) && $_POST['checker'] == "checker_only"){
-                      $checker_only = 1;
-                      //  header("Location: exam_checker_only.php");
-                      //  die();      
-                    } elseif (isset($_POST['checker']) && $_POST['checker'] == "problem_and_checker"){
-                         $checker_only = 0;
-                    } else {
-                        $checker_only = 0;
-                    }
-                    
                     
               $sql = " SELECT `name` FROM `CurrentClass` WHERE currentclass_id = :currentclass_id" ;
                     $stmt = $pdo->prepare($sql);
                     $stmt -> execute(array(
-                         ':currentclass_id' => $cclass_id,
+                         ':currentclass_id' => $currentclass_id,
                     ));
                     $row = $stmt->fetch(PDO::FETCH_ASSOC);
                     if($row != false){
@@ -151,101 +69,33 @@ session_start();
                     } else {
                        $_SESSION['error'] = 'Currentclass table could not read - Class Not Valid';
                        
-                    }     
-             $sql = " SELECT * FROM `Exam` WHERE currentclass_id = :currentclass_id AND problem_id = :problem_id AND exam_num = :exam_num" ;
+                    }   
+
+            // get all of the students in the class - name of student, dex of student
+             $sql = " SELECT * FROM `Student` INNER JOIN StudentCurrentClassConnect ON Student.student_id = StudentCurrentClassConnect.student_id  WHERE StudentCurrentClassConnect.currentclass_id = :currentclass_id ORDER BY last_name ASC" ;
                     $stmt = $pdo->prepare($sql);
                     $stmt -> execute(array(
-                         ':currentclass_id' => $cclass_id,
-                           ':problem_id' => $problem_id,
+                         ':currentclass_id' => $currentclass_id,
+                    ));
+                   $student_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
+            //       var_dump($student_data);
+            
+            
+
+            // get all of the data for the exam for each problem
+                    
+             $sql = " SELECT * FROM `Exam` WHERE currentclass_id = :currentclass_id AND exam_num = :exam_num ORDER BY alias_num" ;
+                    $stmt = $pdo->prepare($sql);
+                    $stmt -> execute(array(
+                         ':currentclass_id' => $currentclass_id,
                              ':exam_num' => $exam_num,
                     ));
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                    if($row != false){
-                        $alias_num = $row['alias_num']; 
-                    }                     
-                    	
-
-  $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(':problem_id' => $problem_id));
-	$pblm_data = $stmt -> fetch();
-    $contrib_id = $pblm_data['users_id'];
-    $nm_author = $pblm_data['nm_author'];
-    $specif_ref = $pblm_data['specif_ref'];
-    $htmlfilenm = $pblm_data['htmlfilenm'];
-
-// this is the old way with substituting the variables in with the JS - now we are going to build this up with the php just like the homework - need to steel code from QRdisplayPblem.php
-
-
-        $htmlfilenm = "uploads/".$htmlfilenm;
-if($checker_only ==0){
-        // read in the names of the variables for the problem
-            $nv = 0;  // number of non-null variables
-           for ($i = 0; $i <= 13; $i++) {
-                if($pblm_data['nv_'.($i+1)]!='Null' ){
-                    $nvar[$i]=$pblm_data['nv_'.($i+1)];
-                    $nv++;
-                 }
-           }
-         
-            $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
-            $stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
-            $row = $stmt->fetch();
-          
-           // Read in the value for the input variables
-           
-            for ($i = 0; $i < $nv; $i++) {
-                if($row['v_'.($i+1)]!='Null' ){
-                    $vari[$i] = $row['v_'.($i+1)];
-         //           echo ('  $vari[$i]: '. $vari[$i]);
-                    $pattern[$i]= '/##'.$nvar[$i].',.+?##/';
-                }
-            }
-           // see if we need a reflections button
-         // think if we want to add reflection type questions to exam problems - right now they are not in the exam table (they are in the assign table) 
-          /*  
-           if ($ref_choice!=0 || $reflect_flag !=0 || $explore_flag !=0 || $connect_flag !=0 || $society_flag !=0){
-             $reflection_button_flag = 1;  
-           } else {
-             $reflection_button_flag = 0; 
-           }
-            */
-           
-        //------------------------------------------------------------------------------------------------------------
-
-        // passing my php varables into the js varaibles needed for the script below
-
-        // Sneak the exam_flag in
-
-
-} 
-
-        $pass = array(
-            'checker'=>$_POST['checker'],
-            'dex' => $dex,
-            'problem_id' => $problem_id,
-            'stu_name' => $stu_name,
-            'pin' => $pin,
-            'iid' => $iid,
-            'alias_num' => $alias_num,
-            'exam_num' => $exam_num,
-            'assign_num' => $exam_num,
-            'cclass_id' => $cclass_id,
-            'examactivity_id' => $examactivity_id,
-            'cclass_name' => $cclass_name,
-            'examtime_id' => $examtime_id,
-        );
-
-        // echo ($pass['society_flag']);
-        //die();
-        echo '<script>';
-        echo 'var pass = ' . json_encode($pass) . ';';
-        echo '</script>';
-          
-
- 
- // 
-
+                    $exam_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
+                       
+               //        echo (' exam_data <br>');
+                       
+                  //     var_dump($exam_data);       
+                  	
 ?>
 
 <!DOCTYPE html>
@@ -255,7 +105,7 @@ if($checker_only ==0){
 
 <link rel="icon" type="image/png" href="McKetta.png" >
 
-<title>QRExam</title> 
+<title>QR Exam Print</title> 
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
@@ -302,38 +152,68 @@ if($checker_only ==0){
 
 <body>
 
-<form method = "POST" Action = "">
-         <input type="hidden" id = "problem_id" name="problem_id" value="<?php echo ($problem_id)?>" >
 
-</form>
-  <!-- <div style="background-image: url('Water_Mark_for_exam.png');">  -->
-<?php   
+<?php
 
+// big loop for each student
 
-    if($checker_only ==0){
-        echo('<img id = "water_mark" src="uploads/Water_Mark_for_exam_trans_bckgrnd.png" >');
+        foreach($student_data as $student_datum){
+            $pin = $student_datum['pin'];
+              $dex = ($pin-1) % 199 + 2;
+              //echo(' dex '.$dex);
+            
+          //  echo $student_datum['first_name']  ;
+          // for each problem on the exam
+          foreach($exam_data as $exam_datum){
+                //      echo $exam_datum['problem_id'];
+                $problem_id = $exam_datum['problem_id'];
+                $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(array(':problem_id' => $problem_id));
+                $pblm_data = $stmt -> fetch();
+                $contrib_id = $pblm_data['users_id'];
+                $nm_author = $pblm_data['nm_author'];
+                $specif_ref = $pblm_data['specif_ref'];
+                $htmlfilenm = $pblm_data['htmlfilenm'];
+            
+                
 
-    }
+                $htmlfilenm = "uploads/".$htmlfilenm;
 
- 
-
-
-
-
+                // read in the names of the variables for the problem
+                $nv = 0;  // number of non-null variables
+               for ($i = 0; $i <= 13; $i++) {
+                    if($pblm_data['nv_'.($i+1)]!='Null' ){
+                        $nvar[$i]=$pblm_data['nv_'.($i+1)];
+                        $nv++;
+                     }
+               }
+        
+                $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
+                $stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
+                $row = $stmt->fetch();
+              
+               // Read in the value for the input variables
+               
+                for ($i = 0; $i < $nv; $i++) {
+                    if($row['v_'.($i+1)]!='Null' ){
+                        $vari[$i] = $row['v_'.($i+1)];
+             //           echo ('  $vari[$i]: '. $vari[$i]);
+                        $pattern[$i]= '/##'.$nvar[$i].',.+?##/';
+                    }
+                }
+       $stu_name = $student_datum['first_name'].'&nbsp; '.$student_datum['last_name'];      
+        $alias_num = $exam_datum['alias_num'];      
   $html = new simple_html_dom();
       $html->load_file($htmlfilenm);
       $header_stuff = new simple_html_dom();
-      $header_stuff -> load_file('exam_problem_header_stuff.html');
+      $header_stuff -> load_file('exam_problem_print_header_stuff.html');
             // subbing in the header
        $header_stuff ->find('#stu_name',0)->innertext = $stu_name;
       $header_stuff ->find('#course',0)->innertext = $cclass_name;
        $header_stuff ->find('#exam_num',0)->innertext = $exam_num;
        $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
-       
-       echo($header_stuff);
-       
-       
-if($checker_only ==0){
+
   $problem = $html->find('#problem',0);
   
    for( $i=0;$i<$nv;$i++){
@@ -380,7 +260,7 @@ if($checker_only ==0){
         
                
     // only include the document above the checker
-       $this_html ='<hr><br>'.$problem;
+       $this_html ='<br>'.$problem;
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
@@ -388,9 +268,88 @@ if($checker_only ==0){
                 $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
              }
         }
+ echo($header_stuff);
+ echo ('<hr>');
   echo $this_html; 
-} 
+   echo  '<p style="page-break-before: always"> ';        
+              
+              
+              
+              
+          }
+            
+        }
+
+ die();
+
+
   
+
+  // $dex = 10;
+  //  echo('dex: '.$dex);  
+ 
+   // see if we need a reflections button
+ // think if we want to add reflection type questions to exam problems - right now they are not in the exam table (they are in the assign table) 
+  /*  
+   if ($ref_choice!=0 || $reflect_flag !=0 || $explore_flag !=0 || $connect_flag !=0 || $society_flag !=0){
+     $reflection_button_flag = 1;  
+   } else {
+     $reflection_button_flag = 0; 
+   }
+    */
+   
+//------------------------------------------------------------------------------------------------------------
+
+// passing my php varables into the js varaibles needed for the script below
+
+// Sneak the exam_flag in
+
+
+
+
+$pass = array(
+    'dex' => $dex,
+    'problem_id' => $problem_id,
+    'stu_name' => $stu_name,
+	'pin' => $pin,
+	'iid' => $iid,
+    'alias_num' => $alias_num,
+	'exam_num' => $exam_num,
+    'assign_num' => $exam_num,
+    
+    'cclass_name' => $cclass_name,
+    'examtime_id' => $examtime_id,
+);
+
+// echo ($pass['society_flag']);
+//die();
+echo '<script>';
+echo 'var pass = ' . json_encode($pass) . ';';
+echo '</script>';
+  
+  
+ 
+ // 
+
+?>
+
+
+
+<form method = "POST" Action = "">
+         <input type="hidden" id = "problem_id" name="problem_id" value="<?php echo ($problem_id)?>" >
+
+</form>
+  <!-- <div style="background-image: url('Water_Mark_for_exam.png');">  -->
+   
+<img id = "water_mark" src="uploads/Water_Mark_for_exam_trans_bckgrnd.png" >
+
+  
+
+ 
+
+
+<?php
+
  ?>
   <!--  
    <div id = 'checker'>
@@ -401,7 +360,7 @@ if($checker_only ==0){
  
 ?>
  <div id = 'examchecker'>
- <iframe src="QRExamCheck.php?exam_num=<?php echo($exam_num);?>&cclass_id=<?php echo($cclass_id);?>&alias_num=<?php echo($alias_num);?>&pin=<?php echo($pin);?>&iid=<?php echo($iid);?>&examactivity_id=<?php echo($examactivity_id);?>&problem_id=<?php echo($problem_id);?>&dex=<?php echo($dex);?>" style = "width:80%; height:70%;"></iframe>
+ <iframe src="QRExamCheck.php?exam_num=<?php echo($exam_num);?>&cclass_id=<?php echo($cclass_id);?>&alias_num=<?php echo($alias_num);?>&pin=<?php echo($pin);?>&iid=<?php echo($iid);?>&examactivity_id=<?php echo($examactivity_id);?>&problem_id=<?php echo($problem_id);?>&dex=<?php echo($dex);?>" style = "width:70%; height:50%;"></iframe>
 
 </div>
 
@@ -422,7 +381,6 @@ if($checker_only ==0){
       var perc_exp = pass['perc_exp'];
       var perc_con = pass['perc_con'];
       var perc_soc = pass['perc_soc'];
-      var checker = pass['checker'];
       var switch_to_bc = pass['switch_to_bc'];
        
 
@@ -433,7 +391,7 @@ if($checker_only ==0){
             });
     
             $("#backbutton").click(function(){
-                     window.location.replace('QRExam.php?examactivity_id='+examactivity_id+'&checker='+checker); // would like to put some parameters here instead of relying on session (like below)
+                     window.location.replace('QRExam.php?examactivity_id='+examactivity_id); // would like to put some parameters here instead of relying on session (like below)
 			 });
 
         $('#directions').hide();

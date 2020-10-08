@@ -23,7 +23,7 @@ session_start();
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
 	
 		if ( $row === false ) {
-			$_SESSION['error'] = 'could not read row of examtime values';
+		//	$_SESSION['error'] = 'could not read row of examtime values';
 	
 		}
 // echo ('globephase'.$row['globephase']); 

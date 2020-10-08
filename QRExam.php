@@ -15,8 +15,26 @@
     $cclass_name='';
     $dex='';
     $globephase = 0;
+    
+    
+      if(isset($_POST['checker2']) || isset($_POST['checker'])){
+       $checker =  ($_POST['checker']);
+    } elseif(isset($_GET['checker2']) || isset($_GET['checker'])){
+       $checker =  $_GET['checker'];
+    } else {
+      
+         $checker =  "not set";
+    }
+    
+   // echo ('checker_only from QRExam: '.$checker);
+    
+    
+    
+    
   
     // if we are comming into this with a Get from QRExam - this clears the address bars of the parameters
+ /*    
+    
      if (!empty($_GET)) {
         $_SESSION['got'] = $_GET;
         header('Location: QRExam.php');
@@ -27,6 +45,8 @@
             unset($_SESSION['got']);
         }
     }
+     */
+   
 
    if(isset($_POST['examactivity_id'])){
        $examactivity_id =  $_POST['examactivity_id'];
@@ -182,6 +202,7 @@
 		 <input type="hidden" id = "get_examactivity_id" name="get_examactivity_id" value="<?php echo ($_GET['examactivity_id']);?>" >
 
          <input type="hidden" id = "examactivity_id" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
+         <input type="hidden" id = "checker" name="checker" value="<?php echo ($checker)?>" >
 		
 	<p><input type = "submit" name = "submit_form" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	</form>

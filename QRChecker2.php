@@ -259,7 +259,7 @@ session_start();
 			$row = $stmt -> fetch();
 			if ( $row === false ) {
 				$_SESSION['error'] = 'Bad value for problem_id';
-				header( 'Location: QRExam.php' ) ;
+				header( 'Location: QRhomework.php' ) ;
 				return;
 			}	
 				$soln = array_slice($row,6,20); // this would mean the database table Qa would have the same structure - change the structure of the table and you break the code
@@ -519,6 +519,15 @@ session_start();
 	<!-- <p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
 
 	<?php
+    
+ /*     
+   echo(' resp["a"]: '.$resp["a"]);
+    echo(' resp["b"]: '.$resp["b"]);
+    echo(' get_flag: '.$get_flag);
+    echo(' progress: '.$progress);
+        */
+    
+    
     if($attempt_type ==1 || ($attempt_type ==2 && $count_tot <= $num_attempts)){  // $attempt_type determines how many total chances you get for $attempt_type =  1 you get infinite total chances for $attempt_type =  2 there is a limit on the total number of guesses
 	if ($partsFlag[0]){ ?> 
 	<p> a)(<?php echo $assigntime_data['perc_a_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> count <?php echo(@$wrongCount[0].' '); ?> 

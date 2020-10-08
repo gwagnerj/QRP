@@ -18,8 +18,19 @@
     $cclass_name='';
     $dex=0;
     $examactivity_id = '';
+     
+      if(isset($_POST['checker'])){
+       $checker =  $_POST['checker'];
+    } elseif(isset($_GET['checker'])){
+       $checker =  $_GET['checker'];
+    } else {
+      
+         $checker =  "not set";
+    }
+    
+   // echo (' checker: '.$checker);
+    
   
-       
         if (isset($_GET['student_id'])){
       $student_id =   $_GET['student_id'];
      //   echo(' $student_id  '.$student_id);
@@ -193,6 +204,8 @@
                                 
                                  
                                  $pin = $class_data['pin'];   
+                                 
+                                 
      //                             echo (' pin '.$pin);
                                    $dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
 
@@ -236,8 +249,7 @@
                           }
 
                                             
-                         header("Location: QRExam.php?examactivity_id=".$examactivity_id
-						);
+                         header("Location: QRExam.php?examactivity_id=".$examactivity_id."&checker=".$checker);
 						die();
                                             
                         
@@ -367,8 +379,7 @@
                                     $_SESSION['examactivity_id'] = $examactivity_id;
                                     $complete = 'QRExam.php';
                                     
-                 header("Location: QRExam.php?examactivity_id=".$examactivity_id
-                );
+                 header("Location: QRExam.php?examactivity_id=".$examactivity_id."&checker=".$checker);
                 die();
                                     
                 
@@ -464,7 +475,17 @@
 <title>QRExam</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+/* 
+#checker_only {
+  position: absolute;
+  left: 10px;
+  width: 40px;
+  height:40px;
+  */  
+} 
 
+</style>
 </head>
 
 <body>
@@ -493,7 +514,9 @@
 
 
 <form autocomplete="off" method="POST" id = "the_form" action = "<?php echo($complete);?>" >
-	
+<!--
+<form autocomplete="off" method="POST" id = "the_form" action = "QRExam.php" >
+-->	
 <p><font color=#003399>Exam Code: </font><input type="text" name="exam_code" id = "exam_code_id" size= 5 value="<?php echo($exam_code);?>" >
        - this is provided by the instructor
     </p>  
@@ -501,7 +524,7 @@
 	<p><font color=#003399>Your Name: </font><?php echo($stu_name);?> </p>
 	<input autocomplete="false" name="hidden" type="text" style="display:none;">
     <input type="hidden"  name="pin" id="pin_id" value=<?php echo($pin);?> ></p>
-             
+       <input type="hidden"  name="checker2"  value=<?php echo($checker);?> ></p>       
              
             
     	      
@@ -558,27 +581,27 @@
 						echo ('<input type = "hidden" name = "cclass_name" id = "have_cclass_name" value = "'.$cclass_name.'"></input>'); 
 						echo $cclass_name;
 			} else {
-				
 			echo ('&nbsp;<select name = "cclass_id" id = "current_class_dd" >');
-		
 			echo('</select>');
-				
-				
 			}
-			
-			
-		
 		?>
-		</br>	
-		</br>
+        
+        
+		<br>
+           <h2>&nbsp;&nbsp;
+       <label>  <input type = "radio" id = "checker" name = "checker" style = "width:25px;height:25px;" value = "checker_only" checked >  Checker Only &nbsp;&nbsp;&nbsp;</label>
+       <label>  <input type = "radio" id = "checker" name = "checker" style = "width:25px;height:25px;" value = "problem_and_checker" >  Problem and Checker </label>
+       </h2>
+		<br>
+		<br>
 	
        
          <input type="hidden" id = "examactivity_id" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
 	
 	<p><input type = "submit" name = "submit_form" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	</form>
-	</br>
-    </br>
+	<br>
+    <br>
     
     
 	<form method = "POST">

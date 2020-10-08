@@ -138,7 +138,7 @@ session_start();
                 $old_resp[$j] = 0;
             $j++;
            }	
-            $resp = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
+            $resp = array('a'=>0,'b'=>2,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
            $get_flag=0;
         } elseif (!isset($_POST['activity_id'])){       // revisiting the problem
 
@@ -249,9 +249,12 @@ session_start();
           
           $oldresp_flag = 0;
           for ($j=0; $j<=9; $j++) {
+              
              if($corr_spec_num[$j]==1){ 
                     $resp[$resp_key[$j]]=$soln[$j];  
              }
+             
+             
              $oldresp_flag = 1;  
            }
     
@@ -270,11 +273,17 @@ session_start();
             $resp_data = $stmt -> fetch();
             $old_resp[$i] = $resp_data['resp_value'];
             
+            
+ //             $resp[$v]=(float)$_POST[$v]+0.0;
+            
+            
             if(isset($_POST[$v])){
                 $resp[$v]=(float)$_POST[$v]+0.0;
             } else {
                  $resp[$v]= '';
             }
+            
+            
             // now get the counts for all of the previous tries from the table
            $sql = 'SELECT COUNT(`resp_value`) FROM `Bc_resp` WHERE `activity_id` = :activity_id AND `part_name` = :part_name';
                  $stmt = $pdo->prepare($sql);
@@ -339,8 +348,9 @@ session_start();
                 {$diff_time_min[$i] = round(($last_date - $first_date)/60);} else {$diff_time_min[$i]=0;}
                  
             }
-        $i++;  
+        
         }
+        $i++;  
       }
      /*  
       if ($changed_flag){
@@ -492,13 +502,16 @@ session_start();
 	<!--<p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
 
 	<?php
-  /*  
+ /*   
    echo(' resp["a"]: '.$resp["a"]);
     echo(' resp["b"]: '.$resp["b"]);
     echo(' get_flag: '.$get_flag);
     echo(' progress: '.$progress);
-    */    
-       
+      echo(' old_resp[0]: '.$old_resp[0]); 
+      echo(' old_resp[1]: '.$old_resp[1]); 
+      echo(' partsFlag[0]: '.$partsFlag[0]); 
+      echo(' partsFlag[1]: '.$partsFlag[1]); 
+        */
        
     if($attempt_type ==1 || ($attempt_type ==2 && $count_tot <= $num_attempts)){
 	if ($partsFlag[0]){ ?> 
@@ -509,12 +522,7 @@ session_start();
      { echo('<span><input type="button" id="show_answer_button_a" class="btn-default" value="Show Answer"> </span>&nbsp;');}
      if ($corr['a']=="Correct")
     {echo '<span id = "show_ans_a" class = "show_ans"> - Computed value is: '.$soln[0].'</span>';} 
-  /* 
-  echo ('  diff_time_min[0]: '.@$diff_time_min["0"]);
-    echo ('  activity_data[wcount_bc_a]: '.$activity_data['wcount_bc_a']);
-    echo ('  assigntime_data[bc_ans_n]: '.$assigntime_data['bc_ans_n']);
-    echo ('  activity_data[correct_a]: '.$activity_data['correct_a']);
- */
+ 
       ?>  
           <input type="hidden" id="ans_a" value="<?php echo ($soln[0])?>" >
 	

@@ -2,7 +2,14 @@
  session_start();
  // require_once "pdo.php";
   include 'phpqrcode/qrlib.php'; 
+
+
+
 /* 
+
+// I think this is trying to load it on the google drive for inplace comments on the exam
+
+
 $url_array = explode('?','http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 $url = $url_array[0].'&output=embed';
 
@@ -48,10 +55,10 @@ foreach ($results->getItems() as $item) {
 
 
 
-if(isset($_GET['activity_id'])){
-    $activity_id = $_GET['activity_id'];
+if(isset($_GET['examactivity_id'])){
+    $examactivity_id = $_GET['examactivity_id'];
 }else{
-    $_SESSION['error'] = 'activity-id lost in upload_work';  
+    $_SESSION['error'] = 'examactivity-id lost in upload_work email work or upload via LMS';  
     
 }
 
@@ -97,8 +104,8 @@ if(isset($_POST['submit_button'])){
                 if($file_error ==0){
                     if ($file_size > 2){
                         if ($file_size < 20000000){
-                           $file_new_name = $activity_id.'-'.$i.'-'.$file_name; 
-                            $file_destination = 'student_work/'.$file_new_name;
+                           $file_new_name = $examactivity_id.'-'.$i.'-'.$file_name; 
+                            $file_destination = 'student_exam_work/'.$file_new_name;
                             // CHeck to see if there is a file by the same name
                             if (file_exists($file_destination)){
                                 $_SESSION['error'] = 'File by the name, '.$file_name.', was already in system and  was overwritten';  
@@ -142,7 +149,7 @@ if(isset($_POST['submit_button'])){
 }
 
 
-       $qrchecker_text = 'https://www.qrproblems.org/QRP/upload_work.php?activity_id='.$activity_id;
+       $qrchecker_text = 'https://www.qrproblems.org/QRP/upload_exam_work.php?examactivity_id='.$examactivity_id;
 
         $file = 'uploads/temp2 png'; 
         // $ecc stores error correction capability('L') 
@@ -184,7 +191,7 @@ if(isset($_POST['submit_button'])){
 
 <body>
 <header>
-<h1>Quick Response - Upload Your work for solving the numerical part of your problem (not the base-case or reflections)</h1>
+<h1>Quick Response - Upload Your work for this Exam Problem</h1>
 </header>
 
 <?php

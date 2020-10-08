@@ -231,6 +231,7 @@
           echo '<a href="QRGameMasterStart.php" >Game Master Screen</b></a>';
 			echo '</p>';
             echo ('<style> form {display:inline}</style>');
+            echo('<form action = "QRExamPrint0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Print Exam"></form> &nbsp;');
             echo('<form action = "QRExamStart.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Start Exam"></form> &nbsp;');
             echo('<form action = "QRExamRetrieve.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Retrieve Exam Results"></form> &nbsp;');
             echo('<form action = "QRAssignmentStart0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Hmwk Management"></form> &nbsp;');
