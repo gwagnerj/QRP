@@ -20,13 +20,17 @@
     $examactivity_id = '';
      
       if(isset($_POST['checker'])){
+          
        $checker =  $_POST['checker'];
+      
     } elseif(isset($_GET['checker'])){
        $checker =  $_GET['checker'];
     } else {
       
          $checker =  "not set";
     }
+    
+     $_SESSION['checker'] = $checker;
     
    // echo (' checker: '.$checker);
     

@@ -6,7 +6,11 @@
   
       if (isset($_POST['examactivity_id'])){
         $examactivity_id = $_POST['examactivity_id'];
-    }  else  {
+      
+    }  elseif(isset($_GET['examactivity_id'])){      
+        $examactivity_id = $_GET['examactivity_id'];
+        
+    } else {
        $_SESSION['error'] = "Missing examactivity_id from QRExamEditExaminee";
 	  
       echo  "<script type='text/javascript'>";
@@ -32,37 +36,18 @@
                     ':examactivity_id' => $examactivity_id
                 ));
 
-
-/* 
-
-       $sql = "UPDATE `Examactivity` 
-				SET                   
-                    `pin` = :pin,
-                   `examtime_id` = :examtime_id,
-                    `name` = :name1,
-                    `suspend_flag` = :supend_flag,
-                    `extend_time_flag` = :extend_time_flag
-                
-                   
-				WHERE examactivity_id = :examactivity_id";
-                
-                $stmt = $pdo->prepare($sql);
-                $stmt -> execute(array(
-                    ':pin' => htmlentities($_POST['pin']),
-                    
-                    
-                    ':examtime_id' => htmlentities($_POST['examtime_id']),
-                    ':name1' => htmlentities($_POST['name1']),
-                    ':suspend_flag' => htmlentities($_POST['suspend_flag']),
-                    ':extend_time_flag' => htmlentities($_POST['extend_time_flag']),
-                    
-                    
-                    ':examactivity_id' => $examactivity_id
-                ));
-
- */
   }      
- 
+      if (isset($_POST['submit_name']) && isset($_POST['remove_examineee']) )  {  // submitted this form
+      
+      $sql = 'DELETE FROM Examactivity WHERE examactivity_id = :examactivity_id';
+       $stmt = $pdo->prepare($sql);
+                    $stmt -> execute(array(
+                        ':examactivity_id' => $examactivity_id
+                    ));
+          echo  "<script type='text/javascript'>";
+        echo "window.close();";
+        echo "</script>";
+      }      
  
     
     // See what the team size is that is reported by the users
@@ -76,9 +61,13 @@
           //  echo ("game_id = ".$row['game_id']);
             
    if(isset($_POST['close'])){
-        echo  "<script type='text/javascript'>";
+      
+
+      echo  "<script type='text/javascript'>";
         echo "window.close();";
         echo "</script>";
+        
+        
      }
         
    
@@ -98,7 +87,12 @@
 				<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.js"></script>
 		
 	</head>
-
+ <style> 
+        #remove_examineee { 
+            width: 25px; 
+            height: 25px; 
+        } 
+    </style> 
 	<body>
 	<header>
 	<h2>&nbsp; QR Edit Examinee</h2>
@@ -118,12 +112,20 @@
     <p><font color=#003399>&nbsp; suspend_flag </font><input type="number" name="suspend_flag" id = "suspend_flag" min = 0 max =1 value = "<?php echo $row['suspend_flag'];?>" size=3 width = "40px"></p>
     <p><font color=#003399>&nbsp; extend_time_flag </font><input type="number" name="extend_time_flag" id = "extend_time_flag" min = 0 max =1 value = "<?php echo $row['extend_time_flag'];?>" size=3 width = "40px"></p>
    
-      
+    <h4><font color=darkred>&nbsp;Remove Examinee (can't be undone) </font><input type="checkbox" name="remove_examineee" id = "remove_examineee"  ></h4>
+      <br> 
     <p> When all the info is updated select "Submit" </p>
 	<input type="hidden" name="examactivity_id" value="<?php echo ($examactivity_id)?>"  >
     
 	<p><input type = "submit" value="Submit" name = "submit_name" size="14" style = "width: 30%; background-color: blue; color: white"/> &nbsp &nbsp </p>
 	</form>
+    <!--  <br><br>
+      <form method="POST" >
+           <p><input type="hidden" name="examactivity_id" id="examactivity_id" value=<?php echo($examactivity_id);?> ></p>
+         <p><input type = "submit" name = "remove" value="Remove Examinee" id="remove_examinee" size="2" style = "width: 40%; background-color: red; color: white"/> &nbsp &nbsp </p>
+      </form>
+    -->
+    
     
      <p style="font-size:150px;"></p>   
       <form method="POST" >

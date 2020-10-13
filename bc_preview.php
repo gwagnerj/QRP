@@ -22,6 +22,9 @@ if (isset($_POST['problem_id'])){
     $nm_author = $pblm_data['nm_author'];
     $specif_ref = $pblm_data['specif_ref'];
     $htmlfilenm = $pblm_data['htmlfilenm'];
+    
+       $solnfilenm = $pblm_data['soln_pblm'];
+       $solnfilenm = "uploads/".$solnfilenm;
 
   $htmlfilenm = "uploads/".$htmlfilenm;
 
@@ -77,18 +80,7 @@ if (isset($_POST['problem_id'])){
  
  	  $html = new simple_html_dom();
       $html->load_file($htmlfilenm);  
-   /* 
-
-   $rubric_stuff = new simple_html_dom();
-     $rubric_stuff -> load_file('rubric_stuff.html');
-      $rubric_stuff ->find('#course',0)->innertext = $class_name;
-       $rubric_stuff ->find('#assignment_num',0)->innertext = $assign_num;
-       $rubric_stuff ->find('#problem_num',0)->innertext = $alias_num;
-
-
-
-   echo($rubric_stuff);
-    */
+  
    
     $base_case = $html->find('#problem',0); 
     $reflection_text = $html->find('#reflections',0); 
@@ -156,7 +148,7 @@ if (isset($_POST['problem_id'])){
          
          
     // only include the document above the checker
-       $this_html =' <div id = "base_case"><h2>Base Case Problem '.$problem_id.'.</h2>'.$base_case.'</div>';
+       $this_html =' <div id = "base_case"><h4>Base Case Problem '.$problem_id.'.</h4>'.$base_case.'</div>';
  /* 
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
@@ -164,7 +156,13 @@ if (isset($_POST['problem_id'])){
         }
          */
         echo $this_html;
-        echo '<hr><hr>';
+        echo '<hr>';
+         
+         // put in the pdf for the solution to the basecase
+        echo '<h4>Solution to Base Case</h4>';
+        // echo ('<iframe src="'.$solnfilenm.'" width="90%"  ></iframe>');
+        echo ('<iframe src="'.$solnfilenm.'" width="70%" height="400px" ></iframe>');
+         echo '<hr>';
         echo $reflection_text;
         
         

@@ -297,8 +297,12 @@ if(isset($_POST['examtime_id'])){
                    
               
                 
-                  if($row['extend_time_flag']==1){echo('<p>yes</p>');} 
-                    echo('<form action = "QRExamEditExaminee.php" method = "POST" target = "_blank" > <input type = "hidden" name = "examactivity_id" value = "'.$row['examactivity_id'].'"><input type = "submit" name = "edit" value ="Edit"></form>');
+                  if($row['extend_time_flag']==1){echo('<p>ex time</p>');} 
+                  //  echo('<form action = "QRExamEditExaminee.php" method = "POST" target = "_blank" > <input type = "hidden" name = "examactivity_id" value = "'.$row['examactivity_id'].'"><input type = "submit" name = "edit" value ="Edit"></form>');
+                   //   echo('<form action = "QRExamEditExaminee.php" method = "POST" target = "_blank" > <input type = "hidden" name = "examactivity_id" value = "'.$row['examactivity_id'].'"><input type = "submit" name = "edit" value ="Edit2"></form>');
+                    
+                    echo '<a href = "QRExamEditExaminee.php?examactivity_id='.$row['examactivity_id'].'" target = "_blank"> edit </a>';
+                   // echo('<form action = "QRExamEditExaminee.php" method = "POST" > <input type = "submit" name = "edit" value ="Edit3"></form>');
                    // echo('examactivity_id = '.$row['examactivity_id']);
                //   echo('<input type = "checkbox" '.$checked.' name ="'.$row['examactivity_id'].'"></input>');
  //--------------------------------------------------------------------------------------------------------fix this-------------------------------------                 
@@ -561,7 +565,7 @@ if(isset($_POST['examtime_id'])){
   
 	 	
      $(".inlinebar1").sparkline("html",{type: "bar", height: "20", barWidth: "5", resize: true, barSpacing: "2", barColor: "navy"});
-	  /*  	
+	   	
     
         $(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
 		
@@ -569,8 +573,8 @@ if(isset($_POST['examtime_id'])){
 		
 		
 		
-		$(document).ready( function () {
-          */   
+		//$(document).ready( function () {
+            
             // auto refresh page 
             
              setInterval("$('#refresh_page').submit()",30000);

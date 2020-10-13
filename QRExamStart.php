@@ -142,6 +142,17 @@ $_SESSION['counter']=0;  // this is for the score board
                             </div>
                       </div>  
                     </div>   
+                    
+                 <br>
+                  <div  class = "outer" >   
+                        <font color=#003399>Show Answer Button - Minimum Limits (blank is &infin;): &nbsp; </font><br>
+                </div>
+                  <div  class = "inner" >
+                        <font color="black">Attempts on part:   &nbsp; </font>
+                        <input type = "number" name ="ans_n" id = "ans_n"  min = "0" max = "99" value = "2"  > </input><br><br>
+                        <font color="black">Elapsed time from first check on part in minutes: &nbsp; </font>
+                        <input type = "number" name ="ans_t" id = "ans_t" min = "0" max = "99" value = "1" > </input>
+                     </div>
                             
                             
          </br>

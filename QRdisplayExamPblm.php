@@ -129,7 +129,7 @@ session_start();
                     }
                     
                 // echo (' checker: '.$checker);
-                  if(isset($_POST['checker']) && $_POST['checker'] == "checker_only"){
+                  if(isset($_POST['checker']) && ($_POST['checker'] == "checker_only" || $_SESSION['checker'] == "checker_only" )){
                       $checker_only = 1;
                       //  header("Location: exam_checker_only.php");
                       //  die();      

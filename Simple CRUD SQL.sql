@@ -2052,6 +2052,15 @@ CREATE TABLE Assignscore (
    ALTER TABLE Activity
       ADD `fb_problem` VARCHAR(1000) AFTER `fb_society`; 
    
+    
+   ALTER TABLE Examtime
+      ADD `ans_n` INT(3) AFTER `num_attempts`, 
+      ADD `ans_t` INT(3) AFTER `ans_n`; 
    
-   
+   ALTER TABLE Examactivity
+      ADD `display_ans_pblm1` VARCHAR(64) AFTER `response_pblm5`, 
+      ADD `display_ans_pblm2` VARCHAR(64) AFTER `display_ans_pblm1`, 
+      ADD `display_ans_pblm3` VARCHAR(64) AFTER `display_ans_pblm2`, 
+      ADD `display_ans_pblm4` VARCHAR(64) AFTER `display_ans_pblm3`, 
+      ADD `display_ans_pblm5` VARCHAR(64) AFTER `display_ans_pblm4`;
    

@@ -371,6 +371,12 @@
         if($pblm4_flag ==1){echo('Correct 4'); echo("</th><th>");}
         if($pblm5_flag ==1){echo('Correct 5'); echo("</th><th>");}
         
+        if($pblm1_flag ==1){echo('Show Ans 1'); echo("</th><th>");}
+        if($pblm2_flag ==1){echo('Show Ans 2'); echo("</th><th>");}
+        if($pblm3_flag ==1){echo('Show Ans 3'); echo("</th><th>");}
+        if($pblm4_flag ==1){echo('Show Ans 4'); echo("</th><th>");}
+        if($pblm5_flag ==1){echo('Show Ans 5'); echo("</th><th>");}
+        
         if($pblm1_flag ==1){echo('Pts 1'); echo("</th><th>");}
         if($pblm2_flag ==1){echo('Pts 2'); echo("</th><th>");}
         if($pblm3_flag ==1){echo('Pts 3'); echo("</th><th>");}
@@ -397,7 +403,7 @@
 
 		
 		// Get the team_id of all the teams in the game_prob_flag
-          $stmt = $pdo->prepare("SELECT *  FROM `Examactivity` WHERE examtime_id = :examtime_id ORDER BY `pin` ASC ");
+          $stmt = $pdo->prepare("SELECT *  FROM `Examactivity` WHERE examtime_id = :examtime_id ORDER BY SUBSTR(name, INSTR(name, ' '))");
 			$stmt->execute(array(":examtime_id" => $examtime_id));
              $rows = $stmt->fetchALL(PDO::FETCH_ASSOC); 
            //  print_r($row[0]);
@@ -429,6 +435,12 @@
                 if ($pblm3_flag == 1){  print('<span class="inlinebar1">');  echo($row['response_pblm3']);   print('</span>');   echo("</td><td>");}
                 if ($pblm4_flag == 1){  print('<span class="inlinebar1">');  echo($row['response_pblm4']);   print('</span>');   echo("</td><td>");}
                 if ($pblm5_flag == 1){  print('<span class="inlinebar1">');  echo($row['response_pblm5']);   print('</span>');   echo("</td><td>");}
+                
+                if ($pblm1_flag == 1){  print('<span class="inlinebar1">');  echo($row['display_ans_pblm1']);   print('</span>');   echo("</td><td>");}
+                if ($pblm2_flag == 1){  print('<span class="inlinebar1">');  echo($row['display_ans_pblm2']);   print('</span>');   echo("</td><td>");}
+                if ($pblm3_flag == 1){  print('<span class="inlinebar1">');  echo($row['display_ans_pblm3']);   print('</span>');   echo("</td><td>");}
+                if ($pblm4_flag == 1){  print('<span class="inlinebar1">');  echo($row['display_ans_pblm4']);   print('</span>');   echo("</td><td>");}
+                if ($pblm5_flag == 1){  print('<span class="inlinebar1">');  echo($row['display_ans_pblm5']);   print('</span>');   echo("</td><td>");}
                
                 if ($pblm1_flag == 1){   echo($row['pblm_1_score']);    echo("</td><td>");}
                 if ($pblm2_flag == 1){    echo($row['pblm_2_score']);    echo("</td><td>");}
@@ -518,7 +530,8 @@
                  
                    $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
                    FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
-                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
+                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY SUBSTR(Examactivity.name, INSTR( Examactivity.name, ' ')) ";
+                             // INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
                  $stmt = $pdo->prepare($sql);
                  $stmt->execute(array(":problem_id" => $row1['problem_id1'], ":examtime_id" => $examtime_id ));
                  $row_ss = $stmt->fetchALL(PDO::FETCH_ASSOC); 
@@ -614,7 +627,7 @@
                  
                    $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
                    FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
-                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
+                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY SUBSTR(Examactivity.name, INSTR( Examactivity.name, ' '))  ";
                  $stmt = $pdo->prepare($sql);
                  $stmt->execute(array(":problem_id" => $row1['problem_id2'], ":examtime_id" => $examtime_id ));
                  $row_ss = $stmt->fetchALL(PDO::FETCH_ASSOC); 
@@ -710,7 +723,7 @@
                  
                    $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
                    FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
-                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
+                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY SUBSTR(Examactivity.name, INSTR( Examactivity.name, ' '))  ";
                  $stmt = $pdo->prepare($sql);
                  $stmt->execute(array(":problem_id" => $row1['problem_id3'], ":examtime_id" => $examtime_id ));
                  $row_ss = $stmt->fetchALL(PDO::FETCH_ASSOC); 
@@ -806,7 +819,7 @@
                  
                    $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
                    FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
-                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
+                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY SUBSTR(Examactivity.name, INSTR( Examactivity.name, ' '))  ";
                  $stmt = $pdo->prepare($sql);
                  $stmt->execute(array(":problem_id" => $row1['problem_id4'], ":examtime_id" => $examtime_id ));
                  $row_ss = $stmt->fetchALL(PDO::FETCH_ASSOC); 
@@ -903,7 +916,7 @@
                  
                    $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
                    FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
-                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
+                              INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY SUBSTR(Examactivity.name, INSTR( Examactivity.name, ' '))  ";
                  $stmt = $pdo->prepare($sql);
                  $stmt->execute(array(":problem_id" => $row1['problem_id5'], ":examtime_id" => $examtime_id ));
                  $row_ss = $stmt->fetchALL(PDO::FETCH_ASSOC); 

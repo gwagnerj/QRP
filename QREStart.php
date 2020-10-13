@@ -47,6 +47,16 @@ require_once "pdo.php";
             header( 'Location: QRPRepo.php' ) ;
             die();
     }
+     if (isset($_POST['ans_n'])) {
+        $ans_n = htmlentities($_POST['ans_n']);
+      } else {
+         $ans_n = ""; 
+    }
+     if (isset($_POST['ans_t'])) {
+        $ans_t = htmlentities($_POST['ans_t']);
+      } else {
+         $ans_t = ""; 
+    }
     
     // Test to see if your coming in from QREExamStart 	
     if (isset($_POST['exam_num'])) {
@@ -80,16 +90,16 @@ require_once "pdo.php";
                         $work_time = $row5['work_time'];
                         $end_of_phase = $row5['end_of_phase'];
                           $exam_code = $row5['exam_code'];       
-                                    
+                          $ans_n = $row5['ans_n'];         
+                          $ans_t = $row5['ans_t'];         
 
 
                    } else {
                  
                         $exam_code = rand(100,9999);
-                        // Create the table entry into the Gmact table from the values that were put in the Game table
                         
-                        $sql = 'INSERT INTO `Examtime` (exam_num, iid, currentclass_id, globephase, work_time,attempt_type, num_attempts, exam_code)	
-                                    VALUES (:exam_num, :iid, :currentclass_id,:globephase ,:work_time, :attempt_type, :num_attempts, :exam_code)';
+                        $sql = 'INSERT INTO `Examtime` (exam_num, iid, currentclass_id, globephase, work_time,attempt_type, num_attempts, exam_code,ans_n,ans_t)	
+                                    VALUES (:exam_num, :iid, :currentclass_id,:globephase ,:work_time, :attempt_type, :num_attempts, :exam_code,:ans_n,:ans_t)';
                             $stmt = $pdo->prepare($sql);
                             $stmt -> execute(array(
                             ':exam_num' => $exam_num,
@@ -100,6 +110,8 @@ require_once "pdo.php";
                             ':attempt_type' => $attempt_type,
                              ':num_attempts' => $num_attempts,
                               ':exam_code' => $exam_code,
+                              ':ans_n' => $ans_n,
+                              ':ans_t' => $ans_t,
                             ));
                             
                             // get the examtime_id
