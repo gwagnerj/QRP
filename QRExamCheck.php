@@ -433,7 +433,13 @@ session_start();
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 		
 	</head>
-
+<style>
+.btn-default {
+       position: absolute;
+        right: 0;
+       
+}
+</style>
 	<body>
 	<header>
 	<h2>Quick Response Exam Checker</h2>
@@ -465,7 +471,7 @@ session_start();
      	 <input type="hidden" id="display_ans_a" value="<?php echo ($display_ans[0])?>" >
 	<?php 
     if ( $ans_n!="" && $ans_n!=""&& $corr['a']!="Correct" )
-     { echo('<span>&nbsp;&nbsp;&nbsp;<input type="button" id="show_answer_button_a" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_a" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_a" disabled value="Show Answer"></input> </span>&nbsp;');}
      if ($corr['a']=="Correct")
     {echo '<span id = "show_ans_a" class = "show_ans"> - Computed value is: '.$soln[0].'</span>';} 
     } 
@@ -483,7 +489,7 @@ session_start();
         
 	<?php 
     if ( $ans_n!="" && $ans_n!=""&& $corr['b']!="Correct" )
-     { echo('<span>&nbsp;&nbsp;&nbsp;<input type="button" id="show_answer_button_b" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_b" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_b" disabled value="Show Answer"></input> </span>&nbsp;');}
      if ($corr['b']=="Correct")
     {echo '<span id = "show_ans_b" class = "show_ans"> - Computed value is: '.$soln[1].'</span>';} 
     } 
@@ -499,7 +505,7 @@ session_start();
         
 	<?php 
     if ( $ans_n!="" && $ans_n!=""&& $corr['c']!="Correct" )
-     { echo('<span>&nbsp;&nbsp;&nbsp;<input type="button" id="show_answer_button_c" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_c" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_c"  disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['c']=="Correct")
     {echo '<span id = "show_ans_c" class = "show_ans"> - Computed value is: '.$soln[2].'</span>';} 
     } 
@@ -515,7 +521,7 @@ session_start();
         
 	<?php 
     if ( $ans_n!="" && $ans_n!=""&& $corr['d']!="Correct" )
-     { echo('<span>&nbsp;&nbsp;&nbsp;<input type="button" id="show_answer_button_d" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_d" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_d" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['d']=="Correct")
     {echo '<span id = "show_ans_d" class = "show_ans"> - Computed value is: '.$soln[3].'</span>';} 
     } 
@@ -531,7 +537,7 @@ session_start();
         
 	<?php 
     if ( $ans_n!="" && $ans_n!=""&& $corr['e']!="Correct" )
-     { echo('<span>&nbsp;&nbsp;&nbsp;<input type="button" id="show_answer_button_e" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_e" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_e" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['e']=="Correct")
     {echo '<span id = "show_ans_e" class = "show_ans"> - Computed value is: '.$soln[4].'</span>';} 
     } 
@@ -547,7 +553,7 @@ session_start();
         
 	<?php 
     if ( $ans_n!="" && $ans_n!=""&& $corr['f']!="Correct" )
-     { echo('<span>&nbsp;&nbsp;&nbsp;<input type="button" id="show_answer_button_f" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_f" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_f" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['f']=="Correct")
     {echo '<span id = "show_ans_f" class = "show_ans"> - Computed value is: '.$soln[5].'</span>';} 
     } 
@@ -563,7 +569,7 @@ session_start();
         
 	<?php 
     if ( $ans_n!="" && $ans_n!=""&& $corr['g']!="Correct" )
-     { echo('<span>&nbsp;&nbsp;&nbsp;<input type="button" id="show_answer_button_g" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_g" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_g" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['g']=="Correct")
     {echo '<span id = "show_ans_g" class = "show_ans"> - Computed value is: '.$soln[6].'</span>';} 
     } 
@@ -580,7 +586,7 @@ session_start();
         
 	<?php 
     if ( $ans_n!="" && $ans_n!=""&& $corr['h']!="Correct" )
-     { echo('<span>&nbsp;&nbsp;&nbsp;<input type="button" id="show_answer_button_h" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_h" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_h" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['h']=="Correct")
     {echo '<span id = "show_ans_h" class = "show_ans"> - Computed value is: '.$soln[7].'</span>';} 
     } 
@@ -597,7 +603,7 @@ session_start();
         
 	<?php 
     if ( $ans_n!="" && $ans_n!=""&& $corr['i']!="Correct" )
-     { echo('<span>&nbsp;&nbsp;&nbsp;<input type="button" id="show_answer_button_i" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_i" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_i" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['i']=="Correct")
     {echo '<span id = "show_ans_i" class = "show_ans"> - Computed value is: '.$soln[8].'</span>';} 
     } 
@@ -614,7 +620,7 @@ session_start();
         
 	<?php 
     if ( $ans_n!="" && $ans_n!=""&& $corr['j']!="Correct" )
-     { echo('<span>&nbsp;&nbsp;&nbsp;<input type="button" id="show_answer_button_j" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_b" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_j" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['j']=="Correct")
     {echo '<span id = "show_ans_j" class = "show_ans"> - Computed value is: '.$soln[9].'</span>';} 
     } 
@@ -681,14 +687,32 @@ session_start();
                 return false;
             });
         
+        
+        
                 var ans_a = $('#ans_a').val();
                var display_ans_a = $('#display_ans_a').val();
+               
                console.log(' display_ans_a '+display_ans_a);
                if(display_ans_a==1){
                       $('#input_a').hide();
                       $('#disp_ans_a').text('a) '+ans_a);
                        $('#show_answer_button_a').hide();
+                       $('#show_answer_check_a').hide();
                }
+               
+             
+              $('#show_answer_check_a').change(function(){
+                  if(this.checked){
+                     $('#show_answer_button_a').prop('disabled',false);
+                    $('#show_answer_button_a').css('color','red');
+                    
+                  } else {
+                    $('#show_answer_button_a').prop('disabled',true);
+                    $('#show_answer_button_a').css('color','lightgray');
+                  }
+             });
+               
+               
               $('#show_answer_button_a').click(function(){
                     $(this).css('color','red');
                   
@@ -718,7 +742,21 @@ session_start();
                       $('#input_b').hide();
                       $('#disp_ans_b').text('b) '+ans_b)
                        $('#show_answer_button_b').hide();
+                       $('#show_answer_check_b').hide();
+
                }
+               
+               $('#show_answer_check_b').change(function(){
+                  if(this.checked){
+                     $('#show_answer_button_b').prop('disabled',false);
+                    $('#show_answer_button_b').css('color','red');
+                    
+                  } else {
+                    $('#show_answer_button_b').prop('disabled',true);
+                    $('#show_answer_button_b').css('color','lightgray');
+                  }
+                });
+             
                
               $('#show_answer_button_b').click(function(){
                     $(this).css('color','red');
@@ -747,8 +785,21 @@ session_start();
                       $('#input_c').hide();
                       $('#disp_ans_c').text('c) '+ans_c)
                        $('#show_answer_button_c').hide();
+                       $('#show_answer_check_c').hide();
+
                }
                
+               $('#show_answer_check_c').change(function(){
+                  if(this.checked){
+                     $('#show_answer_button_c').prop('disabled',false);
+                    $('#show_answer_button_c').css('color','red');
+                    
+                  } else {
+                    $('#show_answer_button_c').prop('disabled',true);
+                    $('#show_answer_button_c').css('color','lightgray');
+                  }
+                });
+                
               $('#show_answer_button_c').click(function(){
                     $(this).css('color','red');
                   
@@ -776,8 +827,20 @@ session_start();
                       $('#input_d').hide();
                       $('#disp_ans_d').text('d) '+ans_d)
                        $('#show_answer_button_d').hide();
+                       $('#show_answer_check_d').hide();
                }
-               
+
+               $('#show_answer_check_d').change(function(){
+                  if(this.checked){
+                     $('#show_answer_button_d').prop('disabled',false);
+                    $('#show_answer_button_d').css('color','red');
+                    
+                  } else {
+                    $('#show_answer_button_d').prop('disabled',true);
+                    $('#show_answer_button_d').css('color','lightgray');
+                  }
+                });
+
               $('#show_answer_button_d').click(function(){
                     $(this).css('color','red');
                   
@@ -805,8 +868,20 @@ session_start();
                       $('#input_e').hide();
                       $('#disp_ans_e').text('e) '+ans_e)
                        $('#show_answer_button_e').hide();
+                       $('#show_answer_check_e').hide();
                }
-               
+
+               $('#show_answer_check_e').change(function(){
+                  if(this.checked){
+                     $('#show_answer_button_e').prop('disabled',false);
+                    $('#show_answer_button_e').css('color','red');
+                    
+                  } else {
+                    $('#show_answer_button_e').prop('disabled',true);
+                    $('#show_answer_button_e').css('color','lightgray');
+                  }
+                });
+
               $('#show_answer_button_e').click(function(){
                     $(this).css('color','red');
                   
@@ -834,8 +909,20 @@ session_start();
                       $('#input_f').hide();
                       $('#disp_ans_f').text('f) '+ans_f)
                        $('#show_answer_button_f').hide();
+                       $('#show_answer_check_f').hide();
                }
-               
+
+               $('#show_answer_check_f').change(function(){
+                  if(this.checked){
+                     $('#show_answer_button_f').prop('disabled',false);
+                    $('#show_answer_button_f').css('color','red');
+                    
+                  } else {
+                    $('#show_answer_button_f').prop('disabled',true);
+                    $('#show_answer_button_f').css('color','lightgray');
+                  }
+                });
+
               $('#show_answer_button_f').click(function(){
                     $(this).css('color','red');
                   
@@ -863,8 +950,20 @@ session_start();
                       $('#input_g').hide();
                       $('#disp_ans_g').text('g) '+ans_g)
                        $('#show_answer_button_g').hide();
+                       $('#show_answer_check_g').hide();
                }
-               
+
+               $('#show_answer_check_g').change(function(){
+                  if(this.checked){
+                     $('#show_answer_button_g').prop('disabled',false);
+                    $('#show_answer_button_g').css('color','red');
+                    
+                  } else {
+                    $('#show_answer_button_g').prop('disabled',true);
+                    $('#show_answer_button_g').css('color','lightgray');
+                  }
+                });
+
               $('#show_answer_button_g').click(function(){
                     $(this).css('color','red');
                   
@@ -892,8 +991,20 @@ session_start();
                       $('#input_h').hide();
                       $('#disp_ans_h').text('h) '+ans_h)
                        $('#show_answer_button_h').hide();
+                       $('#show_answer_check_h').hide();
                }
-               
+
+               $('#show_answer_check_h').change(function(){
+                  if(this.checked){
+                     $('#show_answer_button_h').prop('disabled',false);
+                    $('#show_answer_button_h').css('color','red');
+                    
+                  } else {
+                    $('#show_answer_button_h').prop('disabled',true);
+                    $('#show_answer_button_h').css('color','lightgray');
+                  }
+                });
+
               $('#show_answer_button_h').click(function(){
                     $(this).css('color','red');
                   
@@ -921,8 +1032,20 @@ session_start();
                       $('#input_i').hide();
                       $('#disp_ans_i').text('i) '+ans_i)
                        $('#show_answer_button_i').hide();
+                       $('#show_answer_check_i').hide();
                }
-               
+
+               $('#show_answer_check_i').change(function(){
+                  if(this.checked){
+                     $('#show_answer_button_i').prop('disabled',false);
+                    $('#show_answer_button_i').css('color','red');
+                    
+                  } else {
+                    $('#show_answer_button_i').prop('disabled',true);
+                    $('#show_answer_button_i').css('color','lightgray');
+                  }
+                });
+
               $('#show_answer_button_i').click(function(){
                     $(this).css('color','red');
                   
@@ -950,8 +1073,20 @@ session_start();
                       $('#input_j').hide();
                       $('#disp_ans_j').text('j) '+ans_j)
                        $('#show_answer_button_j').hide();
+                       $('#show_answer_check_j').hide();
                }
-               
+
+               $('#show_answer_check_j').change(function(){
+                  if(this.checked){
+                     $('#show_answer_button_j').prop('disabled',false);
+                    $('#show_answer_button_j').css('color','red');
+                    
+                  } else {
+                    $('#show_answer_button_j').prop('disabled',true);
+                    $('#show_answer_button_j').css('color','lightgray');
+                  }
+                });
+
               $('#show_answer_button_j').click(function(){
                     $(this).css('color','red');
                   
