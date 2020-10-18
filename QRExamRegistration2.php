@@ -32,9 +32,15 @@
     
      $_SESSION['checker'] = $checker;
     
-   // echo (' checker: '.$checker);
-    
-  
+   
+    // we are using a printed exam with limited versions if this is non_zero
+      if (isset($_GET['dex_print'])){
+          $dex_print = $_GET['dex_print'];
+      } else {
+          $dex_print = 0;
+      }
+      
+      
         if (isset($_GET['student_id'])){
       $student_id =   $_GET['student_id'];
      //   echo(' $student_id  '.$student_id);
@@ -213,7 +219,11 @@
      //                             echo (' pin '.$pin);
                                    $dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
 
-
+                                if ($dex_print != 0){  // we are using a version of the exam with limited versions
+                                    $dex = $dex_print;
+                                } else {
+                                    $dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
+                                }
 
                                 
                                         

@@ -6,7 +6,7 @@ session_start();
 
 
 // this strips out the get parameters so they are not in the url - its is not really secure data but I would rather not having people messing with them
-// if they do not what they are doing
+// if they do not know what they are doing
 
 
 // check input and send them back if not proper
@@ -35,6 +35,20 @@ session_start();
          $exam_version = $_POST['exam_version'];
      } else {
         $_SESSION['error']= 'no exam_version in QRExamPrint1';
+        header("Location: QRExamPrint0.php");
+        die();    
+    }
+     if( isset($_POST['num_versions'])){
+         $num_versions = $_POST['num_versions'];
+     } else {
+        $_SESSION['error']= 'no num_versions in QRExamPrint1';
+        header("Location: QRExamPrint0.php");
+        die();    
+    }
+     if( isset($_POST['sets'])){
+         $sets = $_POST['sets'];
+     } else {
+        $_SESSION['error']= 'no sets in QRExamPrint1';
         header("Location: QRExamPrint0.php");
         die();    
     }
@@ -70,7 +84,7 @@ session_start();
                        $_SESSION['error'] = 'Currentclass table could not read - Class Not Valid';
                        
                     }   
-
+            if ($exam_version == 1){
             // get all of the students in the class - name of student, dex of student
              $sql = " SELECT * FROM `Student` INNER JOIN StudentCurrentClassConnect ON Student.student_id = StudentCurrentClassConnect.student_id  WHERE StudentCurrentClassConnect.currentclass_id = :currentclass_id ORDER BY last_name ASC" ;
                     $stmt = $pdo->prepare($sql);
@@ -80,7 +94,7 @@ session_start();
                    $student_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
             //       var_dump($student_data);
             
-            
+            }
 
             // get all of the data for the exam for each problem
                     
@@ -145,6 +159,12 @@ session_start();
   top: 0px;
   z-index: 1;
 }
+
+@media print {
+        #go_back {
+          display:none;
+        }
+}
 </style>
 
 
@@ -152,9 +172,17 @@ session_start();
 
 <body>
 
-
+<a id = "go_back" href="QRPRepo.php">Finished / Cancel - go back to Repository  <br><hr></a>
 <?php
 
+// put in a button or link to go back to rhe repo
+  
+ 
+//echo '<br><hr>';
+//echo  '<p style="page-break-before: always"> ';    	
+
+
+    if ($exam_version == 1){
 // big loop for each student
 
         foreach($student_data as $student_datum){
@@ -268,10 +296,10 @@ session_start();
                 $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
              }
         }
- echo($header_stuff);
- echo ('<hr>');
-  echo $this_html; 
-   echo  '<p style="page-break-before: always"> ';        
+         echo($header_stuff);
+        // echo ('<hr>');
+          echo $this_html; 
+           echo  '<p style="page-break-before: always"> ';        
               
               
               
@@ -279,6 +307,189 @@ session_start();
           }
             
         }
+    }  elseif ($exam_version == 2){ // we have a limited number of versions of the printed exam
+
+        // echo(' exam_version: '.$exam_version);
+        // echo(' num_versions: '.$num_versions);
+         //$sets = 2;
+           for ($set=1;$set<=$sets;$set++)  {
+                   for( $ver=0;$ver<$num_versions;$ver++){
+                      
+                        $stu_name = '<u> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>';      
+                         
+                          $header_stuff = new simple_html_dom();
+                          $header_stuff -> load_file('exam_problem_print_header_stuff.html');
+                                // subbing in the header
+                           $header_stuff ->find('#stu_name',0)->innertext = $stu_name;
+                          $header_stuff ->find('#course',0)->innertext = $cclass_name;
+                           $header_stuff ->find('#exam_num',0)->innertext = $exam_num;
+                          
+
+                      
+                      
+                      
+                      
+                        $index_start = 150;     // arbitrarily start getting the versions from a dex of 150 and counting up from there
+                        $dex = $index_start + $ver;
+                        
+                           // make the dex code by hassing the dex
+                           $key = rand(1,9);
+                           $last_dig = rand(0,9);
+                           if ($key ==1){$mid_two = $ver +$last_dig+16;}
+                           if ($key ==2){$mid_two = $ver +$last_dig+25;}
+                           if ($key ==3){$mid_two = $ver+$last_dig +36;}
+                           if ($key ==4){$mid_two = $ver+$last_dig +49;}
+                           if ($key ==5){$mid_two = $ver+$last_dig +64;}
+                           if ($key ==6){$mid_two = $ver+$last_dig +81;}
+                           if ($key ==7){$mid_two = $ver+$last_dig +53;}
+                           if ($key ==8){$mid_two = $ver+$last_dig +23;}
+                           if ($key ==9){$mid_two = $ver+$last_dig +73;}
+                        
+                        $dex_code = $key.$mid_two.$last_dig;
+                        
+                       // echo(' dex_code:  '.$dex_code);
+
+                        // Make the QRcode 
+
+                            $qrcode_text =  'https://www.qrproblems.org/QRP/QRExamRegistration.php?dex_code='.$dex_code; 
+                                            
+                            $file = 'uploads/temp_exam png';   // where the qrimage is going to be stored in uploads directory
+                              
+                            // $ecc stores error correction capability('L') 
+                            $ecc = 'M'; 
+                            $pixel_size = 2; 
+                            $frame_size = 1; 
+                              
+                            // Generates QR Code and Stores it in directory given 
+                              QRcode::png($qrcode_text, $file, $ecc, $pixel_size, $frame_size); 
+                             // QRcode::png($text); 
+                            // Displaying the stored QR code from directory 
+                        
+                          $qrcode = "<span ><img src='".$file."'><br>Code: ".$dex_code." </span>"; 
+                            $header_stuff ->find('#qr_code_id',0)->innertext = $qrcode;
+                            echo($header_stuff);
+                           echo ('<hr>');
+                            
+                      //  echo ($qrcode);
+                       
+                         
+                     foreach($exam_data as $exam_datum){
+                        //      echo $exam_datum['problem_id'];
+                     
+                        
+                        $problem_id = $exam_datum['problem_id'];
+                        $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
+                        $stmt = $pdo->prepare($sql);
+                        $stmt->execute(array(':problem_id' => $problem_id));
+                        $pblm_data = $stmt -> fetch();
+                        $contrib_id = $pblm_data['users_id'];
+                        $nm_author = $pblm_data['nm_author'];
+                        $specif_ref = $pblm_data['specif_ref'];
+                        $htmlfilenm = $pblm_data['htmlfilenm'];
+                        
+                        
+
+                        $htmlfilenm = "uploads/".$htmlfilenm;
+                        $alias_num = $exam_datum['alias_num'];      
+                         
+                        echo ('<h4>'.$alias_num.')</h4>'); 
+                         
+                         
+                         $html = new simple_html_dom();
+                          $html->load_file($htmlfilenm);
+
+                        // read in the names of the variables for the problem
+                        $nv = 0;  // number of non-null variables
+                       for ($i = 0; $i <= 13; $i++) {
+                            if($pblm_data['nv_'.($i+1)]!='Null' ){
+                                $nvar[$i]=$pblm_data['nv_'.($i+1)];
+                                $nv++;
+                             }
+                       }
+                
+                        $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
+                        $stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
+                        $row = $stmt->fetch();
+                      
+                       // Read in the value for the input variables
+                       
+                        for ($i = 0; $i < $nv; $i++) {
+                            if($row['v_'.($i+1)]!='Null' ){
+                                $vari[$i] = $row['v_'.($i+1)];
+                     //           echo ('  $vari[$i]: '. $vari[$i]);
+                                $pattern[$i]= '/##'.$nvar[$i].',.+?##/';
+                            }
+                        }
+          
+
+          $problem = $html->find('#problem',0);
+          
+           for( $i=0;$i<$nv;$i++){
+                   if($row['v_'.($i+1)]!='Null' ){
+                    $problem = preg_replace($pattern[$i],$vari[$i],$problem);
+                   }
+                }
+          // put the images into the problem statement part of the document     
+            $dom = new DOMDocument();
+           libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
+               $dom->loadHTML('<?xml encoding="utf-8" ?>' . $problem);
+               $images = $dom->getElementsByTagName('img');
+                foreach ($images as $image) {
+                    $src = $image->getAttribute('src');
+                     $src = 'uploads/'.$src;
+                     $src = urldecode($src);
+                     $type = pathinfo($src, PATHINFO_EXTENSION);
+                     $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+                     $image->setAttribute("src", $base64); 
+                     $problem = $dom->saveHTML();
+               }
+               
+               // turn problem back into and simple_html_dom object that I can replace the varaible images on 
+               $problem =str_get_html($problem); 
+               $keep = 0;
+               $varImages = $problem -> find('.var_image');
+               foreach($varImages as $varImage) {
+                  $var_image_id = $varImage -> id;  
+                  
+                   for( $i=0;$i<$nv;$i++){
+                      if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
+                    } 
+                    
+                    If ($keep==0){
+                        //  get rid of the caption and the image
+                           $varImage->find('.MsoNormal',0)->outertext = '';
+                           $varImage->find('.MsoCaption',0)->outertext = '';
+                    } else {
+                         //  get rid of the caption 
+                        $varImage->find('.MsoCaption',0)->outertext = '';
+                    }
+                     $keep = 0;
+                }
+                
+                       
+            // only include the document above the checker
+               $this_html ='<br>'.$problem;
+         
+           // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+               for( $i=0;$i<$nv;$i++){
+                     if($row['v_'.($i+1)]!='Null' ){
+                        $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+                     }
+                }
+                
+                  echo $this_html; 
+                   echo  '<p style="page-break-before: always"> ';        
+                      
+                      
+                      
+                      
+                  }
+          
+                       
+            }        
+         }
+    }        
+        
 
  die();
 

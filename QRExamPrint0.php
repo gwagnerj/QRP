@@ -110,13 +110,14 @@ $iid = 1;  // temporary
                  
                              <div>
                                <input type = "radio" name ="exam_version" id = "exam_version" value = "1" checked > </input>
-                                   <label for "exam_version"> Different for Every Examinee </label>
+                                   <label for "exam_version"> Different for Every Examinee (name printed on exam) </label>
                              </div>
                                </br>
                              <div  >
                                 <input type = "radio" name ="exam_version" id = "exam_version" value = "2" > </input>
                                    <label for "exam_version">   
-                                    <input    type = "number" name ="num_versions" id = "num_versions" min = "1", max = "999" value = "4" required  > min</input>
+                                   Number of versions: <input    type = "number" name ="num_versions" id = "num_versions" min = "1", max = "9" value = "3" required  > </input>
+                                   &nbsp;&nbsp;&nbsp;&nbsp; Number of print copies for each version (only version code changes) <input type = "number" name ="sets" id = "sets" min = "1", max = "99" value = "1" required  > </input>
                                    
                                    </label>   
                             </div>
