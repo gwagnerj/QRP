@@ -353,7 +353,7 @@ session_start();
 
                             $qrcode_text =  'https://www.qrproblems.org/QRP/QRExamRegistration.php?dex_code='.$dex_code; 
                                             
-                            $file = 'uploads/temp_exam png';   // where the qrimage is going to be stored in uploads directory
+                            $file = 'uploads/temp_exam'.$set.' png';   // where the qrimage is going to be stored in uploads directory
                               
                             // $ecc stores error correction capability('L') 
                             $ecc = 'M'; 

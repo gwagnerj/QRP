@@ -436,11 +436,11 @@
                 if ($pblm4_flag == 1){  print('<span class="inlinebar1">');  echo($row['response_pblm4']);   print('</span>');   echo("</td><td>");}
                 if ($pblm5_flag == 1){  print('<span class="inlinebar1">');  echo($row['response_pblm5']);   print('</span>');   echo("</td><td>");}
                 
-                if ($pblm1_flag == 1){  print('<span class="inlinebar1">');  echo($row['display_ans_pblm1']);   print('</span>');   echo("</td><td>");}
-                if ($pblm2_flag == 1){  print('<span class="inlinebar1">');  echo($row['display_ans_pblm2']);   print('</span>');   echo("</td><td>");}
-                if ($pblm3_flag == 1){  print('<span class="inlinebar1">');  echo($row['display_ans_pblm3']);   print('</span>');   echo("</td><td>");}
-                if ($pblm4_flag == 1){  print('<span class="inlinebar1">');  echo($row['display_ans_pblm4']);   print('</span>');   echo("</td><td>");}
-                if ($pblm5_flag == 1){  print('<span class="inlinebar1">');  echo($row['display_ans_pblm5']);   print('</span>');   echo("</td><td>");}
+                if ($pblm1_flag == 1){  print('<span class="inlinebar2">');  echo($row['display_ans_pblm1']);   print('</span>');   echo("</td><td>");}
+                if ($pblm2_flag == 1){  print('<span class="inlinebar2">');  echo($row['display_ans_pblm2']);   print('</span>');   echo("</td><td>");}
+                if ($pblm3_flag == 1){  print('<span class="inlinebar2">');  echo($row['display_ans_pblm3']);   print('</span>');   echo("</td><td>");}
+                if ($pblm4_flag == 1){  print('<span class="inlinebar2">');  echo($row['display_ans_pblm4']);   print('</span>');   echo("</td><td>");}
+                if ($pblm5_flag == 1){  print('<span class="inlinebar2">');  echo($row['display_ans_pblm5']);   print('</span>');   echo("</td><td>");}
                
                 if ($pblm1_flag == 1){   echo($row['pblm_1_score']);    echo("</td><td>");}
                 if ($pblm2_flag == 1){    echo($row['pblm_2_score']);    echo("</td><td>");}
@@ -493,7 +493,7 @@
                 echo("<th>");
                 echo('name');
                 echo("</th><th>");
-                 echo('pin');
+                 echo('dex');
                 echo("</th><th>");
                  if(!is_null($row_n['nv_1'] )){ echo($row_n['nv_1']); echo("</th><th>");}
                
@@ -524,11 +524,13 @@
                  echo(' i) ');
                echo("</th><th>");
                  echo(' j) ');
+                echo("</th><th>");
+                  echo(' work '); 
                  echo("</th></tr>\n");
                 echo("</thead>");
                  echo("<tbody>");
                  
-                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
+                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.examactivity_id, Examactivity.dex, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
                    FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
                               INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY SUBSTR(Examactivity.name, INSTR( Examactivity.name, ' ')) ";
                              // INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY Examactivity.pin ";
@@ -539,7 +541,7 @@
                         echo "<tr><td>";
                          echo($row_s['name']);
                         echo("</td><td>");	
-                        echo($row_s['pin']);
+                        echo($row_s['dex']);
                         echo("</td><td>");	
                         if(!is_null($row_s['v_1'])){echo($row_s['v_1']); echo("</td><td>");}
                         if(!is_null($row_s['v_2'])){echo($row_s['v_2']); echo("</td><td>");}
@@ -567,7 +569,23 @@
                         if($row_s['ans_i']< 1.1e43){ echo($row_s['ans_i']);}
                         echo "</td><td>";
                       if($row_s['ans_j']< 1.1e43){ echo($row_s['ans_j']);}
-                        echo("</td></tr>");
+                        echo "</td><td>";
+                            $all_files = array();
+                            $dir =  'student_exam_work/';
+                            $prefix = $dir.$row_s['examactivity_id'].'-'.$row1['problem_id1'].'-*';
+                            
+                            foreach (glob($prefix, GLOB_NOCHECK) as $image) {
+                                       $tmp = explode('.', $image);
+                                    $extension = end($tmp);
+                                   if($extension == "pdf"){
+                                       echo(' <embed src="'.$image.'" style = "width:150px;" type="application/pdf">');
+                                   } else {  
+                                        echo ('<img src="'.$image.'" alt = "" style = "width:100px;image-resolution:200dpi;">');
+                                   }
+                            }
+                                      //  echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge"></form>');
+                                        
+                       echo("</td></tr>");
 
                     } 
                 
@@ -590,7 +608,7 @@
                 echo("<th>");
                 echo('name');
                 echo("</th><th>");
-                 echo('pin');
+                 echo('dex');
                 echo("</th><th>");
                  if(!is_null($row_n['nv_1'] )){ echo($row_n['nv_1']); echo("</th><th>");}
                
@@ -621,11 +639,13 @@
                  echo(' i) ');
                echo("</th><th>");
                  echo(' j) ');
+                echo("</th><th>");
+                  echo(' work '); 
                  echo("</th></tr>\n");
                 echo("</thead>");
                  echo("<tbody>");
                  
-                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
+                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4,Examactivity.examactivity_id, Examactivity.dex, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
                    FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
                               INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY SUBSTR(Examactivity.name, INSTR( Examactivity.name, ' '))  ";
                  $stmt = $pdo->prepare($sql);
@@ -635,7 +655,7 @@
                         echo "<tr><td>";
                          echo($row_s['name']);
                         echo("</td><td>");	
-                        echo($row_s['pin']);
+                        echo($row_s['dex']);
                         echo("</td><td>");	
                         if(!is_null($row_s['v_1'])){echo($row_s['v_1']); echo("</td><td>");}
                         if(!is_null($row_s['v_2'])){echo($row_s['v_2']); echo("</td><td>");}
@@ -663,6 +683,23 @@
                         if($row_s['ans_i']< 1.1e43){ echo($row_s['ans_i']);}
                         echo "</td><td>";
                       if($row_s['ans_j']< 1.1e43){ echo($row_s['ans_j']);}
+                            echo "</td><td>";
+                            $all_files = array();
+                            $dir =  'student_exam_work/';
+                            $prefix = $dir.$row_s['examactivity_id'].'-'.$row1['problem_id2'].'-*';
+                            
+                            foreach (glob($prefix, GLOB_NOCHECK) as $image) {
+                                       $tmp = explode('.', $image);
+                                    $extension = end($tmp);
+                                   if($extension == "pdf"){
+                                       echo(' <embed src="'.$image.'" style = "width:150px;" type="application/pdf">');
+                                   } else {  
+                                        echo ('<img src="'.$image.'" alt = "" style = "width:100px;image-resolution:200dpi;">');
+                                   }
+                            }
+                                      //  echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge"></form>');
+                                        
+
                         echo("</td></tr>");
 
                     } 
@@ -686,7 +723,7 @@
                 echo("<th>");
                 echo('name');
                 echo("</th><th>");
-                 echo('pin');
+                 echo('dex');
                 echo("</th><th>");
                  if(!is_null($row_n['nv_1'] )){ echo($row_n['nv_1']); echo("</th><th>");}
                
@@ -717,11 +754,13 @@
                  echo(' i) ');
                echo("</th><th>");
                  echo(' j) ');
+                echo("</th><th>");
+                  echo(' work '); 
                  echo("</th></tr>\n");
                 echo("</thead>");
                  echo("<tbody>");
                  
-                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
+                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4,Examactivity.examactivity_id, Examactivity.dex, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
                    FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
                               INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY SUBSTR(Examactivity.name, INSTR( Examactivity.name, ' '))  ";
                  $stmt = $pdo->prepare($sql);
@@ -731,7 +770,7 @@
                         echo "<tr><td>";
                          echo($row_s['name']);
                         echo("</td><td>");	
-                        echo($row_s['pin']);
+                        echo($row_s['dex']);
                         echo("</td><td>");	
                         if(!is_null($row_s['v_1'])){echo($row_s['v_1']); echo("</td><td>");}
                         if(!is_null($row_s['v_2'])){echo($row_s['v_2']); echo("</td><td>");}
@@ -759,6 +798,22 @@
                         if($row_s['ans_i']< 1.1e43){ echo($row_s['ans_i']);}
                         echo "</td><td>";
                       if($row_s['ans_j']< 1.1e43){ echo($row_s['ans_j']);}
+                        echo "</td><td>";
+                            $all_files = array();
+                            $dir =  'student_exam_work/';
+                            $prefix = $dir.$row_s['examactivity_id'].'-'.$row1['problem_id3'].'-*';
+                            
+                            foreach (glob($prefix, GLOB_NOCHECK) as $image) {
+                                       $tmp = explode('.', $image);
+                                    $extension = end($tmp);
+                                   if($extension == "pdf"){
+                                       echo(' <embed src="'.$image.'" style = "width:150px;" type="application/pdf">');
+                                   } else {  
+                                        echo ('<img src="'.$image.'" alt = "" style = "width:100px;image-resolution:200dpi;">');
+                                   }
+                            }
+                                      //  echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge"></form>');
+                                        
                         echo("</td></tr>");
 
                     } 
@@ -782,7 +837,7 @@
                 echo("<th>");
                 echo('name');
                 echo("</th><th>");
-                 echo('pin');
+                 echo('dex');
                 echo("</th><th>");
                  if(!is_null($row_n['nv_1'] )){ echo($row_n['nv_1']); echo("</th><th>");}
                
@@ -813,11 +868,13 @@
                  echo(' i) ');
                echo("</th><th>");
                  echo(' j) ');
+                echo("</th><th>");
+                  echo(' work '); 
                  echo("</th></tr>\n");
                 echo("</thead>");
                  echo("<tbody>");
                  
-                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4, Examactivity.pin, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
+                   $sql = "SELECT Input.v_1, Input.v_2, Input.v_3, Input.v_4,Examactivity.examactivity_id, Examactivity.dex, Examactivity.name, Qa.ans_a, Qa.ans_b, Qa.ans_c, Qa.ans_d,Qa.ans_e, Qa.ans_f, Qa.ans_g, Qa.ans_h,Qa.ans_i, Qa.ans_j
                    FROM Input INNER JOIN Examactivity ON Input.dex = Examactivity.dex AND Input.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id  
                               INNER JOIN Qa ON Qa.dex = Examactivity.dex AND Qa.problem_id = :problem_id AND Examactivity.examtime_id = :examtime_id ORDER BY SUBSTR(Examactivity.name, INSTR( Examactivity.name, ' '))  ";
                  $stmt = $pdo->prepare($sql);
@@ -827,7 +884,7 @@
                         echo "<tr><td>";
                          echo($row_s['name']);
                         echo("</td><td>");	
-                        echo($row_s['pin']);
+                        echo($row_s['dex']);
                         echo("</td><td>");	
                         if(!is_null($row_s['v_1'])){echo($row_s['v_1']); echo("</td><td>");}
                         if(!is_null($row_s['v_2'])){echo($row_s['v_2']); echo("</td><td>");}
@@ -855,6 +912,22 @@
                         if($row_s['ans_i']< 1.1e43){ echo($row_s['ans_i']);}
                         echo "</td><td>";
                       if($row_s['ans_j']< 1.1e43){ echo($row_s['ans_j']);}
+                        echo "</td><td>";
+                            $all_files = array();
+                            $dir =  'student_exam_work/';
+                            $prefix = $dir.$row_s['examactivity_id'].'-'.$row1['problem_id4'].'-*';
+                            
+                            foreach (glob($prefix, GLOB_NOCHECK) as $image) {
+                                       $tmp = explode('.', $image);
+                                    $extension = end($tmp);
+                                   if($extension == "pdf"){
+                                       echo(' <embed src="'.$image.'" style = "width:150px;" type="application/pdf">');
+                                   } else {  
+                                        echo ('<img src="'.$image.'" alt = "" style = "width:100px;image-resolution:200dpi;">');
+                                   }
+                            }
+                                      //  echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge"></form>');
+                                        
                         echo("</td></tr>");
 
                     } 
@@ -910,6 +983,8 @@
                  echo(' i) ');
                echo("</th><th>");
                  echo(' j) ');
+                echo("</th><th>");
+                  echo(' work '); 
                  echo("</th></tr>\n");
                 echo("</thead>");
                  echo("<tbody>");
@@ -952,6 +1027,22 @@
                         if($row_s['ans_i']< 1.1e43){ echo($row_s['ans_i']);}
                         echo "</td><td>";
                       if($row_s['ans_j']< 1.1e43){ echo($row_s['ans_j']);}
+                        echo "</td><td>";
+                            $all_files = array();
+                            $dir =  'student_exam_work/';
+                            $prefix = $dir.$row_s['examactivity_id'].'-'.$row1['problem_id5'].'-*';
+                            
+                            foreach (glob($prefix, GLOB_NOCHECK) as $image) {
+                                       $tmp = explode('.', $image);
+                                    $extension = end($tmp);
+                                   if($extension == "pdf"){
+                                       echo(' <embed src="'.$image.'" style = "width:150px;" type="application/pdf">');
+                                   } else {  
+                                        echo ('<img src="'.$image.'" alt = "" style = "width:100px;image-resolution:200dpi;">');
+                                   }
+                            }
+                                      //  echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge"></form>');
+                                        
                         echo("</td></tr>");
 
                     } 
@@ -1041,6 +1132,7 @@
   
 	 	
      $(".inlinebar1").sparkline("html",{type: "bar", height: "20", barWidth: "5", resize: true, barSpacing: "2", barColor: "navy"});
+     $(".inlinebar2").sparkline("html",{type: "bar", height: "20", barWidth: "5", resize: true, barSpacing: "2", barColor: "darkred"});
 	  /*  	
     
         $(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});

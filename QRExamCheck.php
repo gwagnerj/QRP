@@ -653,7 +653,7 @@ session_start();
 	<form action="upload_exam_work.php" method="GET" id = "the_form">
     
 
-		
+			<input type="hidden" id = "problem_id" name="problem_id" value="<?php echo (htmlentities($problem_id))?>"  >
             <input type="hidden" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
             <input type="hidden" name="globephase" id = "globephase" >
     
