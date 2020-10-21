@@ -280,7 +280,8 @@ if(isset($_POST['examtime_id'])){
 
 		
 		// Get the team_id of all the teams in the game_prob_flag
-          $stmt = $pdo->prepare("SELECT *  FROM `Examactivity` WHERE examtime_id = :examtime_id ORDER BY `pin` ASC ");
+        //  $stmt = $pdo->prepare("SELECT *  FROM `Examactivity` WHERE examtime_id = :examtime_id ORDER BY `pin` ASC ");
+          $stmt = $pdo->prepare("SELECT *  FROM `Examactivity` WHERE examtime_id = :examtime_id ORDER BY SUBSTR(name, CHAR_LENGTH(name) - LOCATE(' ', REVERSE(name))+1)");          //SUBSTR(name, CHAR_LENGTH(name) - LOCATE(' ', REVERSE(name))+1)
 			$stmt->execute(array(":examtime_id" => $examtime_id));
              $rows = $stmt->fetchALL(PDO::FETCH_ASSOC); 
            //  print_r($row[0]);

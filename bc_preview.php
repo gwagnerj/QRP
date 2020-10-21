@@ -69,7 +69,7 @@ if (isset($_POST['problem_id'])){
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 <script type="text/javascript" charset="utf-8" src="qrcode.js"></script>
-
+<title><?php echo ('bc_'.$problem_id); ?></title>
 </head>
 
 <body>
@@ -157,12 +157,15 @@ if (isset($_POST['problem_id'])){
          */
         echo $this_html;
         echo '<hr>';
-         
+       echo  '<p style="page-break-before: always"> ';        
+ 
          // put in the pdf for the solution to the basecase
         echo '<h4>Solution to Base Case</h4>';
         // echo ('<iframe src="'.$solnfilenm.'" width="90%"  ></iframe>');
-        echo ('<iframe src="'.$solnfilenm.'" width="70%" height="400px" ></iframe>');
+        echo ('<iframe src="'.$solnfilenm.'" width="60%" height="600px" ></iframe>');
          echo '<hr>';
+        echo  '<p style="page-break-before: always"> ';        
+
         echo $reflection_text;
         
         
