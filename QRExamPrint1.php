@@ -52,6 +52,13 @@ session_start();
         header("Location: QRExamPrint0.php");
         die();    
     }
+     if( isset($_POST['index_start'])){
+         $index_start = $_POST['index_start'];
+     } else {
+        $_SESSION['error']= 'no index_start in QRExamPrint1';
+        header("Location: QRExamPrint0.php");
+        die();    
+    }
 
 
 
@@ -231,7 +238,8 @@ session_start();
                     }
                 }
        $stu_name = $student_datum['first_name'].'&nbsp; '.$student_datum['last_name'];      
-        $alias_num = $exam_datum['alias_num'];      
+        $alias_num = $exam_datum['alias_num'];
+           
   $html = new simple_html_dom();
       $html->load_file($htmlfilenm);
       $header_stuff = new simple_html_dom();
@@ -240,7 +248,7 @@ session_start();
        $header_stuff ->find('#stu_name',0)->innertext = $stu_name;
       $header_stuff ->find('#course',0)->innertext = $cclass_name;
        $header_stuff ->find('#exam_num',0)->innertext = $exam_num;
-       $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
+ //      $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
 
   $problem = $html->find('#problem',0);
   
@@ -297,6 +305,7 @@ session_start();
              }
         }
          echo($header_stuff);
+          echo ('<p>'.$alias_num.')</p>'); 
         // echo ('<hr>');
           echo $this_html; 
            echo  '<p style="page-break-before: always"> ';        
@@ -308,6 +317,9 @@ session_start();
             
         }
     }  elseif ($exam_version == 2){ // we have a limited number of versions of the printed exam
+    
+    
+    
 
         // echo(' exam_version: '.$exam_version);
         // echo(' num_versions: '.$num_versions);
@@ -315,7 +327,7 @@ session_start();
            for ($set=1;$set<=$sets;$set++)  {
                    for( $ver=0;$ver<$num_versions;$ver++){
                       
-                        $stu_name = '<u> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>';      
+                        $stu_name = '<u> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>';      
                          
                           $header_stuff = new simple_html_dom();
                           $header_stuff -> load_file('exam_problem_print_header_stuff.html');
@@ -329,23 +341,30 @@ session_start();
                       
                       
                       
-                        $index_start = 150;     // arbitrarily start getting the versions from a dex of 150 and counting up from there
                         $dex = $index_start + $ver;
+                        
+                        
                         
                            // make the dex code by hassing the dex
                            $key = rand(1,9);
                            $last_dig = rand(0,9);
-                           if ($key ==1){$mid_two = $ver +$last_dig+16;}
-                           if ($key ==2){$mid_two = $ver +$last_dig+25;}
-                           if ($key ==3){$mid_two = $ver+$last_dig +36;}
-                           if ($key ==4){$mid_two = $ver+$last_dig +49;}
-                           if ($key ==5){$mid_two = $ver+$last_dig +64;}
-                           if ($key ==6){$mid_two = $ver+$last_dig +81;}
-                           if ($key ==7){$mid_two = $ver+$last_dig +53;}
-                           if ($key ==8){$mid_two = $ver+$last_dig +23;}
-                           if ($key ==9){$mid_two = $ver+$last_dig +73;}
+                           
+                            If ($dex <10){
+                                $mid_three = $dex +300+$last_dig;
+                            } elseif($dex < 100){
+                                $mid_three = $dex +600+$last_dig;
+                            } else {
+                                
+                                $mid_three = $dex +$key+$last_dig;
+                               
+                            }
+
+                           
+                           
+                           
+                                  
                         
-                        $dex_code = $key.$mid_two.$last_dig;
+                        $dex_code = $key.$mid_three.$last_dig;
                         
                        // echo(' dex_code:  '.$dex_code);
 
@@ -353,7 +372,7 @@ session_start();
 
                             $qrcode_text =  'https://www.qrproblems.org/QRP/QRExamRegistration.php?dex_code='.$dex_code; 
                                             
-                            $file = 'uploads/temp_exam'.$set.' png';   // where the qrimage is going to be stored in uploads directory
+                            $file = 'uploads/temp_exam'.$dex_code.' png';   // where the qrimage is going to be stored in uploads directory
                               
                             // $ecc stores error correction capability('L') 
                             $ecc = 'M'; 
@@ -365,7 +384,7 @@ session_start();
                              // QRcode::png($text); 
                             // Displaying the stored QR code from directory 
                         
-                          $qrcode = "<span ><img src='".$file."'><br>Code: ".$dex_code." </span>"; 
+                          $qrcode = "<span ><img src='".$file."'><br>Version Code: ".$dex_code." </span>"; 
                             $header_stuff ->find('#qr_code_id',0)->innertext = $qrcode;
                             echo($header_stuff);
                            echo ('<hr>');
@@ -392,7 +411,7 @@ session_start();
                         $htmlfilenm = "uploads/".$htmlfilenm;
                         $alias_num = $exam_datum['alias_num'];      
                          
-                        echo ('<h4>'.$alias_num.')</h4>'); 
+                        echo ('<br>'.$alias_num.')'); 
                          
                          
                          $html = new simple_html_dom();

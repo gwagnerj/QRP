@@ -181,7 +181,7 @@
             
             <?php
 		
-                 $sql = " SELECT * FROM `Exam` WHERE iid = :iid AND exam_num = :exam_num AND currentclass_id = :currentclass_id" ;
+                 $sql = " SELECT * FROM `Exam` WHERE iid = :iid AND exam_num = :exam_num AND currentclass_id = :currentclass_id ORDER BY `alias_num`" ;
                        $stmt = $pdo->prepare($sql);
                         $stmt -> execute(array(
                          ':exam_num' => $exam_num,

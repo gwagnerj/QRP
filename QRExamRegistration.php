@@ -33,29 +33,31 @@ $username_err = $code_err = $password_err = "";
  if ($dex_code != 0){
      
      // need some error checking on the dex code if it is there but does not result in 150 thru 159 then there was an error
-      if($dex_code < 1000 ||$dex_code >= 10000 )
+      if($dex_code < 10000 ||$dex_code >= 100000 )
           {
-        $code_err = 'qrcode number is in error.  Please re-input this number';
+        $code_err = 'version code number is in error.  - This is the number below the QR code on a printed exam';
        } else {
      
            $dex_code_string = (string)$dex_code;  
              $key = $dex_code_string[0];
-             $mid_two = ($dex_code_string[1].$dex_code_string[2])+0;
-             $last_dig = $dex_code_string[3];
+             $mid_three = ($dex_code_string[1].$dex_code_string[2].$dex_code_string[3])+0;
+             $last_dig = $dex_code_string[4];
              
-             if ($key==1){$ver = $mid_two - $last_dig - 16;}
-             if ($key==2){$ver = $mid_two - $last_dig - 25;}
-             if ($key==3){$ver = $mid_two - $last_dig - 36;}
-             if ($key==4){$ver = $mid_two - $last_dig - 49;}
-             if ($key==5){$ver = $mid_two - $last_dig - 64;}
-             if ($key==6){$ver = $mid_two - $last_dig - 81;}
-             if ($key==7){$ver = $mid_two - $last_dig - 53;}
-             if ($key==8){$ver = $mid_two - $last_dig - 23;}
-             if ($key==9){$ver = $mid_two - $last_dig - 73;}
              
-             $dex_print = 150 + $ver;
+             If ($mid_three < 300){  // dex is over a three digit number
+                 $dex_print = $mid_three - $key-$last_dig;
+             } elseif($mid_three < 600){  // dex is a one digit number
+                $dex_print = $mid_three - 300 - $last_dig;
+            } else {  // dex is a two digit number
+                $dex_print = $mid_three - 600 - $last_dig;
+                 
+             }
+             
+            
+             
+             
       
-         if(($dex_print >= 1 && $dex_print <= 149)||($dex_print >= 160 )||$dex_print < 0){
+         if($dex_print >= 201 || $dex_print < 0){
              
             $code_err = 'qrcode number is in error.  Please re-input this number';
             

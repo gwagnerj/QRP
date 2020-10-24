@@ -118,6 +118,7 @@ $iid = 1;  // temporary
                                    <label for "exam_version">   
                                    Number of versions: <input    type = "number" name ="num_versions" id = "num_versions" min = "1", max = "9" value = "3" required  > </input>
                                    &nbsp;&nbsp;&nbsp;&nbsp; Number of print copies for each version (only version code changes) <input type = "number" name ="sets" id = "sets" min = "1", max = "99" value = "1" required  > </input>
+                                   &nbsp;&nbsp;&nbsp;&nbsp; Index that the print starts on (1 to 190) <input type = "number" name ="index_start" id = "index_start" min = "1", max = "190" value = "140" required  > </input>
                                    
                                    </label>   
                             </div>
