@@ -2,96 +2,31 @@
 // Include config file
 require_once 'pdo.php';
 session_start();
-if (isset($_SESSION['success'])){
-	echo $_SESSION['success'];	
-    unset($_SESSION['success']);
-}
-if (isset($_SESSION['error'])){
-	echo $_SESSION['error'];
-	unset($_SESSION['error']);
-}
+
 
 //session_unset();
  // check for a printed exam
  //$_GET['dex_code'] = 9784;
- if(isset($_GET['dex_code'])){
-     $_SESSION['dex_code'] = $_GET['dex_code'];
-     $dex_code = $_GET['dex_code'];
+ if(isset($_GET['dex_code'])){  // probably comming in with a scanned qrcode
+     $dex_code=$_GET['dex_code'];
+     header('Location:QRExamRegistration1.php?dex_code='.$dex_code);  
+        die;
  } elseif(isset($_POST['dex_code'])){
-     $_SESSION['dex_code'] = $_POST['dex_code'];
      $dex_code = $_POST['dex_code'];
- } elseif(isset($_SESSION['dex_code'])){
-      $dex_code = $_SESSION['dex_code'];
- } else {
+     header('Location:QRExamRegistration1.php?dex_code='.$dex_code);  
+ }  else {
       $dex_code = 0;
  }
- 
- // Define variables and initialize with empty values
-$username = $password = "";
-$username_err = $code_err = $password_err = "";
- 
- if ($dex_code != 0){
-     
-     // need some error checking on the dex code if it is there but does not result in 150 thru 159 then there was an error
-      if($dex_code < 10000 ||$dex_code >= 100000 )
-          {
-        $code_err = 'version code number is in error.  - This is the number below the QR code on a printed exam';
-       } else {
-     
-           $dex_code_string = (string)$dex_code;  
-             $key = $dex_code_string[0];
-             $mid_three = ($dex_code_string[1].$dex_code_string[2].$dex_code_string[3])+0;
-             $last_dig = $dex_code_string[4];
-             
-             
-             If ($mid_three < 300){  // dex is over a three digit number
-                 $dex_print = $mid_three - $key-$last_dig;
-             } elseif($mid_three < 600){  // dex is a one digit number
-                $dex_print = $mid_three - 300 - $last_dig;
-            } else {  // dex is a two digit number
-                $dex_print = $mid_three - 600 - $last_dig;
-                 
-             }
-             
-            
-             
-             
-      
-         if($dex_print >= 201 || $dex_print < 0){
-             
-            $code_err = 'qrcode number is in error.  Please re-input this number';
-            
-         }
-      }
-   //  echo('dex_print'.$dex_print);
- } else {
-     $dex_print = 0;
- }
- 
- 
- 
- 
- // see if they entered a username or an email address
- 
- 
-
+ $code_err = '';
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
  
     // Check if username is empty
-    if(empty(trim($_POST["username"]))){
-        $username_err = 'Please enter username.';
-    } else{
-        $username = trim($_POST["username"]);
-    }
+   
     
     // Check if password is empty
-    if(empty(trim($_POST['password']))){
-        $password_err = 'Please enter your password.';
-    } else{
-        $password = trim($_POST['password']);
-    }
+  
     
     // Validate credentials
     if(empty($username_err) && empty($password_err) && empty($code_err)){
@@ -138,12 +73,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Close connection
     unset($pdo);
 }
+
+if (isset($_SESSION['success'])){
+	echo $_SESSION['success'];	
+    unset($_SESSION['success']);
+}
+if (isset($_SESSION['error'])){
+	echo $_SESSION['error'];
+	unset($_SESSION['error']);
+}
 ?>
  
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="icon" type="image/png" href="McKetta.png" />  
     <meta charset="UTF-8">
 <title>QRP Student Exam Login</title>
@@ -151,45 +95,53 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
     <style type="text/css">
         body{ font: 14px sans-serif; }
-        .wrapper{ width: 350px; padding: 20px; }
+        .wrapper{ padding: 20px; }
+        .
     </style>
 </head>
 <body>
     <div class="wrapper">
 	
-        <h2>Welcome to Quick Response Exam Student Login</h2>
-        <p>Please fill in your credentials to login.</p>
+        <h2>Welcome to Quick Response Exam Student Login</h2> <br>
 		
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-              <div class="form-group <?php echo (!empty($code_err)) ? 'has-error' : ''; ?>">
-                <label>If taking a printed exam or quiz that has a QR Code the number below the QRcode (otherwise leave blank)</label>
-                <input type="number" name="dex_code" class="form-control" value="<?php echo $dex_code; ?>">
-                <span class="help-block"><?php echo $code_err; ?></span>
+        <form id = "form_id" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+             <div class="form-group">
+                 <?php echo (!empty($code_err)) ? 'has-error' : ''; ?>
+                <label><h3>Do you have a printed form of the exam or Quiz that <b> has a <u>QRcode</u></b> on the first page?</h3></label><br>
+               <h4>&nbsp; <input type="radio" id = "yes" name="qrcode" value = "yes" required> <label for="yes"> Yes </Label>&nbsp; <span id = "dex_code_input" >Input Version Code located Below the QRcode: <input type ="number" id = "dex_code" name = "dex_code" min = "10000" max = "99999">  </h4>
+                <h4>&nbsp; <input type="radio" id = "no" name="qrcode" value = "no" > <label for="no"> No </Label> </h4>
+             
             </div>    
+            <div class="form-group <?php echo (!empty($code_err)) ? 'has-error' : ''; ?>">
             
-            <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
-                <label>Username</label>
-                <input type="text" name="username"class="form-control" value="<?php echo $username; ?>">
-                <span class="help-block"><?php echo $username_err; ?></span>
-            </div>    
-            <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control">
-                <span class="help-block"><?php echo $password_err; ?></span>
-            </div>
+               <span class="help-block"><?php echo $code_err; ?></span>
             <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Login">
+            <br>
+                <input type="submit" class="btn btn-primary" value="Submit">
             </div>
 		</form>
 		
-		 </p> </br>
-			<p>Forgot your Password or Usename? <a href="stu_pswdRecovForm.php">Click Here</a>.</p> </br>
-			<p>Don't have an account? <a href="stu_register.php">Sign up now</a>.</p>
-			<br/>
+		
 		</br>
 		  
        
     </div>
 </body>
 </html>
-
+<script>
+$(document).ready( function () {
+    $('#dex_code_input').hide();
+   
+   $('#form_id input').on('change', function(){
+       
+     //  console.log($('input[name=qrcode]:checked','#form_id').val());
+       
+       if($('input[name=qrcode]:checked','#form_id').val()=='yes'){
+            $('#dex_code_input').show();
+        } else {
+            $('#dex_code_input').hide();
+        }
+     });   
+     
+});
+</script>

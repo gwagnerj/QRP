@@ -122,7 +122,7 @@
     } else {
         
          $_SESSION['error'] = 'lost the student_id in QRExamRegistration2';
-         header('Location:  QRExamRegistration.php');
+         header('Location:  QRExamRegistration1.php');
         die;
     }
       if(isset($_POST['exam_code'])){
