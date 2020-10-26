@@ -367,26 +367,39 @@ $pass = array(
        }
        
        // turn problem back into and simple_html_dom object that I can replace the varaible images on 
-       $problem =str_get_html($problem); 
-       $keep = 0;
-       $varImages = $problem -> find('.var_image');
-       foreach($varImages as $varImage) {
-          $var_image_id = $varImage -> id;  
-          
-           for( $i=0;$i<$nv;$i++){
-              if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
-            } 
-            
-            If ($keep==0){
-                //  get rid of the caption and the image
-                   $varImage->find('.MsoNormal',0)->outertext = '';
-                   $varImage->find('.MsoCaption',0)->outertext = '';
-            } else {
-                 //  get rid of the caption 
-                $varImage->find('.MsoCaption',0)->outertext = '';
-            }
-             $keep = 0;
-        }
+       
+    /*      
+       if(str_get_html($base_case) != false){
+            $base_case =str_get_html($base_case); 
+           
+           $keep = 0;
+           $varImages = $base_case -> find('.var_image');
+        */
+       
+        if(str_get_html($problem) != false){
+           
+               $problem =str_get_html($problem); 
+               $keep = 0;
+               $varImages = $problem -> find('.var_image');
+               foreach($varImages as $varImage) {
+                  $var_image_id = $varImage -> id;  
+                  
+                   for( $i=0;$i<$nv;$i++){
+                      if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
+                    } 
+                    
+                    If ($keep==0){
+                        //  get rid of the caption and the image
+                           $varImage->find('.MsoNormal',0)->outertext = '';
+                           $varImage->find('.MsoCaption',0)->outertext = '';
+                    } else {
+                         //  get rid of the caption 
+                        $varImage->find('.MsoCaption',0)->outertext = '';
+                    }
+                     $keep = 0;
+                }
+        }    
+                
   // repeat with the base_case ______________________________________________________________________
      
          // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
@@ -411,26 +424,28 @@ $pass = array(
        }
        
        // turn base-case back into and simple_html_dom object that I can replace the varaible images on 
-       $base_case =str_get_html($base_case); 
-       $keep = 0;
-       $varImages = $base_case -> find('.var_image');
-       foreach($varImages as $varImage) {
-          $var_image_id = $varImage -> id;  
-          
-           for( $i=0;$i<$nv;$i++){
-              if(trim($var_image_id) == trim($BC_vari[$i])){$keep = 1;} 
+       
+        if(str_get_html($base_case) != false){
+           $base_case =str_get_html($base_case); 
+           $keep = 0;
+           $varImages = $base_case -> find('.var_image');
+           foreach($varImages as $varImage) {
+              $var_image_id = $varImage -> id;  
+              
+               for( $i=0;$i<$nv;$i++){
+                  if(trim($var_image_id) == trim($BC_vari[$i])){$keep = 1;} 
+                } 
+                If ($keep==0){
+                    //  get rid of the caption and the image
+                       $varImage->find('.MsoNormal',0)->outertext = '';
+                       $varImage->find('.MsoCaption',0)->outertext = '';
+                } else {
+                     //  get rid of the caption 
+                    $varImage->find('.MsoCaption',0)->outertext = '';
+                }
+                 $keep = 0;
             } 
-            If ($keep==0){
-                //  get rid of the caption and the image
-                   $varImage->find('.MsoNormal',0)->outertext = '';
-                   $varImage->find('.MsoCaption',0)->outertext = '';
-            } else {
-                 //  get rid of the caption 
-                $varImage->find('.MsoCaption',0)->outertext = '';
-            }
-             $keep = 0;
-        } 
-         
+        }
          
     // only include the document above the checker
        $this_html ='<hr>'.$qrcode.$qrcode_bc.$problem.'<hr> <div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>';
@@ -488,6 +503,8 @@ $pass = array(
        }
        
        // turn base-case back into and simple_html_dom object that I can replace the varaible images on 
+       
+       
        $this_html =str_get_html($this_html); 
        $keep = 0;
        $varImages = $this_html -> find('.var_image');

@@ -357,27 +357,29 @@ if($checker_only ==0){
        }
        
        // turn problem back into and simple_html_dom object that I can replace the varaible images on 
-       $problem =str_get_html($problem); 
-       $keep = 0;
-       $varImages = $problem -> find('.var_image');
-       foreach($varImages as $varImage) {
-          $var_image_id = $varImage -> id;  
-          
-           for( $i=0;$i<$nv;$i++){
-              if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
-            } 
-            
-            If ($keep==0){
-                //  get rid of the caption and the image
-                   $varImage->find('.MsoNormal',0)->outertext = '';
-                   $varImage->find('.MsoCaption',0)->outertext = '';
-            } else {
-                 //  get rid of the caption 
-                $varImage->find('.MsoCaption',0)->outertext = '';
+       
+      if(str_get_html($problem) != false){
+           $problem =str_get_html($problem); 
+           $keep = 0;
+           $varImages = $problem -> find('.var_image');
+           foreach($varImages as $varImage) {
+              $var_image_id = $varImage -> id;  
+              
+               for( $i=0;$i<$nv;$i++){
+                  if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
+                } 
+                
+                If ($keep==0){
+                    //  get rid of the caption and the image
+                       $varImage->find('.MsoNormal',0)->outertext = '';
+                       $varImage->find('.MsoCaption',0)->outertext = '';
+                } else {
+                     //  get rid of the caption 
+                    $varImage->find('.MsoCaption',0)->outertext = '';
+                }
+                 $keep = 0;
             }
-             $keep = 0;
-        }
-        
+      }
                
     // only include the document above the checker
        $this_html ='<hr><br>'.$problem;
