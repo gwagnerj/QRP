@@ -291,7 +291,7 @@ if(isset($_POST['examtime_id'])){
                  echo "<tr><td>";
                 echo($row['name']);
                 echo("</td><td>");	
-                  echo($row['pin']);
+                  echo($row['dex']);
                   echo("</td><td>");
                   
                 //  echo('toggle');

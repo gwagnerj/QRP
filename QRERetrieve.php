@@ -360,7 +360,7 @@
 		echo("<th>");
 		echo('name');
         echo("</th><th>");
-		echo('pin');
+		echo('dex');
           echo("</th><th>");
 		//echo('Extend t');
       //  echo("</th><th>");
@@ -414,7 +414,7 @@
                  echo "<tr><td>";
                 echo($row['name']);
                 echo("</td><td>");	
-                  echo($row['pin']);
+                  echo($row['dex']);
                   echo("</td><td>");
                   
                 //  echo('toggle');
