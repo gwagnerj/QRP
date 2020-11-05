@@ -198,26 +198,28 @@ echo ('<hr><h2>'.$activity_data["stu_name"].'\'s Problem Statement</h2>');
        }
        
        // turn base-case back into and simple_html_dom object that I can replace the varaible images on 
-       $problem_statement =str_get_html($problem_statement); 
-       $keep = 0;
-       $varImages = $problem_statement -> find('.var_image');
-       foreach($varImages as $varImage) {
-          $var_image_id = $varImage -> id;  
-          
-           for( $i=0;$i<$nv;$i++){
-              if(trim($var_image_id) == trim($BC_vari[$i])){$keep = 1;} 
-            } 
-            If ($keep==0){
-                //  get rid of the caption and the image
-                   $varImage->find('.MsoNormal',0)->outertext = '';
-                   $varImage->find('.MsoCaption',0)->outertext = '';
-            } else {
-                 //  get rid of the caption 
-                $varImage->find('.MsoCaption',0)->outertext = '';
-            }
-             $keep = 0;
-        } 
-         
+       
+        if(str_get_html($problem_statement) != false){
+               $problem_statement =str_get_html($problem_statement); 
+               $keep = 0;
+               $varImages = $problem_statement -> find('.var_image');
+               foreach($varImages as $varImage) {
+                  $var_image_id = $varImage -> id;  
+                  
+                   for( $i=0;$i<$nv;$i++){
+                      if(trim($var_image_id) == trim($BC_vari[$i])){$keep = 1;} 
+                    } 
+                    If ($keep==0){
+                        //  get rid of the caption and the image
+                           $varImage->find('.MsoNormal',0)->outertext = '';
+                           $varImage->find('.MsoCaption',0)->outertext = '';
+                    } else {
+                         //  get rid of the caption 
+                        $varImage->find('.MsoCaption',0)->outertext = '';
+                    }
+                     $keep = 0;
+                } 
+        }
          
     // only include the document above the checker
        $this_html =' <div id = "problem_statement"><h3> Problem '.$problem_id.' - '.$dex.'</h3>'.$problem_statement.'</div>';
@@ -296,6 +298,15 @@ foreach(range('a','j') as $v){
     $reflection_text = $html->find('#reflections',0); 
     // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
 
+
+      for( $i=0;$i<$nv;$i++){
+          if($BC_row['v_'.($i+1)]!='Null' ){
+            $base_case = preg_replace($pattern[$i],$BC_vari[$i],$base_case);
+            $reflection_text = preg_replace($pattern[$i],$BC_vari[$i],$reflection_text);
+          }
+        }
+
+
       for( $i=0;$i<$nv;$i++){
           if($BC_row['v_'.($i+1)]!='Null' ){
             $base_case = preg_replace($pattern[$i],$BC_vari[$i],$base_case);
@@ -334,6 +345,23 @@ foreach(range('a','j') as $v){
              $image->setAttribute("src", $base64); 
              $base_case = $dom->saveHTML();
        }
+       
+             $dom = new DOMDocument();
+   libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
+       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $reflection_text);
+       $images = $dom->getElementsByTagName('img');
+        foreach ($images as $image) {
+            $src = $image->getAttribute('src');
+             $src = 'uploads/'.$src;
+             $src = urldecode($src);
+             $type = pathinfo($src, PATHINFO_EXTENSION);
+             $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+             $image->setAttribute("src", $base64); 
+             $reflection_text = $dom->saveHTML();
+       }
+       
+       
+       
        
        // turn base-case back into and simple_html_dom object that I can replace the varaible images on 
        $base_case =str_get_html($base_case); 

@@ -27,6 +27,9 @@ if (isset($_POST['problem_id'])){
        $solnfilenm = "uploads/".$solnfilenm;
 
   $htmlfilenm = "uploads/".$htmlfilenm;
+  
+  //             echo ('<h2> htmlfilenm: '.$htmlfilenm.'</h2>');
+
 
 // read in the names of the variables for the problem
     $nv = 0;  // number of non-null variables
@@ -80,7 +83,8 @@ if (isset($_POST['problem_id'])){
  
  	  $html = new simple_html_dom();
       $html->load_file($htmlfilenm);  
-  
+     //            echo ('<h2> htmlfilenm: '.$htmlfilenm.'</h2>');
+
    
     $base_case = $html->find('#problem',0); 
     $reflection_text = $html->find('#reflections',0); 
@@ -89,6 +93,7 @@ if (isset($_POST['problem_id'])){
       for( $i=0;$i<$nv;$i++){
           if($BC_row['v_'.($i+1)]!='Null' ){
             $base_case = preg_replace($pattern[$i],$BC_vari[$i],$base_case);
+            $reflection_text = preg_replace($pattern[$i],$BC_vari[$i],$reflection_text);
           }
         }
        
@@ -125,27 +130,44 @@ if (isset($_POST['problem_id'])){
              $base_case = $dom->saveHTML();
        }
        
+              $dom = new DOMDocument();
+   libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
+       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $reflection_text);
+       $images = $dom->getElementsByTagName('img');
+        foreach ($images as $image) {
+            $src = $image->getAttribute('src');
+             $src = 'uploads/'.$src;
+             $src = urldecode($src);
+             $type = pathinfo($src, PATHINFO_EXTENSION);
+             $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+             $image->setAttribute("src", $base64); 
+             $reflection_text = $dom->saveHTML();
+       }
+       
        // turn base-case back into and simple_html_dom object that I can replace the varaible images on 
-       $base_case =str_get_html($base_case); 
-       $keep = 0;
-       $varImages = $base_case -> find('.var_image');
-       foreach($varImages as $varImage) {
-          $var_image_id = $varImage -> id;  
-          
-           for( $i=0;$i<$nv;$i++){
-              if(trim($var_image_id) == trim($BC_vari[$i])){$keep = 1;} 
+      
+       if(str_get_html($base_case) != false){
+            $base_case =str_get_html($base_case); 
+           
+           $keep = 0;
+           $varImages = $base_case -> find('.var_image');
+           foreach($varImages as $varImage) {
+              $var_image_id = $varImage -> id;  
+              
+               for( $i=0;$i<$nv;$i++){
+                  if(trim($var_image_id) == trim($BC_vari[$i])){$keep = 1;} 
+                } 
+                If ($keep==0){
+                    //  get rid of the caption and the image
+                       $varImage->find('.MsoNormal',0)->outertext = '';
+                       $varImage->find('.MsoCaption',0)->outertext = '';
+                } else {
+                     //  get rid of the caption 
+                    $varImage->find('.MsoCaption',0)->outertext = '';
+                }
+                 $keep = 0;
             } 
-            If ($keep==0){
-                //  get rid of the caption and the image
-                   $varImage->find('.MsoNormal',0)->outertext = '';
-                   $varImage->find('.MsoCaption',0)->outertext = '';
-            } else {
-                 //  get rid of the caption 
-                $varImage->find('.MsoCaption',0)->outertext = '';
-            }
-             $keep = 0;
-        } 
-         
+       }
          
     // only include the document above the checker
        $this_html =' <div id = "base_case"><h4>Base Case Problem '.$problem_id.'.</h4>'.$base_case.'</div>';
