@@ -1,7 +1,7 @@
 <?php
 // Include config file
 require_once 'pdo.php';
-require_once '../password.php';
+require_once '../email_password.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';// Load Composer's autoloader
@@ -247,10 +247,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					//Server settings
 					$mail->SMTPDebug = 0;                                       // Enable verbose debug output 0 is off and 4 is everything
 					$mail->isSMTP();                                            // Set mailer to use SMTP
-					$mail->Host       = 'ns8363.hostgator.com;ns8364.hostgator.com';  // Specify main and backup SMTP servers
+					$mail->Host       = $email_host;  // Specify main and backup SMTP servers
 					$mail->SMTPAuth   = true;                                   // Enable SMTP authentication
-					$mail->Username   = 'wagnerj@excelproblempedia.org';                     // SMTP username
-					$mail->Password   =  $system_password;                              // SMTP password
+					$mail->Username   = $email_username;                     // SMTP username
+					$mail->Password   =  $email_password;                              // SMTP password
 					$mail->SMTPSecure = 'tls';                                  // Enable TLS encryption, `ssl` also accepted
 					$mail->Port       = 587;                                    // TCP port to connect to try new port if using ssl
 
@@ -295,10 +295,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					//Server settings
 					$mail2->SMTPDebug = 0;                                       // Enable verbose debug output 0 is off and 4 is everything
 					$mail2->isSMTP();                                            // Set mailer to use SMTP
-					$mail2->Host       = 'ns8363.hostgator.com;ns8364.hostgator.com';  // Specify main and backup SMTP servers
+					$mail2->Host       = $email_host;  // Specify main and backup SMTP servers
 					$mail2->SMTPAuth   = true;                                   // Enable SMTP authentication
-					$mail2->Username   = 'wagnerj@excelproblempedia.org';                     // SMTP username
-					$mail2->Password   = $system_password;                               // SMTP password
+					$mail2->Username   = $email_username;                     // SMTP username
+					$mail2->Password   = $email_password;                               // SMTP password
 					$mail2->SMTPSecure = 'tls';                                  // Enable TLS encryption, `ssl` also accepted
 					$mail2->Port       = 587;                                    // TCP port to connect to try new port if using ssl
 
