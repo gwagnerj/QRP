@@ -79,24 +79,31 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	}
 		
     
-	// Validate school email this should only have a specific form for appprove universities ---------------
+    // Validate school email this should only have a specific form for appprove universities ---------------
+    // at least require an edu as the last entry
+
+    $email_domain = explode(".",$_POST['school_email']) ;
+    $email_domain = $email_domain[count($email_domain)-1] ;
+
     if(empty(trim($_POST['school_email']))){
-        $School_email_err = "Please enter your school or University email address that you check regularly.";     
-    } elseif(strlen(trim($_POST['school_email'])) < 4){
-        $school_email_err = "email input too short to be a valid email address.";
+        $school_email_err = "Please enter your school or University email address that you check regularly.";     
+    }  elseif(!filter_var($_POST['school_email'], FILTER_VALIDATE_EMAIL)) {  //filter_var is a built in php function returns a boolean by checking if (in this case) its a valid email
+            $school_email_err = "school email is invalid.";
+     } elseif( $email_domain!="edu" ) {  //check to see if it is in an edu domain
+          
+             $school_email_err = "school email does not have the correct domain.";
     } else{
         $school_email = htmlentities(trim($_POST['school_email']));
     }
     
     // Validate secondary email (optional) ---------------
-    if(empty(trim($_POST['email2']))){
-        $email2_err = "Please enter a valid email address that you check regularly.";     
-    } elseif(strlen(trim($_POST['email2'])) < 4){
-        $email2_err = "email input too short to be a valid email address.";
-    } else{
-        $email2 = htmlentities(trim($_POST['email2']));
+    if(!empty(trim($_POST['email2']))){
+        if(!filter_var($_POST['email2'], FILTER_VALIDATE_EMAIL)) {  //filter_var is a built in php function returns a boolean by checking if (in this case) its a valid email
+            $email2_err = "secondary email is invalid.";
+        } else {
+            $email2 = htmlentities(trim($_POST['email2']));
+        }
     }
-    
 	// Validate first name
     if(empty(trim($_POST['first']))){
         $first_err = "Please enter a valid first name.";     
@@ -118,7 +125,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	
     // Check input errors before inserting in database
     if(empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($university_err) && 
-	empty($email_err) && empty($first_err) && empty($last_err) && empty($security_err) && empty($sponsor_err) && 
+	empty($school_email_err) && empty($email2_err) && empty($first_err) && empty($last_err) && empty($security_err) && empty($sponsor_err) && 
 	empty($university_err)  && empty($course_name_error)){
         
     // Prepare an insert statement ------------------------------------------------(fix this)-------------
@@ -262,6 +269,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if (!empty($username_err)){echo $username_err; echo '</br>';}
     if (!empty($password_err)){echo $password_err; echo '</br>';}
     if (!empty($university_err)){echo $university_err; echo '</br>';}
+    if (!empty($student_email_err)){echo $student_email_err; echo '</br>';}
+    if (!empty($email2_err)){echo $email2_err; echo '</br>';}
     if (!empty($sponsor_err)){echo $sponsor_err; echo '</br>';}
     if (!empty($security_err)){echo $security_err; echo '</br>';}
     
