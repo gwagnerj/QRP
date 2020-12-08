@@ -528,6 +528,8 @@
 			} else {
 				$status_update = '';
 			}
+		
+		
 			$active_flag = 0; // just initializing it
 			// if it is active for this user print active for the status
 					$sql = "SELECT Assign.assign_num AS assign_ass_num, Assign.alias_num AS alias_num,Assign.currentclass_id as currentclass_id ,Assign.assign_id as assign_id FROM Assign WHERE prob_num = :prob_num and iid = :iid";
@@ -536,8 +538,8 @@
                      ':prob_num' => $row['problem_id'],
                       ':iid' => $users_id,
                     ));
-                    $row2 = $stmt8->fetch(PDO::FETCH_ASSOC); 
-                    if ($row2['assign_id']!=false ){
+					$row2 = $stmt8->fetch(PDO::FETCH_ASSOC); 
+                    if ($row2 !=false ){
                        $assign_id =  $row2['assign_id'];
                        $sql = "SELECT assigntime_id FROM Assigntime WHERE assign_num = :assign_num AND iid = :iid AND currentclass_id = :currentclass_id";
                         $stmt12 = $pdo->prepare($sql);
