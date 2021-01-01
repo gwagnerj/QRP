@@ -55,11 +55,11 @@ foreach ($results->getItems() as $item) {
 
 
 
-    if(isset($_GET['examactivity_id'])){
-        $examactivity_id = $_GET['examactivity_id'];
-    } elseif (isset($_POST['examactivity_id'])){
+    if(isset($_GET['eactivity_id'])){
+        $eactivity_id = $_GET['eactivity_id'];
+    } elseif (isset($_POST['eactivity_id'])){
     } else {
-        $_SESSION['error'] = 'examactivity_id lost in upload_work.  email work or upload via LMS';  
+        $_SESSION['error'] = 'eactivity_id lost in upload_work.  email work or upload via LMS';  
     }
     
     
@@ -114,7 +114,7 @@ if(isset($_POST['submit_button'])){
                 if($file_error ==0){
                     if ($file_size > 2){
                         if ($file_size < 20000000){
-                           $file_new_name = $examactivity_id.'-'.$problem_id.'-'.$i.'-'.$file_name; 
+                           $file_new_name = $eactivity_id.'-'.$problem_id.'-'.$i.'-'.$file_name; 
                             $file_destination = 'student_exam_work/'.$file_new_name;
                             // CHeck to see if there is a file by the same name
                             if (file_exists($file_destination)){
@@ -159,7 +159,7 @@ if(isset($_POST['submit_button'])){
 }
 
 
-       $qrchecker_text = 'https://www.qrproblems.org/QRP/upload_exam_work.php?examactivity_id='.$examactivity_id;
+       $qrchecker_text = 'https://www.qrproblems.org/QRP/upload_exam_work.php?eactivity_id='.$eactivity_id;
 
         $file = 'uploads/temp2 png'; 
         // $ecc stores error correction capability('L') 
@@ -230,7 +230,7 @@ if(isset($_POST['submit_button'])){
         (Accepted file types: jpg, jpeg, png and pdf)<br><br>
 
 			<input type="hidden" id = "problem_id" name="problem_id" value="<?php echo ($problem_id)?>"  >
-            <input type="hidden" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
+            <input type="hidden" name="eactivity_id" value="<?php echo ($eactivity_id)?>" >
 
        <button type = "submit" style = "width: 30%; background-color: red; color: white" id = "submit_button" name = "submit_button">Submit Work Files</button> <br><br><br>
         

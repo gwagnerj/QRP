@@ -2,7 +2,6 @@
 	require_once "pdo.php";
 	session_start();
 	
-	
     if (isset($_POST['iid'])) {
 	$iid = $_POST['iid'];
 } else {
@@ -10,33 +9,9 @@
       			header( 'Location: QRPRepo.php' ) ;
 				die();
 }
-
-// this is called from the main repo and this will collect initial data from instructor and proceed to QREStart.php
-
-
-
-
-
-
-    
-        
-/* 		
-			$alias_num = $exam_num = $cclass_id = '';   
-			
-			
-            $sql_stmt = "SELECT * FROM Exam WHERE DATE(NOW())<= exp_date AND iid = :iid order by exam_id";
-            $stmt = $pdo->prepare($sql_stmt);
-            $stmt -> execute(array(':iid' => $iid));
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	 */
-     
-// this will be called form the main repo when the game master wants to run a game
-// this is just to get the game number and go on to QRGMaster.php with a post of the game number.
 // Validity will be checked in that file and sent back here if it is not valid
 
 $_SESSION['counter']=0;  // this is for the score board
-
-
 	?>
 <!DOCTYPE html>
 <html lang = "en">
@@ -58,10 +33,7 @@ $_SESSION['counter']=0;  // this is for the score board
  
 } 
 
-
 </style>
-
-
 
 </head>
 
@@ -80,10 +52,6 @@ $_SESSION['counter']=0;  // this is for the score board
 			echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
 			unset($_SESSION['success']);
 		}
-	
- 
- 
- 
 ?>
 
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
@@ -105,8 +73,6 @@ $_SESSION['counter']=0;  // this is for the score board
 						<?php
  							}
                     ?>
-                    
-                    
 				</select>
 		</div>
              </br>
@@ -116,176 +82,15 @@ $_SESSION['counter']=0;  // this is for the score board
                        <option value="0">- Select Exam -</option>
                     </select>
                 </br>	
-    
-           </br>
-                <font color=#003399>Minutes for Exam: &nbsp; </font>
-           <input type = "number" name ="nom_time" id = "nom_time" min = "1", max = "300" value = "60" required > </input>
-           
-           </br> </br>
-           
-                 <font color=#003399>Attempts per Problem: &nbsp; </font>
-                
-                  <div  class = "outer" >
-                     <div  class = "inner" >
-
-
-                            <div>
-                               <input type = "radio" name ="attempt_type" id = "check_inf" value = "1" checked > </input>
-                                   <label for "check_infin"> Check as they go - No limit </label>
-                             </div>
-                             </br>
-                             <div>
-                                <input type = "radio" name ="attempt_type" id = "check_limit" value = "2" > </input>
-                                   <label for "check_limit"> No Feedback until they Submit.  Max number of Submits = 
-                                    <input type = "number" name ="num_attempts" id = "num_attempts" min = "1", max = "50" value = "1" required > </input>
-                                   </label>   
-                            </div>
-                      </div>  
-                    </div>   
-                    
-                 <br>
-                  <div  class = "outer" >   
-                        <font color=#003399>Show Answer Button - Minimum Limits (blank is &infin;): &nbsp; </font><br>
-                </div>
-                  <div  class = "inner" >
-                        <font color="black">Attempts on part:   &nbsp; </font>
-                        <input type = "number" name ="ans_n" id = "ans_n"  min = "0" max = "99" value = "2"  > </input><br><br>
-                        <font color="black">Elapsed time from first check on part in minutes: &nbsp; </font>
-                        <input type = "number" name ="ans_t" id = "ans_t" min = "0" max = "99" value = "1" > </input>
-                     </div>
-                            
-                            
-         </br>
-         <hr>
-         Nothing below this line is currently active.
-         <hr>
-         </br>
-                      <font color=#003399>Checker Availibility: &nbsp; </font>
-                 <div  class = "outer" >
-                     <div  class = "inner" >
-                     <div>
-                       <input type = "radio" name ="attempt_avail" id = "check_avail" value = "1" checked > </input>
-                           <label for "check_avail"> Always On </label>
-                     </div>
-                       </br>
-                     <div  >
-                        <input type = "radio" name ="attempt_avail" id = "check_avail" value = "2" > </input>
-                           <label for "check_avail"> On After  
-                            <input    type = "number" name ="on_after" id = "on_after" min = "1", max = "999" value = "1" required  > min</input>
-                           
-                           </label>   
-                    </div>
-                      </br>
-                     <div>
-                        <input type = "radio" name ="attempt_avail" id = "check_avail" value = "3" > </input>
-                           <label for "check_avail"> Off After  
-                            <input type = "number" name ="off_after" id = "off_after" min = "1", max = "999" value = "30" required > min </input>
-                           
-                           </label>  
-                           
-                    </div>
-                    </br>
-                     <div>
-                        <input type = "radio" name ="attempt_avail" id = "check_avail" value = "4" > </input>
-                           <label for "check_avail"> Repeating: On   
-                            <input type = "number" name ="on_repeat" id = "on_repeat" min = "1", max = "999" value = "5" required > min then Off &nbsp; </input>
-                             <input type = "number" name ="off_repeat" id = "off_repeat" min = "1", max = "999" value = "15" required > min </input>
-                           </label>   
-                    </div>
-                    
-                    </div>
-                </div>
-         </br></br>
-               
-         
-                      <font color=#003399>Exam Versions: &nbsp; </font>
-                 
-                   <div  class = "outer" >
-                     <div  class = "inner" >
-                 
-                             <div>
-                               <input type = "radio" name ="exam_version" id = "exam_version" value = "1" checked > </input>
-                                   <label for "exam_version"> Different for Every Examinee </label>
-                             </div>
-                               </br>
-                             <div  >
-                                <input type = "radio" name ="exam_version" id = "exam_version" value = "2" > </input>
-                                   <label for "exam_version">   
-                                    <input    type = "number" name ="num_versions" id = "num_versions" min = "1", max = "999" value = "4" required  > min</input>
-                                   
-                                   </label>   
-                            </div>
-                            
-                       </div>
-                   </div>
-                  </br>
-               
-                      <font color=#003399>Exam Timing: &nbsp; </font>
-                 
-                   <div  class = "outer" >
-                     <div  class = "inner" >
-                 
-                             <div>
-                               <input type = "radio" name ="exam_timing" id = "exam_timing" value = "1" checked > </input>
-                                   <label for "exam_timing"> Synchonous (everyone takes the exam at the same time) </label>
-                             </div>
-                               </br>
-                             <div  >
-                                <input type = "radio" name ="exam_timing" id = "exam_timing" value = "2" > </input>
-                                   <label for "exam_timing"> Asynchronous:  Exam Window Opens on:    
-                                    <input type = "date" name ="open_e_window_d" id = "open_e_window_d" value="<?php  date_default_timezone_set('America/Indiana/Indianapolis'); echo date('Y-m-d');  ?>"  ></input>&nbsp; at: &nbsp;
-                                      <input type = "time" name ="open_e_window_t" id = "open_e_window_t" value="<?php echo date('H:i'); ?>"> </input> 
-                                   </br>
-                                    &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;and Closes on: &nbsp; </input>
-                                     <input type = "date" name ="close_e_window_d" id = "close_e_window-d" value="<?php $time_now = date('Y-m-d'); echo (string)$time_now; ?>"  ></input>&nbsp; at: &nbsp;
-                                      <input type = "time" name ="close_e_window_t" id = "close_e_window_t" value="<?php echo date('H:i',strtotime("+3 hours")); ?>"> </input> 
-                           </label>   
-                            </div>
-                            
-                       </div>
-                   </div>
-                  </br> 
-            
-            
              <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
 			<p><input type = "submit" id = "submit_id"></p>
-   
-	
 	</form>
   <p style="font-size:100px;"></p>   
     
 	<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
 	
 	<script>
-	
-	
-	
 	$(document).ready( function () {
-      
-
- /*
-      var start_def = new Date();
-       start_time = start_def.getTime();
-           document.getElementById("open_e_window_t").defaultValue = start_time;
-    // set the date for the open window to default to right now
-    
-    
-      Date.prototype.toDateInputValue = (function() {
-            var local = new Date(this);
-                    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
-                    return local.toJSON().slice(0,10);
-                });
-    
-    
-    
-            $('#open_e_window').val(new Date().toDateInputValue());
-        
-     
-        */
-       
-       
-       
-		
 		var currentclass_name = "";
 		
 			$("#currentclass_id").change(function(){
@@ -317,44 +122,13 @@ $_SESSION['counter']=0;  // this is for the score board
 								          //    $("#exam_num").append("<option value='"+activeass[i]+"'></option>");
 
 							}
-						}
-						
 					});	
-				
-			
-			 
 		} );
         
         $("#exam_num").change(function(){
             var exam_num = $("#exam_num").val();
             console.log("exam_num: "+exam_num)
-            
         });
-        
-        
-        $("#submit_id").click(function(){
-          
-        /*    
-          $.ajax({
-             type: "POST",
-             url: "QREStart.php",
-             data: {currentclass_id:currentclass_id,exam_num:exam_num},
-             success: function(msg) {
-                alert("Form Submitted: " + msg);
-             }
-          });
-           */
-         /*  $.ajax({
-				url: 'QREStart.php',
-				method: 'post',
-				data: {currentclass_id:currentclass_id,exam_num:exam_num}
-					})
-           */
-          
-        // $.post("QREStart.php",{currentclass_id:currentclass_id, exam_num:exam_num},);  
-          
-        });
-	
 	} );
 	
 	

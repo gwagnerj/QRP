@@ -105,13 +105,13 @@ session_start();
 
             // get all of the data for the exam for each problem
                     
-             $sql = " SELECT * FROM `Exam` WHERE currentclass_id = :currentclass_id AND exam_num = :exam_num ORDER BY alias_num" ;
+             $sql = " SELECT * FROM `Eexam` WHERE currentclass_id = :currentclass_id AND exam_num = :exam_num ORDER BY alias_num" ;
                     $stmt = $pdo->prepare($sql);
                     $stmt -> execute(array(
                          ':currentclass_id' => $currentclass_id,
                              ':exam_num' => $exam_num,
                     ));
-                    $exam_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
+                    $eexam_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
                        
                //        echo (' exam_data <br>');
                        
@@ -199,7 +199,7 @@ session_start();
             
           //  echo $student_datum['first_name']  ;
           // for each problem on the exam
-          foreach($exam_data as $exam_datum){
+          foreach($eexam_data as $exam_datum){
                 //      echo $exam_datum['problem_id'];
                 $problem_id = $exam_datum['problem_id'];
                 $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
@@ -249,9 +249,9 @@ session_start();
       $header_stuff ->find('#course',0)->innertext = $cclass_name;
        $header_stuff ->find('#exam_num',0)->innertext = $exam_num;
  //      $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
-
+//var_dump($html);
   $problem = $html->find('#problem',0);
-  
+ //  var_dump($problem);
    for( $i=0;$i<$nv;$i++){
            if($row['v_'.($i+1)]!='Null' ){
             $problem = preg_replace($pattern[$i],$vari[$i],$problem);
@@ -271,9 +271,11 @@ session_start();
              $image->setAttribute("src", $base64); 
              $problem = $dom->saveHTML();
        }
-       
+        
        // turn problem back into and simple_html_dom object that I can replace the varaible images on 
        $problem =str_get_html($problem); 
+   //    var_dump($problem);
+       
        $keep = 0;
        $varImages = $problem -> find('.var_image');
        foreach($varImages as $varImage) {
@@ -392,7 +394,7 @@ session_start();
                       //  echo ($qrcode);
                        
                          
-                     foreach($exam_data as $exam_datum){
+                     foreach($eexam_data as $exam_datum){
                         //      echo $exam_datum['problem_id'];
                      
                         
@@ -464,27 +466,37 @@ session_start();
                }
                
                // turn problem back into and simple_html_dom object that I can replace the varaible images on 
+               
+              // var_dump($problem);
                $problem =str_get_html($problem); 
+  //              var_dump($problem);
+               
                $keep = 0;
-               $varImages = $problem -> find('.var_image');
-               foreach($varImages as $varImage) {
-                  $var_image_id = $varImage -> id;  
-                  
-                   for( $i=0;$i<$nv;$i++){
-                      if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
-                    } 
-                    
-                    If ($keep==0){
-                        //  get rid of the caption and the image
-                           $varImage->find('.MsoNormal',0)->outertext = '';
-                           $varImage->find('.MsoCaption',0)->outertext = '';
-                    } else {
-                         //  get rid of the caption 
-                        $varImage->find('.MsoCaption',0)->outertext = '';
+               
+               try{
+                   $varImages = $problem -> find('.var_image');
+                   foreach($varImages as $varImage) {
+                      $var_image_id = $varImage -> id;  
+                      
+                       for( $i=0;$i<$nv;$i++){
+                          if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
+                        } 
+                        
+                        If ($keep==0){
+                            //  get rid of the caption and the image
+                               $varImage->find('.MsoNormal',0)->outertext = '';
+                               $varImage->find('.MsoCaption',0)->outertext = '';
+                        } else {
+                             //  get rid of the caption 
+                            $varImage->find('.MsoCaption',0)->outertext = '';
+                        }
+                         $keep = 0;
                     }
-                     $keep = 0;
-                }
-                
+               }
+               catch(Exception $e){
+ //              catch(){
+                   echo 'there was an error';
+               }
                        
             // only include the document above the checker
                $this_html ='<br>'.$problem;

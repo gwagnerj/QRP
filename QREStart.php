@@ -2,238 +2,215 @@
 require_once "pdo.php";
 	session_start();
 
-// THis files is called from the QRExamstart.php.  The purpose of this module is to control the Examtime table which the student exam checkers read to see what phase the exam is in
-// THis file will also give a link to the backstage  to look at the progress of the studetns through another file looking at the examactivity table that the student exam checkers will be filling
-    
-    if (isset($_POST['currentclass_id'])) {
-        $currentclass_id = htmlentities($_POST['currentclass_id']);
-      } else {
-           $_SESSION['error'] = 'invalid examination number in  QREStart.php ';
-            header( 'Location: QRPRepo.php' ) ;
-            die();
-    }
-    
-     if (isset($_POST['iid'])) {
-        $iid = htmlentities($_POST['iid']);
-      } else {
-           $_SESSION['error'] = 'invalid iid in  QREStart.php ';
-            header( 'Location: QRPRepo.php' ) ;
-            die();
-    }
-      if (isset($_POST['exam_code'])) {
-        $exam_code = htmlentities($_POST['exam_code']);
-      }
-    
-    
-    
-     if (isset($_POST['nom_time'])) {
-        $work_time = htmlentities($_POST['nom_time']);
-      } else {
-           $_SESSION['error'] = 'invalid nominal time  QREStart.php ';
-            header( 'Location: QRPRepo.php' ) ;
-            die();
-    }
-     if (isset($_POST['attempt_type'])) {
-        $attempt_type = htmlentities($_POST['attempt_type']);
-      } else {
-           $_SESSION['error'] = 'invalid attempt_type  QREStart.php ';
-            header( 'Location: QRPRepo.php' ) ;
-            die();
-    }
-     if (isset($_POST['num_attempts'])) {
-        $num_attempts = htmlentities($_POST['num_attempts']);
-      } else {
-           $_SESSION['error'] = 'invalid num_attempts QREStart.php ';
-            header( 'Location: QRPRepo.php' ) ;
-            die();
-    }
-     if (isset($_POST['ans_n'])) {
-        $ans_n = htmlentities($_POST['ans_n']);
-      } else {
-         $ans_n = ""; 
-    }
-     if (isset($_POST['ans_t'])) {
-        $ans_t = htmlentities($_POST['ans_t']);
-      } else {
-         $ans_t = ""; 
-    }
-    
-    // Test to see if your coming in from QREExamStart 	
-    if (isset($_POST['exam_num'])) {
-        $exam_num = htmlentities($_POST['exam_num']);
+// This file is entered from QRExamMgmt.  The purpose of this file is to keep the timing of an exam.  It does this by creating an entry in the eexamnow table
+// The table keeps references the information in the eexamtime table through a one to many relationship.  can have many instances of a eexamnow from a single eexamtime.
 
-    $globephase = 0;
-      $stop_time  =0;
-        // Get the information from the various tables and put  the information in the 
+// FIrst take in the values from the QRExammgmt post so we can identify insert an entry into the table 
+  if (isset($_POST['from_QRExamMgmt'])){ 
+
+    
+
+
+
+
+
+    // get all of the post information from that file and create an entry in the eexamnow table
+    if (isset($_POST['eexamtime_id'])) {
+      $eexamtime_id = htmlentities($_POST['eexamtime_id']);
+    } else {
+         $_SESSION['error'] = 'invalid eexamtime_id in  QREStart.php ';
+         header( 'Location: QRPRepo.php' ) ;
+          die();
+    }
+    if (isset($_POST['iid'])) {
+      $iid = htmlentities($_POST['iid']);
+    } else {
+         $_SESSION['error'] = 'invalid iid in  QREStart.php ';
+         header( 'Location: QRPRepo.php' ) ;
+          die();
+    }
+
+
+
+
+
+
+    // check to see if there is an active exam already going on for this iid and this eexamtime_id if so we probably got disconnected and need to reconnect to the ongoing exam and
+    
+    $sql = "SELECT * FROM `Eexamtime` LEFT JOIN Eexamnow ON Eexamtime.eexamtime_id = Eexamnow.eexamtime_id  WHERE Eexamtime.iid = :iid AND Eexamtime.eexamtime_id = :eexamtime_id AND Eexamnow.end_of_phase > CURRENT_TIMESTAMP() AND Eexamnow.globephase != 3";
+    $stmt = $pdo->prepare($sql);
+    $stmt -> execute(array(
+      ':iid' => $iid,
+      ':eexamtime_id' => $eexamtime_id,
+    )); 
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
-      /*   
-        echo 'num_attempts ='.$num_attempts;
-        echo '  attempt_type ='.$attempt_type;
-        die();
-        */
-       // see if the game is already running
-     
-                      $sql = "SELECT * FROM `Examtime` WHERE exam_num = :exam_num AND iid = :iid AND currentclass_id = :currentclass_id";
-                   $stmt = $pdo->prepare($sql);
-                   $stmt -> execute(array(
-                        ':exam_num' => $exam_num,
-                        ':iid' => $iid,
-                         ':currentclass_id' => $currentclass_id,
-                        )); 
-                    $row5 = $stmt->fetch(PDO::FETCH_ASSOC);
-                        
-                   if ($row5 != false) { 
-                       
-                   
-                         $examtime_id = $row5['examtime_id'];
-                         $globephase = $row5['globephase'];
-                        $work_time = $row5['work_time'];
-                        $end_of_phase = $row5['end_of_phase'];
-                          $exam_code = $row5['exam_code'];       
-                          $ans_n = $row5['ans_n'];         
-                          $ans_t = $row5['ans_t'];         
+    if ($row == false) { // we have to put in a new entry and get the values from the table we need
+      $exam_code = rand(100,9999);
+      $sql = "INSERT INTO `Eexamnow` (eexamtime_id,exam_code,end_of_phase) VALUES (:eexamtime_id,:exam_code, DATE_ADD(now(), INTERVAL 1 HOUR))";
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute(array(
+        ':eexamtime_id' => $eexamtime_id,
+        ':exam_code' => $exam_code
+      ));
+      $eexamnow_id = $pdo->lastInsertId();
+     // echo ('eexamnow_id=: '.$eexamnow_id);
+        // get the value of the number of groups and put it in the qrexamtime table
 
+        if (isset($_POST['number_teams'])&& isset($_POST['game_flag'])  ){
+            $number_teams = $_POST['number_teams'];
+            $sql = "UPDATE `Eexamtime`
+            SET `number_teams` =:number_teams,game_flag = :game_flag
+              WHERE eexamtime_id = :eexamtime_id";
+              $stmt = $pdo->prepare($sql);
+              $stmt -> execute(array(
+                  ':number_teams' => $_POST['number_teams'],
+                  ':eexamtime_id' => $eexamtime_id,
+                  ':game_flag' => $_POST['game_flag']
+              ));
+        }
+   
 
-                   } else {
-                 
-                        $exam_code = rand(100,9999);
-                        
-                        $sql = 'INSERT INTO `Examtime` (exam_num, iid, currentclass_id, globephase, work_time,attempt_type, num_attempts, exam_code,ans_n,ans_t)	
-                                    VALUES (:exam_num, :iid, :currentclass_id,:globephase ,:work_time, :attempt_type, :num_attempts, :exam_code,:ans_n,:ans_t)';
-                            $stmt = $pdo->prepare($sql);
-                            $stmt -> execute(array(
-                            ':exam_num' => $exam_num,
-                            ':iid' => $iid,
-                            ':currentclass_id' => $currentclass_id,
-                            ':globephase' => $globephase,
-                            ':work_time' => $work_time,
-                            ':attempt_type' => $attempt_type,
-                             ':num_attempts' => $num_attempts,
-                              ':exam_code' => $exam_code,
-                              ':ans_n' => $ans_n,
-                              ':ans_t' => $ans_t,
-                            ));
-                            
-                            // get the examtime_id
-                       
-                           $sql = "SELECT `examtime_id` FROM `Examtime` ORDER BY examtime_id DESC LIMIT 1";
-                           $stmt = $pdo->prepare($sql);
-                           $stmt -> execute(); 
-                            $row3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                            foreach($row3 as $row){
-                         //   print_r ($row);
-                            $examtime_id = $row['examtime_id'];
-                            }
-                          // echo 'gmact_id top = '.$gmact_id;
-                   }  
-              } elseif(isset($_POST['exam_num_here'])){ // now test to see if we are coming from this file
-                    $exam_num = $_POST['exam_num_here'];
-                   
-
-                    $globephase = $_POST['globephase'];
-                        
-                      if(isset($_POST['examtime_id'])){  
-                        $examtime_id = $_POST['examtime_id'];
-                      }
-
-                  if(isset($_POST['phase_change'])){
-                       if($_POST['phase_change']==1 &&  $globephase ==0){
-
-                           $globephase =1;
-                           
-                           $sql = "UPDATE `Examtime`
-                             SET `end_of_phase` = (UTC_TIMESTAMP() + INTERVAL :work_time MINUTE)
-                              WHERE examtime_id = :examtime_id";
-                                $stmt = $pdo->prepare($sql);
-                                $stmt -> execute(array(
-                                    ':examtime_id' => $examtime_id,
-                                    ':work_time' => $work_time,
-                                ));
-                           
-                           
-                           
-                           
-                           
-                        } elseif($_POST['phase_change']==1 &&  $globephase ==1) {
-                            $globephase =2;
-                        }  elseif($_POST['phase_change']==1 &&  $globephase ==2) {
-                            $globephase =3;
-                        } 
-                   
-                   }
-              
-              
-              
-              
-              }  else {
-           $_SESSION['error'] = 'invalid examination number in  QREStart.php ';
-            header( 'Location: QRPRepo.php' ) ;
-            die();
+    } else { // we are coming in from the QRExamMgmt but have an existing running exam going (disconnected or whatever)/ get the information from the table
+      $eexamnow_id = $row['eexamnow_id'];
+      $globephase = $row['globephase'];
+      $end_of_phase = $row['end_of_phase'];
+      $exam_code = $row['exam_code'];
+      $_SESSION['error']= 'Exam is already running';
     }
-    
-    // in either case get the class and 
-    
-            	$sql = 'SELECT name FROM `CurrentClass` WHERE `currentclass_id` = :currentclass_id';
-					$stmt = $pdo->prepare($sql);
-					$stmt -> execute(array(':currentclass_id' => $currentclass_id));
-                    	$row = $stmt->fetch(PDO::FETCH_ASSOC);
-                        $class_name = $row['name'];
-                
-            	$sql = 'SELECT end_of_phase FROM `Examtime` WHERE `examtime_id` = :examtime_id';
-					$stmt = $pdo->prepare($sql);
-					$stmt -> execute(array(':examtime_id' => $examtime_id));
-                    	$row = $stmt->fetch(PDO::FETCH_ASSOC);
-                        $stop_time = $row['end_of_phase'];
-                            
-            
-          If ($globephase == 0){
-              $start_stop = 'Start Exam';
-              
-          } elseif($globephase == 1){
-               $start_stop = 'Stop Exam';
-              
-          }  elseif($globephase == 2){
-               $start_stop = 'Archive Data';
-              
-          } elseif($globephase == 3){
-               // archive the data from the Examactivity table and Delete the values out of the Examtime table
-               
-               $sql = 'DELETE FROM Examtime WHERE examtime_id = :examtime_id';
-               $stmt = $pdo->prepare($sql);
-                $stmt -> execute(array(
-                ':examtime_id' => $examtime_id,
-                ));      
-               
-               
-                $new_examtime_id = $examtime_id + 1000000;
-                $sql = "UPDATE `Examactivity` 
-				SET examtime_id = :new_examtime_id 
-				WHERE examtime_id = :examtime_id";
-                $stmt = $pdo->prepare($sql);
-                $stmt -> execute(array(
-                    
-                    ':examtime_id' => $examtime_id,
-                    ':new_examtime_id' => $new_examtime_id,
-                    
-                ));
-               
-               
-               
-               header( 'Location: QRPRepo.php' ) ;
-                die();
-              
-          }   
-                     $sql = "UPDATE `Examtime` 
-				SET globephase = :globephase
-				WHERE examtime_id = :examtime_id";
-                $stmt = $pdo->prepare($sql);
-                $stmt -> execute(array(
-                ':globephase' => $globephase,
-                ':examtime_id' => $examtime_id
-                ));      
+
+    // kill the history so that the back button does not reload the data
+    /* echo (" <script>
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+    </script>");
+ */
+  } elseif(isset($_POST['from_QREStart'])){  // coming in from this file
+    if (isset($_POST['eexamnow_id'])){
+      $eexamnow_id = $_POST['eexamnow_id'];
+    } else {
+      $_SESSION['error'] = 'invalid eexamnow_id  QREStart.php ';
+      header( 'Location: QRPRepo.php' ) ;
+       die();
+    }
+
+    if (isset($_POST['exam_code'])){
+      $exam_code = $_POST['exam_code'];
+    } else {
+      $sql = "SELECT `exam_code` from Eexamnow WHERE eexamnow_id = :eexamnow_id";
+      $stmt = $pdo->prepare($sql);
+      $stmt ->execute(array(':eexamnow_id'=>$eexamnow_id));
+      $row =$stmt -> fetch();
+      $exam_code = $row['exam_code'];
+    }
+
+    if (isset($_POST['globephase'])){
+      $globephase = $_POST['globephase'];
+    } else {
+      $sql = "SELECT `globephase` from Eexamnow WHERE eexamnow_id = :eexamnow_id";
+      $stmt = $pdo->prepare($sql);
+      $stmt ->execute(array(':eexamnow_id'=>$eexamnow_id));
+      $row =$stmt -> fetch();
+      $globephase = $row['globephase'];
+    }
+
+    if (isset($_POST['nom_time'])){
+      $nom_time = $_POST['nom_time'];
+  //    echo ("nom time set to: ".$nom_time);
+    } 
+
+
+    if(isset($_POST['phase_change'])){
+      if($globephase == 0){
+        $sql = "UPDATE `Eexamnow`
+        SET `end_of_phase` = DATE_ADD(UTC_TIMESTAMP() , INTERVAL :nom_time MINUTE)
+         WHERE eexamnow_id = :eexamnow_id";
+           $stmt = $pdo->prepare($sql);
+           $stmt -> execute(array(
+               ':eexamnow_id' => $eexamnow_id,
+               ':nom_time' => $nom_time,
+           ));
+
           
+      } 
+       $globephase = $globephase +1;
+        $sql = "UPDATE `Eexamnow`
+         SET `globephase` =:globephase
+           WHERE eexamnow_id = :eexamnow_id";
+           $stmt = $pdo->prepare($sql);
+           $stmt -> execute(array(
+               ':eexamnow_id' => $eexamnow_id,
+               ':globephase' => $globephase
+           ));
+      }
+
+  }
+   // now get the entris we need to populate the values in the html below for this particular exam
+
+   $sql = "SELECT * FROM `Eexamtime` LEFT JOIN Eexamnow ON Eexamtime.eexamtime_id = Eexamnow.eexamtime_id  WHERE Eexamnow.eexamnow_id = :eexamnow_id";
+   $stmt = $pdo->prepare($sql);
+   $stmt -> execute(array(
+       ':eexamnow_id' => $eexamnow_id,
+       )); 
+   $row = $stmt->fetch(PDO::FETCH_ASSOC);
+       
+   if ($row != false) { 
+         $eexamtime_id = $row['eexamtime_id'];
+         $eexamnow_id = $row['eexamnow_id'];
+         $globephase = $row['globephase'];
+         $nom_time = $row['nom_time'];
+         $end_of_phase = $row['end_of_phase'];
+         $exam_code = $row['exam_code'];       
+         $currentclass_id = $row['currentclass_id'];       
+         $exam_num = $row['exam_num'];
+         $iid = $row['iid'];
+         $stop_time = $row['end_of_phase'];
+
+         $sql = 'SELECT name FROM `CurrentClass` WHERE `currentclass_id` = :currentclass_id';
+         $stmt = $pdo->prepare($sql);
+         $stmt -> execute(array(':currentclass_id' => $currentclass_id));
+                     $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                       $class_name = $row['name'];
+   }
+
+  If ($globephase == 0){
+        $start_stop = 'Start Exam';
+        
+    } elseif($globephase == 1){
+        $start_stop = 'Stop Exam';
+        
+    }  elseif($globephase == 2){
+        $start_stop = 'Archive Data';
+        
+    } elseif($globephase == 3){
+        // archive the data from the Examactivity table and Delete the values out of the Eexamnow table
+     /*    
+        $sql = 'DELETE FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
+        $stmt = $pdo->prepare($sql);
+          $stmt -> execute(array(
+          ':eexamnow_id' => $eexamnow_id,
+          ));      
+        
+        
+          $new_eexamtime_id = $eexamtime_id + 1000000;
+          $sql = "UPDATE `Eexamactivity` 
+    SET eexamtime_id = :new_eexamtime_id 
+    WHERE eexamtime_id = :eexamtime_id";
+          $stmt = $pdo->prepare($sql);
+          $stmt -> execute(array(
+              
+              ':eexamtime_id' => $eexamtime_id,
+              ':new_eexamtime_id' => $new_eexamtime_id,
+              
+          ));
+         */
+        header( 'Location: QRPRepo.php' ) ;
+          die();
     
-    
+}   
+  
+
    
 ?>
   <!DOCTYPE html>
@@ -265,28 +242,9 @@ require_once "pdo.php";
 			echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
 			unset($_SESSION['success']);
 		}
-
- 
- 
- 
 ?>
 
-<!--<h3>Print the problem statement with "Ctrl P"</h3>
- <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p> 
 
-
-
- <h1><font  style="font-size:300%; color:blue;"> <?php echo $globephase;?> </font>
-    	<div id="defaultCountdown" style="font-size:300%;color:red;"> </div></h1> 
-<div id = 'backstage_view'>
-    <iframe src="QRPExamPlayers.php?gmact_id=<?php echo($gmact_id);?>" style = "width:100%; height:700px;"></iframe>
-    
-</div>
-
-<div id = 'scorebrd'>
- <iframe src="QRPExamScoreBoard.php?gmact_id=<?php echo($gmact_id);?>" style = "width:100%; height:700px;"></iframe>
-</div>
- -->
 
 <form  method="POST" action = "" id = "submit_form">
 
@@ -294,13 +252,10 @@ require_once "pdo.php";
  <h1> Exam Code = <?php echo $exam_code; ?></h1>
     <h2> Class: <?php echo $class_name; ?></h2>  
    <h2> Exam Number = <?php echo $exam_num; ?></h2>
-    <h2> Current Phase = <?php echo $globephase; ?></h2>
-   <!-- 
-	<p><input type="hidden" name="game_num" id="game_num" size=3 value=<?php echo($game_id);?> ></p>
-    <p style="font-size:100px;">
-    <p><input type="hidden" name="gmact_id" id="gmact_id" size=3 value=<?php echo($gmact_id);?> ></p>
-    <p><input type="hidden" name="on_the_fly" id="on_the_fly" size=3 value=1 ></p>
-   <p> This phase ends at: <?php if (isset($stop_time)) {echo $stop_time;}   ?> UTC </p>-->
+   <h2> Current Phase = <?php echo $globephase; ?></h2>
+   <h2> nomimal time for exam = <?php echo $nom_time; ?> min</h2>
+   <h2> stop time for exam = <?php echo $stop_time; ?> </h2>
+  
       <p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=2 value="<?php echo (htmlentities($stop_time))?>"  ></p>
 
     	<h3><div id="defaultCountdown" style="font-size:300%;color:red;"> </div></h3> 
@@ -319,19 +274,20 @@ require_once "pdo.php";
   
 
   <hr color = "green"> <font color = "blue"> </font>
+  <p><input type="hidden" name="from_QREStart" id="from_QREStart"  value=true ></p>
    <p><input type="hidden" name="globephase" id="globephase"  value=<?php echo($globephase);?> ></p>
    <p><input type="hidden" name="currentclass_id" id="currentclass_id"  value=<?php echo($currentclass_id);?> ></p>
    <p><input type="hidden" name="iid" id="iid"  value=<?php echo($iid);?> ></p>
-   <p><input type="hidden" name="attempt_type" id="attempt_type" value=<?php echo($attempt_type);?> ></p>
-    <p><input type="hidden" name="num_attempts" id="num_attempts"  value=<?php echo($num_attempts);?> ></p>
-   <p><input type="hidden" name="nom_time" id="work_time" value=<?php echo($work_time);?> ></p>
-      <p><input type="hidden" name="exam_num_here" id="exam_num"  value=<?php echo($exam_num);?> ></p>
-   <p><input type="hidden" name="examtime_id" id="examtime_id"  value=<?php echo($examtime_id);?> ></p>
-    <p><input type="hidden" name="exam_code" id="exam_code"  value=<?php echo($exam_code);?> ></p>
+   <p><input type="hidden" name="nom_time" id="nom_time" value=<?php echo($nom_time);?> ></p>
+    <!--  <p><input type="hidden" name="exam_num_here" id="exam_num"  value=<?php echo($exam_num);?> ></p>  -->
+      <p><input type="hidden" name="eexamtime_id" id="examtime_id"  value=<?php echo($eexamtime_id);?> ></p>
+      <p><input type="hidden" name="eexamnow_id" id="eexamnow_id"  value=<?php echo($eexamnow_id);?> ></p>
+      <p><input type="hidden" name="exam_code" id="exam_code"  value=<?php echo($exam_code);?> ></p>
+      <p><input type="hidden" name="end_of_phase" id="end_of_phase"  value=<?php echo($end_of_phase);?> ></p>
    
    
 	<p><input type="hidden" name="globephase" id="globephase" size=3 value=<?php echo($globephase);?> ></p>
-    <h2><input type="checkbox" name="phase_change" value = 1 style="height:15px; width:15px;" id="phase_change" ><?php echo($start_stop);?> </h2>
+     <h2><input type="checkbox" name="phase_change" value = 1 style="height:15px; width:15px;" id="phase_change" ><?php echo($start_stop);?> </h2>  
      <p><input type = "submit" value="Submit Changes" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
 	
     <!--   <p>Working Time: <input type="number" name="work_time" id="work_time" size=5 value=<?php echo($work_time);?>></p > -->
@@ -340,26 +296,16 @@ require_once "pdo.php";
   
     <form  method="POST" action = "QRExamBackStage.php" id = "backstage" target = "_blank">
    <p style="font-size:50px;"></p>
+
    
-   <p><input type="hidden" name="examtime_id" id="examtime_id" value=<?php echo($examtime_id);?> ></p>
+   <p><input type="hidden" name="eexamtime_id" id="eexamtime_id" value=<?php echo($eexamtime_id);?> ></p>
+   <p><input type="hidden" name="eexamnow_id" id="eexamnow_id" value=<?php echo($eexamnow_id);?> ></p>
    
   <p><input type = "submit" name = "backstage" value="Back Stage Exam Data" id="backstage_submit" size="2" style = "width: 30%; background-color: green; color: white"/>  </p>  
   
   </form>
     
-    <!--  
    
-    
-   <form  method="POST" action = "" id = "finish_form">
-   <p style="font-size:50px;"></p>
-   
-   <p><input type="hidden" name="gmact_id" id="gmact_id" value=<?php echo($gmact_id);?> ></p>
-   
-  <p><input type = "submit" name = "finished" value="Kill Game - Clear Data & Return to Repo" id="submit_id" size="2" style = "width: 30%; background-color: red; color: white"/> &nbsp &nbsp </p>  
-  <p> Note - there is a delay of about 3 to 5 seconds to finish game</p>
-  </form>
-    		
-   -->
 
 <script>
 	$(document).ready( function () {
@@ -387,7 +333,7 @@ require_once "pdo.php";
                 var globephase = $("#globephase").val();
                 console.log("globephase is = "+globephase);
                  if (globephase ==0 || globephase >= 2){
-                     $("#defaultCountdown").hide();
+                     $("#defaultCountdown").show();
                 } else {
                    
                      $("#defaultCountdown").show();

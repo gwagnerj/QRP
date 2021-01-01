@@ -1,17 +1,39 @@
 <?php
 	require_once "pdo.php";
 	session_start();
+
 	
-/* 	
-    if (isset($_POST['iid'])) {
-	$iid = $_POST['iid'];
-} else {
-	 $_SESSION['error'] = 'invalid User_id in QRExamPrint0.php ';
-      			header( 'Location: QRPRepo.php' ) ;
-				die();
-}
- */
-$iid = 1;  // temporary
+	if (isset($_POST['eexamtime_id'])) {
+		$eexamtime_id = htmlentities($_POST['eexamtime_id']);
+	  } else {
+		   $_SESSION['error'] = 'invalid eexamtime_id in  QREStart.php ';
+		   header( 'Location: QRPRepo.php' ) ;
+			die();
+	  }
+	
+// get the current class name and the course name
+$sql = 'SELECT currentclass_id, exam_num,iid FROM Eexamtime  WHERE eexamtime_id = :eexamtime_id';
+	$stmt = $pdo->prepare($sql);
+	$stmt -> execute(array (
+	':eexamtime_id' => $eexamtime_id,
+	)); 
+	$examtime_data = $stmt->fetch();  
+	$currentclass_id = $examtime_data['currentclass_id'];
+	$exam_num = $examtime_data['exam_num'];
+	$iid = $examtime_data['iid'];
+
+	$sql = 'SELECT `name` FROM CurrentClass  WHERE currentclass_id = :currentclass_id';
+	$stmt = $pdo->prepare($sql);
+	$stmt -> execute(array (
+	':currentclass_id' => $currentclass_id,
+	)); 
+	$currentclass_data = $stmt->fetch();  
+	$class_name = $currentclass_data['name'];
+	
+
+
+
+//$iid = 1;  // temporary
 	?>
 <!DOCTYPE html>
 <html lang = "en">
@@ -74,38 +96,15 @@ $iid = 1;  // temporary
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
 <form id = "the_form"  method = "POST" action = "QRExamPrint1.php" >
 	
-    <div id ="current_class_dd">	
-				Course: &nbsp;
-				<select name = "currentclass_id" id = "currentclass_id" required>
-				 <option value = "" selected disabled hidden > Select Course  </option> 
-				<?php
-                   
-					$sql = 'SELECT * FROM `CurrentClass` WHERE `iid` = :iid';
-					$stmt = $pdo->prepare($sql);
-					$stmt -> execute(array(':iid' => $iid));
-					while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
-						{ ?>
-						<option value="<?php echo $row['currentclass_id']; ?>" ><?php echo $row['name']; ?> </option>
-						<?php
- 							}
-                    ?>
-                    
-                    
-				</select>
-		</div>
-             </br>
-                <font color=#003399>Exam Number: &nbsp; </font>
-                    
-                    <select id="exam_num" name = "exam_num" required >
-                       <option value="" selected disabled hidden >- Select Exam -</option>
-                    </select>
-                </br>	
-    
-    
+<h3> Class Name: <?php  echo $class_name; ?></h3>
+<h3> Exam Number: <?php  echo $exam_num; ?></h3>
+           
          
-                      <font color=#003399>Exam Versions: &nbsp; </font>
+<font color=#003399>Exam Versions: &nbsp; </font>
                  
                    <div  class = "outer" >
+
+				 
                      <div  class = "inner" >
                  
                              <div>
@@ -128,7 +127,10 @@ $iid = 1;  // temporary
                   </br>
      
             
-             <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
+				  <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
+				  <p><input type="hidden" name="exam_num" id="exam_num" value=<?php echo($exam_num);?> ></p>
+				  <p><input type="hidden" name="currentclass_id" id="currentclass_id" value=<?php echo($currentclass_id);?> ></p>
+				  <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
 			<p><input type = "submit" id = "submit_id"></p>
    
 	
@@ -139,67 +141,7 @@ $iid = 1;  // temporary
 	
 	<script>
 	
-	
-	
-	$(document).ready( function () {
-      
 
- 
-		
-		var currentclass_name = "";
-		
-			$("#currentclass_id").change(function(){
-            var	 currentclass_id = $("#currentclass_id").val();
-                console.log ('currentclass_id: '+currentclass_id);
-				
-				// need to give it 	
-					$.ajax({
-						url: 'getactiveexam.php',
-						method: 'post',
-					
-					data: {currentclass_id:currentclass_id}
-					}).done(function(activeass){
-						console.log("activeass: "+activeass);
-					 console.log(activeass);
-					 activeass = JSON.parse(activeass);
-					 	 $('#active_assign').empty();
-						var i = 0;
-						n = activeass.length;
-						console.log("n: "+n);
-						// $('#active_assign').append("&nbsp;&nbsp;&nbsp;&nbsp;Current exams in system for this course: ") ;	
-						for (i=0;i<n;i++){
-							console.log(activeass[i]);	
-							//$('#exam_num').append(activeass[i]) ;	
-                            var s_act=activeass[i].toString();
-                            console.log(s_act);	
-							 $("#exam_num").append("<option value="+activeass[i]+">"+s_act+"</option>");
-							if (i != n-1){
-								          //    $("#exam_num").append("<option value='"+activeass[i]+"'></option>");
-
-							}
-						}
-						
-					});	
-				
-			
-			 
-		} );
-        
-        $("#exam_num").change(function(){
-            var exam_num = $("#exam_num").val();
-            console.log("exam_num: "+exam_num)
-            
-        });
-        
-        
-        $("#submit_id").click(function(){
-          
-  
-          
-        });
-	
-	} );
-	
 	
 </script>	
 

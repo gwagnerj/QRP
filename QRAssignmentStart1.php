@@ -284,14 +284,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
 
 $_SESSION['counter']=0;  // this is for the score board
 
-	if ( isset($_SESSION['error']) ) {
-			echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
-			unset($_SESSION['error']);
-		}
-		if ( isset($_SESSION['success']) ) {
-			echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
-			unset($_SESSION['success']);
-		}
 	?>
 <!DOCTYPE html>
 <html lang = "en">
@@ -469,10 +461,7 @@ $_SESSION['counter']=0;  // this is for the score board
               -->      
                     
             <br><font color=#003399> Late Policy &nbsp; </font><br>
-           &nbsp;&nbsp; <input type="radio" name="late_points" id = "late_points"
-                    <?php if ((isset($late_points) && $late_points=="linear")  ) echo "checked";?>
-                    value="linear"> Linear decline from Due date to Window Close &nbsp;&nbsp;&nbsp;&nbsp;
-
+        
            &nbsp;&nbsp; <input type="radio" name="late_points" id = "late_points"
                     <?php if ((isset($late_points) && $late_points=="fixedpercent") || !isset($late_points)  ) echo "checked";?>
                     value="fixedpercent"> Fixed Percent of Maximum per day after Due date of: &nbsp;

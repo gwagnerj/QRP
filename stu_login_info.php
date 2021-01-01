@@ -14,14 +14,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 }
 
 
-    
-    if ($_POST['currentclass_id']==0 || $_POST['currentclass_id']=='' || $_POST['iid']==0 || $_POST['iid']=='' ){
-        $_SESSION['error'] = 'Class must be Selected';
-        header( 'Location: QRAssignmentStart0.php?iid='.$iid ) ;
-	   die();
-    }
-    
-      $assign_num = $_POST['active_assign'];
+   if ($_POST['where_from'] != 'QRExamMgmt') {
+        if (($_POST['currentclass_id']==0 || $_POST['currentclass_id']=='' || $_POST['iid']==0 || $_POST['iid']=='' )){
+            $_SESSION['error'] = 'Class must be Selected';
+           header( 'Location: QRAssignmentStart0.php?iid='.$iid ) ;
+           die();
+        }
+      } else {
+        if (($_POST['currentclass_id']==0 || $_POST['currentclass_id']=='' || $_POST['iid']==0 || $_POST['iid']=='' )){
+          $_SESSION['error'] = 'Class must be Selected';
+         header( 'Location: QRExamMgmt.php?iid='.$iid ) ;
+         die();
+        }
+
+      }
+   //   $assign_num = $_POST['active_assign'];
     $currentclass_id = $_POST['currentclass_id'];
     
       $sql = 'SELECT name FROM CurrentClass WHERE currentclass_id = :currentclass_id';
@@ -92,7 +99,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
           }     echo ('</tbody></table><br><br>');
 }
 //echo(' $iid:  '.$iid);
-            echo('<form action = "QRAssignmentStart0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input type = "submit" value ="Back to Edit Assignment"></form> &nbsp;');
+
+
+           if (isset($_POST['active_assign']))
+              { echo('<form action = "QRAssignmentStart0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input type = "submit" value ="Back to Edit Assignment"></form> &nbsp;');} 
+           elseif(isset($_POST['active_exam'])) { 
+               echo('<form action = "QRExamMgmt.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input type = "submit" value ="Back to Edit Exam"></form> &nbsp;');
+            } else { 
+              echo " <a href = 'QRPRepo.php'>";
+            }
 
 
 ?>

@@ -112,7 +112,7 @@ $_SESSION['counter']=0;  // this is for the score board
 
 <body>
 <header>
-<h1>Quick Response Assignment Setup</h1>
+<h1>Quick Response Assignment Managment</h1>
 </header>
 
 <?php
@@ -165,6 +165,7 @@ $_SESSION['counter']=0;  // this is for the score board
             
                     
             <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
+			<p><input type="hidden" name="where_from" id="where_from" value="QRAssignmentStart0" ></p>
 			<p><input type = "submit" name = "submit_name" id = "submit_id" value = "Start / Edit Assignment Activation"></p><hr><br>
             <p><input type="submit" formaction="remove_assignment.php" value="Deactivate Assignment"></p><br>
              <p><input type="submit" formaction="stu_assignment_results.php" value="Student Results">  &nbsp;&nbsp; Load Student Work Images (slow) <input type="checkbox" name="load_images" id = "load_images" checked ></p><br>

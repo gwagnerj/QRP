@@ -2,7 +2,7 @@
 require_once "pdo.php";
 session_start();
 
-// this is a project to get Stage an Exam questions from the nummeic problems in the repository and is run from QRPRepo.php
+// this is a project to get Stage an Eexam questions from the nummeic problems in the repository and is run from QRPRepo.php
 // along with the instuctor_ID (aka users_id) and problem-id to a game table and display the problem for the user to print.
 
 
@@ -73,7 +73,7 @@ $activate_flag = 1; // temp
 	$Users_data = $stmt -> fetch();
 	
     
-    $sql = "SELECT * FROM Exam WHERE iid = :iid AND problem_id = :problem_id";
+    $sql = "SELECT * FROM Eexam WHERE iid = :iid AND problem_id = :problem_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':iid' => $iid,':problem_id' => $problem_id));
 	$Exam_data = $stmt -> fetch();
@@ -84,7 +84,7 @@ $activate_flag = 1; // temp
 	
     // if the assignment data is not equal to false then we already have an entry make the values of the variables equal to the values in the db
 	if($Exam_data != false) {
-		$exam_id = $Exam_data['exam_id'];
+		$eexam_id = $Exam_data['eexam_id'];
 		// echo($assign_id);
 		$exam_num = $Exam_data['exam_num'];
 		$alias_num = $Exam_data['alias_num'];
@@ -97,11 +97,11 @@ $activate_flag = 1; // temp
 		$activate_flag = 0;
 	} else {
 		
-		// initialize a bunch of variables if we do not have a file in assign
+		// initialize a bunch of variables if we do not have a file in exam
 		$activate_flag = 1;	
         
-		$instr_last =  $assign_num =  "";
-		$exam_id = $alias_num = $exam_num = "";
+		$instr_last =  $exam_num =  "";
+		$eexam_id = $alias_num = $exam_num = "";
 		$proctor_id1 = $proctor_id2 = $proctor_id3 = "";
 		$currentclass_id = '';
 	}
@@ -109,10 +109,10 @@ $activate_flag = 1; // temp
 // we have a file and are trying to unstage it  
    if(isset($_POST['Unstage']) && $Exam_data != false){
 	 
-	 $sql = "DELETE FROM Exam WHERE exam_id = :exam_id";  
+	 $sql = "DELETE FROM Eexam WHERE eexam_id = :eexam_id";  
 	   $stmt = $pdo -> prepare($sql);
 	   $stmt -> execute(array(
-		':exam_id' => $exam_id
+		':eexam_id' => $eexam_id
 	   ));
 	 
 	//echo('the problem was deactivated'.$assign_id);
@@ -141,7 +141,7 @@ if(isset($_POST['Stage']) && $Exam_data==false){
 		$class_exp_date = $class_exp_data['exp_date'];
 
 	if($exp_date > $class_exp_date){
-	$_SESSION['error']	= 'Expiration date of Exam cannot exceed the expiration date on the class';
+	$_SESSION['error']	= 'Expiration date of Eexam cannot exceed the expiration date on the class';
 		
         echo  "<script type='text/javascript'>";
         echo "window.close();";
@@ -168,7 +168,7 @@ if(isset($_POST['Stage']) && $Exam_data==false){
 
 // check to make sure the problem number for that exam and class is not already in the system
 		
-		$sql = "SELECT exam_id FROM Exam WHERE currentclass_id = :currentclass_id AND alias_num = :alias_num AND exam_num = :exam_num";
+		$sql = "SELECT eexam_id FROM Eexam WHERE currentclass_id = :currentclass_id AND alias_num = :alias_num AND exam_num = :exam_num";
 		$stmt = $pdo->prepare($sql);
 		$stmt->execute(array(
 			':currentclass_id' => $currentclass_id,
@@ -183,7 +183,7 @@ if(isset($_POST['Stage']) && $Exam_data==false){
         echo "</script>";
 		}
 	 // Prepare an insert statement
-        $sql = "INSERT INTO Exam (instr_last, iid, university,  exam_num, problem_id, exp_date,proctor_id1,proctor_id2,proctor_id3,alias_num,currentclass_id)
+        $sql = "INSERT INTO Eexam (instr_last, iid, university,  exam_num, problem_id, exp_date,proctor_id1,proctor_id2,proctor_id3,alias_num,currentclass_id)
 		VALUES (:instr_last, :iid,:university,:exam_num,:problem_id,:exp_date,:proctor_id1,:proctor_id2,:proctor_id3,:alias_num,:currentclass_id)";
          
        
@@ -235,12 +235,12 @@ if(isset($_POST['Stage']) && $Exam_data==false){
 			$proctor_id3=$_POST['proctor_id3'];
 		} 
 		
-        	$sql = "UPDATE Exam SET   exam_num = :exam_num, exp_date = :exp_date,
+        	$sql = "UPDATE Eexam SET   exam_num = :exam_num, exp_date = :exp_date,
 			proctor_id1 = :proctor_id1, proctor_id2 = :proctor_id2, proctor_id3 = :proctor_id3, alias_num = :alias_num
-					WHERE exam_id = :exam_id";
+					WHERE eexam_id = :eexam_id";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
-			':exam_id' => $exam_id,
+			':eexam_id' => $eexam_id,
 			
 			
 			':exam_num' => $exam_num,
@@ -339,14 +339,14 @@ if(isset($_POST['Stage']) && $Exam_data==false){
 			</br> <input type= "text" Name="alias_num" id = "alias_num" size="1" <?php if(strlen($alias_num) !== 0){echo ('value ='.$alias_num);  }?> required> Problem Number Within Exam <br>
 
          
-				<p><font >When Should this Exam Expire (max is 6 months from now) </font><input type="date" name="exp_date" value = "2020-05-13"   id="exp_date" ></p>
+				<p><font >When Should this Eexam Expire (max is 6 months from now) </font><input type="date" name="exp_date" value = "2020-05-13"   id="exp_date" ></p>
 				
 			
 			
 			
 			<div id = "allow_proctor">
 				</br>
-				&nbsp Who can Activate and Proctor this Exam: </br>
+				&nbsp Who can Activate and Proctor this Eexam: </br>
 				&nbsp &nbsp <input type="radio" name="allow_proct" class = "allow_proct_class" value=0 checked> Only me <br>
 				&nbsp &nbsp <input type="radio" name="allow_proct" class = "allow_proct_class" value=1 id = "allow_proct" > Allow myself and Users with the following IDs:
 				<input type = "number" name = "proctor_id1" id = "proctor_id1" min = "0" max = "10000" value = "<?php if ($Exam_data['proctor_id1'] !=null){echo $Exam_data['proctor_id1'];} else{echo'';}?>">

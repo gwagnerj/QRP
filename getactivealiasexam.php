@@ -6,7 +6,7 @@ session_start();
 		$exam_num = $_POST['exam_num'];
 		
 			$stmt = "SELECT alias_num
-			FROM Exam
+			FROM Eexam
 			WHERE currentclass_id ='".$currentclass_id."' AND exam_num ='".$exam_num."' ORDER BY alias_num" ; 
 			
 			$stmt = $pdo->prepare($stmt);	

@@ -11,16 +11,43 @@
         elseif (isset($_GET['iid'])){
             $iid = $_GET['iid'];
         } 
-      
         else {
-    
-	 $_SESSION['error'] = 'invalid User_id (iid) in QRExamRetrieve.php '.$_GET['iid'];
+			 $_SESSION['error'] = 'invalid User_id (iid) in QRExamRetrieve.php '.$_GET['iid'];
       			header( 'Location: QRPRepo.php' ) ;
 				die();
-}
+		}
 
-// this is called from the main repo and this will collect initial data from instructor and proceed to QREStart.php
+		if(isset($_POST['currentclass_id'])){
+            $currentclass_id = $_POST['currentclass_id'];
+        } 
+        elseif (isset($_GET['currentclass_id'])){
+            $currentclass_id = $_GET['currentclass_id'];
+        } 
+        else {
+			 $_SESSION['error'] = 'invalid course name in QRExamRetrieve.php';
+      			header( 'Location: QRPRepo.php' ) ;
+				die();
+		}
+		
+		if(isset($_POST['exam_num'])){
+            $exam_num = $_POST['exam_num'];
+        } 
+        elseif (isset($_GET['exam_num'])){
+            $exam_num = $_GET['exam_num'];
+        } 
+        else {
+			 $_SESSION['error'] = 'invalid exam num in QRExamRetrieve.php';
+      			header( 'Location: QRPRepo.php' ) ;
+				die();
+		}
 
+// get the name of the class from the db
+		$sql = 'SELECT `name` FROM `CurrentClass` WHERE `iid` = :iid && currentclass_id = :currentclass_id ';
+		$stmt = $pdo->prepare($sql);
+		$stmt -> execute(array(':iid' => $iid,':currentclass_id' => $currentclass_id));
+		$row = $stmt->fetch();
+		$class_name = $row['name'];
+		//echo $class_name;
 
 
 
@@ -82,39 +109,45 @@ $_SESSION['counter']=0;  // this is for the score board
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
 <form id = "the_form"  method = "POST" action = "QRERetrieve.php" >
 	
-    <div id ="current_class_dd">	
-				Course: &nbsp;
-				<select name = "currentclass_id" id = "currentclass_id">
-				 <option value = "" selected disabled hidden > Select Course  </option> 
-				<?php
+    
                    
-					$sql = 'SELECT * FROM `CurrentClass` WHERE `iid` = :iid';
-					$stmt = $pdo->prepare($sql);
-					$stmt -> execute(array(':iid' => $iid));
-					while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
-						{ ?>
-						<option value="<?php echo $row['currentclass_id']; ?>" ><?php echo $row['name']; ?> </option>
-						<?php
- 							}
-                    ?>
+					
                     
-                    
-				</select>
-		</div>
+             <h2>
+			 Class Name: <?php  echo ($class_name);?> </h2>
+			 <h2>
+			 Exam / Quiz Number: <?php  echo ($exam_num);?>
+			 </h2>       
+			
+
+			
+		
              </br>
                 <font color=#003399>Exam Code (latest on top of list): &nbsp; </font>
                     
                     <select id="exam_code" name = "exam_code" required >
-                       <option value="0">- Select Exam -</option>
+                       <option value="0">- Select Exam Code -</option>
+
+					   <?php
+
+							$sql = "SELECT DISTINCT exam_code
+							      FROM Examactivity 
+									WHERE currentclass_id =:currentclass_id  ORDER BY created_at DESC"; 
+									
+							$stmt = $pdo->prepare($sql);
+							$stmt -> execute(array(':currentclass_id' => $currentclass_id));
+							while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
+								{ ?>
+								<option value="<?php echo $row['exam_code']; ?>" ><?php echo $row['exam_code']; ?> </option>
+								<?php
+							}
+				   ?>
                     </select>
                 </br>	
-    
-       
-           
-        
             
-            
-             <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
+				<p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
+				<p><input type="hidden" name="currentclass_id" id="currentclass_id" value=<?php echo($currentclass_id);?> ></p>
+				<p><input type="hidden" name="exam_num" id="exam_num" value=<?php echo($exam_num);?> ></p>
 			<p><input type = "submit" id = "submit_id"></p>
    
 	
@@ -124,83 +157,7 @@ $_SESSION['counter']=0;  // this is for the score board
 	<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
 	
 	<script>
-	
-	
-	
-	$(document).ready( function () {
-        
-		
-		var currentclass_name = '';
-		
-			$("#currentclass_id").change(function(){
-            var	 currentclass_id = $("#currentclass_id").val();
-                console.log ('currentclass_id: '+currentclass_id);
-				
-				// need to give it 	
-					$.ajax({
-						url: 'getoldexam.php',
-						method: 'post',
-					
-					data: {currentclass_id:currentclass_id}
-					}).done(function(codenum){
-						console.log("codenum: "+codenum);
-					 console.log(codenum);
-					 codenum = JSON.parse(codenum);
-					 	 $('#exam_code').empty();
-						var i = 0;
-						n = codenum.length;
-						console.log("n: "+n);
-						
-						for (i=0;i<n;i++){
-							console.log(codenum[i]);	
-							
-                            var s_act=codenum[i].toString();
-                            console.log(s_act);	
-							 $("#exam_code").append("<option value="+codenum[i]+">"+s_act+"</option>");
-							if (i != n-1){
-								       
-							}
-						}
-						
-					});	
-				
-			
-			 
-		} );
-        
-        $("#exam_num").change(function(){
-            var exam_num = $("#exam_num").val();
-            console.log("exam_num: "+exam_num)
-            
-        });
-        
-        
-        $("#submit_id").click(function(){
-          
-        /*    
-          $.ajax({
-             type: "POST",
-             url: "QREStart.php",
-             data: {currentclass_id:currentclass_id,exam_num:exam_num},
-             success: function(msg) {
-                alert("Form Submitted: " + msg);
-             }
-          });
-           */
-         /*  $.ajax({
-				url: 'QREStart.php',
-				method: 'post',
-				data: {currentclass_id:currentclass_id,exam_num:exam_num}
-					})
-           */
-          
-        // $.post("QREStart.php",{currentclass_id:currentclass_id, exam_num:exam_num},);  
-          
-        });
-	
-	} );
-	
-	
+
 </script>	
 
 </body>

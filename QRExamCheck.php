@@ -3,8 +3,12 @@ session_start();
 //	if(session_status()!=PHP_SESSION_ACTIVE) session_start();  // put this in to try to get rid of a warning of headers already sent - didn't work
 	require_once "pdo.php";
 
-    
+    $get_flag = 1;
+    if (isset($_POST['post_submit'])){
+      $get_flag = 0;
 
+    }
+// echo ($_POST['b']);
 
 
  if (!empty($_GET)) {
@@ -115,75 +119,70 @@ session_start();
 	  return;   
     }
     $_SESSION['dex'] = $dex;
-      $get_flag = 0;
-      if (isset($_POST['examactivity_id'])){
-        $examactivity_id = $_POST['examactivity_id'];
+     
+      if (isset($_POST['eactivity_id'])){
+        $eactivity_id = $_POST['eactivity_id'];
         
+        } elseif($_GET['eactivity_id']){
         
-        
-        
-        } elseif($_GET['examactivity_id']){
-        
-                $get_flag =1; // coming in from an external file
+            
                 
-               $examactivity_id = $_GET['examactivity_id'];
+               $eactivity_id = $_GET['eactivity_id'];
 
 
  
-        } elseif(isset($_SESSION['examactivity_id'])){
-         $examactivity_id = $_SESSION['examactivity_id'];
+        } elseif(isset($_SESSION['eactivity_id'])){
+         $eactivity_id = $_SESSION['eactivity_id'];
         } else{
-       $_SESSION['error_check'] = "Missing examactivity_id from QRExamCheck";
+       $_SESSION['error_check'] = "Missing eactivity_id from QRExamCheck";
 	  header('Location: QRexam_closed.php');
 	  return;   
     }
-    $_SESSION['examactivity_id'] = $examactivity_id;
-   
+
+   // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Session
+    $_SESSION['eactivity_id'] = $eactivity_id;
+  	$_SESSION['wrote_try_flag']=false;
+
+
    // get the 
        
         // initialize a few variables
-        
-         $_SESSION['score'] = "0";
-			
-			$count = 0;
-			for ($j=0;$j<=9;$j++){
-					$wrongCount[$j]=0;		// accumulates how many times they missed a part
-//				$_SESSION['wrongC'[$j]]=0; // temp
-					$changed[$j]=0;		// 1 if they changed their response ero otherwise
-					$addCount[$j]=0;  // this is zero if they get it right and 1 if they get it wrong
-			}	
-			
-	
-			
-			
-			$score = 0;
+    	$score = 0;
 			$PScore = 0;
-			$partsFlag = array();
-			$resp = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
-			//$resp = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
-			$corr = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
-     		$corr_num = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
+			$count = 0;
 
-			$unit = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
-			$tol=array('a'=>0.02,'b'=>0.02,'c'=>0.02,'d'=>0.02,'e'=>0.02,'f'=>0.02,'g'=>0.02,'h'=>0.02,'i'=>0.02,'j'=>0.02);
+  // Initialize all of the arrays we need to zero out
+  $i = 0;
+      foreach(range('a','j') as $v){
+       $resp[$v] =0;
+       $old_resp[$v] = 0;  // don't ask why this is not an associative array
+        $corr[$v] ="";
+        $corr_num[$v] =0;
+        $unit[$v] = "";
+        $tol[$v] = 0;
+        $wrongCount[$i]=0; 	// accumulates how many times they missed a part
+        $changed[$i]=false;		// 1 if they changed their response ero otherwise
+        $i++;
+    }
+			$partsFlag = array();
 			$ansFormat=array('ans_a' =>"",'ans_b' =>"",	'ans_c' =>"",'ans_d' =>"",'ans_e' =>"",'ans_f' =>"",	'ans_g' =>"",'ans_h' =>"",'ans_i' =>"",'ans_j'=>"");
 			
-			
-			$hintLimit = 3;
-			$dispBase = 1;
-			
-			$_SESSION['wrote_try_flag']=false;
 
 			$tol_key=array_keys($tol);
 			$resp_key=array_keys($resp);
 			$corr_key=array_keys($corr);
 			$ansFormat_key=array_keys($ansFormat);
-			
+      
+      
+// these need to be read in +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 			$time_sleep1 = 10;  // time delay in seconds
 			$time_sleep1_trip = 5;  // number of trials it talkes to trip the time delay
-			$time_sleep2 = 10;  // additional time if hit the next limit
-			$time_sleep2_trip = 30;	
-			
+			$time_sleep2 = 60;  // additional time if hit the next limit
+      $time_sleep2_trip = 10;	
+    	$hintLimit = 3;
+			$dispBase = 1;
+			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			// see if the problem has been suspended	
 				
 			$stmt = $pdo->prepare("SELECT * FROM Problem where problem_id = :problem_id");
@@ -202,25 +201,12 @@ session_start();
 				header( 'Location: QRexam_closed.php' ) ;
 				return;	
 			}
-				
-		
-
 	
 			// get the tolerances and if the part has any hintfile	
-				
-				
-			$tol['a']=$probData['tol_a']*0.001;	
-			$tol['b']=$probData['tol_b']*0.001;
-			$tol['c']=$probData['tol_c']*0.001;	
-			$tol['d']=$probData['tol_d']*0.001;
-			$tol['e']=$probData['tol_e']*0.001;	
-			$tol['f']=$probData['tol_f']*0.001;
-			$tol['g']=$probData['tol_g']*0.001;	
-			$tol['h']=$probData['tol_h']*0.001;
-			$tol['i']=$probData['tol_i']*0.001;	
-			$tol['j']=$probData['tol_j']*0.001;	
-            
-			
+      foreach(range('a','j') as $v){
+        $tol[$v] = $probData['tol_'.$v]*0.001;	
+     }
+
 			
 			if (strlen($probData['hint_a'])>1){$hinta = $probData['hint_a'];$hintaPath="uploads/".$hinta;} else {$hintaPath ="uploads/default_hints.html";	}
 			if (strlen($probData['hint_b'])>1){$hintb = $probData['hint_b'];$hintbPath="uploads/".$hintb;} else {$hintbPath ="uploads/default_hints.html";	}
@@ -235,7 +221,7 @@ session_start();
 					
 			$unit = array_slice($row,22,20);  // does the same thing but easier so long as the table always has the same structure
 			//print_r($unit);
-			
+			// +++++++++++++++++++++++++ fix this array slice bs +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			
 		
 			// Next check the Qa table and see which values have non null values - for those 
@@ -244,12 +230,12 @@ session_start();
 			$stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
 			$row = $stmt -> fetch();
 			if ( $row === false ) {
-				$_SESSION['error'] = 'Bad value for problem_id';
+				$_SESSION['error_check'] = 'Bad value for problem_id';
 				header( 'Location: QRexam_closed.php' ) ;
 				return;
 			}	
 				$soln = array_slice($row,6,20); // this would mean the database table Qa would have the same structure - change the structure of the table and you break the code
-			
+			// +++++++++++++++++++++++++ fix this array slice bs +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 			for ($i = 0;$i<=9; $i++){  
 				if ($soln[$i]>=1.2e43 && $soln[$i] < 1.3e43) {
@@ -259,71 +245,503 @@ session_start();
 					$partsFlag[$i]=true;
 				}
 			}
-			
-        
-             $stmt = $pdo->prepare("SELECT *  FROM `Examactivity` WHERE examactivity_id = :examactivity_id");
-			$stmt->execute(array(":examactivity_id" => $examactivity_id));
-			$row = $stmt -> fetch();
-            $examtime_id = $row['examtime_id'];
-            $suspend_flag = $row['suspend_flag'];
-			$work_time = $row['work_time'];
-            $minutes = $row['minutes'];
-            $created_at = $row['created_at'];
-            $name = $row['name'];
       
+    //  var_dump($partsFlag); 
 
+       $sql = 'SELECT Eactivity.created_at AS created_at, last_name, first_name, eexamnow_id, Eactivity.updated_at AS updated_at
+                FROM `Eactivity`
+                LEFT JOIN 
+                     Student ON Student.student_id = Eactivity.student_id
+                WHERE eactivity_id = :eactivity_id'; 
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(array(":eactivity_id" => $eactivity_id));
+            $row = $stmt -> fetch();
+            $eexamnow_id = $row['eexamnow_id'];
+            $suspend_flag = 0;
+            $created_at = $row['created_at'];
+            $stu_name = $row['first_name'].' '.$row['last_name'];
             $updated_at = $row['updated_at'];
-            $problem_id1 = $row['problem_id1'];
-            $problem_id2 = $row['problem_id2'];
-            $problem_id3 = $row['problem_id3'];
-            $problem_id4 = $row['problem_id4'];
-            $problem_id5 = $row['problem_id5'];
-            if($problem_id == $problem_id1){$response_key = 'response_pblm1'; $display_ans_key = 'display_ans_pblm1'; $problem_score_key = 'pblm_1_score'; $trynum_pblm = 'trynum_pblm1'; $count = $row['trynum_pblm1'];$response = $row['response_pblm1'];$display_ans = $row['display_ans_pblm1'];}
-            if($problem_id == $problem_id2){$response_key = 'response_pblm2'; $display_ans_key = 'display_ans_pblm2'; $problem_score_key = 'pblm_2_score'; $trynum_pblm = 'trynum_pblm2'; $count = $row['trynum_pblm2'];$response = $row['response_pblm2'];$display_ans = $row['display_ans_pblm2'];}
-            if($problem_id == $problem_id3){$response_key = 'response_pblm3'; $display_ans_key = 'display_ans_pblm3'; $problem_score_key = 'pblm_3_score'; $trynum_pblm = 'trynum_pblm3'; $count = $row['trynum_pblm3'];$response = $row['response_pblm3'];$display_ans = $row['display_ans_pblm3'];}
-            if($problem_id == $problem_id4){$response_key = 'response_pblm4'; $display_ans_key = 'display_ans_pblm4'; $problem_score_key = 'pblm_4_score'; $trynum_pblm = 'trynum_pblm4'; $count = $row['trynum_pblm4'];$response = $row['response_pblm4'];$display_ans = $row['display_ans_pblm4'];}
-            if($problem_id == $problem_id5){$response_key = 'response_pblm5'; $display_ans_key = 'display_ans_pblm5'; $problem_score_key = 'pblm_5_score'; $trynum_pblm = 'trynum_pblm5'; $count = $row['trynum_pblm5'];$response = $row['response_pblm5'];$display_ans = $row['display_ans_pblm5'];}
-            
-
-            $response = explode(",",$response);
-         //  print_r('response array 1 =  '.$response[0]);
-          $oldresp_flag = 0;
-          for ($j=0; $j<=9; $j++) {
-               if (@$response[$j]==1){
-                   $resp[$resp_key[$j]]=$soln[$j];
-                   $oldresp_flag = 1;
-               } 
-           }
-  
-             $stmt = $pdo->prepare("SELECT *  FROM `Examtime` WHERE examtime_id = :examtime_id");
-			$stmt->execute(array(":examtime_id" => $examtime_id));
-			$row = $stmt -> fetch();
-            if ($row == false){
+ // echo 'eexamnow_id: '.$eexamnow_id;
+     
+     $sql = 'SELECT * FROM  Eexamnow
+     WHERE  eexamnow_id = :eexamnow_id';
+       $stmt = $pdo->prepare($sql);
+       $stmt->execute(array(':eexamnow_id' => $eexamnow_id));
+       $eexamnow_data = $stmt -> fetch();
+       if ($eexamnow_data == false){
+        $_SESSION['error_check'] = 'eexamnow not defined in QEExamCheck';
+            header('Location: QRexam_closed.php');
+          return;     
+      }
+  //    echo ('eexamnow_id: '.$eexamnow_id); 
+ //      echo ('eactivity_id: '.$eactivity_id);
+      $globephase = $eexamnow_data['globephase'];
+    //   echo ('globephase: '.$globephase);
+    
+       $eexamtime_id = $eexamnow_data['eexamtime_id'];
+       $exam_code = $eexamnow_data['exam_code'];
+ 
+     
+     $sql = ' SELECT * 
+            FROM  Eexamtime 
+            WHERE  eexamtime_id = :eexamtime_id';
+          $stmt = $pdo->prepare($sql);
+  	    	$stmt->execute(array(":eexamtime_id" => $eexamtime_id));
+		  	 $eexamtime_data = $stmt -> fetch();
+            if ($eexamtime_data == false){
+              $_SESSION['error_check'] = 'phase is not for active exam eexamnow_id ='.$eexamnow_id;
                   header('Location: QRexam_closed.php');
                 return;     
-                
             }
-            $globephase = $row['globephase'];
-            $attempt_type = $row['attempt_type'];
-             $num_attempts = $row['num_attempts'];
-            $ans_n = $row['ans_n'];
-            $ans_t = $row['ans_t'];             
+
+
+            $work_flow = $eexamtime_data['work_flow'];
+            $attempt_type = $eexamtime_data['attempt_type'];
+             $num_attempts = $eexamtime_data['num_attempts'];
+            $ans_n = $eexamtime_data['ans_n'];
+            $ans_t = $eexamtime_data['ans_t'];             
             if ($globephase != 1){
-                header('Location:QRexam_closed.php');
+              $_SESSION['error_check'] = 'phase indicates exam is over.  globephae = '.$globephase. ' eexamnow_id is '.$eexamnow_id;
+
+                header('Location: QRexam_closed.php');
                 return;    
             }
      // keep track of the number of tries the student makes
-	// get the count from the examactivity table
+	// get the count from the eactivity table
   
-   if(is_null($count)){   // first time no tries initialise count and wrong count
+ /*   if(is_null($count)){   // first time no tries initialise count and wrong count
 		$count = 0;
+   }
 
-		for ($j=0;$j<=9;$j++){
-					$wrongCount[$j]=0;
-					@$_SESSION['wrongC'[$j]]=$wrongCount[$j]; 
-				}
-	}
 
+
+ */
+
+  // if there are entries in the eresp table use those for the old response
+
+
+
+ if($dex !=1 ) {
+
+    $sql = 'SELECT DISTINCT part_name FROM Eresp WHERE eactivity_id = :eactivity_id';
+          $stmt = $pdo->prepare($sql);
+          $stmt ->execute(array(
+          ':eactivity_id' => $eactivity_id,
+          ));
+          $part_names = $stmt ->fetchAll();
+          if ($part_names != false){
+            foreach($part_names as $part_name){
+              $sql2 = 'SELECT part_name, resp_value FROM Eresp WHERE part_name = :part_name AND eactivity_id = :eactivity_id ORDER BY eresp_id DESC LIMIT 1';
+              $stmt = $pdo->prepare($sql2);
+              $stmt ->execute(array(
+                ':eactivity_id' => $eactivity_id,
+                ':part_name' => $part_name['part_name'],
+              ));
+              $old_resp_data = $stmt ->fetch();
+              $old_resp[$old_resp_data['part_name']] = $old_resp_data['resp_value'];
+            }
+      }
+
+    // check if they have selected the answer on any parts also look for Wrong counts
+      $sql = 'SELECT * FROM Eactivity WHERE eactivity_id = :eactivity_id ';
+        $stmt = $pdo->prepare($sql);
+        $stmt ->execute(array(
+          ':eactivity_id' => $eactivity_id,
+          ));
+          $eactivity_data = $stmt ->fetch();
+          $count_tot = $eactivity_data['count_tot'];
+          if (is_null($count_tot)){
+            $count_tot = 0;
+          }
+        
+        $i = 0;
+          foreach(range('a','j') as $v){
+              $display_ans[$i] = $eactivity_data['display_ans_'.$v];
+              $wrongCount[$i] = $eactivity_data['wcount_'.$v];
+              $corr_num[$v] = $eactivity_data['correct_'.$v];
+              if($corr_num[$v] ==1){$corr[$v] = 'Correct';} // else {$corr[$v] = 'Not Correct';}
+            $i++;
+            }
+  }  
+  else {
+// Do the same thing as above for is this is the basecase
+
+
+    $sql = 'SELECT DISTINCT part_name FROM Ebc_resp WHERE eactivity_id = :eactivity_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt ->execute(array(
+    ':eactivity_id' => $eactivity_id,
+    ));
+    $part_names = $stmt ->fetchAll();
+    if ($part_names != false){
+      foreach($part_names as $part_name){
+        $sql2 = 'SELECT part_name, resp_value FROM Ebc_resp WHERE part_name = :part_name AND eactivity_id = :eactivity_id ORDER BY ebc_resp_id DESC LIMIT 1';
+        $stmt = $pdo->prepare($sql2);
+        $stmt ->execute(array(
+          ':eactivity_id' => $eactivity_id,
+          ':part_name' => $part_name['part_name'],
+        ));
+        $old_resp_data = $stmt ->fetch();
+        $old_resp[$old_resp_data['part_name']] = $old_resp_data['resp_value'];
+      }
+}
+
+
+$sql = 'SELECT * FROM Eactivity WHERE eactivity_id = :eactivity_id ';
+  $stmt = $pdo->prepare($sql);
+  $stmt ->execute(array(
+    ':eactivity_id' => $eactivity_id,
+    ));
+    $eactivity_data = $stmt ->fetch();
+
+    /* 
+    $count_tot = $eactivity_data['count_tot'];
+    if (is_null($count_tot)){
+      $count_tot = 0;
+    }
+
+ */
+  $i = 0;
+    foreach(range('a','j') as $v){
+        $display_ans[$i] = $eactivity_data['display_bc_ans_'.$v];
+        $wrongCount[$i] = $eactivity_data['wcount_bc_'.$v];
+        $corr_num[$v] = $eactivity_data['bc_correct_'.$v];
+        if($corr_num[$v] ==1){$corr[$v] = 'Correct';} // else {$corr[$v] = 'Not Correct';}
+      $i++;
+      }
+
+  }      
+
+// var_dump($old_resp);
+    $i = 0;
+    if ($get_flag == 1){   // coming in on a get (not a recheck) but either from a refresh or coming back to problem from qrdisplayPblm)
+        foreach(range('a','j') as $v){
+          //  echo ('i: '.$i);
+            if( $partsFlag[$i] && isset($old_resp[$v])){ 
+              $resp[$v]=$old_resp[$v];
+            }
+            $i++;
+         }
+    }
+
+
+/* 
+
+    $sql = 'SELECT * FROM Eresp WHERE eresp_id IN (SELECT max(eresp_id) From Eresp WHERE eactivity_id = :eactivity_id Group BY part_name)'; // this took longer than it should have to come up with - I hope it works
+         $stmt = $pdo->prepare($sql);
+         $stmt ->execute(array(
+          ':eactivity_id' => $eactivity_id,
+        ));
+        $old_resp_data = $stmt ->fetchAll();
+        if ($old_resp_data != false){
+          foreach($old_resp_data as $old_resp_datum){
+            $old_resp[$old_resp_datum['part_name']]=$old_resp_datum['resp_value'];
+          }
+        }
+
+    */     
+       
+
+
+// $resp_data = $stmt -> fetch();
+ // var_dump($get_flag);
+
+
+
+  // this is the big if that was taken from the QRchecker2.php for the homework 
+if( $get_flag ==0){ // if we are comming in from this file on a post
+    // get the old repsonses from the response table check to see which ones have changed and 
+     
+  //    $changed_flag = false;
+  
+      $changed_flag = false;  // this will eventually counts the number of times they hit check and have changed at least one value
+      $switch_to_bc = 0;
+
+  // get the values from the post and see if they have changed and if they have put them in the resp table
+
+  $i =0;
+  foreach(range('a','j') as $v){
+      if( $partsFlag[$i]){ 
+        $resp[$v]=(float)$_POST[$v]+0.0;
+        if(isset($old_resp[$v]) && isset($resp[$v])){
+          if($_POST[$v]==$old_resp[$v] ){
+              $changed[$i]= false;
+          } else { 
+            $changed[$i]=true;
+            $changed_flag = true;
+
+
+            if ($dex !=1) {
+
+
+                $sql = 'INSERT INTO Eresp (eactivity_id, resp_value,part_name) VALUES (:eactivity_id, :resp_value, :part_name)';
+                $stmt = $pdo->prepare($sql);
+                $stmt ->execute(array(
+                    ':eactivity_id' => $eactivity_id,
+                    ':resp_value' => $resp[$v],
+                    ':part_name' => $v
+                ));
+                // this next part gets the time that they have been working on the problem and probably belongs somewhere elseif
+                $sql = 'SELECT UNIX_TIMESTAMP(`created_at`) AS created_at FROM Eresp WHERE eactivity_id = :eactivity_id AND part_name = :part_name ORDER BY eresp_id DESC LIMIT 1';
+                  $stmt = $pdo->prepare($sql);
+                  $stmt ->execute(array(
+                    ':eactivity_id' => $eactivity_id,
+                    ':part_name' => $v,
+                  ));
+                  $original_dates = $stmt -> fetch();                
+                  $last_date = $original_dates['created_at'];
+                
+                // get the time they have been working on this part from the Eresp table  - this is sorted in ascending order and the one above descending 
+                $sql = 'SELECT UNIX_TIMESTAMP(`created_at`) AS created_at FROM Eresp WHERE eactivity_id = :eactivity_id AND part_name = :part_name ORDER BY eresp_id ASC LIMIT 1';
+                $stmt = $pdo->prepare($sql);
+                $stmt ->execute(array(
+                    ':eactivity_id' => $eactivity_id,
+                    ':part_name' => $v,
+                  ));
+                  $original_dates = $stmt -> fetch();                
+                  $first_date = $original_dates['created_at'];
+                  
+                if (is_numeric($last_date) && is_numeric($first_date))
+                {$diff_time_min = round(($last_date - $first_date)/60);} else {$diff_time_min=0;}
+             } else {
+
+
+              $sql = 'INSERT INTO Ebc_resp (eactivity_id, resp_value,part_name) VALUES (:eactivity_id, :resp_value, :part_name)';
+              $stmt = $pdo->prepare($sql);
+              $stmt ->execute(array(
+                  ':eactivity_id' => $eactivity_id,
+                  ':resp_value' => $resp[$v],
+                  ':part_name' => $v
+              ));
+              // this next part gets the time that they have been working on the basecase and probably belongs somewhere elseif
+              $sql = 'SELECT UNIX_TIMESTAMP(`created_at`) AS created_at FROM Ebc_resp WHERE eactivity_id = :eactivity_id AND part_name = :part_name ORDER BY ebc_resp_id DESC LIMIT 1';
+                $stmt = $pdo->prepare($sql);
+                $stmt ->execute(array(
+                  ':eactivity_id' => $eactivity_id,
+                  ':part_name' => $v,
+                ));
+                $original_dates = $stmt -> fetch();                
+                $last_date = $original_dates['created_at'];
+              
+              // get the time they have been working on this part from the Eresp table  - this is sorted in ascending order and the one above descending 
+              $sql = 'SELECT UNIX_TIMESTAMP(`created_at`) AS created_at FROM Ebc_resp WHERE eactivity_id = :eactivity_id AND part_name = :part_name ORDER BY ebc_resp_id ASC LIMIT 1';
+              $stmt = $pdo->prepare($sql);
+              $stmt ->execute(array(
+                  ':eactivity_id' => $eactivity_id,
+                  ':part_name' => $v,
+                ));
+                $original_dates = $stmt -> fetch();                
+                $first_date = $original_dates['created_at'];
+                
+              if (is_numeric($last_date) && is_numeric($first_date))
+              {$diff_time_min = round(($last_date - $first_date)/60);} else {$diff_time_min=0;}
+
+
+             }
+
+
+
+/* 
+              // this is the logic to see if we should go to the basecase because of taking too much time or getting too many wrong
+              if($work_flow == 'bc_if' && $count_data >= $p_bc_n && $diff_time_min > $p_bc_t && $activity_data["bc_correct_".$v] != 1)
+              {$go_to_bc[$i] = 1; $switch_to_bc = 1;} else {$go_to_bc[$i] = 0;}   
+
+ */              
+          }
+        }
+      }
+      $i++;
+   }
+   if ($changed_flag){
+        $count_tot++;
+    }
+
+// See whcih ones they got correct
+
+ 
+//var_dump($changed); echo('<br><br>');
+//var_dump($wrongCount); echo('<br><br>');
+//var_dump($soln); echo('<br><br>');
+// var_dump($resp); echo('<br><br>');
+//var_dump($old_resp) ;echo('<br><br>');
+ 
+		for ($j=0; $j<=9; $j++) {
+			if($changed[$j] ) {
+   
+					//If ($soln[$j]>((1-$tol[$tol_key[$j]])*$resp[$resp_key[$j]]) and ($soln[$j]<((1+$tol[$tol_key[$j]]))*($resp[$resp_key[$j]]))) //if the correct value is within the response plus or minus the tolerance
+								
+                if($soln[$j]==0){  // take care of the zero solution case
+                    $sol=1;
+                } else {
+                    $sol=$soln[$j];
+                }	
+                
+                if(	abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]]) {
+                        $corr_num[$corr_key[$j]]=1;
+                        $corr[$corr_key[$j]]='Correct';
+                        $score=$score+1;
+                                            
+                            }
+                else  // got it wrong 
+              //  {
+ /* 
+                    if ($resp[$resp_key[$j]]==0)  // did not attempt it
+                    {
+                        $corr_num[$corr_key[$j]]=0;
+                        $corr[$corr_key[$j]]='';
+                   
+               }
+                        else  // response is equal to zero so probably did not answer (better to use POST value I suppose - fix later
+                */     
+            
+            {
+
+
+                        $wrongCount[$j] = $wrongCount[$j]+1;
+                            $corr_num[$corr_key[$j]]=0;
+                            $corr[$corr_key[$j]]='Not Correct';
+                    }
+              //  }		
+		    	}
+		}
+     
+
+		
+        $num_score_possible = 0;
+        $PScore=0; 
+         foreach(range('a','j') as $x){ 
+         $PScore = $PScore + ($corr_num[$x]*$eexamtime_data['perc_'.$x.'_'.$alias_num]);
+          $num_score_possible = $num_score_possible + $eexamtime_data['perc_'.$x.'_'.$alias_num];
+         }
+   
+  if ($dex != 1)  {     
+    
+     $sql ='UPDATE `Eactivity` SET `score` = :score, `count_tot` = :count_tot, correct_a = :correct_a,correct_b = :correct_b,correct_c = :correct_c,
+                                      correct_d = :correct_d,correct_e = :correct_e,correct_f = :correct_f,correct_g = :correct_g,correct_h = :correct_h,
+                                      correct_i = :correct_i,correct_j = :correct_j, wcount_a = :wcount_a, wcount_b = :wcount_b, wcount_c = :wcount_c,
+                                       wcount_d = :wcount_d, wcount_e = :wcount_e, wcount_f = :wcount_f, wcount_g = :wcount_g, wcount_h = :wcount_h,
+                                       wcount_i = :wcount_i, wcount_j = :wcount_j,
+                                       switch_to_bc = :switch_to_bc, P_num_score_net = :P_num_score_net
+                              WHERE eactivity_id = :eactivity_id';
+        $stmt = $pdo -> prepare($sql);
+        $stmt -> execute(array(
+                ':score' => $score,
+                ':count_tot' => $count_tot,
+                ':eactivity_id' => $eactivity_id,
+                ':correct_a' => $corr_num['a'],
+                ':correct_b' => $corr_num['b'],
+                ':correct_c' => $corr_num['c'],
+                ':correct_d' => $corr_num['d'],
+                ':correct_e' => $corr_num['e'],
+                ':correct_f' => $corr_num['f'],
+                ':correct_g' => $corr_num['g'],
+                ':correct_h' => $corr_num['h'],
+                ':correct_i' => $corr_num['i'],
+                ':correct_j' => $corr_num['j'],
+                ':wcount_a' => $wrongCount[0],
+                ':wcount_b' => $wrongCount[1],
+                ':wcount_c' => $wrongCount[2],
+                ':wcount_d' => $wrongCount[3],
+                ':wcount_e' => $wrongCount[4],
+                ':wcount_f' => $wrongCount[5],
+                ':wcount_g' => $wrongCount[6],
+                ':wcount_h' => $wrongCount[7],
+                ':wcount_i' => $wrongCount[9],
+                ':wcount_j' => $wrongCount[9],
+                ':switch_to_bc' => $switch_to_bc,
+                ':P_num_score_net' => $PScore,
+                 ));
+    
+    
+//		$_SESSION['points']=$score; // this will cause problems if running multiple browser windows on the same machine - testing on localhost
+    $corr_num_st = implode(",",$corr_num);
+    
+   } else {  
+     
+    // record the base case info
+      $sql ='UPDATE `Eactivity` SET  bc_correct_a = :bc_correct_a,bc_correct_b = :bc_correct_b,bc_correct_c = :bc_correct_c,
+      bc_correct_d = :bc_correct_d,bc_correct_e = :bc_correct_e,bc_correct_f = :bc_correct_f,bc_correct_g = :bc_correct_g,bc_correct_h = :bc_correct_h,
+      bc_correct_i = :bc_correct_i,bc_correct_j = :bc_correct_j, wcount_bc_a = :wcount_bc_a, wcount_bc_b = :wcount_bc_b, wcount_bc_c = :wcount_bc_c,
+      wcount_bc_d = :wcount_bc_d, wcount_bc_e = :wcount_bc_e, wcount_bc_f = :wcount_bc_f, wcount_bc_g = :wcount_bc_g, wcount_bc_h = :wcount_bc_h,
+      wcount_bc_i = :wcount_bc_i, wcount_bc_j = :wcount_bc_j,
+      switch_to_bc = :switch_to_bc, P_num_score_net_bc = :P_num_score_net_bc
+            WHERE eactivity_id = :eactivity_id';
+            $stmt = $pdo -> prepare($sql);
+            $stmt -> execute(array(
+          
+          
+            ':eactivity_id' => $eactivity_id,
+            ':bc_correct_a' => $corr_num['a'],
+            ':bc_correct_b' => $corr_num['b'],
+            ':bc_correct_c' => $corr_num['c'],
+            ':bc_correct_d' => $corr_num['d'],
+            ':bc_correct_e' => $corr_num['e'],
+            ':bc_correct_f' => $corr_num['f'],
+            ':bc_correct_g' => $corr_num['g'],
+            ':bc_correct_h' => $corr_num['h'],
+            ':bc_correct_i' => $corr_num['i'],
+            ':bc_correct_j' => $corr_num['j'],
+            ':wcount_bc_a' => $wrongCount[0],
+            ':wcount_bc_b' => $wrongCount[1],
+            ':wcount_bc_c' => $wrongCount[2],
+            ':wcount_bc_d' => $wrongCount[3],
+            ':wcount_bc_e' => $wrongCount[4],
+            ':wcount_bc_f' => $wrongCount[5],
+            ':wcount_bc_g' => $wrongCount[6],
+            ':wcount_bc_h' => $wrongCount[7],
+            ':wcount_bc_i' => $wrongCount[9],
+            ':wcount_bc_j' => $wrongCount[9],
+            ':switch_to_bc' => $switch_to_bc,
+            ':P_num_score_net_bc' => $PScore,
+            ));
+
+
+          //       $_SESSION['points']=$score; // this will cause problems if running multiple browser windows on the same machine - testing on localhost
+          //          $corr_num_st = implode(",",$corr_num);
+
+
+
+   }
+
+
+/*         
+      // this was from the old exam checker 
+    $stmt = $pdo->prepare("UPDATE `Eactivity` SET ".$trynum_pblm." = :trynum_pblm,".$response_key." = :response_key WHERE eactivity_id = :eactivity_id ");
+    $stmt->execute(array(
+          ":eactivity_id" => $eactivity_id,
+          ":trynum_pblm" => $count,
+           ":response_key" => $corr_num_st, 
+          ));     
+    
+   */  
+    
+    // time delay on total tries for the problem - try this in the JS
+    
+            
+    }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
     
  if( $get_flag ==0){ // if we are comming in from this file
  
@@ -393,7 +811,27 @@ session_start();
 		
 		$PScore=$score/$probParts*100;  
 	
-  
+    $sql ='UPDATE `Eactivity` SET `score` = :score, `count_tot` = :count_tot, correct_a = :correct_a,correct_b = :correct_b,correct_c = :correct_c,correct_d = :correct_d,correct_e = :correct_e,correct_f = :correct_f,correct_g = :correct_g,correct_h = :correct_h,correct_i = :correct_i,correct_j = :correct_j, switch_to_bc = :switch_to_bc
+                              WHERE eactivity_id = :eactivity_id';
+        $stmt = $pdo -> prepare($sql);
+        $stmt -> execute(array(
+                ':score' => $score,
+                ':count_tot' => $count_tot,
+                ':eactivity_id' => $eactivity_id,
+                ':correct_a' => $corr_num['a'],
+                ':correct_b' => $corr_num['b'],
+                ':correct_c' => $corr_num['c'],
+                ':correct_d' => $corr_num['d'],
+                ':correct_e' => $corr_num['e'],
+                ':correct_f' => $corr_num['f'],
+                ':correct_g' => $corr_num['g'],
+                ':correct_h' => $corr_num['h'],
+                ':correct_i' => $corr_num['i'],
+                ':correct_j' => $corr_num['j'],
+                ':switch_to_bc' => $switch_to_bc,
+                 ));
+    
+    
     
     
     
@@ -401,16 +839,27 @@ session_start();
 		$corr_num_st = implode(",",$corr_num);
         
       
-           $stmt = $pdo->prepare("UPDATE `Examactivity` SET ".$trynum_pblm." = :trynum_pblm,".$response_key." = :response_key WHERE examactivity_id = :examactivity_id ");
+           $stmt = $pdo->prepare("UPDATE `eactivity` SET ".$trynum_pblm." = :trynum_pblm,".$response_key." = :response_key WHERE eactivity_id = :eactivity_id ");
 			$stmt->execute(array(
-            ":examactivity_id" => $examactivity_id,
+            ":eactivity_id" => $eactivity_id,
             ":trynum_pblm" => $count,
              ":response_key" => $corr_num_st, 
             ));
             
     }
+   */
+
+   
+
+
+
+
+
+
+
+
+
   
-		
 	?>
 	</table>
 
@@ -442,19 +891,34 @@ session_start();
 </style>
 	<body>
 	<header>
-	<h2>Quick Response Exam Checker</h2>
+<?php
+
+if ($dex == 1) {
+  echo('<h2>Quick Response Exam Base-Case Checker</h2>');
+} else{
+  echo('<h2>Quick Response Exam Problem Checker</h2>');
+  
+}
+
+?>
+
+	
 	</header>
 	<main>
-	<h3> Name: <?php echo($name);?> &nbsp; &nbsp; Exam Number: <?php echo($exam_num);?>&nbsp; &nbsp;    Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);}$display_ans = explode(',',$display_ans) ?>  </h3>
-    
+	<!-- <h3> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Exam Number: <?php echo($exam_num);?>&nbsp; &nbsp;    Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h3> -->
+	<h3> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Exam Number: <?php echo($exam_num);?>&nbsp; &nbsp;    Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?>  </h3>
+  
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
     <!--  <font size = "2"> ans_t: <?php echo ($ans_t); ?> </font>
     <font size = "2"> ans_n: <?php echo ($ans_n); ?> </font>
     <font size = "2"> name: <?php echo ($name); ?> </font>
+   
   <font size = "2"> Get_Flag: <?php echo ($get_flag) ?> </font>
       <font size = "2"> oldresp_flag: <?php echo ($oldresp_flag) ?> </font> 
-      -->
+       -->     
+      <font size = "2"> eactivity_id: <?php echo ($eactivity_id) ?> </font> 
+ 
 
 	<form autocomplete="off" id = "check_form" method="POST" >
 	<!--<p><font color=#003399>Index: </font><input type="text" name="dex_num" size=3 value="<?php echo (htmlentities($_SESSION['index']))?>"  ></p> -->
@@ -462,13 +926,15 @@ session_start();
 	<?php
     if($attempt_type ==1 || ($attempt_type ==2 && $count <= $num_attempts)){
 	if ($partsFlag[0]){ ?> 
-	<p> <span id = "input_a"> a): <input [ type=number]{width: 5%;} id = "a" name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> </span><span id = "disp_ans_a"></span>
-	
-	<?php if (isset($_POST['pin']) and @$wrongCount[0]>$hintLimit and $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>$time_sleep1_trip and @$wrongCount[0]< $time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>=$time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+
+	<p> <span id = "input_a"> a)(<?php echo $eexamtime_data['perc_a_'.$alias_num]; ?>%): <input [ type=number]{width: 5%;} id = "a" name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> &nbsp; count <?php echo(@$wrongCount[0].' ');?> </span><span id = "disp_ans_a"></span>
+	<?php //echo ('wrongcount: '.$wrongCount[0]); ?>
+	<?php if (isset($_POST['pin']) && @$wrongCount[0]>$hintLimit && $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if (isset($_POST['pin']) && $changed[0] && @$wrongCount[0]>$time_sleep1_trip && @$wrongCount[0]< $time_sleep2_trip && $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
+	<?php if (isset($_POST['pin']) && $changed[0] && @$wrongCount[0]>=$time_sleep2_trip && $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	 <input type="hidden" id="ans_a" value="<?php echo ($soln[0])?>" >
      	 <input type="hidden" id="display_ans_a" value="<?php echo ($display_ans[0])?>" >
+       
 	<?php 
     if ( $ans_n!="" && $ans_n!=""&& $corr['a']!="Correct" )
      { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_a" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_a" disabled value="Show Answer"></input> </span>&nbsp;');}
@@ -479,7 +945,7 @@ session_start();
     
 
 	if ($partsFlag[1]){ ?> 
-	<p>  <span id = "input_b"> b): <input [ type=number]{width: 5%;} id = "b" name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?> &nbsp - <b> <?php echo ($corr['b']) ?> </b> </span><span id = "disp_ans_b"></span>
+	<p>  <span id = "input_b"> b)(<?php echo $eexamtime_data['perc_b_'.$alias_num]; ?>%): <input [ type=number]{width: 5%;} id = "b" name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?> &nbsp - <b> <?php echo ($corr['b']) ?> </b> &nbsp; count <?php echo(@$wrongCount[1].' ');?>  </span><span id = "disp_ans_b"></span>
 	<?php // if (isset($_POST['pin']) and $corr['b']=="Correct" ){echo '- Computed value is: '.$soln[1];} ?>  
 	<?php if (isset($_POST['pin']) and @$wrongCount[1]>$hintLimit and $corr['b']=="Not Correct" && $hintbPath != "uploads/default_hints.html" ){echo '<a href="'.$hintbPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[1] and @$wrongCount[1]>$time_sleep1_trip and @$wrongCount[1]< $time_sleep2_trip and $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
@@ -496,7 +962,7 @@ session_start();
     echo '</p>';
   
 	if ($partsFlag[2]){ ?> 
-	<p>  <span id = "input_c"> c): <input [ type=number]{width: 5%;}  id = "c" name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b> </span><span id = "disp_ans_c"></span>
+	<p>  <span id = "input_c"> c)(<?php echo $eexamtime_data['perc_c_'.$alias_num]; ?>%): <input [ type=number]{width: 5%;}  id = "c" name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b> &nbsp;  count <?php echo(@$wrongCount[2].' ');?>  </span><span id = "disp_ans_c"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[2]>$hintLimit and $corr['c']=="Not Correct"&& $hintcPath != "uploads/default_hints.html" ){echo '<a href="'.$hintcPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[2] and @$wrongCount[2]>$time_sleep1_trip and @$wrongCount[2]< $time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[2] and @$wrongCount[2]>=$time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
@@ -512,7 +978,7 @@ session_start();
     echo '</p>';
 
 	if ($partsFlag[3]){ ?> 
-	<p>  <span id = "input_d"> d): <input [ type=number]{width: 5%;} id = "d" name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b> </span><span id = "disp_ans_d"></span>
+	<p>  <span id = "input_d"> d)(<?php echo $eexamtime_data['perc_d_'.$alias_num]; ?>%): <input [ type=number]{width: 5%;} id = "d" name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b> &nbsp; count <?php echo(@$wrongCount[3].' ');?>  </span><span id = "disp_ans_d"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[3]>$hintLimit and $corr['d']=="Not Correct"&& $hintdPath != "uploads/default_hints.html" ){echo '<a href="'.$hintdPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[3] and @$wrongCount[3]>$time_sleep1_trip and @$wrongCount[3]< $time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[3] and @$wrongCount[3]>=$time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
@@ -528,7 +994,7 @@ session_start();
     echo '</p>';
 
 	if ($partsFlag[4]){ ?> 
-	<p>  <span id = "input_e"> e): <input [ type=number]{width: 5%;} id = "e" name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b> </span><span id = "disp_ans_e"></span>
+	<p>  <span id = "input_e"> e(<?php echo $eexamtime_data['perc_e_'.$alias_num]; ?>%): <input [ type=number]{width: 5%;} id = "e" name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b> &nbsp; count <?php echo(@$wrongCount[4].' ');?>  </span><span id = "disp_ans_e"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[4]>$hintLimit and $corr['e']=="Not Correct"&& $hintePath != "uploads/default_hints.html" ){echo '<a href="'.$hintePath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[4] and @$wrongCount[4]>$time_sleep1_trip and @$wrongCount[4]< $time_sleep1_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[4] and @$wrongCount[4]>=$time_sleep2_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
@@ -544,7 +1010,7 @@ session_start();
     echo '</p>';
 
 	if ($partsFlag[5]){ ?> 
-	<p>  <span id = "input_f"> f): <input [ type=number]{width: 5%;} id = "f" name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b> </span><span id = "disp_ans_f"></span>
+	<p>  <span id = "input_f"> f)(<?php echo $eexamtime_data['perc_f_'.$alias_num]; ?>%): <input [ type=number]{width: 5%;} id = "f" name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b> &nbsp; count <?php echo(@$wrongCount[5].' ');?>  </span><span id = "disp_ans_f"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[5]>$hintLimit and $corr['f']=="Not Correct"&& $hintfPath != "uploads/default_hints.html" ){echo '<a href="'.$hintfPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[5] and @$wrongCount[5]>$time_sleep1_trip and @$wrongCount[5]< $time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[5] and @$wrongCount[5]>=$time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
@@ -560,7 +1026,7 @@ session_start();
     echo '</p>';
 
 	if ($partsFlag[6]){ ?> 
-	<p>  <span id = "input_g"> g): <input [ type=number]{width: 5%;} id = "g" name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b> </span><span id = "disp_ans_g"></span>
+	<p>  <span id = "input_g"> g)(<?php echo $eexamtime_data['perc_g_'.$alias_num]; ?>%): <input [ type=number]{width: 5%;} id = "g" name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b> &nbsp; count <?php echo(@$wrongCount[6].' ');?>  </span><span id = "disp_ans_g"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[6]>$hintLimit and $corr['g']=="Not Correct"&& $hintgPath != "uploads/default_hints.html" ){echo '<a href="'.$hintgPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[6] and @$wrongCount[6]>$time_sleep1_trip and @$wrongCount[6]< $time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[6] and @$wrongCount[6]>=$time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
@@ -577,7 +1043,7 @@ session_start();
 
 
 	if ($partsFlag[7]){ ?> 
-	<p>  <span id = "input_h"> h): <input [ type=number]{width: 5%;} id = "h" name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo($unit[7]) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b> </span><span id = "disp_ans_h"></span>
+	<p>  <span id = "input_h"> h)(<?php echo $eexamtime_data['perc_h_'.$alias_num]; ?>%): <input [ type=number]{width: 5%;} id = "h" name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo($unit[7]) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b> &nbsp;  count <?php echo(@$wrongCount[7].' ');?>  </span><span id = "disp_ans_h"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[7]>$hintLimit and $corr['h']=="Not Correct"&& $hinthPath != "uploads/default_hints.html" ){echo '<a href="'.$hinthPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[7] and @$wrongCount[7]>$time_sleep1_trip and @$wrongCount[7]< $time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[7] and @$wrongCount[7]>=$time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
@@ -594,7 +1060,7 @@ session_start();
 
 
 	if ($partsFlag[8]){ ?> 
-	<p>  <span id = "input_i"> i): <input [ type=number]{width: 5%;} id = "i" name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b> </span><span id = "disp_ans_i"></span>
+	<p>  <span id = "input_i"> i)(<?php echo $eexamtime_data['perc_i_'.$alias_num]; ?>%): <input [ type=number]{width: 5%;} id = "i" name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b> &nbsp; count <?php echo(@$wrongCount[8].' ');?>  </span><span id = "disp_ans_i"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[8]>$hintLimit and $corr['i']=="Not Correct"&& $hintiPath != "uploads/default_hints.html" ){echo '<a href="'.$hintiPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[8] and @$wrongCount[8]>$time_sleep1_trip and @$wrongCount[8]< $time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[8] and @$wrongCount[8]>=$time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
@@ -611,7 +1077,7 @@ session_start();
 
 
 	if ($partsFlag[9]){ ?> 
-	<p>  <span id = "input_j"> j): <input [ type=number]{width: 5%;}  id = "j" name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b> </span><span id = "disp_ans_j"></span>
+	<p>  <span id = "input_j"> j)(<?php echo $eexamtime_data['perc_j_'.$alias_num]; ?>%): <input [ type=number]{width: 5%;}  id = "j" name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b> &nbsp;  count <?php echo(@$wrongCount[9].' ');?>  </span><span id = "disp_ans_j"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[9]>$hintLimit and $corr['j']=="Not Correct"&& $hintjPath != "uploads/default_hints.html" ){echo '<a href="'.$hintjPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[9] and @$wrongCount[9]>$time_sleep1_trip and @$wrongCount[9]< $time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[9] and @$wrongCount[9]>=$time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
@@ -626,17 +1092,20 @@ session_start();
     } 
     echo '</p>';
     }
-	$_SESSION['time']=time();
+//	$_SESSION['time']=time();
 	?>
-    
+  Provisional Score on Problem:  <?php echo (round($PScore)) ?> %&nbsp; 
+
+  <br> note - Score only includes quatitative parts of the problem.  These points awarded when work is uploaded and evaluated. <br>
+
 <!--Score:  <?php echo (round($PScore)) ?>%-->
-	<p><input type = "submit" id = "check_submit" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p>
+	<p><input type = "submit" name = "post_submit" id = "check_submit" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p>
 			<p><font color=#003399> </font><input type="hidden" id = "dex" name="dex" size=3 value="<?php echo (htmlentities($dex))?>"  ></p>
             <input type = "number" hidden name = "pin"  value = <?php echo ($pin); ?> > </input>
 			<p><font color=#003399> </font><input type="hidden" id = "problem_id" name="problem_id" size=3 value="<?php echo (htmlentities($problem_id))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden" id = "exam_num" name="exam_num" size=3 value="<?php echo (htmlentities($exam_num))?>"  ></p>
 			<p><font color=#003399> </font><input type="hidden" id = "stop_time" name="stop_time" size=3 value="<?php echo (htmlentities($stop_time))?>"  ></p>
-             <input type="hidden" id = "examactivity_id" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
+             <input type="hidden" id = "eactivity_id" name="eactivity_id" value="<?php echo ($eactivity_id)?>" >
              <input type="hidden" id = "display_ans_key" name="display_ans_key" value="<?php echo ($display_ans_key)?>" >
              <input type="hidden" id = "count_tot" name="count_tot" value="<?php echo ($count)?>" >
             <input type="hidden" id = "prob_parts" name="prob_parts" value="<?php echo ($probParts)?>" >
@@ -644,8 +1113,9 @@ session_start();
 
 	
     
-    <p> Count: <?php echo ($count) ?>  <span id ="t_delay_message"></span></p>
-   <p> <span id ="t_delay_limits"> time delay - 5s at count > <?php echo (3*$probParts) ?>, 30s at count > <?php echo (5*$probParts) ?> </span> </p>
+    <p> Count: <span id = "total_count" > <?php echo (@$count_tot) ?> </span> <span id ="t_delay_message"></span></p>
+   <!--<p> <span id ="t_delay_limits"> time delay - 10s at count > <?php echo (2*$probParts) ?>, 60s at count > <?php echo (4*$probParts) ?> </span> </p> -->
+   <p> <span id ="t_delay_limits"> time delay - 10s at count > <?php echo (floor(3*$probParts**0.7)) ?>, 60s at count > <?php echo (floor(5*$probParts**0.7)) ?> </span> </p>
     
     
     
@@ -654,39 +1124,53 @@ session_start();
     
 
 			<input type="hidden" id = "problem_id" name="problem_id" value="<?php echo (htmlentities($problem_id))?>"  >
-            <input type="hidden" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
+            <input type="hidden" name="eactivity_id" value="<?php echo ($eactivity_id)?>" >
             <input type="hidden" name="globephase" id = "globephase" >
     
     <hr>
-	<p><b><font Color="red">Finished:</font></b></p>
-	  <!--<input type="hidden" name="score" value=<?php echo ($score) ?> /> -->
-	   <?php $_SESSION['score'] = round($PScore);  ?>
-	 <b><input type="submit" value="Finished / Upload Work" name="score" style = "width: 30%; background-color:yellow "></b>
-	 <p><br> </p>
-	 <hr>
-	</form>
 
+    <?php
+      if ($dex !=1){
+        echo('<p><b><font Color="red">Finished:</font></b></p>');
+        echo('<b><input type="submit" value="Finished / Upload Work" name="score" style = "width: 30%; background-color:yellow "></b>');
+        echo' <p><br> </p>
+        <hr>';
+      }
+    ?>
+
+     <!-- <?php // $_SESSION['score'] = round($PScore);  ?> -->
+     
+
+	 
+	
+	</form>
 
 	<script>
         
     
-		$(document).ready( function () {
+	 	$(document).ready( function () {
             
-             var examactivity_id = $('#examactivity_id').val();
+      var eactivity_id = $('#eactivity_id').val();
+      let dex = $('#dex').val();
                      var display_ans_key = $('#display_ans_key').val();
-                console.log(' examactivity_id '+  examactivity_id);
-                console.log(' display_ans_key '+  display_ans_key);
+                    // console.log(' eactivity_id '+  eactivity_id);
+                   //  console.log(' dex '+  dex);
+            //    console.log(' display_ans_key '+  display_ans_key);
               // disable right mouse click copy and copy paste  From https://www.codingbot.net/2017/03/disable-copy-paste-mouse-right-click-using-javascript-jquery-css.html
             //Disable cut copy paste
+            
+            
             $('body').bind('cut copy paste', function (e) {
                 e.preventDefault();
             });
             
             //Disable mouse right click
+            
+  /*           
             $("body").on("contextmenu",function(e){
                 return false;
             });
-        
+        */ 
         
         
                 var ans_a = $('#ans_a').val();
@@ -718,14 +1202,14 @@ session_start();
                   
                      $('#input_a').hide();
                     $('#disp_ans_a').text(ans_a);
-                    // update the Examactivity table to disp_ans_a value pressed via AJAX
+                    // update the eactivity table to disp_ans_a value pressed via AJAX
                     $.ajax({
 					url: 'qrexam_record_show_ans.php',
 					method: 'post',
 						data: {
-                            examactivity_id:examactivity_id,
-                            display_ans_key:display_ans_key,
-                            part:0
+                            eactivity_id:eactivity_id,
+                            dex:dex,
+                            part:'a'
                         }
                     }).done(function(){
                         
@@ -763,14 +1247,14 @@ session_start();
                   
                      $('#input_b').hide();
                     $('#disp_ans_b').text(ans_b);
-                    // update the Examactivity table to disp_ans_b value pressed via AJAX
+                    // update the eactivity table to disp_ans_b value pressed via AJAX
                     $.ajax({
 					url: 'qrexam_record_show_ans.php',
 					method: 'post',
 						data: {
-                            examactivity_id:examactivity_id,
-                            display_ans_key:display_ans_key,
-                            part:1
+                            eactivity_id:eactivity_id,
+                            dex:dex,
+                            part:'b'
                         }
                     }).done(function(){
                         
@@ -805,14 +1289,14 @@ session_start();
                   
                      $('#input_c').hide();
                     $('#disp_ans_c').text(ans_c);
-                    // update the Examactivity table to disp_ans_c value pressed via AJAX
+                    // update the eactivity table to disp_ans_c value pressed via AJAX
                     $.ajax({
 					url: 'qrexam_record_show_ans.php',
 					method: 'post',
 						data: {
-                            examactivity_id:examactivity_id,
-                            display_ans_key:display_ans_key,
-                            part:2
+                            eactivity_id:eactivity_id,
+                            dex:dex,
+                            part:'c'
                         }
                     }).done(function(){
                         
@@ -846,14 +1330,14 @@ session_start();
                   
                      $('#input_d').hide();
                     $('#disp_ans_d').text(ans_d);
-                    // update the Examactivity table to disp_ans_d value pressed via AJAX
+                    // update the eactivity table to disp_ans_d value pressed via AJAX
                     $.ajax({
 					url: 'qrexam_record_show_ans.php',
 					method: 'post',
 						data: {
-                            examactivity_id:examactivity_id,
-                            display_ans_key:display_ans_key,
-                            part:3
+                            eactivity_id:eactivity_id,
+                            dex:dex,
+                            part:'d'
                         }
                     }).done(function(){
                         
@@ -887,14 +1371,14 @@ session_start();
                   
                      $('#input_e').hide();
                     $('#disp_ans_e').text(ans_e);
-                    // update the Examactivity table to disp_ans_e value pressed via AJAX
+                    // update the eactivity table to disp_ans_e value pressed via AJAX
                     $.ajax({
 					url: 'qrexam_record_show_ans.php',
 					method: 'post',
 						data: {
-                            examactivity_id:examactivity_id,
-                            display_ans_key:display_ans_key,
-                            part:4
+                            eactivity_id:eactivity_id,
+                            dex:dex,
+                            part:'e'
                         }
                     }).done(function(){
                         
@@ -928,14 +1412,14 @@ session_start();
                   
                      $('#input_f').hide();
                     $('#disp_ans_f').text(ans_f);
-                    // update the Examactivity table to disp_ans_f value pressed via AJAX
+                    // update the eactivity table to disp_ans_f value pressed via AJAX
                     $.ajax({
 					url: 'qrexam_record_show_ans.php',
 					method: 'post',
 						data: {
-                            examactivity_id:examactivity_id,
-                            display_ans_key:display_ans_key,
-                            part:5
+                            eactivity_id:eactivity_id,
+                            dex:dex,
+                            part:'f'
                         }
                     }).done(function(){
                         
@@ -969,14 +1453,14 @@ session_start();
                   
                      $('#input_g').hide();
                     $('#disp_ans_g').text(ans_g);
-                    // update the Examactivity table to disp_ans_g value pressed via AJAX
+                    // update the eactivity table to disp_ans_g value pressed via AJAX
                     $.ajax({
 					url: 'qrexam_record_show_ans.php',
 					method: 'post',
 						data: {
-                            examactivity_id:examactivity_id,
-                            display_ans_key:display_ans_key,
-                            part:6
+                            eactivity_id:eactivity_id,
+                            dex:dex,
+                            part:'g'
                         }
                     }).done(function(){
                         
@@ -1010,14 +1494,14 @@ session_start();
                   
                      $('#input_h').hide();
                     $('#disp_ans_h').text(ans_h);
-                    // update the Examactivity table to disp_ans_h value pressed via AJAX
+                    // update the eactivity table to disp_ans_h value pressed via AJAX
                     $.ajax({
 					url: 'qrexam_record_show_ans.php',
 					method: 'post',
 						data: {
-                            examactivity_id:examactivity_id,
-                            display_ans_key:display_ans_key,
-                            part:7
+                            eactivity_id:eactivity_id,
+                            dex:dex,
+                            part:'h'
                         }
                     }).done(function(){
                         
@@ -1051,14 +1535,14 @@ session_start();
                   
                      $('#input_i').hide();
                     $('#disp_ans_i').text(ans_i);
-                    // update the Examactivity table to disp_ans_i value pressed via AJAX
+                    // update the eactivity table to disp_ans_i value pressed via AJAX
                     $.ajax({
 					url: 'qrexam_record_show_ans.php',
 					method: 'post',
 						data: {
-                            examactivity_id:examactivity_id,
-                            display_ans_key:display_ans_key,
-                            part:8
+                            eactivity_id:eactivity_id,
+                            dex:dex,
+                            part:'i'
                         }
                     }).done(function(){
                         
@@ -1092,14 +1576,14 @@ session_start();
                   
                      $('#input_j').hide();
                     $('#disp_ans_j').text(ans_j);
-                    // update the Examactivity table to disp_ans_j value pressed via AJAX
+                    // update the eactivity table to disp_ans_j value pressed via AJAX
                     $.ajax({
 					url: 'qrexam_record_show_ans.php',
 					method: 'post',
 						data: {
-                            examactivity_id:examactivity_id,
-                            display_ans_key:display_ans_key,
-                            part:9
+                            eactivity_id:eactivity_id,
+                            dex:dex,
+                            part:'j'
                         }
                     }).done(function(){
                         
@@ -1126,8 +1610,8 @@ session_start();
                                 var arrn = JSON.parse(data);
                             }
                             catch(err) {
-                                alert ('game data unavailable Data not found');
-                                alert (err);
+                        //        alert ('game data unavailable Data not found');
+                        //        alert (err);
                                 return;
                             }
                             
@@ -1155,9 +1639,10 @@ session_start();
                             var prob_parts = $("#prob_parts").val();
                             console.log ("count_tot = "+count_tot);
                              console.log ("prob_parts = "+prob_parts);
-                          
+                            var delay1 = Math.floor(3*prob_parts**0.7);
+                             var delay2 = Math.floor(5*prob_parts**0.7);
                             
-
+/* 
                             var check_form = document.getElementById("check_form"), check_submit = document.getElementById("check_submit");
                             check_form.onsubmit = function() {
                                 return false;
@@ -1165,24 +1650,27 @@ session_start();
 
                             check_submit.onclick = function() {
                             
-                                 if (count_tot > 5*prob_parts){
-                                        $("#t_delay_message").text(" 30s time delay limit exceeded");
+                                 if (count_tot > delay2){
+                                        $("#t_delay_message").html('<span style = "color:red;font-weight:bold;">  60s time delay limit exceeded </span>');
                                       setTimeout(function() {
                                               check_form.submit();
-                                         }, 30000);
+                                         }, 60000);
                                            return false;
-                                  } else if (count_tot > 3*prob_parts){
-                                      $("#t_delay_message").text(" 5s time delay limit exceeded");
+                                  } else if (count_tot > delay1){
+                                      $("#t_delay_message").html('<span style = "color:red;">  10s time delay limit exceeded </span>');
                                       setTimeout(function() {
                                               check_form.submit();
-                                         }, 5000);
+                                         }, 10000);
                                            return false; 
                                   } else {
                                       
                                       check_form.submit();
                                       return false; 
                                   }
-                            }       
+                            }      
+                            
+                            
+                            */  
                                  
                                  
                                  
@@ -1195,7 +1683,7 @@ session_start();
                 });
          
 
-         
+          
 	</script>
 
 	</main>
