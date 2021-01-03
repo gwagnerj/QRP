@@ -2752,4 +2752,34 @@ ENGINE=InnoDB CHARACTER SET = utf8;
         ENGINE=InnoDB DEFAULT CHARSET=utf8;   
 
 
-     
+     CREATE TABLE IF NOT EXISTS `Team` (
+		`team_id` INT(11) NOT NULL AUTO_INCREMENT,
+        `team_num` INT(3) NOT NULL, 
+        `team_name` VARCHAR(50),
+        `currentclass_id`  INT(3), 
+        `eexamnow_id`  INT(3), 
+        `team_score`  INT(3), 
+        `team_range`  INT(3), 
+        `team_sd`  INT(3), 
+        `team_cohesivity`  INT(3), 
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	    	PRIMARY KEY (`team_id`),
+        CONSTRAINT FOREIGN KEY (`currentclass_id`) REFERENCES `CurrentClass` (`currentclass_id`),
+        CONSTRAINT FOREIGN KEY (`eexamnow_id`) REFERENCES `Eexamnow` (`eexamnow_id`))
+        ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+
+
+    CREATE TABLE IF NOT EXISTS TeamStudentConnect (
+      `student_id` INT(11) NOT NULL,
+      `eexamnow_id` INT(11) NOT NULL,
+      `team_id` INT(11) NOT NULL,
+      `team_num` INT(3) NOT NULL, 
+      `dex` INT(4) NOT NULL,
+      `team_cap` INT(2) DEFAULT 0,
+      CONSTRAINT FOREIGN KEY (team_id) REFERENCES Team (team_id),
+      CONSTRAINT FOREIGN KEY (student_id) REFERENCES Student (student_id),
+      CONSTRAINT FOREIGN KEY (eexamnow_id) REFERENCES Eexamnow (eexamnow_id),
+      PRIMARY KEY (`student_id`,`eexamnow_id`)
+    ) ENGINE=InnoDB CHARACTER SET = utf8;     
+      

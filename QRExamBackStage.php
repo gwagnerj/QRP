@@ -173,8 +173,6 @@ if(isset($_POST['eexamtime_id'])){
 }
 
 
-
-
 	if ( isset($_SESSION['error']) ) {
 		echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
 		unset($_SESSION['error']);
@@ -220,29 +218,160 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
       $eexamtime_data = $stmt->fetch();   
       $game_flag = $eexamtime_data['game_flag'];
       $number_teams = $eexamtime_data['number_teams'];
+      $currentclass_id = $eexamtime_data['currentclass_id'];
      // echo ' $number_teams '.$number_teams;
 
+    
 
-  
+// Insert or update the Team table putting in the (basically registering the teams in the teams table)
+
+   if (isset($_POST['submit_team'])){
+      for ( $i=1 ; $i <= $number_teams;$i++){
+        // See if we have teams refined for this class
+        $sql ='SELECT * FROM Team WHERE eexamnow_id = :eexamnow_id AND team_num = :team_num';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array(":eexamnow_id" => $eexamnow_data['eexamnow_id'], ":team_num" => $i));
+        $team_data = $stmt->fetch();
+         if ($team_data == false){
+            $sql = "INSERT INTO `Team` (currentclass_id, eexamnow_id, team_num) VALUES (:currentclass_id,:eexamnow_id, :team_num) ";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(array(
+              ":eexamnow_id" => $eexamnow_data['eexamnow_id'],
+              ":currentclass_id" => $currentclass_id,
+              ":team_num" => $i
+              ));
+              $sql = 'SELECT LAST_INSERT_ID AS team_ident FROM Team';
+              $stmt = $pdo->prepare($sql);
+              $stmt->execute();
+              $team_idss = $stmt->fetch();
+              $team_ids[$i] = $team_idss['team_ident'];
+           } else {
+             $team_ids[$i] = $team_data['team_id'];
+           }
+       } 
+
+          // team_ids is just an array containing the relationship between the team number and the team_id
+
+               //now take care of connecting the students to the proper team
+
+               // read data from the Post variable into associative arrays with the student_id as the key
+
+          foreach ($student_data as $student_datum){
+            $student_id = $student_datum['student_id'];
+            if (isset($_POST['stu_'. $student_id])){
+              $student_on_teams['stu_'. $student_id] = $_POST['stu_'. $student_id];
+              $params = explode('_', $_POST['stu_'. $student_id]);
+              $team_nums[$student_id] = $params[1];
+              $dexs[$student_id] = $params[3];
+            }
+          }
+
+          foreach($student_data as $student_datum){
+            $student_id = $student_datum['student_id'];
+            $dex = $dexs[$student_id];
+            $team_num = $team_nums[$student_id];
+            $team_id = $team_ids[$team_num];
+
+            // see if we already have an entry - if so update it if not insert it (create it)
+            $sql = 'SELECT team_id, team_num FROM TeamStudentConnect WHERE student_id = :student_id AND eexamnow_id = :eexamnow_id';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(array(
+              ":student_id" => $student_id,
+              ":eexamnow_id" => $eexamnow_id,
+              ));
+              $team_id2 = $stmt->fetch();
+            if ($team_id2 == false){
+                  $sql = 'INSERT INTO `TeamStudentConnect` (team_id, team_num, student_id,eexamnow_id, dex) VALUES (:team_id,:team_num,:student_id,:eexamnow_id,:dex)';
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->execute(array(
+                    ":team_id" => $team_id,
+                    ":team_num" => $team_num,
+                    ":student_id" => $student_id,
+                    ":eexamnow_id" => $eexamnow_id,
+                    ":dex" => $dex
+                    ));
+
+              } else {
+/* 
+                echo 'student_id '.$student_id;
+                echo '  eexamnow_id '.$eexamnow_id;
+                echo '  team_id '.$team_id;
+                echo '  team_num '.$team_num;
+ */
+                $sql = 'UPDATE `TeamStudentConnect` SET team_id = :team_id, team_num=:team_num, dex = :dex WHERE  student_id = :student_id AND eexamnow_id = :eexamnow_id';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(array(
+                  ":team_id" => $team_id,
+                  ":team_num" => $team_num,
+                  ":student_id" => $student_id,
+                  ":eexamnow_id" => $eexamnow_id,
+                  ":dex" => $dex
+                  ));
+
+             }
+
+          }
+              
+ } else {
+
+    // get the student id / team number relationship if there is ones
+
+    $sql = "SELECT * FROM TeamStudentConnect WHERE eexamnow_id = :eexamnow_id ORDER BY team_num ASC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+      ":eexamnow_id" => $eexamnow_id,
+      ));
+      $teamstudentconnect_data = $stmt->fetchALL(PDO::FETCH_ASSOC);   
+      if ($teamstudentconnect_data != false) {
+      //  var_dump($teamstudentconnect_data);
+        foreach( $teamstudentconnect_data as $teamstudentconnect_datum){
+           $team_nums[$teamstudentconnect_datum['student_id']] = $teamstudentconnect_datum['team_num'];
+        }
+      } else {
+        $team_nums = '';
+      }
+
+ }
+    
+
+
+
+
+
+
+
+// build the student registration table and team student array _______________________________________________________________________________________________________________________________
+
    echo '<h2> Registered Students / Team Assignments</h2>';
 echo '<form method = "POST" id = "team_assign">';
 
    echo ('<table id="table_registration" style = "text-align:center" class = "a" border="1" >'."\n");	
       echo("<thead>");
-
-            echo("<th>");
+      echo("<tr>");
+      echo("<th>");
+      echo("</th>");
+      echo("<th>");
+      echo("</th>");
+      echo('<th colspan ="'.$number_teams.'" >');
+      echo('Team Number');
+      echo("</th>");
+      echo("</tr>");
+      echo("<tr>");
+      echo("<th>");
             echo('Name');
-                echo("</th><th>");
+           echo("</th><th>");
             echo('dex');
             echo '</th>';
             for ($i=1;$i<=$number_teams;$i++){
               echo("<th>");
-              echo 'Team '.$i;
+              echo $i;
               echo("</th>");
             }
             echo("</th></tr>\n");
-                  echo("</thead>");
-            
+        echo("</thead>");
+          
+                  
+
         echo("<tbody>");
 
           foreach ($student_data as $student_datum){
@@ -258,18 +387,37 @@ echo '<form method = "POST" id = "team_assign">';
               echo '';
               for ($i=1;$i<=$number_teams;$i++){
                 echo("<td>");
+                //  if (isset($team_nums)){
+                    if ($team_nums[$student_id]==$i){$check_flag = 'checked';}else{$check_flag ='';}
+               //   } else {$check_flag ='';}
+                  echo '<input type = "radio"'.$check_flag.'  id = "stu_'.$student_id.'_team_'.$i.'"   class = "team_'.$i.'" name ="stu_'.$student_id.'" value = "team_'.$i.'_dex_'.$dex.'" ></input>';
 
-                  echo '<input type = "radio" id = "stu_'.$student_id.'_team_'.$i.'" class = "stu_'.$student_id.'"  class = "team_'.$i.'" name ="stu_'.$student_id.'" value = "team_'.$i.'_dex_'.$dex.'" ></input>';
-
-
-               // echo 'Team '.$i;
                 echo("</td>");
               }
               echo('</tr>');
           }
+          echo('</tr>');
+          echo("<th>");
+          echo('Total on Team');
+          echo("</th>");
+          echo('<td>');
+          echo('</td>');
+
+          for ($i=1;$i<=$number_teams;$i++){
+           // echo('<td id =  num_stu_team_'.$i.'>');
+            echo('<td>');
+            echo ('<span id = num_stu_team_'.$i.'></span>');
+          echo('</td>');
+          }
+
 
          echo("</tbody>");
    echo("</table>");
+   echo ('<input type = "submit" style = "background-color:yellow;" id = "submit_team"  name = "submit_team" value = "Assign to Teams"></input>');
+   
+  echo' <input type="hidden" name="eexamtime_id"  value= '.$eexamtime_id.')';
+  echo ' <input type="hidden" name="eexamnow_id"  value='.$eexamnow_id.')';
+
  echo '</form>';
 
   
@@ -298,8 +446,6 @@ echo '<form method = "POST" id = "team_assign">';
                  echo("<th>");
                  echo('Total pts');
                      echo("</th>");
-
-
 
 
             echo("</th></tr>\n");
@@ -361,12 +507,69 @@ echo '<form method = "POST" id = "team_assign">';
             echo("<th>");
             echo('Team Name');
                 echo("</th><th>");
-            echo('dex');
+            echo('Members');
+            echo ('</th>');
+            echo ('<th>');
+            echo ('dex');
             echo("</th></tr>\n");
                   echo("</thead>");
             
         echo("<tbody>");
 
+
+        for ($i=1;$i<=$number_teams;$i++){
+          $sql = "SELECT * FROM TeamStudentConnect  LEFT JOIN Student ON Student.student_id = TeamStudentConnect.student_id WHERE eexamnow_id = :eexamnow_id AND team_num = :team_num ORDER BY dex ASC";
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute(array(
+            ":eexamnow_id" => $eexamnow_id,
+            ":team_num" => $i,
+            ));
+            $studentonteam_data = $stmt->fetchALL(PDO::FETCH_ASSOC);  
+            if ( $studentonteam_data != false){$num_rows = count($studentonteam_data); } else {$num_rows = 1; }
+
+
+
+          // echo('<td id =  num_stu_team_'.$i.'>');
+           echo('<th rowspan ='. $num_rows.'>');
+           echo ('Team '.$i);
+         echo('</th>');
+      //  echo 'num_stu on team: '.$num_stu_on_team;
+        
+            if ($studentonteam_data != false){
+
+              $j = 1;
+                foreach($studentonteam_data as $studentonteam_datum){
+                  echo('<td>');
+
+                    echo ($studentonteam_datum['first_name'].' '.$studentonteam_datum['last_name']);
+                    echo('</td>');
+                    echo('<td>');
+                    echo ($studentonteam_datum['dex']);
+                    echo('</td>');
+                    echo('<tr>');
+                    if($j!=1){
+                      echo('<td>');
+                      echo('</td>');
+                    }
+                    
+                  $j++;
+                }
+
+
+            }
+            
+
+         
+
+
+
+
+         echo('</tr>');
+
+         }
+
+/* 
+      
           foreach ($student_data as $student_datum){
               echo('<tr>');
               echo('<td>');
@@ -377,7 +580,7 @@ echo '<form method = "POST" id = "team_assign">';
               echo('</tr>');
 
           }
-
+ */
          echo("</tbody>");
    echo("</table>");
 
@@ -656,6 +859,14 @@ echo '<form method = "POST" id = "team_assign">';
 
   */
 
+  $pass = array(
+    'number_teams' =>$number_teams,
+    'currentclass_id' => $currentclass_id,
+  );
+  echo '<script>';
+  echo 'var pass = ' . json_encode($pass) . ';';
+  echo '</script>';
+
 	function sigFig($value, $digits)
             {
                 if ($value == 0) {
@@ -711,11 +922,39 @@ echo '<form method = "POST" id = "team_assign">';
         </form>
 
 	<script>
-/* 
+
 
 	$(document).ready( function () {	
+
     
-  
+     const number_teams = pass['number_teams']; 
+     const currentclass_id = pass['currentclass_id']; 
+    
+
+      $('input:radio').click(function(){
+      // console.log('click');
+
+        //console.log('num_teams: '+number_teams);
+        let j = 0;
+        for(i=1;i<=number_teams;i++){
+
+         let sel_class = 'team_'+i;
+         let num_teams = $('input:radio.'+sel_class+':checked').length;
+         //console.log ('num teams: '+num_teams);
+         let sel = '#num_stu_team_'+i;
+         //console.log ('sel: '+sel);
+            $(sel).text(num_teams);
+
+
+
+        }
+
+        // add the total for each team to the
+       
+
+     });
+    
+ /*  
 	 	
      $(".inlinebar1").sparkline("html",{type: "bar", height: "20", barWidth: "5", resize: true, barSpacing: "2", barColor: "navy"});
 	   	
@@ -734,10 +973,10 @@ echo '<form method = "POST" id = "team_assign">';
                         "lengthMenu": [ 30, 50, 100 ]
                 });
 
+                    */
 		} );
          
          
-                    */
 		
 	</script>
 
