@@ -240,7 +240,7 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
               ":currentclass_id" => $currentclass_id,
               ":team_num" => $i
               ));
-              $sql = 'SELECT LAST_INSERT_ID AS team_ident FROM Team';
+              $sql = 'SELECT team_id AS team_ident FROM Team ORDER BY team_id DESC LIMIT 1';
               $stmt = $pdo->prepare($sql);
               $stmt->execute();
               $team_idss = $stmt->fetch();
@@ -298,7 +298,7 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
                 echo '  team_id '.$team_id;
                 echo '  team_num '.$team_num;
  */
-                $sql = 'UPDATE `TeamStudentConnect` SET team_id = :team_id, team_num=:team_num, dex = :dex WHERE  student_id = :student_id AND eexamnow_id = :eexamnow_id';
+                $sql = 'UPDATE `TeamStudentConnect` SET team_id = :team_id, team_num=:team_num, dex = :dex, team_cap = 0 WHERE  student_id = :student_id AND eexamnow_id = :eexamnow_id';
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute(array(
                   ":team_id" => $team_id,
@@ -333,19 +333,51 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
 
  }
     
+ if (isset($_POST['team_cap_assign'])){
+ //  var_dump($_POST);
+  
+  for ($i=1;$i<=$number_teams;$i++){
+
+    if (isset($_POST['team_'.$i])){
+      $team_cap_stu_id[$i] = $_POST['team_'.$i];
+      $sql = 'UPDATE `TeamStudentConnect` SET team_cap = 1  WHERE  student_id = :student_id AND eexamnow_id = :eexamnow_id AND team_num = :team_num';
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute(array(
+        ":team_num" => $i,
+        ":student_id" => $team_cap_stu_id[$i],
+        ":eexamnow_id" => $eexamnow_id,
+        ));
 
 
+    }
+  }
+ }
+// get the Team captains from the tables if they have been assigned so we can make the radio buttons setTickerSymbol
+
+$sql ='SELECT student_id, team_num FROM TeamStudentConnect WHERE eexamnow_id = :eexamnow_id AND team_cap =1';
+$stmt = $pdo->prepare($sql);
+$stmt->execute(array(
+  ":eexamnow_id" => $eexamnow_id,
+  ));
+  $teamcap_data = $stmt->fetchALL(PDO::FETCH_ASSOC);   
+if ($teamcap_data != false){
+  foreach($teamcap_data as $teamcap_datum)
+  $team_cap[$teamcap_datum['team_num']] = $teamcap_datum['student_id'];
+  //  var_dump($team_cap);
+ } else {
+   $team_cap = '';
+  }
 
 
 
 
 
 // build the student registration table and team student array _______________________________________________________________________________________________________________________________
-
+echo '<div id = team_assignments>';
    echo '<h2> Registered Students / Team Assignments</h2>';
-echo '<form method = "POST" id = "team_assign">';
+    echo '<form method = "POST" id = "team_assign">';
 
-   echo ('<table id="table_registration" style = "text-align:center" class = "a" border="1" >'."\n");	
+      echo ('<table id="table_registration" style = "text-align:center" class = "a" border="1" >'."\n");	
       echo("<thead>");
       echo("<tr>");
       echo("<th>");
@@ -387,9 +419,9 @@ echo '<form method = "POST" id = "team_assign">';
               echo '';
               for ($i=1;$i<=$number_teams;$i++){
                 echo("<td>");
-                //  if (isset($team_nums)){
+                  if (isset($team_nums[$student_id])){
                     if ($team_nums[$student_id]==$i){$check_flag = 'checked';}else{$check_flag ='';}
-               //   } else {$check_flag ='';}
+                  } else {$check_flag ='';}
                   echo '<input type = "radio"'.$check_flag.'  id = "stu_'.$student_id.'_team_'.$i.'"   class = "team_'.$i.'" name ="stu_'.$student_id.'" value = "team_'.$i.'_dex_'.$dex.'" ></input>';
 
                 echo("</td>");
@@ -419,7 +451,7 @@ echo '<form method = "POST" id = "team_assign">';
   echo ' <input type="hidden" name="eexamnow_id"  value='.$eexamnow_id.')';
 
  echo '</form>';
-
+echo '</div>';
   
    echo '<br>';
    echo '<br>';
@@ -478,6 +510,7 @@ echo '<form method = "POST" id = "team_assign">';
                   }
                   echo' '.$problem_total;
                   $student_assignment_total = $student_assignment_total + $problem_total*$eexamtime_data['perc_'.$eactivity_datum['alias_num']]/100;
+                  $individual_score[$student_datum['student_id']] = round($student_assignment_total*10)/10;
                   echo("</td>");
                }
 
@@ -498,47 +531,68 @@ echo '<form method = "POST" id = "team_assign">';
    echo '<br>';
    echo '<br>';
    echo '<br>';
+   echo '<div id = team_score>';
+      echo '<h2> Team Scores </h2>';
+      echo '<form method = "POST" >';
 
-   echo '<h2> Team Scores </h2>';
+      echo ('<table id="table_team_scores" style = "text-align:center" class = "a" border="1" >'."\n");	
+          echo("<thead>");
 
-   echo ('<table id="table_team_scores" style = "text-align:center" class = "a" border="1" >'."\n");	
-      echo("<thead>");
+                echo("<th>");
+                echo('Team Name');
+                    echo("</th><th>");
+                echo('Members');
+                echo ('</th>');
+                echo ('<th>');
+                echo ('dex');
+                echo ('</th>');
+                echo ('<th>');
+                echo ('Team Captain');
+                echo ('</th>');
+                echo ('<th>');
+                echo ('Individual Score');
+                echo ('</th>');
+                echo ('<th>');
+                echo ('Team Cohesivity');
+                echo ('</th>');
+                echo ('<th>');
+                echo ('Team Score');
+                echo ('</th>');
+                echo("</tr>\n");
+                      echo("</thead>");
+                
+            echo("<tbody>");
 
-            echo("<th>");
-            echo('Team Name');
-                echo("</th><th>");
-            echo('Members');
-            echo ('</th>');
-            echo ('<th>');
-            echo ('dex');
-            echo("</th></tr>\n");
-                  echo("</thead>");
+
+            for ($i=1;$i<=$number_teams;$i++){
+              $sql = "SELECT * FROM TeamStudentConnect  LEFT JOIN Student ON Student.student_id = TeamStudentConnect.student_id WHERE eexamnow_id = :eexamnow_id AND team_num = :team_num ORDER BY dex ASC";
+              $stmt = $pdo->prepare($sql);
+              $stmt->execute(array(
+                ":eexamnow_id" => $eexamnow_id,
+                ":team_num" => $i,
+                ));
+                $studentonteam_data = $stmt->fetchALL(PDO::FETCH_ASSOC);  
+
+
+                if ( $studentonteam_data != false){$num_rows = count($studentonteam_data); } else {$num_rows = 1; }
+              echo('<th rowspan ='. $num_rows.'>');
+              echo ('Team '.$i);
+            echo('</th>');
+          //  echo 'num_stu on team: '.$num_stu_on_team;
             
-        echo("<tbody>");
-
-
-        for ($i=1;$i<=$number_teams;$i++){
-          $sql = "SELECT * FROM TeamStudentConnect  LEFT JOIN Student ON Student.student_id = TeamStudentConnect.student_id WHERE eexamnow_id = :eexamnow_id AND team_num = :team_num ORDER BY dex ASC";
-          $stmt = $pdo->prepare($sql);
-          $stmt->execute(array(
-            ":eexamnow_id" => $eexamnow_id,
-            ":team_num" => $i,
-            ));
-            $studentonteam_data = $stmt->fetchALL(PDO::FETCH_ASSOC);  
-            if ( $studentonteam_data != false){$num_rows = count($studentonteam_data); } else {$num_rows = 1; }
-
-
-
-          // echo('<td id =  num_stu_team_'.$i.'>');
-           echo('<th rowspan ='. $num_rows.'>');
-           echo ('Team '.$i);
-         echo('</th>');
-      //  echo 'num_stu on team: '.$num_stu_on_team;
-        
             if ($studentonteam_data != false){
 
               $j = 1;
+                $team_weighted_ave = 0;
                 foreach($studentonteam_data as $studentonteam_datum){
+                  $student_id = $studentonteam_datum['student_id'];
+                  
+                  $team_weighted_ave = $team_weighted_ave + $individual_score[$student_id]/ count($studentonteam_data);
+                }
+                
+                foreach($studentonteam_data as $studentonteam_datum){
+                  $student_id = $studentonteam_datum['student_id'];
+                 // echo ' i '.$i;
                   echo('<td>');
 
                     echo ($studentonteam_datum['first_name'].' '.$studentonteam_datum['last_name']);
@@ -546,318 +600,53 @@ echo '<form method = "POST" id = "team_assign">';
                     echo('<td>');
                     echo ($studentonteam_datum['dex']);
                     echo('</td>');
+                    echo('<td>');
+                    if (isset($team_cap[$i])){
+                      if ($team_cap[$i]==$student_id){$check_flag = 'checked';}else{$check_flag ='';}
+                    } else {$check_flag ='';}
+                    echo '<input type = "radio" '.$check_flag.' id = "team_'.$i.'_stu_'.$student_id.'" name ="team_'.$i.'" value = "'.$student_id.'" ></input>';
+                    echo('</td>');
+                    echo('<td>');
+                    echo ($individual_score[$student_id]);
+                    
+                    echo('</td>');
+                    if ($j==1){
+                      echo('<td  rowspan ='. $num_rows.'>');
+                      echo (1);
+                      echo('</td>');
+                   }
+                   if ($j==1){
+                    echo('<td  rowspan ='. $num_rows.'>');
+                    echo (round($team_weighted_ave*10)/10);
+                    echo('</td>');
+                   }
                     echo('<tr>');
                     if($j!=1){
                       echo('<td>');
                       echo('</td>');
+                      echo('<td>');
+                      echo('</td>');
                     }
-                    
                   $j++;
                 }
 
-
             }
-            
+            echo('</tr>');
+            }
 
-         
-
-
-
-
-         echo('</tr>');
-
-         }
-
-/* 
-      
-          foreach ($student_data as $student_datum){
-              echo('<tr>');
-              echo('<td>');
-              echo $student_datum['first_name'].' '.$student_datum['last_name'];
-              echo('</td><td>');
-              echo $student_datum['dex'];
-              echo('</td>');
-              echo('</tr>');
-
-          }
- */
          echo("</tbody>");
-   echo("</table>");
-
-
-/* 
-
-	 echo ('<table id="table_format" style = "text-align:center" class = "a" border="1" >'."\n");	
-		 echo("<thead>");
-
-		echo("<th>");
-		echo('name');
-        echo("</th><th>");
-		echo('pin');
-          echo("</th><th>");
-		echo('Extend t');
-         echo("</th><th>");
-        echo('Correct 1');
-		echo("</th><th>");
-        echo('Correct 2');
-		echo("</th><th>");
-         echo('Correct 3');
-		echo("</th><th>");
-        echo('Correct 4');
-        echo("</th><th>");
-        echo('Correct 5');
-         echo("</th><th>");   
-        echo('P 1');
-        echo('</br>');
-        // echo('<font font-size = "1"> a b c d e f g h i j </font>');
-		echo("</th><th>");
-        echo('P 2');
-		echo("</th><th>");
-         echo('P 3');
-		echo("</th><th>");
-        echo('P 4');
-        echo("</th><th>");
-        echo('P 5');
-          echo("</th><th>");
-            echo('Location');
-          echo("</th><th>");
-        echo('Total');
-		echo("</th></tr>\n");
-		 echo("</thead>");
-		 
-		  echo("<tbody>");
-		//
-
- 
- 
-		
-		// Get the team_id of all the teams in the game_prob_flag
-   // $stmt = $pdo->prepare("SELECT *  FROM `Eactivity` WHERE eexamnow_id = :eexamnow_id ORDER BY SUBSTR(name, CHAR_LENGTH(name) - LOCATE(' ', REVERSE(name))+1)");          //SUBSTR(name, CHAR_LENGTH(name) - LOCATE(' ', REVERSE(name))+1)
-    $stmt = $pdo->prepare("SELECT *  FROM `Eactivity` WHERE eexamnow_id = :eexamnow_id ");         
-    $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
-             $rows = $stmt->fetchALL(PDO::FETCH_ASSOC); 
-           //  print_r($row[0]);
-             
-             foreach($rows as $row){
+       echo("</table>");
+       echo ('<input type = "submit" style = "background-color:yellow;" id = "team_cap_assign"  name = "team_cap_assign" value = "Assign Team Captains"></input>');
+   
+       echo' <input type="hidden" name="eexamtime_id"  value= '.$eexamtime_id.')';
+       echo ' <input type="hidden" name="eexamnow_id"  value='.$eexamnow_id.')';
+     
+      echo '</form>';
             
-                 echo "<tr><td>";
-                echo($row['name']);
-                echo("</td><td>");	
-                  echo($row['dex']);
-                  echo("</td><td>");
-                  
-                   
-              
-                
-                  if($row['extend_time_flag']==1){echo('<p>ex time</p>');} 
-                  //  echo('<form action = "QRExamEditExaminee.php" method = "POST" target = "_blank" > <input type = "hidden" name = "examactivity_id" value = "'.$row['examactivity_id'].'"><input type = "submit" name = "edit" value ="Edit"></form>');
-                   //   echo('<form action = "QRExamEditExaminee.php" method = "POST" target = "_blank" > <input type = "hidden" name = "examactivity_id" value = "'.$row['examactivity_id'].'"><input type = "submit" name = "edit" value ="Edit2"></form>');
-                    
-                    echo '<a href = "QRExamEditExaminee.php?examactivity_id='.$row['examactivity_id'].'" target = "_blank"> edit </a>';
- //--------------------------------------------------------------------------------------------------------fix this-------------------------------------                 
-                  
-                  
-                    echo("</td><td>");	
-                  print('<span class="inlinebar1">');
-                echo($row['response_pblm1']);
-                   print('</span>');
-                 echo("</td><td>");
-                 
-                   print('<span class="inlinebar1">');
-                echo($row['response_pblm2']);
-                   print('</span>');
-                 echo("</td><td>");
-                 
-                  print('<span class="inlinebar1">');
-                  echo($row['response_pblm3']);
-                   print('</span>');
-                 echo("</td><td>");
-                 
-                 
-                   print('<span class="inlinebar1">');
-                echo($row['response_pblm4']);
-                   print('</span>');
-                 echo("</td><td>");
-                 
-                   print('<span class="inlinebar1">');
-                echo($row['response_pblm5']);
-                   print('</span>');
-                 echo("</td><td>");
-              //  echo($row['pblm_1_score']);
-                
-                
-                  if(empty($row['response_pblm1'])){
-                    $resp_1 =array(0,0,0,0,0,0,0,0,0,0);
-                } else {
-                 $resp_1 = explode(",",$row['response_pblm1'] );
-                }
-            if(isset($_POST['p1a'])){
-                $points_1 = $resp_1[0]*intval($_POST['p1a'])
-                +$resp_1[1]*intval($_POST['p1b'])
-                +$resp_1[2]*intval($_POST['p1c'])
-                +$resp_1[3]*intval($_POST['p1d'])
-                +$resp_1[4]*intval($_POST['p1e'])
-                +$resp_1[5]*intval($_POST['p1f'])
-                +$resp_1[6]*intval($_POST['p1g'])
-                +$resp_1[7]*intval($_POST['p1h'])
-                +$resp_1[8]*intval($_POST['p1i'])
-                +$resp_1[9]*intval($_POST['p1j']);
-            } else {
-                $points_1 = 0;
-            }
-                echo($points_1);
-              
-                 echo("</td><td>");
-               // echo($row['pblm_2_score']);
-                 
-                if(empty($row['response_pblm2'])){
-                    $resp_2 =array(0,0,0,0,0,0,0,0,0,0);
-                } else {
-                 $resp_2 = explode(",",$row['response_pblm2'] );
-                }
-                if(isset($_POST['p2a'])){   
-                    $points_2 = $resp_2[0]*intval($_POST['p2a'])
-                    +$resp_2[1]*intval($_POST['p2b'])
-                    +$resp_2[2]*intval($_POST['p2c'])
-                    +$resp_2[3]*intval($_POST['p2d'])
-                    +$resp_2[4]*intval($_POST['p2e'])
-                    +$resp_2[5]*intval($_POST['p2f'])
-                    +$resp_2[6]*intval($_POST['p2g'])
-                    +$resp_2[7]*intval($_POST['p2h'])
-                    +$resp_2[8]*intval($_POST['p2i'])
-                    +$resp_2[9]*intval($_POST['p2j']);
-                 } else {
-                    $points_2 = 0;
-                }
-                
-                echo($points_2);
-            
-                 echo("</td><td>");
-              
-                 if(empty($row['response_pblm3'])){
-                    $resp_3 =array(0,0,0,0,0,0,0,0,0,0);
-                } else {
-                 $resp_3 = explode(",",$row['response_pblm3'] );
-                }
-                
-                 if(isset($_POST['p3a'])){   
-                    $points_3 = $resp_3[0]*intval($_POST['p3a'])
-                    +$resp_3[1]*intval($_POST['p3b'])
-                    +$resp_3[2]*intval($_POST['p3c'])
-                    +$resp_3[3]*intval($_POST['p3d'])
-                    +$resp_3[4]*intval($_POST['p3e'])
-                    +$resp_3[5]*intval($_POST['p3f'])
-                    +$resp_3[6]*intval($_POST['p3g'])
-                    +$resp_3[7]*intval($_POST['p3h'])
-                    +$resp_3[8]*intval($_POST['p3i'])
-                    +$resp_3[9]*intval($_POST['p3j']);
-                 } else {
-                    $points_3 = 0;
-                }
-
-               echo($points_3);
-            
-                 echo("</td><td>");
-               
-                 if(empty($row['response_pblm4'])){
-                    $resp_4 =array(0,0,0,0,0,0,0,0,0,0);
-                } else {
-                 $resp_4 = explode(",",$row['response_pblm4'] );
-                }
-                
-                 if(isset($_POST['p4a'])){   
-                    $points_4 = $resp_4[0]*intval($_POST['p4a'])
-                    +$resp_4[1]*intval($_POST['p4b'])
-                    +$resp_4[2]*intval($_POST['p4c'])
-                    +$resp_4[3]*intval($_POST['p4d'])
-                    +$resp_4[4]*intval($_POST['p4e'])
-                    +$resp_4[5]*intval($_POST['p4f'])
-                    +$resp_4[6]*intval($_POST['p4g'])
-                    +$resp_4[7]*intval($_POST['p4h'])
-                    +$resp_4[8]*intval($_POST['p4i'])
-                    +$resp_4[9]*intval($_POST['p4j']);
-                } else {
-                    $points_4 = 0;
-                }
+   echo '</div>';
 
 
-               echo($points_4);
-            
-                 echo("</td><td>");
-                 if(empty($row['response_pblm5'])){
-                    $resp_5 =array(0,0,0,0,0,0,0,0,0,0);
-                } else {
-                 $resp_5 = explode(",",$row['response_pblm5'] );
-                }
-                 if(isset($_POST['p5a'])){   
-                    $points_5 = $resp_5[0]*intval($_POST['p5a'])
-                    +$resp_5[1]*intval($_POST['p5b'])
-                    +$resp_5[2]*intval($_POST['p5c'])
-                    +$resp_5[3]*intval($_POST['p5d'])
-                    +$resp_5[4]*intval($_POST['p5e'])
-                    +$resp_5[5]*intval($_POST['p5f'])
-                    +$resp_5[6]*intval($_POST['p5g'])
-                    +$resp_5[7]*intval($_POST['p5h'])
-                    +$resp_5[8]*intval($_POST['p5i'])
-                    +$resp_5[9]*intval($_POST['p5j']);
-                 } else {
-                    $points_5 = 0;
-                }
-                
-                echo($points_5);
-                
-              
-                echo("</td><td>");
-                   echo($row['city'].', '.$row['region'].', '.$row['country']);
-                  echo("</td><td>");
-                 
-                $total_score = $points_1+$points_2+$points_3+$points_4+$points_5;
 
-                 echo($total_score);
-               
-                echo("</td></tr>\n");
-           
-            // now update the examactivity table with the scores
-    /*             $sql = "UPDATE `Examactivity` SET pblm_1_score = :pblm_1_score, pblm_2_score = :pblm_2_score , pblm_3_score = :pblm_3_score, pblm_4_score = :pblm_4_score, pblm_5_score = :pblm_5_score WHERE examactivity_id = :examactivity_id ";
-             $stmt = $pdo->prepare($sql);
-			$stmt->execute(array(
-            ":examactivity_id" => $row['examactivity_id'],
-            ":pblm_1_score" => $points_1,
-            ":pblm_2_score" => $points_2,
-            ":pblm_3_score" => $points_3,
-            ":pblm_4_score" => $points_4,
-            ":pblm_5_score" => $points_5,
-            ));
-            
-            
-
-           }
-                 
-              
-               
-               // echo('<form action = "QRGameFixSum.php" method = "POST" target = "_blank"> <input type = "hidden" name = "gmact_id" value = "'.$row['gmact_id'].'"><input type = "hidden" name = "team_id" value =  "'.$row['team_id'].'"><input type = "submit" value ="Fix Team Sums"></form>');
-	          //   echo('<form action = "QRGameDeletePlayer.php" method = "POST" target = "_blank">  <input type = "hidden" name = "gameactivity_id" value = "'.$row['gameactivity_id'].'"><input type = "submit" value ="Delete Player"></form>');
-             //    echo('<form action = "QRGameEditPlayer.php" method = "POST" target = "_blank"> <input type = "hidden" name = "gameactivity_id" value = "'.$row['gameactivity_id'].'"><input type = "submit" value ="Edit Player Data"></form>');
-
-                // echo("&nbsp; ");
-				// echo('<form action = "getGame.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Game"></form>');
-				// echo("&nbsp; ");
-				// echo('<form action = "numericToMC.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Make MC"></form>');
-				                
-                    
-            
-                 
-           
-            echo("</tbody>");
-             echo("</table>");
-             
-                if(isset($_POST['close'])){
-                    echo  "<script type='text/javascript'>";
-                    echo "window.close();";
-                echo "</script>";
-     }
-
-  */
 
   $pass = array(
     'number_teams' =>$number_teams,
@@ -931,7 +720,7 @@ echo '<form method = "POST" id = "team_assign">';
      const currentclass_id = pass['currentclass_id']; 
     
 
-      $('input:radio').click(function(){
+      $('#team_assignments.input:radio').click(function(){
       // console.log('click');
 
         //console.log('num_teams: '+number_teams);
