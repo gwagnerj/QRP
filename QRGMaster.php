@@ -526,11 +526,11 @@
 				} 
 			
 			};
-			 */
+			 
                 function Start(){
 				$('#defaultCountdown').countdown({until: stop_time, format: 'ms',  layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',onExpiry: SubmitAway}); 
 				}
-                
+               */ 
                 function pause() {
                     $('#defaultCountdown').countdown('pause');
                 }

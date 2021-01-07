@@ -1,6 +1,7 @@
 <?php
 	require_once "pdo.php";
 	session_start();
+   
     
     $range_limit = 40;
     $stdev_limit = 15;
@@ -87,7 +88,10 @@
                     <link rel="stylesheet" type="text/css" href="DataTables-1.10.18/css/jquery.dataTables.css"/> 
                     <script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
                     <script type="text/javascript" charset="utf-8" src="DataTables-1.10.18/extras/js/ColumnFilterWidgets.js"></script>
-                    <meta http-equiv="refresh" content="10"/>
+                    
+  	<!-- ----------------------------THis is timer for the page reload  ---------------------------------------------- -->	
+   
+                    <meta http-equiv="refresh" content="20"/>
                 
                     
                     
@@ -96,7 +100,7 @@
                     <link rel="stylesheet" type="text/css" href="jquery.countdown.css"> 
                         
                     <script type="text/javascript" src="jquery.plugin.js"></script> 
-                    <script type="text/javascript" src="jquery.countdown.js"></script>
+                    <script  type="text/javascript" src="jquery.countdown.js"></script>
                     
 				<!-- THis is from sparklines jquery plugin   -->	
 
@@ -162,12 +166,13 @@
         }
         $counter = $counter+1;
         $_SESSION['counter']= $counter;
+       
         
        // echo ('time_type = '.$time_type);
         
-      //   echo ('time_time = '.$time_time);
-       // echo ('stop_time = '.$stop_time);
-      //  echo ('<div  id="stop_time" value= '.$time_time.'>'.'stop_time = '.$stop_time.'</div>');
+       // echo ('time_time = '.$time_time);
+      //  echo ('stop_time = '.$stop_time);
+     //  echo ('<div  id="stop_time" value= '.$time_time.'>'.'stop_time = '.$stop_time.'</div>');
         
     ?>    
      
@@ -189,9 +194,12 @@
      
        
 
-<?php     
+<?php 
+
       //  echo "gmact_id".$gmact_id;
 	echo "counter =".$counter;
+    
+
 	 echo ('<table id="table_format" class = "a" border="1" >'."\n");	
 		 echo("<thead>");
 
@@ -219,6 +227,7 @@
 		 echo("</thead>");
 		 
 		  echo("<tbody>");
+          
 		//
 		// get the high individual score for Kahoot to set the 100% mark
         // Get the team_id of all the teams in the game_prob_flag
@@ -381,7 +390,8 @@
                 $ans+=($elem-$mu)*($elem-$mu);
             }
             return sqrt($ans/$arr_size);
-}
+            }
+
 	
 ?>
 
@@ -393,8 +403,8 @@
 	    $(document).ready( function () {	
 		$(".inlinebar1").sparkline("html",{type: "bar", height: "70",chartRangeMax:"100", barWidth: "10", resize: true, barSpacing: "5", barColor: "blue"});
       	$(".inlinebar2").sparkline("html",{type: "bar", height: "70",chartRangeMax:"100", barWidth: "10", resize: true, barSpacing: "5", barColor: "indigo"});
-
-    /*	
+	 /*
+   
     
         $(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
 		
