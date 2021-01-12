@@ -374,7 +374,12 @@ $sql = ' SELECT `P_num_score_net`, `ec_pts`
    
     ));
     $teamcap_data = $stmt->fetch();
-   $team_cap = $teamcap_data['team_cap'];
+
+    if ( $teamcap_data!= false){
+     $team_cap = $teamcap_data['team_cap'];
+    } else {
+        $team_cap ='';
+    }
 /* 
     echo ' team_cap '.$team_cap;
    echo ' globephase '.$globephase;

@@ -246,20 +246,18 @@
                  <title>QRExam</title>
                  <meta name="viewport" content="width=device-width, initial-scale=1" /> 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-            <style>
-            /* 
-                    #checker_only {
-                    position: absolute;
-                    left: 10px;
-                    width: 40px;
-                    height:40px;
-                     
-                    } 
-*/ 
-             </style>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css"> 
+
+            <style type="text/css">
+                 body{ font: 14px sans-serif; }
+             .wrapper{ padding: 20px; }
+
+        
+    </style>
         </head>
 
         <body>
+        <div class="wrapper">
                 <header>
                       <h1>Quick Response Exam Registration</h1>
                 </header>
@@ -286,13 +284,20 @@
       <!--      <p><font color=#003399>Exam Code: </font><input type="text" name="exam_code" id = "exam_code_id" size= 5 value="<?php echo($exam_code);?>" > 
                     - this is provided by the instructor-->
             </p>  
+            <div class="form-group">   
 
-                    <p><font color=#003399>Your Name: </font><?php echo($stu_name);?> </p>
+                    <h3><font color=#003399>Your Name: </font><?php echo($stu_name);?> </h3>
+
+             </div>
+             <div class="form-group">   
+
                     <input autocomplete="false" name="hidden" type="text" style="display:none;">
                     <input type="hidden"  name="pin" id="pin_id" value=<?php echo($pin);?> ></p>
                     <input type="hidden"  name="student_id" id="student_id" value=<?php echo($student_id);?> ></p>
                     <input type="hidden"  name="checker2"  value=<?php echo($checker);?> ></p>       
-                    <div id ="instructor_id">	
+           
+            <div id ="instructor_id">	
+            
                     <font color=#003399> Instructor: &nbsp; </font>
                     <?php 
                     // $iid=1;
@@ -324,10 +329,12 @@
                     echo ('</select>');
                     }
                     ?>
+                 </div> 
+                     
 
-
-                    </div>
+         
                     </br>
+                    <div class="form-group">   
 
                     <!--	<div id ="current_class_dd">	-->
                     <font color=#003399>Class: </font>
@@ -349,7 +356,7 @@
                         }
                         ?>
 
-
+                </div>
                     <br>
                     <h2>&nbsp;&nbsp;
                         <label>  <input type = "radio" id = "checker" name = "checker" style = "width:25px;height:25px;" value = "checker_only" checked >  Checker Only &nbsp;&nbsp;&nbsp;</label>
@@ -364,7 +371,7 @@
 
                     <p><input type = "submit" name = "submit_form" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
             </form>
-            
+       </div>     
     <script>
 
             $("#iid").change(function(){
