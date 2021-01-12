@@ -2781,5 +2781,92 @@ ENGINE=InnoDB CHARACTER SET = utf8;
       CONSTRAINT FOREIGN KEY (student_id) REFERENCES Student (student_id),
       CONSTRAINT FOREIGN KEY (eexamnow_id) REFERENCES Eexamnow (eexamnow_id),
       PRIMARY KEY (`student_id`,`eexamnow_id`)
-    ) ENGINE=InnoDB CHARACTER SET = utf8;     
-      
+    ) ENGINE=InnoDB CHARACTER SET = utf8;    
+    
+
+
+    
+     CREATE TABLE IF NOT EXISTS `GameAction` ( /*  these are the action cards for the board game of this*/
+		`gameaction_id` INT(11) NOT NULL AUTO_INCREMENT,
+        `game_action_title` VARCHAR(50) NOT NULL, 
+        `fin_onetime_cost` INT(11) NOT NULL, 
+        `fin_ongoing_cost` int(11),
+        `env_ongoing_benefit`  INT(11), 
+        `soc_ongoing_benefit`  INT(11), 
+        `action_image_file`  VARCHAR(50), 
+        `action_html_file`  VARCHAR(50), 
+        `action_video_file`  VARCHAR(50), 
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	    	PRIMARY KEY (`gameaction_id`))
+        ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+
+
+         CREATE TABLE IF NOT EXISTS `GameDevelopment` (
+	    	`gamedevelopment_id` INT(11) NOT NULL AUTO_INCREMENT,
+        `game_development_title` VARCHAR(50) NOT NULL, 
+        `development_catagory` VARCHAR(20) NOT NULL, 
+        `fin_onetime_change` int(11),
+        `env_onetime_change`  INT(11), 
+        `soc_onetime_change`  INT(11), 
+        `cash_flow_change`  INT(11), 
+        `production_change`  INT(11), 
+        `margin_change`  INT(11), 
+        `fin_wt_change`  INT(11), 
+        `env_wt_change`  INT(11), 
+        `soc_wt_change`  INT(11), 
+        `development_image_file`  VARCHAR(50), 
+        `development_html_file`  VARCHAR(50), 
+        `development_video_file`  VARCHAR(50), 
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	    	PRIMARY KEY (`gamedevelopment_id`))
+        ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+
+         CREATE TABLE IF NOT EXISTS `GameBoard` (
+	    	`gameboard_id` INT(11) NOT NULL AUTO_INCREMENT,
+        `game_board_title` VARCHAR(50) NOT NULL, /* e.g. QRpropylene  or QRtown  */
+        `board_catagory` VARCHAR(20) NOT NULL,   /* e.g. for material balances or  peralgebra class  */
+        `board_image_file`  VARCHAR(50), 
+        `board_html_file`  VARCHAR(50), 
+        `board_video_file`  VARCHAR(50), 
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	    	PRIMARY KEY (`gameboard_id`))
+        ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+
+
+  CREATE TABLE IF NOT EXISTS GameActionGameDevelopmentConnect (
+    	`gameactiongamedevelopmentconnect_id` INT(11) NOT NULL AUTO_INCREMENT,
+      `gameaction_id` INT(11) NOT NULL,
+      `gamedevelopment_id` INT(11) NOT NULL,
+      `gameboard_id` INT(11) NOT NULL,
+      `blocking_effect` INT(11) DEFAULT 0,
+      CONSTRAINT FOREIGN KEY (`gameaction_id`) REFERENCES GameAction (gameaction_id),
+      CONSTRAINT FOREIGN KEY (`gamedevelopment_id`) REFERENCES GameDevelopment ( `gamedevelopment_id`),
+      CONSTRAINT FOREIGN KEY (`gameboard_id`) REFERENCES GameBoard ( `gameboard_id`),
+      CONSTRAINT UNIQUE (gamedevelopment_id,gameaction_id,gameboard_id),
+      PRIMARY KEY (gameactiongamedevelopmentconnect_id)
+    ) ENGINE=InnoDB CHARACTER SET = utf8;    
+
+
+     CREATE TABLE IF NOT EXISTS `GameBoardSetup` ( 
+		`gameboardsetup_id` INT(11) NOT NULL AUTO_INCREMENT,
+        `gameboard_id` INT(11) NOT NULL, 
+        `round` INT(3) NOT NULL, 
+        `num_concept_questions` INT(3),
+        `max_concept_points`  INT(5), 
+        `concept_weighting`  INT(3), 
+        `quant_weighting`  INT(3),  
+        `reflection_weighting`INT(3), 
+        `percent_to_know_point` INT(3), 
+        `know_to_capacity` INT(3), 
+        `max_cap_inc` INT(3), 
+        `development_intesity_factor` INT(3), 
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	    	PRIMARY KEY (`gameboardsetup_id`))
+        ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+
+
+  

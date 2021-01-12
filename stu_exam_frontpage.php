@@ -40,6 +40,8 @@ if ($big_data == false) {
 } 
 
     $iid = $big_data['iid'];
+    $globephase = $big_data['globephase'];
+    $game_flag = $big_data['game_flag'];
     $eexamnow_id = $big_data['eexamnow_id'];
     $student_id = $big_data['student_id'];
     $currentclass_id = $big_data['currentclass_id'];
@@ -270,7 +272,9 @@ $sql = ' SELECT `P_num_score_net`, `ec_pts`
 
 
 
-        echo'<tr ';
+        echo'</tr>';
+        echo'<tr>';
+        
         echo'<th  style = "text-align:Left;padding-left:10px;"> Partial Credit Points</th>';
         foreach($eactivity_data as $eactivity_datum){
             echo '<td>';
@@ -353,6 +357,39 @@ $sql = ' SELECT `P_num_score_net`, `ec_pts`
     <div id = "peer_rating_div">
     </div>
  </form>
+  
+ </br>
+ </br>
+
+
+<?php
+
+    // see if 1) this student is a team leader 2) The game flag has been set and 3) the phase is 2 or 3
+
+    $sql = "SELECT team_cap FROM TeamStudentConnect WHERE student_id = :student_id AND eexamnow_id = :eexamnow_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+        ':student_id' => $student_id,
+        ':eexamnow_id' => $eexamnow_id,
+   
+    ));
+    $teamcap_data = $stmt->fetch();
+   $team_cap = $teamcap_data['team_cap'];
+/* 
+    echo ' team_cap '.$team_cap;
+   echo ' globephase '.$globephase;
+    echo ' game_flag '.$game_flag;
+ */
+    if ($team_cap ==1 && $globephase == 2 && $game_flag == 1){
+        echo '<form method = "POST" action = "QRTeamCaptain.php">';
+        echo ('<input type = "hidden" name = "eregistration_id" value = "'.$eregistration_id.'"></input>'); 
+        echo ('<input type = "hidden" name = "globephase" value = "'.$globephase.'"></input>'); 
+        echo '<p><input type = "submit" value="Go to Team Captain Input" name = to_team_cap_screen"  size="2" style = "width: 30%; background-color: #FAF1BC; color: black"/> &nbsp &nbsp </p>';
+        echo '</form>';
+    }
+ 
+ ?>
+  <br>
    <!--
    
 	</br>
