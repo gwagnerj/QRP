@@ -2869,4 +2869,14 @@ ENGINE=InnoDB CHARACTER SET = utf8;
         ENGINE=InnoDB DEFAULT CHARSET=utf8;   
 
 
-  
+  ALTER TABLE `Problem` 
+	ADD `tol_a_type` INT (2) DEFAULT 0 AFTER `tol_j`, 
+	ADD `tol_b_type` INT (2)  DEFAULT 0  AFTER `tol_a_type`, 
+	ADD `tol_c_type` INT (2)  DEFAULT 0  AFTER `tol_b_type`, 
+	ADD `tol_d_type` INT (2)  DEFAULT 0  AFTER `tol_c_type`, 
+	ADD `tol_e_type` INT (2)  DEFAULT 0  AFTER `tol_d_type`, 
+	ADD `tol_f_type` INT (2)  DEFAULT 0  AFTER `tol_e_type`, 
+	ADD `tol_g_type` INT (2)  DEFAULT 0  AFTER `tol_f_type`, 
+	ADD `tol_h_type` INT (2)  DEFAULT 0  AFTER `tol_g_type`, 
+	ADD `tol_i_type` INT (2)  DEFAULT 0  AFTER `tol_h_type`, 
+	ADD `tol_j_type` INT (2)  DEFAULT 0  AFTER `tol_i_type`

@@ -150,7 +150,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 <p><input type="checkbox" checked name="disconnectStudents" ><font color=#003399> Disconnect all students from all expired current classes</font> </p>
 
-<p><input type="checkbox" name="deleteClass" ><font color=#003399>Expired CurrentClasses and Activity of Expired CurrentClasses</font> </p>
+<p><input type="checkbox" name="deleteClass" ><font color=#003399>Expired CurrentClasses</font> </p>
 
 	
 	<p> <input type="checkbox" name="deleteUsers" > <font color=#003399>Expired Users </font> </p>

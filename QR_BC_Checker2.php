@@ -171,14 +171,17 @@ session_start();
 
 			$unit = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
 			$tol=array('a'=>0.02,'b'=>0.02,'c'=>0.02,'d'=>0.02,'e'=>0.02,'f'=>0.02,'g'=>0.02,'h'=>0.02,'i'=>0.02,'j'=>0.02);
-			$ansFormat=array('ans_a' =>"",'ans_b' =>"",	'ans_c' =>"",'ans_d' =>"",'ans_e' =>"",'ans_f' =>"",	'ans_g' =>"",'ans_h' =>"",'ans_i' =>"",'ans_j'=>"");
+            $tol_type=array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
+
+            $ansFormat=array('ans_a' =>"",'ans_b' =>"",	'ans_c' =>"",'ans_d' =>"",'ans_e' =>"",'ans_f' =>"",	'ans_g' =>"",'ans_h' =>"",'ans_i' =>"",'ans_j'=>"");
 			
 			
 			$hintLimit = 3;
 			$dispBase = 1;
 			
 			
-			$tol_key=array_keys($tol);
+            $tol_key=array_keys($tol);
+            $tol_type_key=array_keys($tol_type);
 			$resp_key=array_keys($tol);
 			$corr_key=array_keys($corr);
 			$ansFormat_key=array_keys($ansFormat);
@@ -210,6 +213,8 @@ session_start();
 				// initialize some arrays
             foreach(range('a','j') as $v){
                 $tol[$v] = $probData['tol_'.$v]*0.001;	
+                $tol_type[$v] = $probData['tol_'.$v.'_type'];	
+
              }
 		
 			if (strlen($probData['hint_a'])>1){$hinta = $probData['hint_a'];$hintaPath="uploads/".$hinta;} else {$hintaPath ="uploads/default_hints.html";	}
@@ -360,7 +365,6 @@ session_start();
 		 */
 		for ($j=0; $j<=9; $j++) {
 			if($partsFlag[$j] ) {
-					//If ($soln[$j]>((1-$tol[$tol_key[$j]])*$resp[$resp_key[$j]]) and ($soln[$j]<((1+$tol[$tol_key[$j]]))*($resp[$resp_key[$j]]))) //if the correct value is within the response plus or minus the tolerance
 								
                 if($soln[$j]==0){  // take care of the zero solution case
                     $sol=1;

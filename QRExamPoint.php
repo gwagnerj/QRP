@@ -49,6 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
                 ':currentclass_id' => $currentclass_id,
 				)); 
            $alias_numss = $stmt->fetchALL();
+
+       //    var_dump($alias_numss);
+     //      echo '<br><br><br>';
+
      $data_init = array();
      
      foreach($alias_numss as $alias_nums){
@@ -133,10 +137,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
         
     } 
     $sql = $sql.' WHERE eexamtime_id = :eexamtime_id ';
-
+  //  echo ' $sql: '.$sql;
  
      $stmt = $pdo->prepare($sql);
-     
+
+  //   echo '<br><br><br>';
+  //   var_dump($data_init);
+ //    echo '<br><br><br>';
      $stmt->execute($data);
      
                 $_SESSION['success'] = 'Exam set up';
@@ -452,12 +459,16 @@ echo ('<form method = "POST">');
     <br><br>
 	<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
 	<br>
+
+
+
+
 	<script>
 	
-	function nextChar(c) {
-    return String.fromCharCode(c.charCodeAt(0) + 1);
-    }
-    
+        function nextChar(c) {
+        return String.fromCharCode(c.charCodeAt(0) + 1);
+        }
+        
     
    
 	

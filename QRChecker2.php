@@ -190,6 +190,7 @@ session_start();
 
 			$unit = array('a'=>"",'b'=>"",'c'=>"",'d'=>"",'e'=>"",'f'=>"",'g'=>"",'h'=>"",'i'=>"",'j'=>"");
 			$tol=array('a'=>0.02,'b'=>0.02,'c'=>0.02,'d'=>0.02,'e'=>0.02,'f'=>0.02,'g'=>0.02,'h'=>0.02,'i'=>0.02,'j'=>0.02);
+			$tol_type=array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
 			$ansFormat=array('ans_a' =>"",'ans_b' =>"",	'ans_c' =>"",'ans_d' =>"",'ans_e' =>"",'ans_f' =>"",	'ans_g' =>"",'ans_h' =>"",'ans_i' =>"",'ans_j'=>"");
 			
 			
@@ -197,7 +198,8 @@ session_start();
 			$dispBase = 1;
 			
 			
-			$tol_key=array_keys($tol);
+            $tol_key=array_keys($tol);
+            $tol_type_key=array_keys($tol_type);
 			$resp_key=array_keys($tol);
 			$corr_key=array_keys($corr);
 			$ansFormat_key=array_keys($ansFormat);
@@ -232,6 +234,8 @@ session_start();
 				// initialize some arrays
             foreach(range('a','j') as $v){
                 $tol[$v] = $probData['tol_'.$v]*0.001;	
+                $tol_type[$v] = $probData['tol_'.$v.'_type'];	
+                 
              }
 		
 			
@@ -318,8 +322,10 @@ session_start();
                 ':part_name' => $v
             ));
             $resp_data = $stmt -> fetch();
+            if ($resp_data!=false){
             $old_resp[$i] = $resp_data['resp_value'];
             $resp[$v]=(float)$_POST[$v]+0.0;
+            }
  //           echo('  resp[$v]:  '.$resp[$v]);
  //           echo('  partsFlag[$i]:  '.$partsFlag[$i]);
             // now get the counts for all of the previous tries from the table
@@ -400,10 +406,10 @@ session_start();
       }
     */
 		
-	//}	 
+    //}	
+     
 		for ($j=0; $j<=9; $j++) {
 			if($partsFlag[$j] ) {
-					//If ($soln[$j]>((1-$tol[$tol_key[$j]])*$resp[$resp_key[$j]]) and ($soln[$j]<((1+$tol[$tol_key[$j]]))*($resp[$resp_key[$j]]))) //if the correct value is within the response plus or minus the tolerance
 								
                 if($soln[$j]==0){  // take care of the zero solution case
                     $sol=1;
@@ -411,12 +417,16 @@ session_start();
                     $sol=$soln[$j];
                 }	
                 
-                if(	abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]]) {
-                        $corr_num[$corr_key[$j]]=1;
-                        $corr[$corr_key[$j]]='Correct';
-                        $score=$score+1;
-                                            
-                            }
+                if($tol_type[$tol_type_key[$j]]==0 &&	(abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]])) {   // first condition makes sure we have a relative error
+                    $corr_num[$corr_key[$j]]=1;
+                    $corr[$corr_key[$j]]='Correct';
+                    $score=$score+1;
+                                          
+               } elseif($tol_type[$tol_type_key[$j]]==1 && (abs(($soln[$j]-(float)$resp[$resp_key[$j]]))<= $tol[$tol_key[$j]]) ){  // looking for a absolute error
+                    $corr_num[$corr_key[$j]]=1;
+                    $corr[$corr_key[$j]]='Correct';
+                    $score=$score+1;
+               }
                 else  // got it wrong or did not attempt
                 {
  

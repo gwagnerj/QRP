@@ -160,6 +160,7 @@ session_start();
         $corr_num[$v] =0;
         $unit[$v] = "";
         $tol[$v] = 0;
+        $tol_type[$v] =0;  // tol type zero is relative error 
         $wrongCount[$i]=0; 	// accumulates how many times they missed a part
         $changed[$i]=false;		// 1 if they changed their response ero otherwise
         $i++;
@@ -169,6 +170,7 @@ session_start();
 			
 
 			$tol_key=array_keys($tol);
+			$tol_type_key=array_keys($tol_type);
 			$resp_key=array_keys($resp);
 			$corr_key=array_keys($corr);
 			$ansFormat_key=array_keys($ansFormat);
@@ -205,6 +207,8 @@ session_start();
 			// get the tolerances and if the part has any hintfile	
       foreach(range('a','j') as $v){
         $tol[$v] = $probData['tol_'.$v]*0.001;	
+        $tol_type[$v] = $probData['tol_'.$v.'_type'];	
+        
      }
 
 			
@@ -567,42 +571,31 @@ if( $get_flag ==0){ // if we are comming in from this file on a post
 //var_dump($old_resp) ;echo('<br><br>');
  
 		for ($j=0; $j<=9; $j++) {
+
 			if($changed[$j] ) {
-   
-					//If ($soln[$j]>((1-$tol[$tol_key[$j]])*$resp[$resp_key[$j]]) and ($soln[$j]<((1+$tol[$tol_key[$j]]))*($resp[$resp_key[$j]]))) //if the correct value is within the response plus or minus the tolerance
-								
-                if($soln[$j]==0){  // take care of the zero solution case
-                    $sol=1;
-                } else {
-                    $sol=$soln[$j];
-                }	
-                
-                if(	abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]]) {
-                        $corr_num[$corr_key[$j]]=1;
-                        $corr[$corr_key[$j]]='Correct';
-                        $score=$score+1;
-                                            
-                            }
-                else  // got it wrong 
-              //  {
- /* 
-                    if ($resp[$resp_key[$j]]==0)  // did not attempt it
-                    {
-                        $corr_num[$corr_key[$j]]=0;
-                        $corr[$corr_key[$j]]='';
-                   
+
+              if($soln[$j]==0){  // take care of the zero solution case
+                  $sol=1;
+              } else {
+                  $sol=$soln[$j];
+              }	
+              
+              if($tol_type[$tol_type_key[$j]]==0 &&	(abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]])) {   // first condition makes sure we have a relative error
+                    $corr_num[$corr_key[$j]]=1;
+                    $corr[$corr_key[$j]]='Correct';
+                    $score=$score+1;
+                                          
+               } elseif($tol_type[$tol_type_key[$j]]==1 && (abs(($soln[$j]-(float)$resp[$resp_key[$j]]))<= $tol[$tol_key[$j]]) ){  // looking for a absolute error
+                    $corr_num[$corr_key[$j]]=1;
+                    $corr[$corr_key[$j]]='Correct';
+                    $score=$score+1;
                }
-                        else  // response is equal to zero so probably did not answer (better to use POST value I suppose - fix later
-                */     
-            
-            {
-
-
-                        $wrongCount[$j] = $wrongCount[$j]+1;
-                            $corr_num[$corr_key[$j]]=0;
-                            $corr[$corr_key[$j]]='Not Correct';
-                    }
-              //  }		
+              else  // got it wrong 
+              {
+                    $wrongCount[$j] = $wrongCount[$j]+1;
+                    $corr_num[$corr_key[$j]]=0;
+                  $corr[$corr_key[$j]]='Not Correct';
+              }
 		    	}
 		}
      

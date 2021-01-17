@@ -84,7 +84,7 @@
              .widget-17 { width:150px; }            
 			.widget-0 { width:150px; } 
 		 
-		 
+		
 		 
 	.column-filter-widget { float:left; padding: 20px; border : none; width:200px;}
 	.column-filter-widget select { display: block; }
@@ -223,13 +223,16 @@
 			echo '<a href="QRhomeworkBypass.php" target = "_blank">Look at Active Problem </a>';
 			echo '&nbsp; &nbsp;&nbsp;';
 			echo '<a href="checkerBypass.php" target = "_blank">Solution Check Problem</b></a>';
-			echo '&nbsp; &nbsp;&nbsp;';}
+			echo '&nbsp; &nbsp;&nbsp;';
+		
+		    echo '<a href="QRGameBoardSetup.php" >Game Board Setup</b></a>';
+			echo '</p>';
+		
+		}
           
 
-// Put this in so students or TA's counld run game 11 March 2020 - may want to rethink this later ========================================
 
-          echo '<a href="QRGameMasterStart.php" >Game Master Screen</b></a>';
-			echo '</p>';
+         
             echo ('<style> form {display:inline}</style>');
          //   echo('<form action = "QRExamPrint0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Print Exam"></form> &nbsp;');
             echo('<form action = "QRExamMgmt.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Exam Management"></form> &nbsp;');
@@ -691,14 +694,15 @@
                  $stmt6e = $pdo->query($stmnte);
              */     
                  
-                 $row6e = $stmt6e->fetch(PDO::FETCH_ASSOC);
-              
-                 $class_wordse = str_word_count($row6e['class_name_e'],1); // an array of the words
-                 foreach ($class_wordse as $class_word){
-                        echo(substr($class_word,0,4));
-                        echo(" ");
-                 }
-               
+				 $row6e = $stmt6e->fetch(PDO::FETCH_ASSOC);
+				 if ($row6e != false){
+				
+					$class_wordse = str_word_count($row6e['class_name_e'],1); // an array of the words
+					foreach ($class_wordse as $class_word){
+							echo(substr($class_word,0,4));
+							echo(" ");
+					}
+				}
             }
             
            

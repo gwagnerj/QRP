@@ -905,12 +905,34 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 			
 							While($data=fgetcsv($handle)) {
 								 If ($lines==0){
-									// put the tolerances in the problem table
-									$sql = "UPDATE Problem SET tol_a = :tol_a, tol_b = :tol_b,tol_c = :tol_c, tol_d = :tol_d, 
-											tol_e = :tol_e, tol_f = :tol_f,tol_g = :tol_g, tol_h = :tol_h,tol_i = :tol_i, tol_j = :tol_j
+									if($data[0] == 'tol_type')
+									{
+										// we have a newer file that has the tolerance type parameter
+										$sql = "UPDATE Problem SET tol_a_type = :tol_a_type, tol_b_type = :tol_b_type,tol_c_type = :tol_c_type, tol_d_type = :tol_d_type, 
+											tol_e_type = :tol_e_type, tol_f_type = :tol_f_type,tol_g_type = :tol_g_type, tol_h_type = :tol_h_type,tol_i_type = :tol_i_type, tol_j_type = :tol_j_type
 											WHERE problem_id = :pblm_num";
-									$stmt = $pdo->prepare($sql);
-									$stmt->execute(array(
+										$stmt = $pdo->prepare($sql);
+										$stmt->execute(array(
+											':tol_a_type' => $data[1],
+											':tol_b_type' => $data[2],
+											':tol_c_type' => $data[3],
+											':tol_d_type' => $data[4],
+											':tol_e_type' => $data[5],
+											':tol_f_type' => $data[6],
+											':tol_g_type' => $data[7],
+											':tol_h_type' => $data[8],
+											':tol_i_type' => $data[9],
+											':tol_j_type' => $data[10],
+											':pblm_num' => $_POST['problem_id']));
+									
+
+									} elseif($data[0] == 'tol'){
+										// put the tolerances in the problem table
+										$sql = "UPDATE Problem SET tol_a = :tol_a, tol_b = :tol_b,tol_c = :tol_c, tol_d = :tol_d, 
+												tol_e = :tol_e, tol_f = :tol_f,tol_g = :tol_g, tol_h = :tol_h,tol_i = :tol_i, tol_j = :tol_j
+												WHERE problem_id = :pblm_num";
+										$stmt = $pdo->prepare($sql);
+										$stmt->execute(array(
 											':tol_a' => $data[1],
 											':tol_b' => $data[2],
 											':tol_c' => $data[3],
@@ -922,14 +944,67 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 											':tol_i' => $data[9],
 											':tol_j' => $data[10],
 											':pblm_num' => $_POST['problem_id']));
+
+									}
+								
 								} 
+
+
+
 								If ($lines==1){
+									if($data[0] == 'tol'){
+
+										// put the tolerances in the problem table
+										$sql = "UPDATE Problem SET tol_a = :tol_a, tol_b = :tol_b,tol_c = :tol_c, tol_d = :tol_d, 
+												tol_e = :tol_e, tol_f = :tol_f,tol_g = :tol_g, tol_h = :tol_h,tol_i = :tol_i, tol_j = :tol_j
+												WHERE problem_id = :pblm_num";
+										$stmt = $pdo->prepare($sql);
+										$stmt->execute(array(
+											':tol_a' => $data[1],
+											':tol_b' => $data[2],
+											':tol_c' => $data[3],
+											':tol_d' => $data[4],
+											':tol_e' => $data[5],
+											':tol_f' => $data[6],
+											':tol_g' => $data[7],
+											':tol_h' => $data[8],
+											':tol_i' => $data[9],
+											':tol_j' => $data[10],
+											':pblm_num' => $_POST['problem_id']));
+
+									} elseif ($data[0] == 'units'){
+
+											// put the units in the problem table
+									$sql = "UPDATE Problem SET units_a = :units_a, units_b = :units_b,units_c = :units_c, units_d = :units_d, 
+									units_e = :units_e, units_f = :units_f,units_g = :units_g, units_h = :units_h,units_i = :units_i, units_j = :units_j
+									WHERE problem_id = :pblm_num";
+									$stmt = $pdo->prepare($sql);
+									$stmt->execute(array(
+										':units_a' => $data[1],
+										':units_b' => $data[2],
+										':units_c' => $data[3],
+										':units_d' => $data[4],
+										':units_e' => $data[5],
+										':units_f' => $data[6],
+										':units_g' => $data[7],
+										':units_h' => $data[8],
+										':units_i' => $data[9],
+										':units_j' => $data[10],
+										':pblm_num' => $_POST['problem_id']));
+									}
+								
+								} 
+
+								If ($lines == 2){
+									if ($data[0] == 'units'){
+
+
 									// put the units in the problem table
 									$sql = "UPDATE Problem SET units_a = :units_a, units_b = :units_b,units_c = :units_c, units_d = :units_d, 
 											units_e = :units_e, units_f = :units_f,units_g = :units_g, units_h = :units_h,units_i = :units_i, units_j = :units_j
 											WHERE problem_id = :pblm_num";
-									$stmt = $pdo->prepare($sql);
-									$stmt->execute(array(
+										$stmt = $pdo->prepare($sql);
+										$stmt->execute(array(
 											':units_a' => $data[1],
 											':units_b' => $data[2],
 											':units_c' => $data[3],
@@ -941,8 +1016,35 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 											':units_i' => $data[9],
 											':units_j' => $data[10],
 											':pblm_num' => $_POST['problem_id']));
-								} 
-								If ($lines>1){
+
+									} else {
+
+													// put the answer data into the data base
+										$sql = "UPDATE Qa SET problem_id = :problem_id, dex = :dex, ans_a = :ans_a, ans_b = :ans_b, ans_c = :ans_c
+										,ans_d = :ans_d, ans_e = :ans_e, ans_f = :ans_f, ans_g = :ans_g, ans_h = :ans_h, ans_i = :ans_i, ans_j = :ans_j,g1 = :g1, g2 = :g2, g3 = :g3
+										WHERE problem_id = :problem_id AND dex = :dex";
+									
+										$stmt = $pdo->prepare($sql);
+										$stmt->execute(array(
+										':problem_id' => $_POST['problem_id'],
+										':dex' => $data[0],
+										':ans_a' => $data[1],
+										':ans_b' => $data[2],
+										':ans_c' => $data[3],
+										':ans_d' => $data[4],
+										':ans_e' => $data[5],
+										':ans_f' => $data[6],
+										':ans_g' => $data[7],
+										':ans_h' => $data[8],
+										':ans_i' => $data[9],
+										':ans_j' => $data[10],
+										':g1' => $data[11],
+										':g2' => $data[12],
+										':g3' => $data[13]));
+									}
+                                }
+
+								If ($lines>2){
 									
 									// put the answer data into the data base
 									$sql = "UPDATE Qa SET problem_id = :problem_id, dex = :dex, ans_a = :ans_a, ans_b = :ans_b, ans_c = :ans_c
