@@ -528,10 +528,15 @@ libxml_use_internal_errors(true); // this gets rid of the warning that the p tag
         }
   echo $this_html; 
 } 
-  
+ 
+/* 
+echo ' dex '.$dex.'<br>';
+echo ' pin '.$pin.'<br>';
+echo ' alias_num '.$alias_num.'<br>';
+ */
  ?>
 
- 
+
  <div id = 'examchecker'>
  <iframe src="QRExamCheck.php?exam_num=<?php echo($exam_num);?>&cclass_id=<?php echo($cclass_id);?>&alias_num=<?php echo($alias_num);?>&pin=<?php echo($pin);?>&iid=<?php echo($iid);?>&eactivity_id=<?php echo($eactivity_id);?>&problem_id=<?php echo($problem_id);?>&dex=<?php echo($dex);?>" style = "width:80%; height:70%;"></iframe>
 

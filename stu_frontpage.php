@@ -88,8 +88,8 @@ INNER JOIN productlines t2
    
     */
    
-       //     echo (' student_id '.$student_id);
-       //     echo (' currentclass_id '.$currentclass_id);
+        //   echo (' student_id '.$student_id);
+        //  echo (' currentclass_id '.$currentclass_id);
        //  die(); //  echo (' student_id '.$student_id);
             
    
@@ -655,7 +655,7 @@ $(document).ready( function () {
         
        if($('#have_cclass_id2').val()!= undefined){
           var cclass_id = $('#have_cclass_id2').val();	
-//        console.log("cclass_id: "+cclass_id);
+        console.log("cclass_id: "+cclass_id);
         }
         else if($('#have_cclass_id').val()!= undefined){
           var cclass_id = $('#have_cclass_id').val();	

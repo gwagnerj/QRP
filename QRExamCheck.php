@@ -86,7 +86,7 @@ session_start();
         } elseif(isset($_SESSION['pin'])){
          $pin = $_SESSION['pin'];
         } else{
-       $_SESSION['error_check'] = "Missing pin from QRExamCheck";
+      $_SESSION['error_check'] = "Missing pin from QRExamCheck";
 	  header('Location: QRexam_closed.php');
 	  return;   
     }
@@ -355,7 +355,7 @@ session_start();
           $eactivity_data = $stmt ->fetch();
           $count_tot = $eactivity_data['count_tot'];
          
-          if (!is_integer($count_tot)){
+          if (is_null($count_tot)){
             $count_tot = 0;
           }
         
@@ -564,7 +564,9 @@ if( $get_flag ==0){ // if we are comming in from this file on a post
 // See whcih ones they got correct
 
  
-//var_dump($changed); echo('<br><br>');
+// var_dump($changed); echo('<br><br>');
+// echo ' changed flag'.$changed_flag.'<br>';
+// echo ' count_tot'.$count_tot.'<br>';
 //var_dump($wrongCount); echo('<br><br>');
 //var_dump($soln); echo('<br><br>');
 // var_dump($resp); echo('<br><br>');

@@ -553,7 +553,7 @@
                           ':iid' => $users_id,
                         ));
                         $assigntime_data = $stmt12->fetch(PDO::FETCH_ASSOC); 
-                        if ($assigntime_data['assigntime_id']!= false ){ 
+                        if ($assigntime_data != false ){ 
                            $active_flag = 2; // on an active homework
                         } else {
                            $active_flag = 1; //staged but not active
@@ -667,13 +667,13 @@
                  */ 
                  
                  $row6 = $stmt6->fetch(PDO::FETCH_ASSOC);
-              
+					if($row6 !== false){
                  $class_words = str_word_count($row6['class_name'],1); // an array of the words
                  foreach ($class_words as $class_word){
                         echo(substr($class_word,0,4));
                         echo(" ");
                  }
-               
+				}
             }
             
               if ($staged_flag ==1){

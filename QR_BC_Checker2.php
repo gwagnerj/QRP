@@ -211,11 +211,14 @@ session_start();
 	
 			// get the tolerances and if the part has any hintfile	
 				// initialize some arrays
-            foreach(range('a','j') as $v){
-                $tol[$v] = $probData['tol_'.$v]*0.001;	
-                $tol_type[$v] = $probData['tol_'.$v.'_type'];	
-
-             }
+                foreach(range('a','j') as $v){
+                    $tol_type[$v] = $probData['tol_'.$v.'_type'];	 
+                    if( $tol_type[$v] == 1){
+                        $tol[$v] = $probData['tol_'.$v]/1000000;
+                    } else {
+                        $tol[$v] = $probData['tol_'.$v]*0.001;	
+                    }
+                 }
 		
 			if (strlen($probData['hint_a'])>1){$hinta = $probData['hint_a'];$hintaPath="uploads/".$hinta;} else {$hintaPath ="uploads/default_hints.html";	}
 			if (strlen($probData['hint_b'])>1){$hintb = $probData['hint_b'];$hintbPath="uploads/".$hintb;} else {$hintbPath ="uploads/default_hints.html";	}
@@ -276,8 +279,11 @@ session_start();
                 ':part_name' => $v
             ));
             $resp_data = $stmt -> fetch();
+            if ($resp_data != false){
             $old_resp[$i] = $resp_data['resp_value'];
-            
+            } else {
+                $resp[$v]= '';
+            }
             
  //             $resp[$v]=(float)$_POST[$v]+0.0;
             
@@ -363,45 +369,47 @@ session_start();
             $_SESSION['count_tot'] = $count_tot;
       }
 		 */
-		for ($j=0; $j<=9; $j++) {
+        for ($j=0; $j<=9; $j++) {
 			if($partsFlag[$j] ) {
-								
+
+         /*        
+                echo 'resp_'.$j.'  '.$resp[$resp_key[$j]] .'<br>';			
+                echo 'tol_key_type_'.$j.'  '.$tol_type[$tol_type_key[$j]].'<br>';			
+                echo 'tol_'.$j.'  '.$tol[$tol_key[$j]] .'<br>';		
+                echo 'soln_'.$j.'  '.$soln[$j].'<br>';		
+                echo '<br><br>';
+                 */
+                
                 if($soln[$j]==0){  // take care of the zero solution case
                     $sol=1;
                 } else {
                     $sol=$soln[$j];
                 }	
                 
-                if(	abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]]) {
-                            
-                            
-                                    $corr_num[$corr_key[$j]]=1;
-                                    $corr[$corr_key[$j]]='Correct';
-                                    $score=$score+1;
- //                                   $_SESSION['$wrongC'[$j]] = 0;
- //                                   $wrongCount[$j]=0;
-                                            
-                            }
+                if($tol_type[$tol_type_key[$j]]==0 && $resp[$resp_key[$j]] != '' &&	(abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]])) {   // first condition makes sure we have a relative error
+                    $corr_num[$corr_key[$j]]=1;
+                    $corr[$corr_key[$j]]='Correct';
+                    $score=$score+1;
+                                          
+               } elseif($tol_type[$tol_type_key[$j]]==1 &&  $resp[$resp_key[$j]] !== '' && (abs(($soln[$j]-(float)$resp[$resp_key[$j]]))<= $tol[$tol_key[$j]]) ){  // looking for a absolute error
+                    $corr_num[$corr_key[$j]]=1;
+                    $corr[$corr_key[$j]]='Correct';
+                    $score=$score+1;
+               }
                 else  // got it wrong or did not attempt
                 {
-                    
-  
-                    if ($resp[$resp_key[$j]]==0)  // did not attempt it
+ 
+                    if ($resp[$resp_key[$j]]=='')  // did not attempt it
                     {
-                        
-   //                     $wrongCount[$j] = ($_SESSION['wrongC'[$j]]);
-  //                      $_SESSION['wrongC'[$j]] = $wrongCount[$j];
                         $corr_num[$corr_key[$j]]=0;
                         $corr[$corr_key[$j]]='';
-                    //	echo ($wrongCount[$j]);
+                   
                     }
-                    else  // response is equal to zero so probably did not answer (better to use POST value I suppose - fix later
+                    else  // response is  probably did not answer (better to use POST value I suppose - fix later
                     {
                         $wrongCount[$j] = $wrongCount[$j]+1;
- //                       $_SESSION['wrongC'[$j]] = $wrongCount[$j];
                             $corr_num[$corr_key[$j]]=0;
                             $corr[$corr_key[$j]]='Not Correct';
-                        //	echo ($wrongCount[$j]);	
                     }
                 }		
 			}

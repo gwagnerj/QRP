@@ -168,7 +168,11 @@ session_start();
                             ':part_name' => $v
                         ));
                         $resp_data = $stmt -> fetch();
-                        $resp[$v] = $resp_data['resp_value'];   
+                        if($resp_data!==false){
+                             $resp[$v] = $resp_data['resp_value'];   
+                        } else {
+                            $resp[$v] ='';
+                        }
                        // echo('resp'.$v.' = '.$resp[$v]);
                   }
                  $get_flag=1; 
@@ -231,11 +235,14 @@ session_start();
 			}
 	
 			// get the tolerances and if the part has any hintfile	
-				// initialize some arrays
+                // initialize some arrays
             foreach(range('a','j') as $v){
-                $tol[$v] = $probData['tol_'.$v]*0.001;	
-                $tol_type[$v] = $probData['tol_'.$v.'_type'];	
-                 
+                $tol_type[$v] = $probData['tol_'.$v.'_type'];	 
+                if( $tol_type[$v] == 1){
+                    $tol[$v] = $probData['tol_'.$v]/1000000;
+                } else {
+                    $tol[$v] = $probData['tol_'.$v]*0.001;	
+                }
              }
 		
 			
@@ -281,6 +288,8 @@ session_start();
          //   $response = explode(",",$response);
          //  print_r('response array 1 =  '.$response[0]);
           $oldresp_flag = 0;
+
+ /*          
           for ($j=0; $j<=9; $j++) {
               
 //--------------------------------  $resp[$resp_key[$j]]=$soln[$j];  // some reason setting resp = solution
@@ -289,7 +298,7 @@ session_start();
                //       echo ('  resp is: '. $resp[$resp_key[$j]]);
                 
            }
-        
+         */
      // keep track of the number of tries the student makes
 	// get the count from the activity table __________________________________________can get this from the resp table eventually _____________________________-
  /*  
@@ -307,7 +316,7 @@ session_start();
       $changed_flag = false;
       $count_tot = 0;
       $switch_to_bc = 0;
-    //  var_dump($partsFlag);
+     // var_dump($partsFlag);
     
       foreach(range('a','j') as $v){
           
@@ -323,9 +332,21 @@ session_start();
             ));
             $resp_data = $stmt -> fetch();
             if ($resp_data!=false){
-            $old_resp[$i] = $resp_data['resp_value'];
-            $resp[$v]=(float)$_POST[$v]+0.0;
+                 $old_resp[$i] = $resp_data['resp_value'];
+        //    $resp[$v]=(float)$_POST[$v]+0.0;
+            } else {
+                $old_resp[$i] = '';
             }
+
+            if(isset($_POST[$v]) && $_POST[$v] != ''){
+  //              echo ' v '.$v.'<br>';
+                $resp[$v]=(float)$_POST[$v]+0.0;
+            } else {
+                 $resp[$v]= '';
+            }
+
+
+
  //           echo('  resp[$v]:  '.$resp[$v]);
  //           echo('  partsFlag[$i]:  '.$partsFlag[$i]);
             // now get the counts for all of the previous tries from the table
@@ -398,7 +419,9 @@ session_start();
         }
          $i++;
       }
-     
+    //  echo ' changed: ';
+    // var_dump ($changed);
+   //  echo '<br><br><br>';
         
     /*  
       if ($changed_flag){
@@ -410,19 +433,27 @@ session_start();
      
 		for ($j=0; $j<=9; $j++) {
 			if($partsFlag[$j] ) {
-								
+
+         /*        
+                echo 'resp_'.$j.'  '.$resp[$resp_key[$j]] .'<br>';			
+                echo 'tol_key_type_'.$j.'  '.$tol_type[$tol_type_key[$j]].'<br>';			
+                echo 'tol_'.$j.'  '.$tol[$tol_key[$j]] .'<br>';		
+                echo 'soln_'.$j.'  '.$soln[$j].'<br>';		
+                echo '<br><br>';
+                 */
+                
                 if($soln[$j]==0){  // take care of the zero solution case
                     $sol=1;
                 } else {
                     $sol=$soln[$j];
                 }	
                 
-                if($tol_type[$tol_type_key[$j]]==0 &&	(abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]])) {   // first condition makes sure we have a relative error
+                if($tol_type[$tol_type_key[$j]]==0 && $resp[$resp_key[$j]] != '' &&	(abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]])) {   // first condition makes sure we have a relative error
                     $corr_num[$corr_key[$j]]=1;
                     $corr[$corr_key[$j]]='Correct';
                     $score=$score+1;
                                           
-               } elseif($tol_type[$tol_type_key[$j]]==1 && (abs(($soln[$j]-(float)$resp[$resp_key[$j]]))<= $tol[$tol_key[$j]]) ){  // looking for a absolute error
+               } elseif($tol_type[$tol_type_key[$j]]==1 &&  $resp[$resp_key[$j]] !== '' && (abs(($soln[$j]-(float)$resp[$resp_key[$j]]))<= $tol[$tol_key[$j]]) ){  // looking for a absolute error
                     $corr_num[$corr_key[$j]]=1;
                     $corr[$corr_key[$j]]='Correct';
                     $score=$score+1;
@@ -430,13 +461,13 @@ session_start();
                 else  // got it wrong or did not attempt
                 {
  
-                    if ($resp[$resp_key[$j]]==0)  // did not attempt it
+                    if ($resp[$resp_key[$j]]=='')  // did not attempt it
                     {
                         $corr_num[$corr_key[$j]]=0;
                         $corr[$corr_key[$j]]='';
                    
                     }
-                    else  // response is equal to zero so probably did not answer (better to use POST value I suppose - fix later
+                    else  // response is  probably did not answer (better to use POST value I suppose - fix later
                     {
                         $wrongCount[$j] = $wrongCount[$j]+1;
                             $corr_num[$corr_key[$j]]=0;
@@ -520,7 +551,10 @@ session_start();
 	<h4> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> &nbsp; &nbsp; Time delay starts at count = <?php echo ($time_sleep1_trip); ?> </h4>  
 
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
-     <!-- <div id = "test"> test <?php print_r ($wrongCount);?></div>
+    <!--
+	<font size = "1"> PIN: <?php echo ($pin) ?>
+	<font size = "1"> progress: <?php echo ($progress) ?>
+      <div id = "test"> test <?php print_r ($wrongCount);?></div>
      
      diff_time_min: <?php echo($diff_time_min);?>
      switch_to_bc: <?php echo($switch_to_bc);?>
