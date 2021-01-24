@@ -500,13 +500,13 @@ echo '</div>';
                   $problem_total = 0;
                   foreach(range('a','j') as $v){
                   
-                    if($eactivity_datum['correct_'.$v] ==1){{echo'<span class = "correct">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';
-                      $problem_total = $problem_total+ $eexamtime_data['perc_'.$v.'_'.$eactivity_datum['alias_num']];
-                    }}
-                    elseif($eactivity_datum['display_ans_'.$v] == 1) {echo'<span class = "display_ans">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';} 
-                    elseif(is_null($eactivity_datum['correct_'.$v] )) {echo '__';} 
-                     elseif($eactivity_datum['correct_'.$v] == 0) {echo'<span class = "not_correct">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';} 
-                     else {echo'<span class = "correct">'. $v .')'.$eactivity_datum["wcount_".$v].'</span>';}
+                      if($eactivity_datum['correct_'.$v] ==1){{echo'<span class = "correct">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';
+                        $problem_total = $problem_total+ $eexamtime_data['perc_'.$v.'_'.$eactivity_datum['alias_num']];
+                      }}
+                      elseif($eactivity_datum['display_ans_'.$v] == 1) {echo'<span class = "display_ans">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';} 
+                      elseif(is_null($eactivity_datum['correct_'.$v] )) {echo '__';} 
+                      elseif($eactivity_datum['correct_'.$v] == 0) {echo'<span class = "not_correct">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';} 
+                      else {echo'<span class = "correct">'. $v .')'.$eactivity_datum["wcount_".$v].'</span>';}
                   }
                   echo' '.$problem_total;
                   $student_assignment_total = $student_assignment_total + $problem_total*$eexamtime_data['perc_'.$eactivity_datum['alias_num']]/100;

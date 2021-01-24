@@ -107,7 +107,7 @@ $_SESSION['counter']=0;  // this is for the score board
 
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
-<form id = "the_form"  method = "POST" action = "QRERetrieve.php" >
+<form id = "the_form"  method = "POST" action = "stu_exam_results.php" >
 	
     
                    
@@ -131,8 +131,8 @@ $_SESSION['counter']=0;  // this is for the score board
 					   <?php
 
 							$sql = "SELECT DISTINCT exam_code
-							      FROM Examactivity 
-									WHERE currentclass_id =:currentclass_id  ORDER BY created_at DESC"; 
+							      FROM Eactivity LEFT JOIN Eexamnow ON Eactivity.eexamnow_id = Eexamnow.eexamnow_id
+									WHERE Eactivity.currentclass_id =:currentclass_id  ORDER BY Eactivity.created_at DESC"; 
 									
 							$stmt = $pdo->prepare($sql);
 							$stmt -> execute(array(':currentclass_id' => $currentclass_id));

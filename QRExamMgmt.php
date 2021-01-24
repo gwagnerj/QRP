@@ -124,10 +124,11 @@ $_SESSION['counter']=0;  // this is for the score board
                 <p><input type="hidden" name="eexamtime_id" id="eexamtime_id" value='' ></p>
                 <p><input type="hidden" name="from_QRExamMgmt" id=from_QRExamMgmt" value=true ></p>
 			    <p><input type = "submit" name = "submit_name" id = "submit_id" value = "Points and Options"></p><br>
-	
+				
+				<p><input type="submit" formaction="QRExamRetrieve.php" value="Student Exam Results">  &nbsp;&nbsp; Load Student Work Images (slow) <input type="checkbox" name="load_images" id = "load_images" checked ></p><br>
+
 			<div id = "button_group">	
 				<p><input class = "exam_buttons" type="submit" formaction="remove_exam.php" value="Remove Exam and All Its Data"></p><br>
-				<p><input class = "exam_buttons" id =  class = "exam_buttons" type="submit" formaction="QRExamRetrieve.php" value="Student Exam Results">  &nbsp;&nbsp; Load Student Work Images (slow) <input type="checkbox" name="load_images" id = "load_images" checked ></p><br>
 				
 				&nbsp;&nbsp;&nbsp; <input class = "exam_buttons" checked type="radio"  name="groups" id="no_groups" value = "no">  Individual &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;</input> 
 				 <input class = "exam_buttons"  type="radio" name="groups" id="groups" value = "yes"> Group </input>
@@ -249,7 +250,7 @@ $_SESSION['counter']=0;  // this is for the score board
 								})
 
 							} else {
-								$('#button_group').hide();
+								$('#button_group').show();
 								$('#submit_id').hide();
 							}
 							
