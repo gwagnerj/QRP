@@ -39,7 +39,19 @@
 			 $_SESSION['error'] = 'invalid exam num in QRExamRetrieve.php';
       			header( 'Location: QRPRepo.php' ) ;
 				die();
-		}
+
+		}		if(isset($_POST['load_images'])){
+					$load_images = true;
+				} 
+				elseif (isset($_GET['load_images'])){
+					$load_images = true;
+				} 
+				else {
+					$load_images = false;
+				}
+
+
+
 
 // get the name of the class from the db
 		$sql = 'SELECT `name` FROM `CurrentClass` WHERE `iid` = :iid && currentclass_id = :currentclass_id ';
@@ -123,22 +135,33 @@ $_SESSION['counter']=0;  // this is for the score board
 			
 		
              </br>
-                <font color=#003399>Exam Code (latest on top of list): &nbsp; </font>
+                <font color=#003399>Time that the Exam / Quiz was given (latest on top of list): &nbsp; </font>
                     
-                    <select id="exam_code" name = "exam_code" required >
-                       <option value="0">- Select Exam Code -</option>
+                    <select id="eexamnow_id" name = "eexamnow_id" required >
+                       <option value="0">- Select Date Last Update -</option>
 
 					   <?php
-
+/* 
 							$sql = "SELECT DISTINCT exam_code
-							      FROM Eactivity LEFT JOIN Eexamnow ON Eactivity.eexamnow_id = Eexamnow.eexamnow_id
-									WHERE Eactivity.currentclass_id =:currentclass_id  ORDER BY Eactivity.created_at DESC"; 
+							FROM Eactivity LEFT JOIN Eexamnow ON Eactivity.eexamnow_id = Eexamnow.eexamnow_id
+							WHERE Eactivity.currentclass_id =:currentclass_id  ORDER BY Eactivity.created_at DESC"; 
+							
+							$stmt = $pdo->prepare($sql);
+							$stmt -> execute(array(':currentclass_id' => $currentclass_id));
+							while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
+							{ ?>
+							<option value="<?php echo $row['exam_code']; ?>" ><?php echo $row['exam_code']; ?> </option>
+							<?php
+							} */
+							$sql = "SELECT DISTINCT eexamnow_id, updated_at
+								FROM Eactivity 
+									WHERE currentclass_id =:currentclass_id GROUP BY eexamnow_id ORDER BY created_at DESC"; 
 									
 							$stmt = $pdo->prepare($sql);
 							$stmt -> execute(array(':currentclass_id' => $currentclass_id));
 							while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
 								{ ?>
-								<option value="<?php echo $row['exam_code']; ?>" ><?php echo $row['exam_code']; ?> </option>
+								<option value="<?php echo $row['eexamnow_id']; ?>" ><?php echo 'last_updated at '. $row['updated_at']; ?> </option>
 								<?php
 							}
 				   ?>
@@ -148,6 +171,7 @@ $_SESSION['counter']=0;  // this is for the score board
 				<p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
 				<p><input type="hidden" name="currentclass_id" id="currentclass_id" value=<?php echo($currentclass_id);?> ></p>
 				<p><input type="hidden" name="exam_num" id="exam_num" value=<?php echo($exam_num);?> ></p>
+				<p><input type="hidden" name="load_images" id="load_images" value=<?php echo($load_images);?> ></p>
 			<p><input type = "submit" id = "submit_id"></p>
    
 	

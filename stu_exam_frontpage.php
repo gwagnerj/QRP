@@ -88,18 +88,38 @@ if ($big_data == false) {
     $eexam_data = $stmt->fetchAll();
 
 
-$sql = ' SELECT `P_num_score_net`, `ec_pts`
-    FROM `Eactivity` WHERE eregistration_id = :eregistration_id';
+
+    $sql = ' SELECT COUNT( DISTINCT `problem_id`)
+    FROM `Eactivity` WHERE eregistration_id = :eregistration_id ';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(
     ':eregistration_id' => $eregistration_id,
    
     ));
+    $eactivity_count = $stmt->fetch();
+    $eactivity_count = $eactivity_count[0];
+   // echo ' eactivity_count '.$eactivity_count;
+
+
+
+   $sql = ' SELECT DISTINCT (`problem_id`), `P_num_score_net`, `ec_pts`, `alias_num` 
+   FROM `Eactivity` WHERE eregistration_id = :eregistration_id ORDER BY `eactivity_id` DESC LIMIT '.$eactivity_count;
+  //  $sql = ' SELECT `problem_id`, `P_num_score_net`, `ec_pts`, `alias_num` 
+  //  FROM (SELECT `problem_id`, `P_num_score_net`, `ec_pts`, `alias_num` FROM `Eactivity` WHERE eregistration_id = :eregistration_id ORDER BY `eactivity_id` DESC LIMIT 2) ORDER BY `alias_num` ASC';
+
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+        ':eregistration_id' => $eregistration_id,
+     
+   
+    ));
     $eactivity_data = $stmt->fetchAll();
 
+    $eactivity_data = array_reverse($eactivity_data);
     
     
-    // var_dump($eactivity_data);
+   //  var_dump($eactivity_data);
      foreach($eactivity_data as $eactivity_datum){
 
         $p_num_score_net = $eactivity_datum['P_num_score_net'];
@@ -109,8 +129,8 @@ $sql = ' SELECT `P_num_score_net`, `ec_pts`
     $active_problem_number = count($eactivity_data);
 
 
- //   echo 'active_problem_number: '.$active_problem_number;
-  //  echo ('eregistration_id: '.$eregistration_id);
+  //  echo 'active_problem_number: '.$active_problem_number;
+    //  echo ('eregistration_id: '.$eregistration_id);
 //   echo ('eexamnow_id: '.$eexamnow_id);
     if ($active_problem_number == 0) {
         foreach($eexam_data as $eexam_datum){
@@ -203,11 +223,12 @@ $sql = ' SELECT `P_num_score_net`, `ec_pts`
     <tr>
     <?php 
         echo '<table id = "problem_table"><tr>';
-
+        $num_problems = 0;
         echo'<th></th>';
     foreach ($eexam_data as $eexam_datum){
        echo'<th>';
        echo $eexam_datum['alias_num'];
+       $num_problems++;
        echo'</th>';
      }
      echo'<th>';
@@ -258,9 +279,13 @@ $sql = ' SELECT `P_num_score_net`, `ec_pts`
         $prov_exam_pts_earned = 0;
         echo'<tr>';
         echo'<th  style = "text-align:Left;padding-left:10px;" > Provisional Computer Graded Problem Pts</th>';
+    
         foreach($eactivity_data as $eactivity_datum){
-            $a_num = $eexam_datum['alias_num'];
+
+
+            $a_num = $eactivity_datum['alias_num'];
             echo '<td>';
+          //  echo 'a_num: '.$a_num.' -';
             if( $eactivity_datum['P_num_score_net'] == null){echo '0';} else {echo $eactivity_datum['P_num_score_net'];}
              echo'</td>';
         //     $prov_exam_pts_earned =  ($prov_exam_pts_earned +0)+ ($eactivity_datum['P_num_score_net']+0)*($exam_pts_per_problem+0);

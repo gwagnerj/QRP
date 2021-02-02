@@ -203,7 +203,7 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
 
 
 
-  $sql = 'SELECT Eregistration.student_id AS student_id,`dex`,`first_name`,`last_name` FROM Eregistration
+  $sql = 'SELECT Eregistration.student_id AS student_id,`dex`,`first_name`,`last_name`,`eregistration_id`,checker_only FROM Eregistration
    LEFT JOIN Student ON Student.student_id = Eregistration.student_id WHERE Eregistration.eexamnow_id = :eexamnow_id
    ORDER BY `last_name` ASC
    ';
@@ -221,7 +221,7 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
       $currentclass_id = $eexamtime_data['currentclass_id'];
      // echo ' $number_teams '.$number_teams;
 
-    
+  
 
 // Insert or update the Team table putting in the (basically registering the teams in the teams table)
 
@@ -255,33 +255,52 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
                //now take care of connecting the students to the proper team
 
                // read data from the Post variable into associative arrays with the student_id as the key
-
+          $dexs = $team_nums =  array();
           foreach ($student_data as $student_datum){
             $student_id = $student_datum['student_id'];
             if (isset($_POST['stu_'. $student_id])){
+              $teams_flag = true;
               $student_on_teams['stu_'. $student_id] = $_POST['stu_'. $student_id];
               $params = explode('_', $_POST['stu_'. $student_id]);
               $team_nums[$student_id] = $params[1];
               $dexs[$student_id] = $params[3];
-            }
+            } else{ $teams_flag = false;}
           }
 
           foreach($student_data as $student_datum){
-            $student_id = $student_datum['student_id'];
-            $dex = $dexs[$student_id];
-            $team_num = $team_nums[$student_id];
-            $team_id = $team_ids[$team_num];
+            if($teams_flag){
+              $student_id = $student_datum['student_id'];
+              $dex = $dexs[$student_id];
+              $team_num = $team_nums[$student_id];
+              $team_id = $team_ids[$team_num];
 
-            // see if we already have an entry - if so update it if not insert it (create it)
-            $sql = 'SELECT team_id, team_num FROM TeamStudentConnect WHERE student_id = :student_id AND eexamnow_id = :eexamnow_id';
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute(array(
-              ":student_id" => $student_id,
-              ":eexamnow_id" => $eexamnow_id,
-              ));
-              $team_id2 = $stmt->fetch();
-            if ($team_id2 == false){
-                  $sql = 'INSERT INTO `TeamStudentConnect` (team_id, team_num, student_id,eexamnow_id, dex) VALUES (:team_id,:team_num,:student_id,:eexamnow_id,:dex)';
+              // see if we already have an entry - if so update it if not insert it (create it)
+              $sql = 'SELECT team_id, team_num FROM TeamStudentConnect WHERE student_id = :student_id AND eexamnow_id = :eexamnow_id';
+              $stmt = $pdo->prepare($sql);
+              $stmt->execute(array(
+                ":student_id" => $student_id,
+                ":eexamnow_id" => $eexamnow_id,
+                ));
+                $team_id2 = $stmt->fetch();
+              if ($team_id2 == false){
+                    $sql = 'INSERT INTO `TeamStudentConnect` (team_id, team_num, student_id,eexamnow_id, dex) VALUES (:team_id,:team_num,:student_id,:eexamnow_id,:dex)';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute(array(
+                      ":team_id" => $team_id,
+                      ":team_num" => $team_num,
+                      ":student_id" => $student_id,
+                      ":eexamnow_id" => $eexamnow_id,
+                      ":dex" => $dex
+                      ));
+
+                } else {
+  /* 
+                  echo 'student_id '.$student_id;
+                  echo '  eexamnow_id '.$eexamnow_id;
+                  echo '  team_id '.$team_id;
+                  echo '  team_num '.$team_num;
+  */
+                  $sql = 'UPDATE `TeamStudentConnect` SET team_id = :team_id, team_num=:team_num, dex = :dex, team_cap = 0 WHERE  student_id = :student_id AND eexamnow_id = :eexamnow_id';
                   $stmt = $pdo->prepare($sql);
                   $stmt->execute(array(
                     ":team_id" => $team_id,
@@ -291,25 +310,8 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
                     ":dex" => $dex
                     ));
 
-              } else {
-/* 
-                echo 'student_id '.$student_id;
-                echo '  eexamnow_id '.$eexamnow_id;
-                echo '  team_id '.$team_id;
-                echo '  team_num '.$team_num;
- */
-                $sql = 'UPDATE `TeamStudentConnect` SET team_id = :team_id, team_num=:team_num, dex = :dex, team_cap = 0 WHERE  student_id = :student_id AND eexamnow_id = :eexamnow_id';
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute(array(
-                  ":team_id" => $team_id,
-                  ":team_num" => $team_num,
-                  ":student_id" => $student_id,
-                  ":eexamnow_id" => $eexamnow_id,
-                  ":dex" => $dex
-                  ));
-
-             }
-
+              }
+            }
           }
               
  } else {
@@ -392,7 +394,7 @@ echo '<div id = team_assignments>';
       echo("<th>");
             echo('Name');
            echo("</th><th>");
-            echo('dex');
+            echo('dex - Checker Only');
             echo '</th>';
             for ($i=1;$i<=$number_teams;$i++){
               echo("<th>");
@@ -413,7 +415,14 @@ echo '<div id = team_assignments>';
               echo('<td>');
               echo $student_datum['first_name'].' '.$student_datum['last_name'];
               echo('</td><td>');
-              echo $student_datum['dex'];
+
+              // this needs to be an input so I can change it on the fly
+              echo '<input type = "number" id = "dex_change_stu_id_'.$student_id.'" name = "dex_change_stu_id_'.$student_id.'" min = 1 max = 200 value ='. $student_datum['dex'].'> </input>';
+              if ($student_datum['checker_only']==1) {$checker_only="checked";} else {$checker_only="";}
+             // echo 'checker_only '.$checker_only;
+              echo '<input type = "checkbox" id = "checkbox_checker_stu_id_'.$student_id.'" name = "checkbox_checker_stu_id_'.$student_id.' value=" '.$student_datum['checker_only'].'" '.$checker_only.'> </input>';
+              echo '<input type = "hidden" id = "reg_change_stu_id_'.$student_id.'" name = "reg_change_stu_id_'.$student_id.'" value ='. $student_datum['eregistration_id'].'> </input>';
+              echo ('<input type = "button" style = "background-color:lightyellow;" class = "dex_change" id = "change_dex_id_'.$student_id.'"  name = "change_dex_id_'.$student_id.'" value = "Change"></input>');
               echo('</td>');
 
               echo '';
@@ -491,28 +500,39 @@ echo '</div>';
               echo('<td>');
               echo $student_datum['first_name'].' '.$student_datum['last_name'];
               echo("</td>");
-              $sql = 'SELECT * FROM Eactivity WHERE eexamnow_id = :eexamnow_id AND student_id = :student_id ORDER BY alias_num';
-              $stmt = $pdo->prepare($sql);         
-              $stmt->execute(array(":eexamnow_id" => $eexamnow_id,':student_id' => $student_datum['student_id']));
-               $eactivity_data  = $stmt->fetchALL(PDO::FETCH_ASSOC);   
-               foreach ($eactivity_data as $eactivity_datum){
-                  echo("<td>");
-                  $problem_total = 0;
-                  foreach(range('a','j') as $v){
-                  
-                      if($eactivity_datum['correct_'.$v] ==1){{echo'<span class = "correct">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';
-                        $problem_total = $problem_total+ $eexamtime_data['perc_'.$v.'_'.$eactivity_datum['alias_num']];
-                      }}
-                      elseif($eactivity_datum['display_ans_'.$v] == 1) {echo'<span class = "display_ans">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';} 
-                      elseif(is_null($eactivity_datum['correct_'.$v] )) {echo '__';} 
-                      elseif($eactivity_datum['correct_'.$v] == 0) {echo'<span class = "not_correct">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';} 
-                      else {echo'<span class = "correct">'. $v .')'.$eactivity_datum["wcount_".$v].'</span>';}
+     
+         foreach ($problem_ids as $problem_id){ 
+           echo 'problem_ids '.$problem_id ['problem_id'];
+                  $sql = 'SELECT  *   FROM Eactivity  WHERE eexamnow_id = :eexamnow_id AND student_id = :student_id  AND problem_id = :problem_id ORDER BY eactivity_id DESC LIMIT 1 ';
+
+              //    $sql = 'SELECT DISTINCT * FROM (SELECT *,row_number() OVER (PARTITION BY problem_id ORDER BY eactivity_id DESC ) AS row_number FROM Eactivity ) AS ROWS  WHERE eexamnow_id = :eexamnow_id AND student_id = :student_id ORDER BY alias_num ';
+                  $stmt = $pdo->prepare($sql);         
+                  $stmt->execute(array(":eexamnow_id" => $eexamnow_id,
+                  ':student_id' => $student_datum['student_id'],
+                   ':problem_id' =>$problem_id['problem_id']));
+                  $eactivity_data  = $stmt->fetchALL(PDO::FETCH_ASSOC);   
+          //  var_dump($eactivity_data);
+
+    
+                  foreach ($eactivity_data as $eactivity_datum){
+                      echo("<td>");
+                      $problem_total = 0;
+                      foreach(range('a','j') as $v){
+                      
+                          if($eactivity_datum['correct_'.$v] ==1){{echo'<span class = "correct">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';
+                            $problem_total = $problem_total+ $eexamtime_data['perc_'.$v.'_'.$eactivity_datum['alias_num']];
+                          }}
+                          elseif($eactivity_datum['display_ans_'.$v] == 1) {echo'<span class = "display_ans">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';} 
+                          elseif(is_null($eactivity_datum['correct_'.$v] )) {echo '__';} 
+                          elseif($eactivity_datum['correct_'.$v] == 0) {echo'<span class = "not_correct">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';} 
+                          else {echo'<span class = "correct">'. $v .')'.$eactivity_datum["wcount_".$v].'</span>';}
+                      }
+                      echo' '.$problem_total;
+                      $student_assignment_total = $student_assignment_total + $problem_total*$eexamtime_data['perc_'.$eactivity_datum['alias_num']]/100;
+                      $individual_score[$student_datum['student_id']] = round($student_assignment_total*10)/10;
+                      echo("</td>");
                   }
-                  echo' '.$problem_total;
-                  $student_assignment_total = $student_assignment_total + $problem_total*$eexamtime_data['perc_'.$eactivity_datum['alias_num']]/100;
-                  $individual_score[$student_datum['student_id']] = round($student_assignment_total*10)/10;
-                  echo("</td>");
-               }
+              }
 
                echo("<td>");
                echo round($student_assignment_total*10)/10;
@@ -528,9 +548,11 @@ echo '</div>';
    
    
    
+   
    echo '<br>';
    echo '<br>';
    echo '<br>';
+
    echo '<div id = team_score>';
       echo '<h2> Team Scores </h2>';
       echo '<form method = "POST" >';
@@ -720,50 +742,71 @@ echo '</div>';
      const currentclass_id = pass['currentclass_id']; 
     
 
-      $('#team_assignments.input:radio').click(function(){
-      // console.log('click');
+        $('#team_assignments.input:radio').click(function(){
+        // console.log('click');
 
-        //console.log('num_teams: '+number_teams);
-        let j = 0;
-        for(i=1;i<=number_teams;i++){
+          //console.log('num_teams: '+number_teams);
+          let j = 0;
+          for(i=1;i<=number_teams;i++){
 
-         let sel_class = 'team_'+i;
-         let num_teams = $('input:radio.'+sel_class+':checked').length;
-         //console.log ('num teams: '+num_teams);
-         let sel = '#num_stu_team_'+i;
-         //console.log ('sel: '+sel);
-            $(sel).text(num_teams);
+          let sel_class = 'team_'+i;
+          let num_teams = $('input:radio.'+sel_class+':checked').length;
+          //console.log ('num teams: '+num_teams);
+          let sel = '#num_stu_team_'+i;
+          //console.log ('sel: '+sel);
+              $(sel).text(num_teams);
+          }
+
+          // add the total for each team to the
+        
+
+      });
+      
+      $('.dex_change').on('click',function(event){  // this is to update the dex on a student
+
+          const  stu_id_string = $(this).attr('id');
+        //  console.log('stu_id_string: '+stu_id_string);
+          // extract the student id from the button that was video_clip_checked
+
+           const stu_id_arr= stu_id_string.split('_');
+           const stu_id = stu_id_arr[3];
+          console.log('stu_id: '+stu_id);
+          // get the new dex for this student
+          const new_dex = $('#dex_change_stu_id_'+stu_id).val();
+        //  console.log('new_dex: '+new_dex);
+           const eregistration_id = $('#reg_change_stu_id_'+stu_id).val();
+        //   console.log('eregistration_id: '+eregistration_id);
+        const checker_only_string = $('#checkbox_checker_stu_id_'+stu_id).prop('checked');
+          console.log('checker_only_string: '+checker_only_string);
+         
+         let checker_only = 0;
+          if (checker_only_string){checker_only =1;}
+        
+
+          // now upate the eregsitration table using ajax
+        	$.ajax({   // this looks updates the eregistration with the new dex number
+										url: 'update_registration_dex.php',
+										method: 'post',
+						
+									data: {eregistration_id:eregistration_id,dex:new_dex,checker_only:checker_only}
+									}).done(function(){
+                   });
+       });
+  
+  /* 
+       setInterval(function(){ 
+         
+        document.getElementById("refresh_page").submit();
 
 
-
-        }
-
-        // add the total for each team to the
-       
-
-     });
-    
- /*  
-	 	
-     $(".inlinebar1").sparkline("html",{type: "bar", height: "20", barWidth: "5", resize: true, barSpacing: "2", barColor: "navy"});
-	   	
-    
-        $(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
-		
-		localStorage.setItem('MC_flag','false');  // initialize multiple choice flag to false
-            // auto refresh page 
-            
-             setInterval("$('#refresh_page').submit()",30000);
-          
-            
-
-                $('#table_format').DataTable({
-                        "order": [[ 1, 'asc' ] ],
-                        "lengthMenu": [ 30, 50, 100 ]
-                });
-
-                    */
-		} );
+          }, 1000);
+   */
+  
+  
+  
+  
+  
+   });
          
          
 		

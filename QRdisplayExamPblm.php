@@ -43,7 +43,7 @@ session_start();
         // get the eactivity form the data tables
         
         $sql = ' SELECT `eactivity_id`
-          FROM `Eactivity` WHERE `eregistration_id` = :eregistration_id AND `problem_id` = :problem_id';
+          FROM `Eactivity` WHERE `eregistration_id` = :eregistration_id AND `problem_id` = :problem_id ORDER BY eactivity_id DESC LIMIT 1';
           $stmt = $pdo->prepare($sql);
           $stmt->execute(array(
             ':eregistration_id' => $eregistration_id,
@@ -91,6 +91,7 @@ FROM `Eactivity`
                  $eexamtime_id = $row['eexamtime_id']; 
  //               $iid = $row['iid'];
                 $switch_to_bc = $row['switch_to_bc'];
+                if (is_null($switch_to_bc)){$switch_to_bc = 0;}
                 $progress = $row['progress'];
                 $checker_only = $row['checker_only'];
                 $dex = $row['dex'];
@@ -733,7 +734,11 @@ if (work_flow == 'bc_first' && progress < 1 ){
     
         var qr_code = false;
        var  bc_display = false;
- 
+        // get rid of the basecase for now latter may bring it back later
+
+      $('#basecasebutton').hide();
+
+
       $('#basecasebutton').click(function(){
 
         if(bc_display == false){bc_display =true;}else{bc_display =false;}

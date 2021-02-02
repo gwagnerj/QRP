@@ -7,18 +7,19 @@ session_start();
 //session_unset();
  // check for a printed exam
  //$_GET['dex_code'] = 9784;
- if(isset($_GET['dex_code'])){
+ if(isset($_GET['dex_code']) && !empty($_GET['dex_code'])) {
      $_SESSION['dex_code'] = $_GET['dex_code'];
      $dex_code = $_GET['dex_code'];
- } elseif(isset($_POST['dex_code'])){
+ } elseif(isset($_POST['dex_code']) && !empty($_POST['dex_code'])){
      $_SESSION['dex_code'] = $_POST['dex_code'];
      $dex_code = $_POST['dex_code'];
- } elseif(isset($_SESSION['dex_code'])){
+ } elseif(isset($_SESSION['dex_code']) && !empty($_SESSION['dex_code'])){
       $dex_code = $_SESSION['dex_code'];
  } else {
       $dex_code = 0;
  }
  
+ //echo 'dex_code '.$dex_code;
  // Define variables and initialize with empty values
 $username = $password = "";
 $username_err = $code_err = $password_err = "";
@@ -51,13 +52,13 @@ $username_err = $code_err = $password_err = "";
             die;
          }
       }
-   //  echo('dex_print'.$dex_print);
+   
  } else {
      $dex_print = 0;
  }
  
  
- 
+  // echo('dex_print'.$dex_print);
  
  // see if they entered a username or an email address
  
@@ -104,6 +105,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             save the username to the session */
                             session_start();
                             $_SESSION['username'] = $username;      
+                        //    $_SESSION['dex_print'] = $dex_print;      
                             header("location: QRExamRegistration2.php?student_id=".$row['student_id']."&dex_print=".$dex_print);
                         } else{
                             // Display an error message if password is not valid
@@ -158,8 +160,9 @@ if (isset($_SESSION['error'])){
         <p>Please fill in your credentials to login.</p>
 		
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-              
-                <span name="dex_code"><?php echo $dex_code; ?> </span>
+             
+            <input type="hidden" name="dex_code" value = <?php echo $dex_code; ?>> </input>
+     
          
 
             

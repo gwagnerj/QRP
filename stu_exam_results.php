@@ -12,11 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
     
     if (isset($_POST['load_images'])){
         
-        $load_images = true;
-       // echo 'checked';
+        $load_images = $_POST['load_images'];
+     
     } else {
-         $load_images = false;
-        // echo 'not checked';
+         $load_images = true;
+        
     }
    
     if ($_POST['currentclass_id']==0 || $_POST['currentclass_id']=='' || $_POST['iid']==0 || $_POST['iid']=='' ){
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 				die();
 }
     
-    if ($_POST['currentclass_id']==0 || $_POST['currentclass_id']=='' || $_POST['exam_num']==0 || $_POST['exam_num']=='' || $_POST['iid']==0 || $_POST['iid']=='' ){
+    if ($_POST['currentclass_id']==0 || $_POST['currentclass_id']=='' || $_POST['exam_num']==0 || $_POST['exam_num']=='' || $_POST['eexamnow_id']==0 || $_POST['eexamnow_id']=='' || $_POST['iid']==0 || $_POST['iid']=='' ){
         $_SESSION['error'] = 'class and exam number must be set';
         header( 'Location: QRExamRetrieve.php?iid='.$iid) ;
 	   die();
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
     
     $exam_num = $_POST['exam_num'];
     $currentclass_id = $_POST['currentclass_id'];
-    $exam_code = $_POST['exam_code'];
+    $eexamnow_id = $_POST['eexamnow_id'];
    
     
     
@@ -292,12 +292,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                $eexam_id = $eexam_datum['eexam_id'];
                                $alias_num = $eexam_datum['alias_num'];
                                
-                               $sql = "SELECT *  FROM `Eactivity` WHERE alias_num = :alias_num  AND `student_id` = :student_id ";
+                               $sql = "SELECT *  FROM `Eactivity` WHERE alias_num = :alias_num  AND `student_id` = :student_id  AND `eexamnow_id` = :eexamnow_id";
                                $stmt = $pdo->prepare($sql);
                                $stmt -> execute(array(
                                   ':alias_num' => $alias_num,
-                                   ':student_id' => $student_id,
-                                    )); 
+                                  ':student_id' => $student_id,
+                                  ':eexamnow_id' => $eexamnow_id,
+                                )); 
                     
                                 $eactivity_datum = $stmt->fetch();
                                 $eactivity_id = $eactivity_datum['eactivity_id'];
@@ -335,7 +336,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                            // display the thumbnail of the student work 
                                      if($load_images){
                                             $all_files = array();
-                                            $dir =  'student_work/';
+                                            $dir =  'student_exam_work/';
                                             $prefix = $dir.$eactivity_id.'-*';
                                             
                                             foreach (glob($prefix, GLOB_NOCHECK) as $image) {
