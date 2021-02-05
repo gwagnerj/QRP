@@ -67,7 +67,8 @@ if(isset($_POST['iid'])){
             $pattern_for_var_image[$i] = '/##'.$nvar[$i].',img##/';
             $pattern_for_var_img_sub[$i] = 's__'.$nvar[$i].',img__s';
             $pattern_for_var_img_sub2[$i] = 'x__'.$nvar[$i].',img__x';
-            $pattern[$i]= '/##'.$nvar[$i].'.+?##/';
+      
+            $pattern[$i]= '/##'.$nvar[$i].',.*?##/';
          }
    }
    //echo $nv;
@@ -295,6 +296,5 @@ if(isset($_POST['iid'])){
    
     echo('<a href = "uploads/'.$xml_file_name.'?dummy = dummy" download> download file</a>');
     echo('<br> <br><br>After downloading the file, close this browser window');
-
-
+    
  ?>

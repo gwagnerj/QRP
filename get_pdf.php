@@ -11,53 +11,87 @@ session_start();
 
 if (isset($_GET['activity_id'])){
     $activity_id = $_GET['activity_id'];
+    $exam_flag = false;
   //  echo (' $activity_id  '.$activity_id);
-} else {
-    echo('No activity id');
+} elseif(isset($_GET['eactivity_id'])){
+
+  $eactivity_id = $_GET['eactivity_id'];
+  $exam_flag = true;
+}
+else {
+    echo('No activity or eactivity id');
     // close it down give an error
 } 
+if($exam_flag){
+      $sql = "SELECT *  FROM `Eactivity`
+     LEFT JOIN Eregistration ON Eactivity.eregistration_id = Eregistration.eregistration_id
+        WHERE eactivity_id = :eactivity_id";
+      $stmt = $pdo->prepare($sql);
+      $stmt -> execute(array(
+          ':eactivity_id' => $eactivity_id,
+            )); 
 
- $sql = "SELECT *  FROM `Activity` WHERE activity_id = :activity_id";
-               $stmt = $pdo->prepare($sql);
-               $stmt -> execute(array(
-                  ':activity_id' => $activity_id,
-                    )); 
-
-          $activity_data = $stmt->fetch();
-          echo('<h2> Work for '.$activity_data['stu_name'].' Problem '.$activity_data['alias_num'].'</h2><p> &nbsp;&nbsp;&nbsp; Problem_id '.$activity_data['problem_id'].' - '.$activity_data["dex"].'&nbsp;&nbsp;&nbsp; activity_id '.$activity_id.'</p>');
-        //  echo('<p> &nbsp;&nbsp;&nbsp; activity_id '.$activity_id.'</p>'); 
+    $eactivity_data = $stmt->fetch();
 
 
-//$file_name = "/student_work/".$activity_id."*.*";
-//echo'<br>';
+    $sql = "SELECT * FROM Student WHERE student_id = :student_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(':student_id' => $eactivity_data["student_id"]));
+    $student_datum = $stmt -> fetch();
+            $stu_name = $student_datum["first_name"].' '.$student_datum["last_name"];
+            $alias_num = $eactivity_data['alias_num'];
 
-//echo('  file_name  '.$file_name);
-echo'<br>';
-$all_files = array();
-$dir =  'student_work';
-$prefix = $activity_id.'-';
-chdir($dir);
-$matches = glob("$prefix*");
-if(is_array($matches) && !empty($matches)){
+    echo('<h2> Work for '.$student_datum["first_name"].' '.$student_datum["last_name"].' Problem '.$eactivity_data['alias_num'].'</h2><p> &nbsp;&nbsp;&nbsp; Problem_id '.$eactivity_data['problem_id'].' - '.$eactivity_data["dex"].'&nbsp;&nbsp;&nbsp; eactivity_id '.$eactivity_id.'</p>');
+    //  echo('<p> &nbsp;&nbsp;&nbsp; activity_id '.$activity_id.'</p>'); 
+    
+
+    //$file_name = "/student_work/".$activity_id."*.*";
+    //echo'<br>';
+
+    //echo('  file_name  '.$file_name);
+    echo'<br>';
+    $all_files = array();
+    $dir =  'student_exam_work';
+    $prefix = $eactivity_id.'-';
+    chdir($dir);
+    $matches = glob("$prefix*");
+    if(is_array($matches) && !empty($matches)){
     foreach($matches as $match){
-        $all_files[] = $match;
+    $all_files[] = $match;
     }
-}
- 
- 
- 
- 
-/* 
- $pdf_files = glob("/student_work/".$activity_id."-*.pdf");
-  $png_files = glob("/student_work/".$activity_id."-*.png");
-  $jpg_files = glob("/student_work/".$activity_id."-*.jpg");
-  $all_files = glob($file_name);
-   */
+  }
 
+}else{ 
+          $sql = "SELECT *  FROM `Activity` WHERE activity_id = :activity_id";
+            $stmt = $pdo->prepare($sql);
+            $stmt -> execute(array(
+                ':activity_id' => $activity_id,
+                  )); 
 
+                  $activity_data = $stmt->fetch();
 
-//var_dump($all_files);
+              $stu_name = $activity_data['stu_name'];
+              $alias_num = $activity_data['alias_num'];
+                  echo('<h2> Work for '.$stu_name.' Problem '.$activity_data['alias_num'].'</h2><p> &nbsp;&nbsp;&nbsp; Problem_id '.$activity_data['problem_id'].' - '.$activity_data["dex"].'&nbsp;&nbsp;&nbsp; activity_id '.$activity_id.'</p>');
+                //  echo('<p> &nbsp;&nbsp;&nbsp; activity_id '.$activity_id.'</p>'); 
+          
+           
+        //$file_name = "/student_work/".$activity_id."*.*";
+        //echo'<br>';
 
+        //echo('  file_name  '.$file_name);
+            echo'<br>';
+            $all_files = array();
+            $dir =  'student_work';
+            $prefix = $activity_id.'-';
+            chdir($dir);
+            $matches = glob("$prefix*");
+            if(is_array($matches) && !empty($matches)){
+                foreach($matches as $match){
+                    $all_files[] = $match;
+            }
+           }
+  }
 foreach($all_files as $all_file){
   // check the extension of the file 
      $tmp = explode('.', $all_file);
@@ -75,14 +109,22 @@ foreach($all_files as $all_file){
          
      echo '</iframe>';
          
-         
-         
-         
      } else {
          $_SESSION['error'] = $extention.' file type not allowed';
            echo ($extention.'<h2> file type not allowed </h2>');
      }
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* 
@@ -132,7 +174,7 @@ foreach($all_files as $all_file){
 <head>
 <link rel="icon" type="image/png" href="McKetta.png" />  
 <meta Charset = "utf-8">
-<title><?php echo ($activity_data['stu_name'].'-P'.$activity_data['alias_num']); ?></title>
+<title><?php echo ($stu_name.'-P'.$alias_num); ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 		<link rel="stylesheet" type="text/css" href="jquery.countdown.css"> 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

@@ -502,7 +502,7 @@ echo '</div>';
               echo("</td>");
      
          foreach ($problem_ids as $problem_id){ 
-           echo 'problem_ids '.$problem_id ['problem_id'];
+         //  echo 'problem_ids '.$problem_id ['problem_id'];
                   $sql = 'SELECT  *   FROM Eactivity  WHERE eexamnow_id = :eexamnow_id AND student_id = :student_id  AND problem_id = :problem_id ORDER BY eactivity_id DESC LIMIT 1 ';
 
               //    $sql = 'SELECT DISTINCT * FROM (SELECT *,row_number() OVER (PARTITION BY problem_id ORDER BY eactivity_id DESC ) AS row_number FROM Eactivity ) AS ROWS  WHERE eexamnow_id = :eexamnow_id AND student_id = :student_id ORDER BY alias_num ';
