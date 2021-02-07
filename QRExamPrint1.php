@@ -59,7 +59,13 @@ session_start();
         header("Location: QRExamPrint0.php");
         die();    
     }
-
+    if( isset($_POST['print_blanks'])){
+      $print_blanks = true;
+  } else {
+        $print_blanks=false;
+      }
+   
+ // echo "print_blanks ".$print_blanks."<br>";
 
 
  
@@ -172,6 +178,13 @@ session_start();
           display:none;
         }
 }
+
+.blank_space { 
+
+line-height: 3;
+
+}
+
 </style>
 
 
@@ -232,10 +245,13 @@ session_start();
                
                 for ($i = 0; $i < $nv; $i++) {
                     if($row['v_'.($i+1)]!='Null' ){
-                        $vari[$i] = $row['v_'.($i+1)];
-             //           echo ('  $vari[$i]: '. $vari[$i]);
-                        $pattern[$i]= '/##'.$nvar[$i].',.+?##/';
-                    }
+                      $vari[$i] = $row['v_'.($i+1)];
+                      $num_chars_vari[$i]= strlen($vari[$i]);
+                      $blanks_vari[$i]='<span class = "blank_space">';
+                      for ($j = 0; $j < 3*$num_chars_vari[$i];$j++){$blanks_vari[$i]= $blanks_vari[$i].'_';}
+                      $blanks_vari[$i]=$blanks_vari[$i].'</span>';
+                      $pattern[$i]= '/##'.$nvar[$i].',.+?##/';
+                   }
                 }
        $stu_name = $student_datum['first_name'].'&nbsp; '.$student_datum['last_name'];      
         $alias_num = $exam_datum['alias_num'];
@@ -254,7 +270,11 @@ session_start();
  //  var_dump($problem);
    for( $i=0;$i<$nv;$i++){
            if($row['v_'.($i+1)]!='Null' ){
-            $problem = preg_replace($pattern[$i],$vari[$i],$problem);
+            if(!$print_blanks){
+              $problem = preg_replace($pattern[$i],$vari[$i],$problem);
+          } else {
+            $problem = preg_replace($pattern[$i],$blanks_vari[$i],$problem);
+          }
            }
         }
   // put the images into the problem statement part of the document     
@@ -303,7 +323,13 @@ session_start();
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
              if($row['v_'.($i+1)]!='Null' ){
-                $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+              //  $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+
+                if(!$print_blanks){
+                  $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+                  } else {
+                    $this_html = preg_replace($pattern[$i],$blanks_vari[$i],$this_html);
+                  }
              }
         }
          echo($header_stuff);
@@ -437,8 +463,11 @@ session_start();
                         for ($i = 0; $i < $nv; $i++) {
                             if($row['v_'.($i+1)]!='Null' ){
                                 $vari[$i] = $row['v_'.($i+1)];
-                     //           echo ('  $vari[$i]: '. $vari[$i]);
-                                $pattern[$i]= '/##'.$nvar[$i].',.+?##/';
+                                $num_chars_vari[$i]= strlen($vari[$i]);
+                                $blanks_vari[$i]='<span class = "blank_space">';
+                                for ($j = 0; $j < 3*$num_chars_vari[$i];$j++){$blanks_vari[$i]= $blanks_vari[$i].'_';}
+                                $blanks_vari[$i]=$blanks_vari[$i].'</span>';
+                                        $pattern[$i]= '/##'.$nvar[$i].',.+?##/';
                             }
                         }
           
@@ -447,8 +476,12 @@ session_start();
           
            for( $i=0;$i<$nv;$i++){
                    if($row['v_'.($i+1)]!='Null' ){
-                    $problem = preg_replace($pattern[$i],$vari[$i],$problem);
-                   }
+                        if(!$print_blanks){
+                          $problem = preg_replace($pattern[$i],$vari[$i],$problem);
+                      } else {
+                        $problem = preg_replace($pattern[$i],$blanks_vari[$i],$problem);
+                      }
+                    }
                 }
           // put the images into the problem statement part of the document     
             $dom = new DOMDocument();
@@ -504,8 +537,12 @@ session_start();
            // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
                for( $i=0;$i<$nv;$i++){
                      if($row['v_'.($i+1)]!='Null' ){
+                      if(!$print_blanks){
                         $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
-                     }
+                        } else {
+                          $this_html = preg_replace($pattern[$i],$blanks_vari[$i],$this_html);
+                        }                
+                       }
                 }
                 
                   echo $this_html; 

@@ -93,7 +93,7 @@ $_SESSION['counter']=0;  // this is for the score board
 		}
 ?>
 
-<form id = "the_form"  method = "POST"  >
+<form id = "the_form"  method = "POST" target = "_blank">
 	
     <div id ="current_class_dd">	
 				Course: &nbsp;
@@ -145,7 +145,7 @@ $_SESSION['counter']=0;  // this is for the score board
 				<p><input class = "exam_buttons" type="submit" formaction="QRExamPrint0.php" value="Print Examination"></p><br> <!--This button should only be present if the selected Exam has already setup-->
 				<p><input id = "game_button" type="submit" formaction="QRGStart.php" value="Start Game"></p><br> <!--This button should only be present if the selected Game has already setup-->
 			</div>	
-             <p><input id = "get_student_login_data" type="submit" formaction="stu_login_info.php" value="See Student Login Information"></p>
+             <p><input id = "get_student_login_data" type="submit" formaction="stu_login_info.php"  target="_blank" value="See Student Login Information"></p>
           
 	</form>
   <p style="font-size:100px;"></p>   
@@ -239,11 +239,11 @@ $_SESSION['counter']=0;  // this is for the score board
 								} else if(eexamtime_id >0 && game_flag==1) {
 									$('#button_group').show();
 									$('#game_button').show();	
-									$('.exam_buttons').hide();
+									$('.exam_buttons').show();
 									$('#load_images').hide();	
 								} else {
 									$('#game_button').hide();	
-									$('.exam_buttons').hide();	
+									$('.exam_buttons').show();	
 
 								}
 								
@@ -252,6 +252,7 @@ $_SESSION['counter']=0;  // this is for the score board
 							} else {
 								$('#button_group').show();
 								$('#submit_id').hide();
+								$('.exam_buttons').show();	
 							}
 							
 						

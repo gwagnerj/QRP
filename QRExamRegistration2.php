@@ -40,13 +40,14 @@
     // we are using a printed exam with limited versions if this is non_zero
       if (isset($_GET['dex_print'])){
           $dex_print = $_GET['dex_print'];
+          if ($dex_print == 0){
+            $checker_only = 0;
+          } else {$checker_only = 1;}
       } else {
           $dex_print = 0;
       }
       
-      if(isset($_POST['exam_code'])){
-        $exam_code =  $_POST['exam_code'];
-        }
+     
 
         if (isset($_GET['student_id'])){
             $student_id =   $_GET['student_id'];
@@ -61,7 +62,7 @@
             $sql = 'SELECT * FROM Student WHERE `student_id` = :student_id';
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute(array(':student_id' => $student_id));
-            $student_data = $stmt -> fetch();
+                 $student_data = $stmt -> fetch();
 
             $first_name = $student_data['first_name'];
             $last_name = $student_data['last_name'];
@@ -81,34 +82,58 @@
                 // need to go to the select class  either modify this file to be more general or make a new file !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 header("Location: stu_getclass.php?student_id=".$student_id);
                 return; 
-            } elseif ($num_classes == 1){
+            } elseif ($num_classes >= 1){
             // echo (' 52 ');
-                // student has just one class so no need to select 
+                // student has just one or mor classes - we will put this in the select class dialog 
                 // we can get there pin and class_id
-                $sql = 'SELECT * FROM `StudentCurrentClassConnect` WHERE `student_id` = :student_id';
+                $sql = 'SELECT StudentCurrentClassConnect.currentclass_id as currentclass_id,      
+                            StudentCurrentClassConnect.pin as pin,
+                             CurrentClass.name as cclass_name,
+                             CurrentClass.iid as iid 
+
+                             FROM `StudentCurrentClassConnect`
+                             LEFT JOIN CurrentClass ON CurrentClass.currentclass_id =StudentCurrentClassConnect.currentclass_id
+                             WHERE `student_id` = :student_id';
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute(array(':student_id' => $student_id));
-                    $class_data = $stmt -> fetch();
-                    $pin = $class_data['pin'];   
-                $currentclass_id = $class_data['currentclass_id'];
+                    $class_data = $stmt -> fetchALL();
+
+// var_dump ($class_data);
+
+                    $i = 0;
+                    foreach($class_data as $class_datum){
+                        $pins[$i]=$class_datum['pin'];
+                        $cclass_names[$i]=$class_datum['cclass_name'];
+                        $currentclass_ids[$i] = $class_datum['currentclass_id'];
+                       //  echo '  '.$cclass_names[$i];
+                        $iids[$i]=$class_datum['iid'];
+                        $i++;
+                    }
+
+
+                //     $pin = $class_data['pin'];   
+                // $currentclass_id = $class_data['currentclass_id'];
                 
-                $sql = 'SELECT * FROM `CurrentClass` WHERE `currentclass_id` = :currentclass_id';
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute(array(':currentclass_id' => $currentclass_id));
-                    $cclass_data = $stmt -> fetch();
-                    $iid = $cclass_data['iid'];   
-                $cclass_name = $cclass_data['name']; 
-                // echo('$iid: '.$iid);
-                $cclass_id = $currentclass_id;
+                // $sql = 'SELECT * FROM `CurrentClass` WHERE `currentclass_id` = :currentclass_id';
+                //     $stmt = $pdo->prepare($sql);
+                //     $stmt->execute(array(':currentclass_id' => $currentclass_id));
+                //     $cclass_data = $stmt -> fetch();
+                //     $iid = $cclass_data['iid'];   
+                // $cclass_name = $cclass_data['name']; 
+                // // echo('$iid: '.$iid);
+                // $cclass_id = $currentclass_id;
+
+
             } 
  
     // We submitted and have all the data
-         if(isset($_POST['submit_form']) && isset($_POST['iid']) && isset($_POST['cclass_id']) && isset($_POST['student_id'])){
-            $cclass_id = htmlentities($_POST['cclass_id']);
-            $iid = htmlentities($_POST['iid']);
-          //  $student_id = htmlentities($_POST['student_id']);
-          //  echo ('iid: '. $iid);
-         //   echo ('cclass_id: '. $cclass_id);
+         if(isset($_POST['submit_form']) && isset($_POST['selected_class'])  && isset($_POST['student_id'])){
+            $selected_class = $_POST['selected_class'];
+            $currentclass_id = $currentclass_ids[$selected_class];
+            $iid = $iids[$selected_class];
+
+            echo ('iid: '. $iid);
+            echo (' currentclass_id: '. $currentclass_id);
          //   echo ('eactivity_id: '. $eactivity_id);
             
             if (strlen($eactivity_id)<=0){  
@@ -118,16 +143,19 @@
                     $stmt = $pdo->prepare($sql);
                     $stmt -> execute(array(
                          ':iid' => $iid,
-                         ':currentclass_id' => $cclass_id,
+                         ':currentclass_id' => $currentclass_id,
                     ));
+                   
                     $Eexamtime_data = $stmt->fetch(PDO::FETCH_ASSOC);
+                   // var_dump($Eexamtime_data);
+
                     if($Eexamtime_data != false){  // there is an exam running
                         $eexamtime_id = $Eexamtime_data['eexamtime_id']; 
                         $work_time = $Eexamtime_data['nom_time'];
                         $exam_num = $Eexamtime_data['exam_num'];
                         $eexamnow_id = $Eexamtime_data['eexamnow_id'];
                         $exam_code = $Eexamtime_data['exam_code'];
-     
+                        
                      
                         // check to see if there is already an entry and they are trying to re-register then just read the Examactivity table
                             
@@ -199,6 +227,7 @@
          
                                             
                                 } else { // no exam running 
+                                   // echo ' no exam running ';
 
                                     $_SESSION['error'] = "No exam currently running";
 
@@ -217,7 +246,7 @@
 
     } elseif(isset($_POST['submit_form'])) {
     //$_SESSION['cclass_id'] = $_SESSION['cclass_name'] = '';
-    $_SESSION['error']='The Class and Instructor are all Required ';
+    $_SESSION['error']='The Class Must be Selected ';
     }
 
  
@@ -292,80 +321,38 @@
              <div class="form-group">   
 
                     <input autocomplete="false" name="hidden" type="text" style="display:none;">
-                    <input type="hidden"  name="pin" id="pin_id" value=<?php echo($pin);?> ></p>
+                  
                     <input type="hidden"  name="student_id" id="student_id" value=<?php echo($student_id);?> ></p>
-                    <input type="hidden"  name="checker2"  value=<?php echo($checker);?> ></p>       
-           
-            <div id ="instructor_id">	
-            
-                    <font color=#003399> Instructor: &nbsp; </font>
-                    <?php 
-                    // $iid=1;
-                    if (strlen($iid)>0 && strlen($cclass_id)>0 && strlen($cclass_name)>0 && strlen($exam_num)>0 ){
+
+            <b>Class Name: &nbsp; </b>
+
+                  <?php
+                    echo('<select name = "selected_class" id = "selected_class"> ');
+                 if ($num_classes >1){ 
+                 
+                   echo ('	<option value = "" selected disabled hidden >  Select Class  </option> ');
+                    $i=0;
+                     foreach ($pins as $pin) {
+
+                         echo '<option value="'.$i.'" >'.$cclass_names[$i].'</option>';
 
 
-                            $sql = 'SELECT users_id, last, first FROM Users WHERE `users_id` = :iid';
-                            $stmt = $pdo->prepare($sql);
-                            $stmt -> execute(array(':iid' => $iid));
-                            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                            $last = $row['last'];
-                            $first = $row['first'];
-                                echo ('<input type = "hidden" name = "iid" id = "have_iid" value = "'.$iid.'"></input>'); 
-                                echo ('<input type = "hidden" name = "have_last" value = "'.$last.'"></input>'); 
-                                echo ('<input type = "hidden" name = "have_first" value = "'.$first.'"></input>'); 
-                                echo ($last.', '.$first);
-                    } else {
 
-                        echo('<select name = "iid" id = "iid">');
-                        echo ('	<option value = "" selected disabled hidden >  Select Instructor  </option> ');
-                        $sql = 'SELECT DISTINCT iid, last, first FROM Users RIGHT JOIN CurrentClass ON Users.users_id = CurrentClass.iid';
-                        $stmt = $pdo->prepare($sql);
-                        $stmt -> execute();
-                        while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
-                    { ?>
-                        <option value="<?php echo $row['iid']; ?>" ><?php echo ($row['last'].", ".$row['first']); ?> </option>
-                    <?php
-                    } 
-                    echo ('</select>');
-                    }
-                    ?>
-                 </div> 
-                     
-
+                      $i++;       
          
-                    </br>
-                    <div class="form-group">   
+                 }
+                
 
-                    <!--	<div id ="current_class_dd">	-->
-                    <font color=#003399>Class: </font>
+                } else {  // really don't need to have them pick the class if there is only one
 
-                    <?php
-                            //$cclass_id = 2;
-                            //$cclass_name = 'Particle Technology';
-                            //echo ('cclass_id: ');
+                    echo '<option value="0" >'.$cclass_names[0].'</option>';
+                }
+                ?>
+                    echo '</select>';
+                  </div>
+    
+                  <br>
 
-                            //echo $cclass_id;
-
-                        if (strlen($iid)>0 && strlen($cclass_id)>0 && strlen($cclass_name)>0 && strlen($exam_num)>0 ){
-                            echo ('<input type = "hidden" name = "cclass_id" id = "have_cclass_id" value = "'.$cclass_id.'"></input>'); 
-                            echo ('<input type = "hidden" name = "cclass_name" id = "have_cclass_name" value = "'.$cclass_name.'"></input>'); 
-                            echo $cclass_name;
-                        } else {
-                            echo ('&nbsp;<select name = "cclass_id" id = "current_class_dd" >');
-                            echo('</select>');
-                        }
-                        ?>
-
-                </div>
-                    <br>
-                    <h2>&nbsp;&nbsp;
-                        <label>  <input type = "radio" id = "checker" name = "checker" style = "width:25px;height:25px;" value = "checker_only" checked >  Checker Only &nbsp;&nbsp;&nbsp;</label>
-                        <label>  <input type = "radio" id = "checker" name = "checker" style = "width:25px;height:25px;" value = "problem_and_checker" >  Problem and Checker </label>
-                    </h2>
-                    <br>
-                    <br>
-
-                   
 
                     <input type="hidden" id = "examactivity_id" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
 
@@ -374,35 +361,35 @@
        </div>     
     <script>
 
-            $("#iid").change(function(){
-                var	 iid = $("#iid").val();
+            // $("#iid").change(function(){
+            //     var	 iid = $("#iid").val();
 
-                $.ajax({
-                    url: 'getcurrentclass.php',
-                    method: 'post',
-                    data: {iid:iid}
+            //     $.ajax({
+            //         url: 'getcurrentclass.php',
+            //         method: 'post',
+            //         data: {iid:iid}
 
-                }).done(function(cclass){
-                        cclass = JSON.parse(cclass);
-                        // now get the currentclass_id
-                    $.ajax({
-                        url: 'getcurrentclass_id.php',
-                        method: 'post',
-                        data: {iid:iid}
+            //     }).done(function(cclass){
+            //             cclass = JSON.parse(cclass);
+            //             // now get the currentclass_id
+            //         $.ajax({
+            //             url: 'getcurrentclass_id.php',
+            //             method: 'post',
+            //             data: {iid:iid}
 
-                    }).done(function(cclass_id){
-                            cclass_id = JSON.parse(cclass_id);
-                            $('#current_class_dd').empty();
-                            n = cclass.length;
-                        //		console.log("n: "+n);
-                        $('#current_class_dd').append("<option selected disabled hidden> Please Select Course </option>") ;
-                            for (i=0;i<n;i++){
+            //         }).done(function(cclass_id){
+            //                 cclass_id = JSON.parse(cclass_id);
+            //                 $('#current_class_dd').empty();
+            //                 n = cclass.length;
+            //             //		console.log("n: "+n);
+            //             $('#current_class_dd').append("<option selected disabled hidden> Please Select Course </option>") ;
+            //                 for (i=0;i<n;i++){
 
-                                    $('#current_class_dd').append('<option  value="' + cclass_id[i] + '">' + cclass[i] + '</option>');
-                            }
-                    })
-                })
-            });
+            //                         $('#current_class_dd').append('<option  value="' + cclass_id[i] + '">' + cclass[i] + '</option>');
+            //                 }
+            //         })
+            //     })
+            // });
      </script>
 
     </body>

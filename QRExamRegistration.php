@@ -11,7 +11,7 @@ session_start();
      $dex_code=$_GET['dex_code'];
      header('Location:QRExamRegistration1.php?dex_code='.$dex_code);  
         die;
- } elseif(isset($_POST['dex_code'])){
+ } elseif(isset($_POST['dex_code'])&& strlen($_POST['dex_code'])>0){
      $dex_code = $_POST['dex_code'];
      header('Location:QRExamRegistration1.php?dex_code='.$dex_code);  
  }  else {
@@ -21,66 +21,28 @@ session_start();
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
- 
-    // Check if username is empty
-   
-    
-    // Check if password is empty
   
-    
-    // Validate credentials
-    if(empty($username_err) && empty($password_err) && empty($code_err)){
-        // Prepare a select statement
-        $sql = "SELECT username, password,student_id FROM Student WHERE username = :username";
-        
-        if($stmt = $pdo->prepare($sql)){
-            // Bind variables to the prepared statement as parameters
-            $stmt->bindParam(':username', $param_username, PDO::PARAM_STR);
-            
-            // Set parameters
-            $param_username = trim($_POST["username"]);
-            
-            // Attempt to execute the prepared statement
-            if($stmt->execute()){
-                // Check if username exists, if yes then verify password
-                if($stmt->rowCount() == 1){
-                    if($row = $stmt->fetch()){
-                        $password_table = $row['password'];
-                        if($password_table==$password){
-                            /* Password is correct, so start a new session and
-                            save the username to the session */
-                            session_start();
-                            $_SESSION['username'] = $username;      
-                            header("location: QRExamRegistration2.php?student_id=".$row['student_id']."&dex_print=".$dex_print);
-                        } else{
-                            // Display an error message if password is not valid
-                            $password_err = 'The password you entered was not valid.';
-                        }
-                    }
-                } else{
-                    // Display an error message if username doesn't exist
-                    $username_err = 'No account found with that username.';
-                }
-            } else{
-                echo "Oops! Something went wrong. Please try again later.";
-            }
-        }
-        
-        // Close statement
-        unset($stmt);
-    }
+   
+  
+   if ( $_POST['qrcode']=='yes') {
+        $_SESSION['error'] = ' Must Input Version Code';
+
+   } else {
+         header('Location:QRExamRegistration1.php?dex_code='.$dex_code);   
+   }
+ 
+ 
     
     // Close connection
     unset($pdo);
 }
-
-if (isset($_SESSION['success'])){
-	echo $_SESSION['success'];	
-    unset($_SESSION['success']);
+if ( isset($_SESSION['error']) ) {
+    echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
+    unset($_SESSION['error']);
 }
-if (isset($_SESSION['error'])){
-	echo $_SESSION['error'];
-	unset($_SESSION['error']);
+if ( isset($_SESSION['success']) ) {
+    echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
+    unset($_SESSION['success']);
 }
 ?>
  

@@ -215,7 +215,7 @@ FROM `Eactivity`
 
 
         $htmlfilenm = "uploads/".$htmlfilenm;
-if($checker_only ==0){
+// if($checker_only ==0){
         // read in the names of the variables for the problem
             $nv = 0;  // number of non-null variables
            for ($i = 0; $i <= 13; $i++) {
@@ -267,7 +267,7 @@ if($checker_only ==0){
         // Sneak the exam_flag in
 
 
-} 
+// } 
 
         $pass = array(
             'checker'=>$checker_only,
@@ -347,7 +347,12 @@ if($checker_only ==0){
   top: 0px;
   z-index: 1;
 }
-
+#display_pblm_button{
+  position: relative;
+  left: 0px;
+  top: 0px;
+  z-index: 1;
+}
 
 #base_case{
    background-color: #e6f7ff;  
@@ -382,10 +387,10 @@ if($checker_only ==0){
 <?php   
 
 
-    if($checker_only ==0){
+
         echo('<img id = "water_mark" src="uploads/Water_Mark_for_exam_trans_bckgrnd.png" >');
 
-    }
+
 
  
 
@@ -405,7 +410,7 @@ if($checker_only ==0){
        echo($header_stuff);
        
        
-if($checker_only ==0){
+
   $problem = $html->find('#problem',0);
   $base_case = $html->find('#problem',0); 
 
@@ -518,7 +523,7 @@ libxml_use_internal_errors(true); // this gets rid of the warning that the p tag
                
     // only include the document above the checker
       // $this_html ='<hr><br>'.$problem;
-       $this_html ='<hr>'.$problem.'<hr> <div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>';
+       $this_html = $problem.' <div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>';
 
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
@@ -528,7 +533,7 @@ libxml_use_internal_errors(true); // this gets rid of the warning that the p tag
              }
         }
   echo $this_html; 
-} 
+
  
 /* 
 echo ' dex '.$dex.'<br>';
@@ -590,6 +595,15 @@ echo ' alias_num '.$alias_num.'<br>';
 console.log ('work_flow '+work_flow );
 
 
+if (checker == 1){  // this is the default value comiong in to problem
+ $('#problem').hide();
+ $('#water_mark').hide();
+}
+
+$('#display_pblm_button').click(function(){
+    $('#problem').toggle();
+    $('#water_mark').toggle();
+     });
 
 
 if (work_flow == 'bc_first' && progress < 1 ){

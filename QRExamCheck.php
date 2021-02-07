@@ -150,6 +150,7 @@ session_start();
     	$score = 0;
 			$PScore = 0;
 			$count = 0;
+      $count_tot = 0;
 
   // Initialize all of the arrays we need to zero out
   $i = 0;
@@ -184,6 +185,7 @@ session_start();
       $time_sleep2_trip = 10;	
     	$hintLimit = 3;
 			$dispBase = 1;
+     
 			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			// see if the problem has been suspended	
 				

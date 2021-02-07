@@ -294,14 +294,11 @@ require_once "pdo.php";
 	</form>
     
   
-    <form  method="POST" action = "QRExamBackStage.php" id = "backstage" target = "_blank">
-   <p style="font-size:50px;"></p>
-
-   
-   <p><input type="hidden" name="eexamtime_id" id="eexamtime_id" value=<?php echo($eexamtime_id);?> ></p>
-   <p><input type="hidden" name="eexamnow_id" id="eexamnow_id" value=<?php echo($eexamnow_id);?> ></p>
-   
-  <p><input type = "submit" name = "backstage" value="Back Stage Exam Data" id="backstage_submit" size="2" style = "width: 30%; background-color: green; color: white"/>  </p>  
+  <form  method="POST" action = "QRExamBackStage.php" id = "backstage" target = "_blank">
+      <p style="font-size:50px;"></p>
+      <p><input type="hidden" name="eexamtime_id" id="eexamtime_id" value=<?php echo($eexamtime_id);?> ></p>
+      <p><input type="hidden" name="eexamnow_id" id="eexamnow_id" value=<?php echo($eexamnow_id);?> ></p>
+      <p><input type = "submit" name = "backstage" value="Back Stage Exam Data" id="backstage_submit" size="2" style = "width: 30%; background-color: green; color: white"/>  </p>  
   
   </form>
     

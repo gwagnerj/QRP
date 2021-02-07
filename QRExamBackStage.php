@@ -1,16 +1,19 @@
 <?php
 	require_once "pdo.php";
 	session_start();
-    
+  $individual_score= array();
    
 ?>
 	 <!DOCTYPE html>
 	<html lang = "en">
 	<head>
+
+
 	<link rel="icon" type="image/png" href="McKetta.png" />  
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<meta Charset = "utf-8">
 	<title>QRExam BackStage</title>
+  <!-- <meta http-equiv="refresh" content="10"> -->
 	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 	
   
@@ -108,7 +111,7 @@
                     <link rel="stylesheet" type="text/css" href="DataTables-1.10.18/css/jquery.dataTables.css"/> 
                     <script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
                     <script type="text/javascript" charset="utf-8" src="DataTables-1.10.18/extras/js/ColumnFilterWidgets.js"></script>
-                    <!-- <meta http-equiv="refresh" content="10"/> -->
+                    
                 
                     
                     
@@ -709,22 +712,24 @@ echo '</div>';
 ?>
        
        <form  method="POST" action = "" id = "refresh_page">
-  
-  
-       
        <p style="font-size:10px;"></p>
            page auto-refreshes every 30s
           <p><input type = "submit" name = "refresh" value="Refresh Page" id="refrsh_id" size="2" style = "width: 30%; background-color: blue; color: white"/> &nbsp &nbsp </p>  
-
-	  
-        
           <input type="hidden" name="eexamtime_id"  value=<?php echo($eexamtime_id);?> >
           <input type="hidden" name="eexamnow_id"  value=<?php echo($eexamnow_id);?> >
-
-         
        </form>  
 
-
+       <form  method="POST" action = "scoreboard.php" id = "scoreboard" target = "_blank">
+      <p style="font-size:50px;"></p>
+      <p><input type="hidden" name="eexamtime_id" id="eexamtime_id" value=<?php echo($eexamtime_id);?> ></p>
+      <p><input type="hidden" name="eexamnow_id" id="eexamnow_id" value=<?php echo($eexamnow_id);?> ></p>
+      <p><input type="hidden" name="number_teams" id="number_teams" value=<?php echo($number_teams);?> ></p>
+      <p><input type="hidden" name="studentonteam_data" id="studentonteam_data" value=<?php echo(implode(',',$studentonteam_data));?> ></p>
+      <p><input type="hidden" name="individual_score" id="individual_score" value=<?php echo(implode(',',$individual_score));?> ></p>
+      <p><input type="hidden" name="team_cap" id="team_cap" value=<?php echo($team_cap);?> ></p>
+      <p><input type = "submit" name = "scoreboard_submit" value="Show Score Board" id="scoreboard_submit" size="2" style = "width: 30%; background-color: green; color: white"/>  </p>  
+  
+  </form>
 
         <p style="font-size:75px;"></p>   
         <form method="POST" >

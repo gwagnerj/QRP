@@ -121,6 +121,8 @@ $sql = 'SELECT currentclass_id, exam_num,iid FROM Eexamtime  WHERE eexamtime_id 
                                    
                                    </label>   
                             </div>
+							<br>
+							<input type = "checkbox" name = "print_blanks" id = "print_blanks"> Print Variables as Blanks</input>
                             
                        </div>
                    </div>
