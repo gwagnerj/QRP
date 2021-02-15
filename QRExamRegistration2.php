@@ -1,7 +1,9 @@
 <?php
 	require_once "pdo.php";
 	session_start();
-	
+    // var_dump ($_POST);
+    // echo '<br>';
+    // var_dump ($_GET);
  	// this is the normal place to start for students taking an exam and is the file redirected to from QRexam.com and QRexamPblm.org and then goes the the QRExam.php 
 //  This file takes the input from the examanee and puts it in the examactivity table then goes to QRExam once this is complete
         $complete = 'QRExamRegistration2.php';
@@ -47,7 +49,7 @@
           $dex_print = 0;
       }
       
-     
+ 
 
         if (isset($_GET['student_id'])){
             $student_id =   $_GET['student_id'];
@@ -55,7 +57,7 @@
             $student_id =   $_POST['student_id'];
         } else {
                 $_SESSION['error'] = 'lost the student_id in QRExamRegistration2 error2';
-                header('Location:  QRExamRegistration1.php');
+  //              header('Location:  QRExamRegistration1.php');
                die;
         }
            
@@ -132,13 +134,13 @@
             $currentclass_id = $currentclass_ids[$selected_class];
             $iid = $iids[$selected_class];
 
-            echo ('iid: '. $iid);
-            echo (' currentclass_id: '. $currentclass_id);
-         //   echo ('eactivity_id: '. $eactivity_id);
+        //     echo ('iid: '. $iid);
+        //     echo (' currentclass_id: '. $currentclass_id);
+        //    echo ('eactivity_id: '. $eactivity_id);
             
             if (strlen($eactivity_id)<=0){  
 
-                $sql = "SELECT * FROM `Eexamtime` LEFT JOIN Eexamnow ON Eexamtime.eexamtime_id = Eexamnow.eexamtime_id  WHERE Eexamtime.iid = :iid  AND Eexamtime.currentclass_id = :currentclass_id AND Eexamnow.globephase < 3 AND Eexamnow.end_of_phase > NOW() ";
+                $sql = "SELECT * FROM `Eexamtime` LEFT JOIN Eexamnow ON Eexamtime.eexamtime_id = Eexamnow.eexamtime_id  WHERE Eexamtime.iid = :iid  AND Eexamtime.currentclass_id = :currentclass_id AND Eexamnow.globephase < 3 AND Eexamnow.end_of_phase > NOW() ORDER BY Eexamnow.end_of_phase DESC LIMIT 1 ";
                 //   $sql = " SELECT * FROM `Examtime` WHERE iid = :iid AND exam_code = :exam_code AND currentclass_id = :currentclass_id"   ;
                     $stmt = $pdo->prepare($sql);
                     $stmt -> execute(array(
@@ -147,7 +149,7 @@
                     ));
                    
                     $Eexamtime_data = $stmt->fetch(PDO::FETCH_ASSOC);
-                   // var_dump($Eexamtime_data);
+                  //  var_dump($Eexamtime_data);
 
                     if($Eexamtime_data != false){  // there is an exam running
                         $eexamtime_id = $Eexamtime_data['eexamtime_id']; 
@@ -169,22 +171,27 @@
                                         
                                         $Eregistration_data = $stmt->fetch(PDO::FETCH_ASSOC);
                                       
+    //                                    var_dump($Eregistration_data);
 
                                         if($Eregistration_data == false){      
 
                             // ----------------------- put the entry into the eregistration table for this user  ------------------------------------------------------
 
                                             // get the pin from the student class connect table
+
+                                            // echo ' currentclass_id '.$currentclass_id;
+                                            // echo ' student_id '.$student_id;
                                             
-                                            $sql = 'SELECT * FROM `StudentCurrentClassConnect` WHERE `student_id` = :student_id AND currentclass_id = :currentclass_id';
+                                            $sql = 'SELECT * FROM `StudentCurrentClassConnect` WHERE `student_id` = :student_id AND currentclass_id = :currentclass_id LIMIT 1';
                                                 $stmt = $pdo->prepare($sql);
                                                 $stmt->execute(array(
                                                 ':student_id' => $student_id,
-                                                ':currentclass_id' => $cclass_id
+                                                ':currentclass_id' => $currentclass_id
                                                 ));
                                                 $class_data = $stmt -> fetch();
+                                              //  $class_datum = $class_data[0];
                                                 $pin = $class_data['pin'];   
-                    //                             echo (' pin '.$pin);
+                                     //            echo (' pin '.$pin);
                                                 $dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
 
                                                 if ($dex_print != 0){  // we are using a version of the exam with limited versions
@@ -216,10 +223,12 @@
                                                 $dex = $Eregistration_data['dex'];
                                                 $exam_code = $Eregistration_data['exam_code'];
                                                 $eregistration_id = $Eregistration_data['eregistration_id'];
+                                                // echo (' pin '.$pin);
 
                                                 $_SESSION["success"] = 'Already registered for the exam';
-
-                                                header("Location: stu_exam_frontpage.php?eregistration_id=".$eregistration_id."&checker=".$checker);
+                                               
+                                              
+                                                header("Location:stu_exam_frontpage.php?eregistration_id=".$eregistration_id."&checker=".$checker);
                                                 die();
 
                                         } 
@@ -234,8 +243,8 @@
                                 }
 
                                                 
-                               // header("Location: QRExam.php?eregistration_id=".$eregistration_id."&checker=".$checker);
-                              //  die();
+                            //    header("Location: QRExam.php?eregistration_id=".$eregistration_id."&checker=".$checker);
+                            //    die();
                                                 
 
              } else {
@@ -306,24 +315,27 @@
 
         ?>
 
-            <form autocomplete="off" method="POST" id = "the_form"  >
-        <!--     <form autocomplete="off" method="POST" id = "the_form" action = "<?php echo($complete);?>" > 
-            
-            <p><font color=#003399>Exam Code: </font><input type="text" name="exam_code" id = "exam_code_id" size= 5 value="<?php echo($exam_code);?>" >-->
-      <!--      <p><font color=#003399>Exam Code: </font><input type="text" name="exam_code" id = "exam_code_id" size= 5 value="<?php echo($exam_code);?>" > 
-                    - this is provided by the instructor-->
-            </p>  
+
+     <form autocomplete="off" action = "" method="post" id = "the_form"  >
+             
             <div class="form-group">   
 
-                    <h3><font color=#003399>Your Name: </font><?php echo($stu_name);?> </h3>
-
+                    <h3><font color=#003399>Your Name: </font><?php echo($stu_name);?> </h3> 
              </div>
-             <div class="form-group">   
+
+            
+             <?php
+            //  echo 'pin: '.$pin.'<br>';
+            //  echo 'classname: '.$class_datum['pin'].'<br>';
+            //  echo 'student_id: '.$student_id.'<br>';
+            //  var_dump($class_datum);
+             ?> 
+       
+        <div class="form-group">   
 
                     <input autocomplete="false" name="hidden" type="text" style="display:none;">
                   
-                    <input type="hidden"  name="student_id" id="student_id" value=<?php echo($student_id);?> ></p>
-
+                    <input type="hidden" id = "student_id" name="student_id" value="<?php echo ($student_id)?>" >
             <b>Class Name: &nbsp; </b>
 
                   <?php
@@ -333,32 +345,23 @@
                    echo ('	<option value = "" selected disabled hidden >  Select Class  </option> ');
                     $i=0;
                      foreach ($pins as $pin) {
-
                          echo '<option value="'.$i.'" >'.$cclass_names[$i].'</option>';
-
-
-
                       $i++;       
-         
                  }
-                
 
                 } else {  // really don't need to have them pick the class if there is only one
-
                     echo '<option value="0" >'.$cclass_names[0].'</option>';
                 }
                 ?>
                     echo '</select>';
-                  </div>
     
                   <br>
 
-
                     <input type="hidden" id = "examactivity_id" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
-
+                    </div>
                     <p><input type = "submit" name = "submit_form" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
             </form>
-       </div>     
+        
     <script>
 
             // $("#iid").change(function(){

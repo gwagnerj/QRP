@@ -114,13 +114,13 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
                     echo("</th><th>");
                 echo('Members');
                 echo ('</th>');
-                echo ('<th>');
-                echo ('dex');
+                // echo ('<th>');
+                // echo ('dex'); 
                 echo ('</th>');
-                echo ('<th>');
-                echo ('Team Captain');
-                echo ('</th>');
-                echo ('<th>');
+                // echo ('<th>');
+                // echo ('Team Captain');
+                // echo ('</th>');
+                // echo ('<th>');
                 echo ('Individual Score');
                 echo ('</th>');
                 echo ('<th>');
@@ -166,16 +166,16 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
                  // echo ' i '.$i;
                   echo('<td>');
 
-                    echo ($studentonteam_datum['first_name'].' '.$studentonteam_datum['last_name']);
+                    echo ' Team Member '.$j;
                     echo('</td>');
-                    echo('<td>');
-                    echo ($studentonteam_datum['dex']);
-                    echo('</td>');
-                    echo('<td>');
-                    if (isset($team_cap[$i])){
-                      if ($team_cap[$i]==$student_id){$check_flag = 'checked';}else{$check_flag ='';}
-                    } else {$check_flag ='';}
-                    echo '<input type = "radio" '.$check_flag.' id = "team_'.$i.'_stu_'.$student_id.'" name ="team_'.$i.'" value = "'.$student_id.'" ></input>';
+                    // echo('<td>');
+                    // echo ($studentonteam_datum['dex']);
+                    // echo('</td>');
+                    // echo('<td>');
+                    // if (isset($team_cap[$i])){
+                    //   if ($team_cap[$i]==$student_id){$check_flag = 'checked';}else{$check_flag ='';}
+                    // } else {$check_flag ='';}
+                    // echo '<input type = "radio" '.$check_flag.' id = "team_'.$i.'_stu_'.$student_id.'" name ="team_'.$i.'" value = "'.$student_id.'" ></input>';
                     echo('</td>');
                     echo('<td>');
                     echo ($individual_score[$student_id]);

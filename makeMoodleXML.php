@@ -77,6 +77,7 @@ if(isset($_POST['iid'])){
    $i = 0;
     for ($m = 'a'; $m<='j'; $m++){
         $tol[$i] = $pblm_data['tol_'.($m)];
+        $tol_type[$i] = $pblm_data['tol_'.($m).'_type'];  // this will be 0 for relative and 1 for absolute
         $i++;
     }
     
@@ -170,7 +171,12 @@ if(isset($_POST['iid'])){
         $ans[$i]= $row_ans['ans_'.$m];
        if($row_ans['ans_'.$m]<1.2e43){
            $last_part = $i+1;
-            $MOE[$i]= $tol[$i]/1000 * $ans[$i];
+           if($tol_type[$i]==1){
+              $MOE[$i]= $tol[$i]/1000000;
+           } else {
+              $MOE[$i]= $tol[$i]/1000 * $ans[$i];
+
+           }
             $ans_pattern[$i] = "{1:NUMERICAL:=".$ans[$i].":".$MOE[$i]."}";
         }
      $i++;

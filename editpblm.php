@@ -2,6 +2,7 @@
 	session_start();
 	require_once "pdo.php";
     require_once "simple_html_dom.php";
+	$problem_type ='0';
 $_SESSION['checker']=2;  // tells where the getiid where to come to
 	if (isset($_SESSION['username'])) {
 		$username=$_SESSION['username'];
@@ -423,7 +424,123 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 					
 				}	
 
- 
+ 		// Interactive Video
+		 if($_FILES['video1']['name']) {
+			$filename=explode(".",$_FILES['video1']['name']); // divides the file into its name and extension puts it into an array
+			$video1=addslashes($_FILES['video1']['tmp_name']);
+			$videonm1=addslashes($_FILES['video1']['name']);
+			$video1=file_get_contents($video1);
+			$videonm1 = $_FILES['video1']['name'];
+			$tmp_video1file =  $_FILES['video1']['tmp_name'];
+			$location = "Video/"; // This is the local file directory name where the files get saved
+			
+			$sql = "UPDATE Problem SET  videonm1 = :videonm1 	
+						WHERE problem_id=:problem_id";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(':videonm1'=> $videonm1,	':problem_id' => $_POST['problem_id']));
+			
+			if (fnmatch("p*_v1_*",$videonm1,FNM_CASEFOLD ) ){ // ignore the case when matching
+			$newvid1Nm = $videonm1;
+			}
+			else if($videonm1 !== ""){
+				$newvid1Nm = "p".$problem_id."_v1_".$videonm1;
+			} else {
+				$newvid1Nm = "p".$problem_id."_v1_video1.mp4";
+			}
+			
+			$sql = "UPDATE Problem SET videonm1 = :videonm1 	
+						WHERE problem_id=:problem_id";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(':videonm1'=> $newvid1Nm,	':problem_id' => $_POST['problem_id']));
+			
+			$pathName = 'Video/'.$newvid1Nm;
+			if (move_uploaded_file($_FILES['video1']['tmp_name'], $pathName)){
+				$_SESSION['success'] = $_SESSION['success'].'Video 1 mp4 file upload successful';
+			}
+		}		
+
+		if($_FILES['video2']['name']) {
+			$filename=explode(".",$_FILES['video2']['name']); // divides the file into its name and extension puts it into an array
+			$video2=addslashes($_FILES['video2']['tmp_name']);
+			$videonm2=addslashes($_FILES['video2']['name']);
+			$video2=file_get_contents($video2);
+			$videonm2 = $_FILES['video2']['name'];
+			$tmp_video2file =  $_FILES['video2']['tmp_name'];
+			$location = "Video/"; // This is the local file directory name where the files get saved
+			
+			$sql = "UPDATE Problem SET  videonm2 = :videonm2 	
+						WHERE problem_id=:problem_id";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(':videonm2'=> $videonm2,	':problem_id' => $_POST['problem_id']));
+			
+			if (fnmatch("p*_v2_*",$videonm2,FNM_CASEFOLD ) ){ // ignore the case when matching
+			$newvid2Nm = $videonm2;
+			}
+			else if($videonm2 !== ""){
+				$newvid2Nm = "p".$problem_id."_v2_".$videonm2;
+			} else {
+				$newvid2Nm = "p".$problem_id."_v2_video2.mp4";
+			}
+			
+			$sql = "UPDATE Problem SET videonm2 = :videonm2 	
+						WHERE problem_id=:problem_id";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(':videonm2'=> $newvid2Nm,	':problem_id' => $_POST['problem_id']));
+			
+			$pathName = 'Video/'.$newvid2Nm;
+			if (move_uploaded_file($_FILES['video2']['tmp_name'], $pathName)){
+				$_SESSION['success'] = $_SESSION['success'].'Video 2 mp4 file upload successful';
+			}
+		}	
+
+
+		 if($_FILES['video3']['name']) {
+			$filename=explode(".",$_FILES['video3']['name']); // divides the file into its name and extension puts it into an array
+			$video3=addslashes($_FILES['video3']['tmp_name']);
+			$videonm3=addslashes($_FILES['video3']['name']);
+			$video3=file_get_contents($video3);
+			$videonm3 = $_FILES['video3']['name'];
+			$tmp_video3file =  $_FILES['video3']['tmp_name'];
+			$location = "Video/"; // This is the local file directory name where the files get saved
+			
+			$sql = "UPDATE Problem SET  videonm3 = :videonm3 	
+						WHERE problem_id=:problem_id";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(':videonm3'=> $videonm3,	':problem_id' => $_POST['problem_id']));
+			
+			if (fnmatch("p*_v3_*",$videonm3,FNM_CASEFOLD ) ){ // ignore the case when matching
+			$newvid3Nm = $videonm3;
+			}
+			else if($videonm3 !== ""){
+				$newvid3Nm = "p".$problem_id."_v3_".$videonm3;
+			} else {
+				$newvid3Nm = "p".$problem_id."_v3_video3.mp4";
+			}
+			
+			$sql = "UPDATE Problem SET videonm3 = :videonm3 	
+						WHERE problem_id=:problem_id";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(':videonm3'=> $newvid3Nm,	':problem_id' => $_POST['problem_id']));
+			
+			$pathName = 'Video/'.$newvid3Nm;
+			if (move_uploaded_file($_FILES['video3']['tmp_name'], $pathName)){
+				$_SESSION['success'] = $_SESSION['success'].'Video 3 mp4 file upload successful';
+			}
+		}		
+		// problem types
+			if($_POST['problem_type']==1)	{
+				$sql = "UPDATE Problem SET problem_type = :problem_type WHERE problem_id = :pblm_num";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':problem_type' => 1,
+					':pblm_num' => $_POST['problem_id']));	
+			} else 	{
+				$sql = "UPDATE Problem SET problem_type = :problem_type WHERE problem_id = :pblm_num";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':problem_type' => 0,
+					':pblm_num' => $_POST['problem_id']));	
+			}	
 				
 			// video clip asset	
 			if($_POST['video_clip']==1)	{
@@ -1295,7 +1412,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 		unset($_SESSION['error']);
 	}
 
-
+	$problem_type = $row['problem_type'];
 	$p = htmlentities($row['title']);
 	$gf = htmlentities($row['game_prob_flag']);
 	//print_r($gf);
@@ -1305,6 +1422,9 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	$df = htmlentities($row['docxfilenm']);
 	$sb = htmlentities($row['soln_book']);
 	$hf = htmlentities($row['htmlfilenm']);
+	$vid1 = htmlentities($row['videonm1']);
+	$vid2 = htmlentities($row['videonm2']);
+	$vid3 = htmlentities($row['videonm3']);
   
 	$problem_id = $row['problem_id'];
 
@@ -1314,6 +1434,9 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
         $file_pathaf='uploads/'.$af;
 		$file_pathhtml='uploads/'.$hf;
 		$file_pathin='uploads/'.$in;
+		$file_pathvid1 ='Video/'.$vid1;
+		$file_pathvid2 ='Video/'.$vid2;
+		$file_pathvid3 ='Video/'.$vid3;
        
 	// now strip out the extra charcters that were added by the system so the download file has the same name as the original uploaded file	
 	
@@ -1323,6 +1446,9 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
     $aux_pblm_strip = substr($af,strpos($af,'_a_')+3);
 	$htmlfilenm_strip = substr($hf,strpos($hf,'_ht_')+4);
 	$infilenm_strip = substr($in,strpos($in,'_i_')+3);
+	$vid1filenm_strip = substr($vid1,strpos($vid1,'_v1_')+4);
+	$vid2filenm_strip = substr($vid2,strpos($vid2,'_v2_')+4);
+	$vid3filenm_strip = substr($vid3,strpos($vid3,'_v3_')+4);
 	
 	// get information on contributors default preferences from the Users table
 	$sql = " SELECT * FROM Users where username = :username";
@@ -1342,6 +1468,15 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	<title>QRProblems</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<style>
+#interactive_video{margin-left:20px;}
+
+
+
+
+	</style>
+
+
 	</head>
 
 	<body>
@@ -1375,15 +1510,32 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 		if(strlen($in)>2) {
 				echo 'Input file for this Problem - click to download ';
 					echo "<a href='".$file_pathin."' download = '".$infilenm_strip."'>".$infilenm_strip."</a>";
-				
 				echo "<br>";
-			
 		}
+
 		if(strlen($af)>2) {
 				echo 'Current Solution Auxillary file for this Problem - click to download ';
 				echo "<a href='".$file_pathaf."' download = '".$aux_pblm_strip."'>".$aux_pblm_strip."</a>";
 				echo "<br>";
 		}
+
+		if(strlen($vid1)>2) {
+			echo 'Interactive video 1 file for this Problem - click to download ';
+				echo "<a href='".$file_pathvid1."' download = '".$vid1filenm_strip."'>".$vid1filenm_strip."</a>";
+			echo "<br>";
+	}
+	if(strlen($vid2)>2) {
+		echo 'Interactive video 2 file for this Problem - click to download ';
+			echo "<a href='".$file_pathvid2."' download = '".$vid2filenm_strip."'>".$vid2filenm_strip."</a>";
+		echo "<br>";
+}
+if(strlen($vid3)>2) {
+	echo 'Interactive video 3 file for this Problem - click to download ';
+		echo "<a href='".$file_pathvid3."' download = '".$vid3filenm_strip."'>".$vid3filenm_strip."</a>";
+	echo "<br>";
+}
+
+
 			echo "<hr>";
 		
 		?>
@@ -1425,7 +1577,11 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	<p>Solution Spreadsheet - xlsm: <input type='file' accept='.xlsm' name='solnbook'/></p>
     <p>Auxillary File used in Solution (e.g. - matlab, python...): <input type='file'  name='solnaux'/></p>
 	<p>Supplemental Problem Enhancements:</p>
-
+	<div id = "interactive_video">
+		<p>Interactive Video 1 <input type='file' accept='.mp4' name='video1'/></p>
+		<p>Interactive Video 2 <input type='file' accept='.mp4' name='video2'/></p>
+		<p>Interactive Video 3 <input type='file' accept='.mp4' name='video3'/></p>
+	</div>
 
 	<div id = "video_assets"> 
 		
@@ -1452,6 +1608,16 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 		&nbsp &nbsp <input type="checkbox" name="activity" value = 1 id = "activ" size= 20  >&nbsp &nbsp Problem has instructions for an associated activity for instructors - these do nothing yet<br>
 
 	</div>
+	<br>
+	<div id = "problem_type">
+		
+		&nbsp Problem is Best Described as a: </br>
+		&nbsp &nbsp <input type="radio" name="problem_type" value=0 <?php if($problem_type == 0){ echo 'checked';} ?>> Homework Problem<br>
+		&nbsp &nbsp <input type="radio" name="problem_type" value=1 id = "problem_type" <?php if($problem_type == 1){ echo 'checked';} ?>>Quiz or Examination Problem:
+	</div>
+
+
+
 	</br>
 	<div id = "Grade Level">
 			 <label>Level of problem?</label> </br>

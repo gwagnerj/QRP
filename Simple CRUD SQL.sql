@@ -2881,3 +2881,10 @@ ENGINE=InnoDB CHARACTER SET = utf8;
 	ADD `tol_h_type` INT (2)  DEFAULT 0  AFTER `tol_g_type`, 
 	ADD `tol_i_type` INT (2)  DEFAULT 0  AFTER `tol_h_type`, 
 	ADD `tol_j_type` INT (2)  DEFAULT 0  AFTER `tol_i_type`
+
+
+  ALTER TABLE `Problem` 
+	ADD `videonm1` VARCHAR(128) AFTER `htmlfilenm`, 
+	ADD `videonm2` VARCHAR(128) AFTER `videonm1`, 
+	ADD `videonm3` VARCHAR(128) AFTER `videonm2`, 
+	ADD `problem_type` int(2) AFTER `videonm3`
