@@ -293,7 +293,34 @@ if(isset($_POST['iid'])){
         $xml_question1->appendChild( $xml_hidden );
         $xml_idnumber = $xml->createElement( "idnumber" );
         $xml_question1->appendChild( $xml_idnumber );
-        $xml_quiz->appendChild( $xml_question1 );
+
+        $xml_hint = $xml->createElement( "hint" );
+        $xml_hint ->setAttribute( "format", "html" );
+        $xml_text2 = $xml->createElement( "text" );
+         $xml_text2 ->appendChild( $xml->createCDATASection("<p> </p>"));   
+         $xml_hint->appendChild( $xml_text2);
+        
+         $xml_hint3 = $xml->createElement( "hint" );
+         $xml_hint3 ->setAttribute( "format", "html" );
+         $xml_text3 = $xml->createElement( "text" );
+         $xml_text3 ->appendChild( $xml->createCDATASection("<p> </p>"));   
+         $xml_hint3->appendChild( $xml_text3);
+
+         $xml_hint4 = $xml->createElement( "hint" );
+         $xml_hint4 ->setAttribute( "format", "html" );
+         $xml_text4 = $xml->createElement( "text" );
+         $xml_text4 ->appendChild( $xml->createCDATASection("<p> </p>"));   
+         $xml_hint4->appendChild( $xml_text4);
+         
+         
+
+ //       $xml_hint ->appendChild( $xml->createCDATASection("<p>units?</p>"));
+ //       $xml_question1->appendChild( $xml_hint );
+    $xml_question1->appendChild( $xml_hint );
+    $xml_question1->appendChild( $xml_hint3 );
+    $xml_question1->appendChild( $xml_hint4 );
+
+    $xml_quiz->appendChild( $xml_question1 );
         $xml->appendChild( $xml_quiz );
         $xml_document = $xml->saveXML();
       }

@@ -592,7 +592,7 @@
                     
 
                    // if it is Staged for an exam by the user this user print staged for the status
-					$sql = "SELECT Exam.exam_num AS exam_e_num, Exam.alias_num AS e_alias_num,Exam.currentclass_id as e_currentclass_id FROM Exam WHERE problem_id = :problem_id AND iid = :iid";
+					$sql = "SELECT Eexam.exam_num AS exam_e_num, Eexam.alias_num AS e_alias_num,Eexam.currentclass_id as e_currentclass_id FROM Eexam WHERE problem_id = :problem_id AND iid = :iid";
                    $stmt9 = $pdo->prepare($sql);
                     $stmt9 -> execute(array(
                      ':problem_id' => $row['problem_id'],
