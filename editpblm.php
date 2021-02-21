@@ -1243,7 +1243,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
             $run_before2 = $html->find('#old_unspecified', 0);  
 
             if ($run_before == false && $run_before2 == false) {
-                
+				$vid_num = 0;
                $tags = $html->find('p');
                $html = str_replace($html->find('p' , 0),'<div id = "quote">'.$html->find('p' , 0).'</div>',$html);
              
@@ -1256,7 +1256,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                     }
                      if (strpos(trim($tag->plaintext),'==t')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
                    
-             
+					
                     
                      if (strpos(trim($tag->plaintext),'x==')!== false) {$html = str_replace($tag->outertext,'<div id="old_basecase">' . $tag->outertext,$html);}
                      if (strpos(trim($tag->plaintext),'==x')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
@@ -1266,8 +1266,133 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                      
                      if (strpos(trim($tag->plaintext),'w==')!== false) {$html = str_replace($tag->outertext,'<div id="reflections">' . $tag->outertext,$html);}
                      if (strpos(trim($tag->plaintext),'==w')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+
+
+
+					 if ($pblm_data['videonm1']!==false){
+						 $vid_num =1;
+						$path1 = "Video/".$pblm_data['videonm1'];
+					if (strpos(trim($tag->plaintext),'++vid1')!== false)
+					{
+								$html = str_replace($tag->outertext,'<div id = "video1"><video id="vid1" class = "video-js" 
+								playsinline preload = "auto" data-setup="{}"  width="640"   height="264" liveui="false"  controls = "controls" >
+								<source src = "'.$path1.'"   type="video/mp4" > '. $tag->outertext,$html);
+					}
+
+								$num_Q=1;
+								$nmax = 20;
+								$Q_found = true;
+								while ($num_Q<$nmax){  // put the video number and problem number also in the questions id
+									$pattern1 = "::Q-1-".$num_Q;
+									$pattern2 = "Q-1-".$num_Q."::";
+									// $regex_pattern = $pattern1."(.*?)".$pattern2;
+									// $tag_text = trim($tag->plaintext);
+									// $position1 =  strpos($tag_text,$pattern1)+5;
+									// $position2 = strpos($tag_text,$pattern2)-1;
+									// $length = $position2 - $position1;
+									// $full_question= substr($tag_text,$position1,$length);
+									// list($k, $v) = explode(',', $full_question);	
+									// $full_question_arr[ $k ] = $v;
+								
+	// these will go in the Questions data table  the time can stay here but 
+									
+									if( strpos(trim($tag->plaintext),$pattern1)!== false) {$html = str_replace($tag->outertext,'<div id="Q-1-'.$num_Q.'-'.$problem_id.'" class = "vid-question">' . $tag->outertext,$html);} else {$Q_found = false;}
+									if (strpos(trim($tag->plaintext),$pattern2)!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+									$num_Q++;
+								}
+					
+					if (strpos(trim($tag->plaintext),'vid1++')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</video></div>",$html);}
+				}
+	
+	
+
+
+
+
+				
+
+
+				if ($pblm_data['videonm2']!==false){
+					$path2 = "Video/".$pblm_data['videonm2'];
+				if (strpos(trim($tag->plaintext),'++vid2')!== false)
+				{
+							$html = str_replace($tag->outertext,'<div id = "video2"><video id="vid2" class = "video-js" 
+							playsinline preload = "auto" data-setup="{}"  width="640"   height="264" liveui="false"  controls = "controls" >
+							<source src = "'.$path2.'"   type="video/mp4" > '. $tag->outertext,$html);
+
+				}		
+							$num_Q=1;
+							$nmax = 20;
+							$Q_found = true;
+							while ($num_Q<$nmax){  // put the video number and problem number also in the questions id
+								$pattern1 = "::Q-2-".$num_Q;
+								$pattern2 = "Q-2-".$num_Q."::";
+								// $regex_pattern = $pattern1."(.*?)".$pattern2;
+								// $tag_text = trim($tag->plaintext);
+								// $position1 =  strpos($tag_text,$pattern1)+5;
+								// $position2 = strpos($tag_text,$pattern2)-1;
+								// $length = $position2 - $position1;
+								// $full_question= substr($tag_text,$position1,$length);
+								// list($k, $v) = explode(',', $full_question);	
+								// $full_question_arr[ $k ] = $v;
+							
+// these will go in the Questions data table  the time can stay here but 
+								
+								if( strpos(trim($tag->plaintext),$pattern1)!== false) {$html = str_replace($tag->outertext,'<div id="Q-2-'.$num_Q.'-'.$problem_id.'" class = "vid-question">' . $tag->outertext,$html);} else {$Q_found = false;}
+								if (strpos(trim($tag->plaintext),$pattern2)!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+								$num_Q++;
+							}
+				
+				if (strpos(trim($tag->plaintext),'vid2++')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</video></div>",$html);}
+			}
+
+
+
+
+
+			if ($pblm_data['videonm3']!==false){
+				$path3 = "Video/".$pblm_data['videonm3'];
+			if (strpos(trim($tag->plaintext),'++vid3')!== false)
+			{
+						$html = str_replace($tag->outertext,'<div id = "video3"><video id="vid3" class = "video-js" 
+						playsinline preload = "auto" data-setup="{}"  width="640"   height="264" liveui="false"  controls = "controls" >
+						<source src = "'.$path3.'"   type="video/mp4" > '. $tag->outertext,$html);
+
+			}
+
+						$num_Q=1;
+						$nmax = 20;
+						$Q_found = true;
+						while ($num_Q<$nmax){  // put the video number and problem number also in the questions id
+							$pattern1 = "::Q-3-".$num_Q;
+							$pattern2 = "Q-3-".$num_Q."::";
+							// $regex_pattern = $pattern1."(.*?)".$pattern2;
+							// $tag_text = trim($tag->plaintext);
+							// $position1 =  strpos($tag_text,$pattern1)+5;
+							// $position2 = strpos($tag_text,$pattern2)-1;
+							// $length = $position2 - $position1;
+							// $full_question= substr($tag_text,$position1,$length);
+							// list($k, $v) = explode(',', $full_question);	
+							// $full_question_arr[ $k ] = $v;
+						
+// these will go in the Questions data table  the time can stay here but 
+							
+							if( strpos(trim($tag->plaintext),$pattern1)!== false) {$html = str_replace($tag->outertext,'<div id="Q-3-'.$num_Q.'-'.$problem_id.'" class = "vid-question">' . $tag->outertext,$html);} else {$Q_found = false;}
+							if (strpos(trim($tag->plaintext),$pattern2)!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+							$num_Q++;
+						}
+			
+			if (strpos(trim($tag->plaintext),'vid3++')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</video></div>",$html);}
+		}
+
+
                     
-                }
+ }
+
+				
+			
+
+
                
              $html = str_get_html($html);
                 

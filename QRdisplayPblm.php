@@ -227,6 +227,9 @@ $pass = array(
 <meta charset="UTF-8">
 
 <link rel="icon" type="image/png" href="McKetta.png" >
+
+<link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
+
 <!--
 <title>QRHomework</title> 
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
@@ -538,7 +541,7 @@ $pass = array(
  
  
  ?>
- 
+ <script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
 <script>
 // try to read in a value from the iframe
  
@@ -892,6 +895,36 @@ change_count();
    $('#society').append('('+perc_soc+' %)');
 
  });
+
+
+    // added the video-js player here to
+   // const pausetime = 50;
+
+    const myPlayer = videojs('vid1', {
+    playbackRates: [0.5,0.75, 1, 1.25, 1.5],
+    controlBar: {
+    fullscreenToggle: true 
+    playToggle: true,
+    captionsButton: true,
+    chaptersButton: false,            
+    subtitlesButton: true,
+    remainingTimeDisplay: true,
+    progressControl: {
+      seekBar: false
+    },
+    fullscreenToggle: false,
+    playbackRateMenuButton: true,
+    }
+    });
+
+    myPlayer.on('timeupdate', function(e) {
+    if (myPlayer.currentTime() >= pausetime) {
+        myPlayer.pause();
+    }
+    });
+    function skip(t) {
+    myPlayer.currentTime(myPlayer.currentTime() +t);
+    }
 
 
 </script>
