@@ -894,38 +894,45 @@ change_count();
    $('#connect').append('('+perc_con+' %)');
    $('#society').append('('+perc_soc+' %)');
 
- });
+
 
 
     // added the video-js player here to
-   // const pausetime = 50;
+   // const pausetime = 1000;
 
-    const myPlayer = videojs('vid1', {
-    playbackRates: [0.5,0.75, 1, 1.25, 1.5],
-    controlBar: {
-    fullscreenToggle: true 
-    playToggle: true,
-    captionsButton: true,
-    chaptersButton: false,            
-    subtitlesButton: true,
-    remainingTimeDisplay: true,
-    progressControl: {
-      seekBar: false
-    },
-    fullscreenToggle: false,
-    playbackRateMenuButton: true,
-    }
-    });
 
-    myPlayer.on('timeupdate', function(e) {
-    if (myPlayer.currentTime() >= pausetime) {
-        myPlayer.pause();
-    }
-    });
-    function skip(t) {
-    myPlayer.currentTime(myPlayer.currentTime() +t);
-    }
-
+  const vid1_flag = document.getElementById("vid1")
+  console.log ("vid1_flag "+vid1_flag);
+   if (vid1_flag){
+        const myPlayer = videojs('vid1', {
+        playbackRates: [0.5,0.75, 1, 1.25, 1.5,1.75],
+        controlBar: {
+        fullscreenToggle: true,
+        playToggle: true,
+        captionsButton: true,
+        chaptersButton: false,            
+        subtitlesButton: true,
+        remainingTimeDisplay: true,
+        progressControl: {
+          seekBar: false
+        },
+   //     fullscreenToggle: false,
+        playbackRateMenuButton: true,
+        }
+        });
+    
+        myPlayer.on('timeupdate', function(e) {
+          if (typeof pausetime !== 'undefined') {
+              if (myPlayer.currentTime() >= pausetime) {
+                  myPlayer.pause();
+              }
+           }
+        });
+        function skip(t) {
+        myPlayer.currentTime(myPlayer.currentTime() +t);
+        }
+      }
+  });
 
 </script>
 

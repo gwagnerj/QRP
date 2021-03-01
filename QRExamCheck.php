@@ -179,10 +179,10 @@ session_start();
       
 // these need to be read in +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-			$time_sleep1 = 10;  // time delay in seconds
-			$time_sleep1_trip = 5;  // number of trials it talkes to trip the time delay
+			$time_sleep1 = 15;  // time delay in seconds
+			$time_sleep1_trip = 3;  // number of trials it talkes to trip the time delay
 			$time_sleep2 = 60;  // additional time if hit the next limit
-      $time_sleep2_trip = 10;	
+      $time_sleep2_trip = 6;	
     	$hintLimit = 3;
 			$dispBase = 1;
      

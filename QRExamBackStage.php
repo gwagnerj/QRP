@@ -2,6 +2,7 @@
 	require_once "pdo.php";
 	session_start();
   $individual_score= array();
+  
    
 ?>
 	 <!DOCTYPE html>
@@ -598,7 +599,7 @@ echo '</div>';
                 ));
                 $studentonteam_data = $stmt->fetchALL(PDO::FETCH_ASSOC);  
 
-
+              
                 if ( $studentonteam_data != false){$num_rows = count($studentonteam_data); } else {$num_rows = 1; }
               echo('<th rowspan ='. $num_rows.'>');
               echo ('Team '.$i);
@@ -606,17 +607,20 @@ echo '</div>';
           //  echo 'num_stu on team: '.$num_stu_on_team;
             
             if ($studentonteam_data != false){
+              
 
               $j = 1;
                 $team_weighted_ave = 0;
                 foreach($studentonteam_data as $studentonteam_datum){
                   $student_id = $studentonteam_datum['student_id'];
+                 
                   
-                  $team_weighted_ave = $team_weighted_ave + $individual_score[$student_id]/ count($studentonteam_data);
+                  $team_weighted_ave = $team_weighted_ave + $individual_score[$student_id]/ count($studentonteam_data);  // this will be read from the Team Table and computed by scoreboard.php
                 }
                 
                 foreach($studentonteam_data as $studentonteam_datum){
                   $student_id = $studentonteam_datum['student_id'];
+                  $team_id = $studentonteam_datum['team_id'];
                  // echo ' i '.$i;
                   echo('<td>');
 
@@ -629,7 +633,7 @@ echo '</div>';
                     if (isset($team_cap[$i])){
                       if ($team_cap[$i]==$student_id){$check_flag = 'checked';}else{$check_flag ='';}
                     } else {$check_flag ='';}
-                    echo '<input type = "radio" '.$check_flag.' id = "team_'.$i.'_stu_'.$student_id.'" name ="team_'.$i.'" value = "'.$student_id.'" ></input>';
+                    echo '<input type = "radio" '.$check_flag.' id = "team_'.$i.'_stu_'.$student_id.'" name ="team_'.$i.'" value = "'.$student_id.'" ></input>';  // probably should not be an input box
                     echo('</td>');
                     echo('<td>');
                     echo ($individual_score[$student_id]);
