@@ -297,19 +297,19 @@ if(isset($_POST['iid'])){
         $xml_hint = $xml->createElement( "hint" );
         $xml_hint ->setAttribute( "format", "html" );
         $xml_text2 = $xml->createElement( "text" );
-         $xml_text2 ->appendChild( $xml->createCDATASection("<p> </p>"));   
+         $xml_text2 ->appendChild( $xml->createCDATASection("<p> The most common errors in solving engineering problems have to do with units. Have you checked to make sure your intermediate units cancel and the resulting units are consitent with the question asked? </p>"));   
          $xml_hint->appendChild( $xml_text2);
         
          $xml_hint3 = $xml->createElement( "hint" );
          $xml_hint3 ->setAttribute( "format", "html" );
          $xml_text3 = $xml->createElement( "text" );
-         $xml_text3 ->appendChild( $xml->createCDATASection("<p> </p>"));   
+         $xml_text3 ->appendChild( $xml->createCDATASection("<p> Common errors have to do with not answering the question that was asked, not reading the problem statement carefully or misinterpreting a statement in the problem.  Have you double checked the problem statement and made sure that the you are solving the question that was asked? </p>"));   
          $xml_hint3->appendChild( $xml_text3);
 
          $xml_hint4 = $xml->createElement( "hint" );
          $xml_hint4 ->setAttribute( "format", "html" );
          $xml_text4 = $xml->createElement( "text" );
-         $xml_text4 ->appendChild( $xml->createCDATASection("<p> </p>"));   
+         $xml_text4 ->appendChild( $xml->createCDATASection("<p> Common errors have to do with copying numbers down incorrectly, miscalculating or algebraic mistakes.  Have you double checked your numbers, calculations and algebra? </p>"));   
          $xml_hint4->appendChild( $xml_text4);
          
          

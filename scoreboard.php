@@ -45,7 +45,8 @@ $_SESSION['error']= 'no eexamnow ID in post of session var for backstage';
      <head>
      <link rel="icon" type="image/png" href="McKetta.png" />  
          <meta charset="UTF-8">
-        <!--    <meta http-equiv="refresh" content="10">  -->
+        <!--    <meta http-equiv="refresh" content="10">
+        <meta http-equiv="refresh" content="5; URL=scoreboard.php">  -->
          <meta http-equiv="X-UA-Compatible" content="IE=edge">
          <meta name="viewport" content="width=device-width, initial-scale=1.0">
          <title>Score Borad</title>
@@ -372,12 +373,12 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                     echo('</td>');
                    }
                     echo('<tr>');
-                    if($j!=1){
-                      echo('<td>');
-                      echo('</td>');
-                      echo('<td>');
-                      echo('</td>');
-                    }
+                    // if($j!=1){
+                    //   echo('<td>');
+                    //   echo('</td>');
+                    //   echo('<td>');
+                    //   echo('</td>');
+                    // }
                   $j++;
                 }
 
@@ -392,9 +393,13 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
 ?>
 
+<script>
+
+    setTimeout(function(){
+      window.location.reload(1);
+    }, 5000);
 
 
-
-
+</script>
 </body>
 </html>

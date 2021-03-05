@@ -650,12 +650,12 @@ echo '</div>';
                     echo('</td>');
                    }
                     echo('<tr>');
-                    if($j!=1){
-                      echo('<td>');
-                      echo('</td>');
-                      echo('<td>');
-                      echo('</td>');
-                    }
+                    // if($j!=1){
+                    //   echo('<td>');
+                    //   echo('</td>');
+                    //   echo('<td>');
+                    //   echo('</td>');
+                    // }
                   $j++;
                 }
 
@@ -730,7 +730,7 @@ echo '</div>';
       <p><input type="hidden" name="number_teams" id="number_teams" value=<?php echo($number_teams);?> ></p>
       <p><input type="hidden" name="studentonteam_data" id="studentonteam_data" value=<?php echo(implode(',',$studentonteam_data));?> ></p>
       <p><input type="hidden" name="individual_score" id="individual_score" value=<?php echo(implode(',',$individual_score));?> ></p>
-      <p><input type="hidden" name="team_cap" id="team_cap" value=<?php echo($team_cap);?> ></p>
+      <p><input type="hidden" name="team_cap" id="team_cap" value=<?php echo(json_encode($team_cap));?> ></p>
       <p><input type = "submit" name = "scoreboard_submit" value="Show Score Board" id="scoreboard_submit" size="2" style = "width: 30%; background-color: green; color: white"/>  </p>  
   
   </form>
@@ -817,7 +817,10 @@ echo '</div>';
   
    });
          
-         
+   setTimeout(function(){
+      window.location.reload(1);
+    }, 30000);
+    
 		
 	</script>
 
