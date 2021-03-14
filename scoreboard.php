@@ -156,10 +156,10 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 
             echo("<tbody>");
 
-
+// $i is the team number  big loop on the data
             for ($i=1;$i<=$number_teams;$i++){
             
-              $max_ind_score [$i] = 0.0;  // initializing these
+              $max_ind_score [$i] = 0.0;  // initializing these max score for the team
               $min_ind_score[$i] = 100.0;
               $team_cohesivity[$i] =1000;
               $cumm[$i] =0;
@@ -171,7 +171,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 ":team_num" => $i,
                 ));
                 $studentonteam_data = $stmt->fetchALL(PDO::FETCH_ASSOC);  
-//var_dump($studentonteam_data);
+        //          var_dump($studentonteam_data);
 
                 if ( $studentonteam_data != false){$num_rows = count($studentonteam_data); } else {$num_rows = 1; }
               echo('<th rowspan ='. $num_rows.'>');
@@ -181,7 +181,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
             
             if ($studentonteam_data != false){
 
-              $j = 1;
+              $j = 1; // student number 
                 $team_weighted_ave[$i] = 0;
                 foreach($studentonteam_data as $studentonteam_datum){
                   $student_id = $studentonteam_datum['student_id'];
@@ -189,8 +189,8 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                   // get the individual scores
 
 
-
-                  foreach ($student_data as $student_datum){
+          //    var_dump($student_data);
+   //               foreach ($student_data as $student_datum){  // why loop through all of the students??
                     $student_assignment_total = 0;
                       //  echo('<tr>');
                       //  echo('<td>');
@@ -204,7 +204,8 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                       //    $sql = 'SELECT DISTINCT * FROM (SELECT *,row_number() OVER (PARTITION BY problem_id ORDER BY eactivity_id DESC ) AS row_number FROM Eactivity ) AS ROWS  WHERE eexamnow_id = :eexamnow_id AND student_id = :student_id ORDER BY alias_num ';
                           $stmt = $pdo->prepare($sql);         
                           $stmt->execute(array(":eexamnow_id" => $eexamnow_id,
-                          ':student_id' => $student_datum['student_id'],
+         //                 ':student_id' => $student_datum['student_id'],
+                          ':student_id' => $student_id,
                            ':problem_id' =>$problem_id['problem_id']));
                           $eactivity_data  = $stmt->fetchALL(PDO::FETCH_ASSOC);   
                   //  var_dump($eactivity_data);
@@ -233,18 +234,32 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                               }
                             //  echo' '.$problem_total;
                             
-                              $student_assignment_total = $student_assignment_total + $problem_total*$eexamtime_data['perc_'.$eactivity_datum['alias_num']]/100;
-                              $individual_score[$student_datum['student_id']] = round($student_assignment_total*10)/10;
+                              // $student_assignment_total = $student_assignment_total + $problem_total*$eexamtime_data['perc_'.$eactivity_datum['alias_num']]/100;
+                              // $individual_score[$student_datum['student_id']] = round($student_assignment_total*10)/10;
 
-
-                              if($individual_score[$student_datum['student_id']]>$max_ind_score[$i]){$max_ind_score[$i] = $individual_score[$student_datum['student_id']];}
-                              if($individual_score[$student_datum['student_id']]<$min_ind_score[$i]){$min_ind_score[$i] = $individual_score[$student_datum['student_id']];}
-            
+                                 // getting the max and min score on the team
+                              // if($individual_score[$student_datum['student_id']]>$max_ind_score[$i]){$max_ind_score[$i] = $individual_score[$student_datum['student_id']];}
+                              // if($individual_score[$student_datum['student_id']]<$min_ind_score[$i]){$min_ind_score[$i] = $individual_score[$student_datum['student_id']];}
+                              
+                             // echo('  '.$student_datum['student_id'].' := '.$individual_score[$student_datum['student_id']]);
 
 
                             //  echo("</td>");
                           }
+
+                          $student_assignment_total = $student_assignment_total + $problem_total*$eexamtime_data['perc_'.$eactivity_datum['alias_num']]/100;
+                          $individual_score[$student_id] = round($student_assignment_total*10)/10;
+
+                            // getting the max and min score on the team
+                          
+
+
+
                       }
+
+                      if($individual_score[$student_id]>$max_ind_score[$i]){$max_ind_score[$i] = $individual_score[$student_id];}
+                      if($individual_score[$student_id]<$min_ind_score[$i]){$min_ind_score[$i] = $individual_score[$student_id];}
+
         
                       //  echo("<td>");
                       //  echo round($student_assignment_total*10)/10;
@@ -253,7 +268,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
         
                       // echo('</tr>');
         
-                  }
+ //     }
 
                   $team_weighted_ave[$i] = $team_weighted_ave[$i] + $individual_score[$student_id]/ count($studentonteam_data);
 
@@ -261,21 +276,25 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
 
                 }
-
+                 // var_dump($min_ind_score);
                 // Cmpute the instantaneous team_cohesivity on the team
                 $num_stu_on_team[$i] = 0;
-                foreach ($student_data as $student_datum){
-                  $dev = $team_weighted_ave[$i]-($individual_score[$student_datum['student_id']]);
+           //     foreach ($student_data as $student_datum){
+            foreach($studentonteam_data as $studentonteam_datum){
+              $student_id = $studentonteam_datum['student_id'];
+              $dev = $team_weighted_ave[$i]-($individual_score[$student_id]);
                   $cumm[$i] = $cumm[$i]+$dev*$dev;
                   $num_stu_on_team[$i]++;
                 }
                // echo $cumm[$i];
                $range[$i]= $max_ind_score[$i]-$min_ind_score[$i];
                $sdev[$i] = pow($cumm[$i]/$num_stu_on_team[$i],0.5);
+              //  echo ( ' i '.$i);
               //  echo ' range '.$range[$i]; 
               //  echo ' max '.$max_ind_score[$i];
               //  echo ' min '.$min_ind_score[$i];
               //  echo ' sdev '.$sdev[$i];
+               
                   if($range[$i]>=$range_limit){
                     $team_cohesivity[$i] =  $team_cohesivity[$i]-500;
                   }
@@ -309,13 +328,15 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                   //  echo ' elapse_time1 '. $elapsed_time1;
                 
                  $sql = "UPDATE `Team` 
-                 SET team_range = :team_range, team_sd = :team_sd, team_cohesivity_inst = :team_cohesivity_inst, `counter` = :countr, team_cohesivity_avg = :team_cohesivity_avg,team_score = :team_score
+                 SET team_range = :team_range, team_sd = :team_sd, team_cohesivity_inst = :team_cohesivity_inst, 
+                 `counter` = :countr, team_cohesivity_avg = :team_cohesivity_avg,team_score = :team_score, team_current_avg = :team_current_avg
                  WHERE team_num = :team_num AND eexamnow_id = :eexamnow_id";
                          $stmt = $pdo->prepare($sql);
                          $stmt -> execute(array(
                              ':team_num' => $i,
                              ":eexamnow_id" => $eexamnow_id,
                              ':team_range' => $range[$i],
+                             ':team_current_avg' => $team_weighted_ave[$i]*10,
                              ':team_sd' => $sdev[$i],
                              ':team_cohesivity_inst' => $team_cohesivity[$i],
                              ':team_cohesivity_avg' => $team_cohesivity_avg,

@@ -579,7 +579,7 @@ echo '</div>';
                 echo ('Individual Score');
                 echo ('</th>');
                 echo ('<th>');
-                echo ('Team Cohesivity');
+                echo ('Team Cohesivity Inst.');
                 echo ('</th>');
                 echo ('<th>');
                 echo ('Team Score');
@@ -610,13 +610,26 @@ echo '</div>';
               
 
               $j = 1;
-                $team_weighted_ave = 0;
-                foreach($studentonteam_data as $studentonteam_datum){
-                  $student_id = $studentonteam_datum['student_id'];
+
+
+              $sql = "SELECT * FROM Team WHERE eexamnow_id = :eexamnow_id AND team_num = :team_num ";
+              $stmt = $pdo->prepare($sql);
+              $stmt->execute(array(
+                ":eexamnow_id" => $eexamnow_id,
+                ":team_num" => $i,
+                ));
+                $team_data = $stmt->fetch();  
+
+
+
+
+                // $team_weighted_ave = 0;
+                // foreach($studentonteam_data as $studentonteam_datum){
+                //   $student_id = $studentonteam_datum['student_id'];
                  
                   
-                  $team_weighted_ave = $team_weighted_ave + $individual_score[$student_id]/ count($studentonteam_data);  // this will be read from the Team Table and computed by scoreboard.php
-                }
+                //   $team_weighted_ave = $team_weighted_ave + $individual_score[$student_id]/ count($studentonteam_data);  // this will be read from the Team Table and computed by scoreboard.php
+                // }
                 
                 foreach($studentonteam_data as $studentonteam_datum){
                   $student_id = $studentonteam_datum['student_id'];
@@ -641,12 +654,12 @@ echo '</div>';
                     echo('</td>');
                     if ($j==1){
                       echo('<td  rowspan ='. $num_rows.'>');
-                      echo (1);
+                      echo ($team_data['team_cohesivity_inst'])/10;
                       echo('</td>');
                    }
                    if ($j==1){
                     echo('<td  rowspan ='. $num_rows.'>');
-                    echo (round($team_weighted_ave*10)/10);
+                    echo ($team_data['team_current_avg'])/10;
                     echo('</td>');
                    }
                     echo('<tr>');

@@ -209,10 +209,17 @@ session_start();
 			$ansFormat_key=array_keys($ansFormat);
 			
            // Will take care of this with JS so the delay is on their machine
-			$time_sleep1 = 10;  // time delay in seconds
-			$time_sleep1_trip = 5;  // number of trials it talkes to trip the time delay
-			$time_sleep2 = 10;  // additional time if hit the next limit
-			$time_sleep2_trip = 30;	
+           if(!is_null($assigntime_data['time_sleep1'])){$time_sleep1 = $assigntime_data['time_sleep1'];} else {$time_sleep1 = 30;}
+           if(!is_null($assigntime_data['time_sleep1_trip'])){$time_sleep1_trip = $assigntime_data['time_sleep1_trip'];} else {$time_sleep1_trip = 5;}
+           if(!is_null($assigntime_data['time_sleep2'])){$time_sleep2 = $assigntime_data['time_sleep2'];} else {$time_sleep2 = 60;}
+           if(!is_null($assigntime_data['time_sleep2_trip'])){$time_sleep2_trip = $assigntime_data['time_sleep2_trip'];} else {$time_sleep2_trip = 5;}
+           $time_sleep2_trip = $time_sleep2_trip + $time_sleep1_trip;  // what is stored in data tables is the additional time 
+
+
+			// $time_sleep1 = 30;  // time delay in seconds
+			// $time_sleep1_trip = 3;  // number of trials it talkes to trip the time delay
+			// $time_sleep2 = 60;  // additional time if hit the next limit
+			// $time_sleep2_trip = 6;	
 			$trip_1_flag = 0;
             $trip_2_flag =0;
 			// see if the problem has been suspended	
@@ -548,8 +555,8 @@ session_start();
 	<h3>Quick Response Checker</h3>
 	</header>
 	<main>
-	<h4> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> &nbsp; &nbsp; Time delay starts at count = <?php echo ($time_sleep1_trip); ?> </h4>  
-
+	<h4> Name: <?php echo($stu_name);?> &nbsp; Assign Num: <?php echo($assignment_num);?>&nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> &nbsp;  Time delay starts at <?php echo ($time_sleep1_trip." tries per part for ".$time_sleep1." s then ".$time_sleep2+$time_sleep1." s after ".$time_sleep2_trip)." tries"; ?> </h4>  
+    <!-- <h4> <?php echo ' time_sleep1 '. !is_null($assigntime_data['time_sleep1']); ?> </h4> -->
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
     <!--
 	<font size = "1"> PIN: <?php echo ($pin) ?>
@@ -719,7 +726,7 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
 
     </form>
 
-   <p> <span id ="t_delay_limits"> time delay - 5s at count > <?php echo (3*$probParts) ?>, 30s at count > <?php echo (5*$probParts) ?> </span> </p>
+   
     
     
      <!--

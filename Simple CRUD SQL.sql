@@ -2890,3 +2890,9 @@ ENGINE=InnoDB CHARACTER SET = utf8;
 	ADD `videonm2` VARCHAR(128) AFTER `videonm1`, 
 	ADD `videonm3` VARCHAR(128) AFTER `videonm2`, 
 	ADD `problem_type` int(2) AFTER `videonm3`
+
+  ALTER TABLE `Assigntime` 
+	ADD `time_sleep1_trip` int(8) AFTER `work_flow`, 
+	ADD `time_sleep1` int(8) AFTER `time_sleep1_trip`, 
+	ADD `time_sleep2_trip` int(8) AFTER `time_sleep1`, 
+	ADD `time_sleep2` int(8) AFTER `time_sleep2_trip` 

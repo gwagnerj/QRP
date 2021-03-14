@@ -19,7 +19,7 @@ if (isset($_GET['eregistration_id'])){
 }
 
 // echo 'eregistration_id: '.$eregistration_id;
-// find out about the exam
+// find out about the exam  this could check if it is a 
 $sql = 'SELECT Eexamnow.eexamnow_id AS eexamnow_id, globephase, Eexamnow.eexamtime_id AS eexamtime_id, Eexamnow.exam_code AS exam_code,
                Eregistration.student_id AS student_id,dex, iid, currentclass_id,nom_time,game_flag,exam_num,last_name,first_name,university,currentclass_id
  FROM Eexamnow LEFT JOIN Eregistration ON Eexamnow.eexamnow_id = Eregistration.eexamnow_id

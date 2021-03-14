@@ -61,6 +61,11 @@
     $help_t_stu = 2;
     $help_t_ta = 5;
     $help_t_instruct = 10;
+    $time_sleep1_trip = 5;
+    $time_sleep1 = 30;
+    $time_sleep2_trip = 10;
+    $time_sleep2 = 60;
+
     $work_time_per_problem = '';
     $max_attempts_per_problem = '';
     $perc_ec_max_p_assign = 20;
@@ -91,8 +96,11 @@ if($new_flag == 0){
            ':iid' => $iid,
            )); 
             $assigntime_data = $stmt->fetch();   
-           
-          $bc_ans_t = $assigntime_data['bc_ans_t'];
+            if($assigntime_data['time_sleep1_trip']!=NULL) { $time_sleep1_trip = $assigntime_data['time_sleep1_trip']; }
+            if($assigntime_data['time_sleep1']!=NULL) { $time_sleep1 = $assigntime_data['time_sleep1']; }
+            if($assigntime_data['time_sleep2_trip']!=NULL) { $time_sleep2_trip = $assigntime_data['time_sleep2_trip']; }
+            if($assigntime_data['time_sleep2']!=NULL) { $time_sleep2 = $assigntime_data['time_sleep2']; }
+            $bc_ans_t = $assigntime_data['bc_ans_t'];
           $bc_ans_n = $assigntime_data['bc_ans_n'];
           $p_bc_n = $assigntime_data['p_bc_n'];
           $p_bc_t = $assigntime_data['p_bc_t'];
@@ -151,6 +159,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
         
              $sql = 'UPDATE Assigntime SET 
              work_flow=:work_flow, 
+             time_sleep1_trip =:time_sleep1_trip,
+             time_sleep1 =:time_sleep1,
+             time_sleep2_trip =:time_sleep2_trip,
+             time_sleep2 =:time_sleep2,
              bc_ans_n=:bc_ans_n, 
              bc_ans_t=:bc_ans_t, 
              p_bc_n=:p_bc_n, 
@@ -188,6 +200,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
             $stmt -> execute(array(
               ':assigntime_id' => $assigntime_id,
               ':work_flow' => $_POST['work_flow'],
+              ':time_sleep1_trip' => $_POST['time_sleep1_trip'],
+              ':time_sleep1' => $_POST['time_sleep1'],
+              ':time_sleep2_trip' => $_POST['time_sleep2_trip'],
+              ':time_sleep2' => $_POST['time_sleep2'],
               ':bc_ans_n' => $_POST['bc_ans_n'],
               ':bc_ans_t' => $_POST['bc_ans_t'],
               ':p_bc_n' => $_POST['p_bc_n'],
@@ -226,14 +242,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
    
    // input the values from the form into the Assigntime table - get the assigntime_id and then move onto page two to get points values for each part
    
-       $sql = 'INSERT INTO `Assigntime` (assign_num, iid, currentclass_id, work_flow, bc_ans_n,bc_ans_t, p_bc_n, p_bc_t, help_n_stu, help_t_stu, help_n_ta, help_t_ta, help_n_instruct, help_t_instruct, work_time_per_problem, max_attempts_per_problem, window_opens, window_closes, perc_ec_max_p_assign, perc_ec_max_p_pblm, perc_ec_max_person_to_person, ec_daysb4due_elgible,perc_ec_base_video, perc_ec_base_audio, perc_ec_base_written, peer_refl_t, peer_refl_n, due_date,credit, late_points, fixed_percent_decline)	
-                                    VALUES (:assign_num, :iid, :currentclass_id, :work_flow, :bc_ans_n,:bc_ans_t, :p_bc_n, :p_bc_t, :help_n_stu, :help_t_stu, :help_n_ta, :help_t_ta, :help_n_instruct, :help_t_instruct, :work_time_per_problem, :max_attempts_per_problem, :window_opens, :window_closes, :perc_ec_max_p_assign, :perc_ec_max_p_pblm, :perc_ec_max_person_to_person, :ec_daysb4due_elgible, :perc_ec_base_video, :perc_ec_base_audio, :perc_ec_base_written,:peer_refl_t,:peer_refl_n, :due_date, :credit, :late_points, :fixed_percent_decline)';
+       $sql = 'INSERT INTO `Assigntime` (assign_num, iid, currentclass_id, work_flow, time_sleep1_trip, time_sleep1,time_sleep2_trip, time_sleep2, bc_ans_n,bc_ans_t, p_bc_n, p_bc_t, help_n_stu, help_t_stu, help_n_ta, help_t_ta, help_n_instruct, help_t_instruct, work_time_per_problem, max_attempts_per_problem, window_opens, window_closes, perc_ec_max_p_assign, perc_ec_max_p_pblm, perc_ec_max_person_to_person, ec_daysb4due_elgible,perc_ec_base_video, perc_ec_base_audio, perc_ec_base_written, peer_refl_t, peer_refl_n, due_date,credit, late_points, fixed_percent_decline)	
+                                    VALUES (:assign_num, :iid, :currentclass_id, :work_flow, :time_sleep1_trip, :time_sleep1, :time_sleep2_trip, :time_sleep2,:bc_ans_n,:bc_ans_t, :p_bc_n, :p_bc_t, :help_n_stu, :help_t_stu, :help_n_ta, :help_t_ta, :help_n_instruct, :help_t_instruct, :work_time_per_problem, :max_attempts_per_problem, :window_opens, :window_closes, :perc_ec_max_p_assign, :perc_ec_max_p_pblm, :perc_ec_max_person_to_person, :ec_daysb4due_elgible, :perc_ec_base_video, :perc_ec_base_audio, :perc_ec_base_written,:peer_refl_t,:peer_refl_n, :due_date, :credit, :late_points, :fixed_percent_decline)';
                 $stmt = $pdo->prepare($sql);
                 $stmt -> execute(array(
                   ':assign_num' => $_POST['assign_num'],
                   ':iid' => $_POST['iid'],
                   ':currentclass_id' => $_POST['currentclass_id'],
                   ':work_flow' => $_POST['work_flow'],
+                  ':time_sleep1_trip' => $_POST['time_sleep1_trip'],
+                  ':time_sleep1' => $_POST['time_sleep1'],
+                  ':time_sleep2_trip' => $_POST['time_sleep2_trip'],
+                  ':time_sleep2' => $_POST['time_sleep2'],
                   ':bc_ans_n' => $_POST['bc_ans_n'],
                   ':bc_ans_t' => $_POST['bc_ans_t'],
                   ':p_bc_n' => $_POST['p_bc_n'],
@@ -384,6 +404,15 @@ $_SESSION['counter']=0;  // this is for the score board
                       &nbsp;&nbsp; Instructors:<br>
                        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Time(minutes): <input type = "number" min = "0" max = "20" id="help_t_instruct" name = "help_t_instruct" required value = <?php echo $help_t_instruct; ?> > </input><br>
                       &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "100" id="help_n_instruct" name = "help_n_instruct" required value = <?php echo $help_n_instruct; ?>> </input><br>
+                        
+              <br>
+              <br>
+                <font color=#003399>Time Delay on Problem: &nbsp; </font><br>
+                   
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number of tries till first delay: <input type = "number" min = "0" max = "20" id="time_sleep1_trip" name = "time_sleep1_trip" required value = <?php echo $time_sleep1_trip; ?> > </input><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;First time delay (sec): <input type = "number" min = "0" max = "1000" id="time_sleep1" name = "time_sleep1" required value = <?php echo $time_sleep1; ?>> </input><br><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Additional number of tries till 2nd delay: <input type = "number" min = "0" max = "20" id="time_sleep2_trip" name = "time_sleep2_trip" required value = <?php echo $time_sleep2_trip; ?> > </input><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2nd time delay (additional sec): <input type = "number" min = "0" max = "1000" id="time_sleep2" name = "time_sleep2" required value = <?php echo $time_sleep2; ?>> </input><br>
                         
               <br>
               <font color=#003399>Absolute Limits on Problem: &nbsp; </font><br>

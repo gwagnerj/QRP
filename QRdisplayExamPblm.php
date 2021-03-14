@@ -154,6 +154,9 @@ FROM `Eactivity`
                     $row = $stmt->fetch(PDO::FETCH_ASSOC);
                     if($row != false){
                         $globephase = $row['globephase']; 
+                        $eexamtime_id = $row['eexamtime_id'];
+                      //  $game_flag = $row['game_flag'];
+
                      } else {
                        $_SESSION['error'] = 'examtime table could not read - Exam over or not Initiated';
                     //    header("Location: QRExamRegistration.php");
@@ -163,6 +166,37 @@ FROM `Eactivity`
                     }
                     
                     if ($globephase !=1){
+
+                        // test to see if we are running a game and if they are the team captaining
+                       if($globephase ==3){
+                        $sql = " SELECT * FROM `Eexamtime` WHERE eexamtime_id_id = :eexamtime_id" ;
+                        $stmt = $pdo->prepare($sql);
+                        $stmt -> execute(array(
+                             ':eexamtime_id' => $eexamtime_id,
+                        ));
+                        $eexamtime_data = $stmt->fetch(PDO::FETCH_ASSOC);
+                        $game_flag = $eexamtime_data['game_flag'];
+
+
+
+                          if ($game_flag ==1){
+
+                            $sql = "SELECT team_cap FROM TeamStudentConnect WHERE `eexamnow_id` = :eexamnow_id AND student_id = :student_id";
+                            $stmt = $pdo->prepare($sql);
+                            $stmt -> execute(array(
+                              ':eexamnow_id' => $eexamnow_id,
+                              ':student_id' => $student_id,
+                            ));
+                            $teamstudentconnect_data = $stmt->fetch();
+                                if ($teamstudentconnect_data['team_cap']==1){
+                                  header("Location: teamcaptain.php");
+                                  die();  
+                  
+                                }
+                              }
+
+                        }
+
                          $_SESSION['error'] = 'Exam is not in progress';
                         header("Location: stu_exam_frontpage.php?eregistration_id=".$eregistration_id );
                       //  header("Location: StopExam.php" );
