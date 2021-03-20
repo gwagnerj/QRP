@@ -2896,3 +2896,7 @@ ENGINE=InnoDB CHARACTER SET = utf8;
 	ADD `time_sleep1` int(8) AFTER `time_sleep1_trip`, 
 	ADD `time_sleep2_trip` int(8) AFTER `time_sleep1`, 
 	ADD `time_sleep2` int(8) AFTER `time_sleep2_trip` 
+
+    ALTER TABLE `Team` 
+	ADD `chaos_team` int(1) DEFAULT 0 AFTER `team_name` 
+	

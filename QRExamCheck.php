@@ -1121,9 +1121,10 @@ if ($dex == 1) {
 	<form action="upload_exam_work.php" method="GET" id = "the_form">
     
 
-			<input type="hidden" id = "problem_id" name="problem_id" value="<?php echo (htmlentities($problem_id))?>"  >
-            <input type="hidden" name="eactivity_id" value="<?php echo ($eactivity_id)?>" >
-            <input type="hidden" name="globephase" id = "globephase" >
+			<input type="hidden" id = "problem_id" name="problem_id" value="<?php echo (htmlentities($problem_id))?>"  ></input>
+            <input type="hidden" name="eactivity_id" value="<?php echo ($eactivity_id)?>" ></input>
+            <!-- <input type="hidden" name="globephase" id = "globephase" > -->
+            <input type="hidden" name="eexamnow_id" id = "eexamnow_id" value="<?php echo (htmlentities($eexamnow_id))?>"  ></input>
     
     <hr>
 
@@ -1147,7 +1148,7 @@ if ($dex == 1) {
         
     
 	 	$(document).ready( function () {
-            
+    
       var eactivity_id = $('#eactivity_id').val();
       let dex = $('#dex').val();
                      var display_ans_key = $('#display_ans_key').val();
@@ -1174,7 +1175,6 @@ if ($dex == 1) {
                 var ans_a = $('#ans_a').val();
                var display_ans_a = $('#display_ans_a').val();
                
-               console.log(' display_ans_a '+display_ans_a);
                if(display_ans_a==1){
                       $('#input_a').hide();
                       $('#disp_ans_a').text('a) '+ans_a);
@@ -1219,7 +1219,6 @@ if ($dex == 1) {
                     
                  var ans_b = $('#ans_b').val();
                var display_ans_b = $('#display_ans_b').val();
-               console.log(' display_ans_b '+display_ans_b);
                if(display_ans_b==1){
                       $('#input_b').hide();
                       $('#disp_ans_b').text('b) '+ans_b)
@@ -1262,7 +1261,6 @@ if ($dex == 1) {
 
                  var ans_c = $('#ans_c').val();
                var display_ans_c = $('#display_ans_c').val();
-               console.log(' display_ans_c '+display_ans_c);
                if(display_ans_c==1){
                       $('#input_c').hide();
                       $('#disp_ans_c').text('c) '+ans_c)
@@ -1304,7 +1302,6 @@ if ($dex == 1) {
  
                  var ans_d = $('#ans_d').val();
                var display_ans_d = $('#display_ans_d').val();
-               console.log(' display_ans_d '+display_ans_d);
                if(display_ans_d==1){
                       $('#input_d').hide();
                       $('#disp_ans_d').text('d) '+ans_d)
@@ -1345,7 +1342,6 @@ if ($dex == 1) {
                
                  var ans_e = $('#ans_e').val();
                var display_ans_e = $('#display_ans_e').val();
-               console.log(' display_ans_e '+display_ans_e);
                if(display_ans_e==1){
                       $('#input_e').hide();
                       $('#disp_ans_e').text('e) '+ans_e)
@@ -1386,7 +1382,6 @@ if ($dex == 1) {
 
                  var ans_f = $('#ans_f').val();
                var display_ans_f = $('#display_ans_f').val();
-               console.log(' display_ans_f '+display_ans_f);
                if(display_ans_f==1){
                       $('#input_f').hide();
                       $('#disp_ans_f').text('f) '+ans_f)
@@ -1427,7 +1422,6 @@ if ($dex == 1) {
 
                  var ans_g = $('#ans_g').val();
                var display_ans_g = $('#display_ans_g').val();
-               console.log(' display_ans_g '+display_ans_g);
                if(display_ans_g==1){
                       $('#input_g').hide();
                       $('#disp_ans_g').text('g) '+ans_g)
@@ -1468,7 +1462,6 @@ if ($dex == 1) {
 
                  var ans_h = $('#ans_h').val();
                var display_ans_h = $('#display_ans_h').val();
-               console.log(' display_ans_h '+display_ans_h);
                if(display_ans_h==1){
                       $('#input_h').hide();
                       $('#disp_ans_h').text('h) '+ans_h)
@@ -1509,7 +1502,6 @@ if ($dex == 1) {
 
                  var ans_i = $('#ans_i').val();
                var display_ans_i = $('#display_ans_i').val();
-               console.log(' display_ans_i '+display_ans_i);
                if(display_ans_i==1){
                       $('#input_i').hide();
                       $('#disp_ans_i').text('i) '+ans_i)
@@ -1550,7 +1542,6 @@ if ($dex == 1) {
 
                  var ans_j = $('#ans_j').val();
                var display_ans_j = $('#display_ans_j').val();
-               console.log(' display_ans_j '+display_ans_j);
                if(display_ans_j==1){
                       $('#input_j').hide();
                       $('#disp_ans_j').text('j) '+ans_j)
@@ -1591,42 +1582,33 @@ if ($dex == 1) {
 
 
 
-
-              
-				// get the current phase
-				var examtime_id = $("#examtime_id").val();
-				console.log ('examtime_id = ',examtime_id);
-                
-                     var request;
+		// get the current phase
+               let eexamnow_id = document.getElementById('eexamnow_id').value;
+               let request;
                 function fetchPhase() {
                     request = $.ajax({
                         type: "POST",
                         url: "fetchGPhase.php",
-                        data: "examtime_id="+examtime_id,
+                        data: "eexamnow_id="+eexamnow_id,
                         success: function(data){
                            try{
                                 var arrn = JSON.parse(data);
                             }
                             catch(err) {
-                        //        alert ('game data unavailable Data not found');
-                        //        alert (err);
                                 return;
                             }
-                            
-                             var phase = arrn.phase;
-                            var end_of_phase = arrn.end_of_phase;
-                            	console.log ('phase = ',phase);
-                           if(phase != 1){  // submit away work time has eneded this is going to stop Exam and not back to the router
-                               $("#phase").attr('value', phase);
+                           let globephase = arrn.globephase;
+
+                           if(globephase > 1){  // submit away work time has eneded this is going to stop Exam and not back to the router
                                SubmitAway(); 
                             }
                         }
                     });
                 }
-                setInterval(function() {
-                    if (request) request.abort();
-                    fetchPhase();
-                }, 10000);
+                // setInterval(function() {
+                //     if (request) request.abort();
+                //     fetchPhase();
+                // }, 10000);
 
 
                 // Delay if they take to many total attempts
@@ -1676,7 +1658,7 @@ if ($dex == 1) {
                 
                      function SubmitAway() { 
                         window.close();
-                       // document.getElementById('the_form').submit();
+                        document.getElementById('the_form').submit();
                     }
                 });
          

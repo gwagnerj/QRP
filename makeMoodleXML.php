@@ -143,7 +143,7 @@ if(isset($_POST['iid'])){
  
    
    //--------------------------------big Loop---------------------------------------------------------------------------------------------------
-  for($dex=111; $dex<=160; $dex++){
+  for($dex=80; $dex<=180; $dex++){
       
     $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
 	$stmt->execute(array(":problem_id" => $_POST['problem_id'], ":dex" => $dex));

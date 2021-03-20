@@ -555,7 +555,7 @@ session_start();
 	<h3>Quick Response Checker</h3>
 	</header>
 	<main>
-	<h4> Name: <?php echo($stu_name);?> &nbsp; Assign Num: <?php echo($assignment_num);?>&nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> &nbsp;  Time delay starts at <?php echo ($time_sleep1_trip." tries per part for ".$time_sleep1." s then ".$time_sleep2+$time_sleep1." s after ".$time_sleep2_trip)." tries"; ?> </h4>  
+	<h4> Name: <?php echo($stu_name);?> &nbsp; Assign Num: <?php echo($assignment_num);?>&nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> </h4> <p> &nbsp; Time delay starts at <?php echo ($time_sleep1_trip);?> tries per part for <?php echo($time_sleep1);?> s then <?php echo($time_sleep2);?> s after <?php echo ($time_sleep2_trip); ?> tries </p>  
     <!-- <h4> <?php echo ' time_sleep1 '. !is_null($assigntime_data['time_sleep1']); ?> </h4> -->
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
     <!--

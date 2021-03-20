@@ -17,7 +17,7 @@
 </head>
 <body>
 
-<h2> Exam is now Closed. You may Close the Browser </h2>
+<h2> Exam is now Closed. Please select the back button or Reload the page </h2>
 
 
 </body>

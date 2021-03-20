@@ -223,7 +223,11 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
       $game_flag = $eexamtime_data['game_flag'];
       $number_teams = $eexamtime_data['number_teams'];
       $currentclass_id = $eexamtime_data['currentclass_id'];
+      $game_flag = $eexamtime_data['game_flag'];
+      $game_flag_checked ='unchecked';
+      if ($game_flag==1){$game_flag_checked='checked';}
      // echo ' $number_teams '.$number_teams;
+
 
   
 
@@ -374,15 +378,23 @@ if ($teamcap_data != false){
    $team_cap = '';
   }
 
-
+$chaos_team=array();
 
 
 
 // build the student registration table and team student array _______________________________________________________________________________________________________________________________
 echo '<div id = team_assignments>';
    echo '<h2> Registered Students / Team Assignments</h2>';
-    echo '<form method = "POST" id = "team_assign">';
-
+      echo '<p>&nbsp;&nbsp; Number of Teams: <input type = "number" min = "1" max = "100" id = "team_num_update" name = "team_num_update" value ='.$number_teams.'> </input> <button name "update_num_teams" id = "update_num_teams"  style = "background-color:yellow;" value="update"> update </button>
+      &nbsp; &nbsp; &nbsp; Game? <input type = "checkbox" id = "game_flag_box" name = "game_flag_box" '.$game_flag_checked.'> </input> <button name "update_game_flag" id = "update_game_flag"  style = "background-color:yellow;" value="update"> update </button>
+      &nbsp; &nbsp; &nbsp; 
+      
+      <select id="gameboard" name = "gameboard"><option value ="">Please Select</option><option value ="1">QRTown</option><option value = "2">QRpropylene<?option></select>
+      <button name "update_game_board" id = "update_game_board"  style = "background-color:yellow;" value="update"> update </button>
+      </p>';
+       
+      echo '';
+      echo '<form method = "POST" id = "team_assign">';
       echo ('<table id="table_registration" style = "text-align:center" class = "a" border="1" >'."\n");	
       echo("<thead>");
       echo("<tr>");
@@ -391,7 +403,8 @@ echo '<div id = team_assignments>';
       echo("<th>");
       echo("</th>");
       echo('<th colspan ="'.$number_teams.'" >');
-      echo('Team Number');
+      echo ('<input type = "submit" style = "background-color:yellow;" id = "submit_team"  name = "submit_team" value = "Assign to Teams"></input>');
+
       echo("</th>");
       echo("</tr>");
       echo("<tr>");
@@ -424,7 +437,7 @@ echo '<div id = team_assignments>';
               echo '<input type = "number" id = "dex_change_stu_id_'.$student_id.'" name = "dex_change_stu_id_'.$student_id.'" min = 1 max = 200 value ='. $student_datum['dex'].'> </input>';
               if ($student_datum['checker_only']==1) {$checker_only="checked";} else {$checker_only="";}
              // echo 'checker_only '.$checker_only;
-              echo '<input type = "checkbox" id = "checkbox_checker_stu_id_'.$student_id.'" name = "checkbox_checker_stu_id_'.$student_id.' value=" '.$student_datum['checker_only'].'" '.$checker_only.'> </input>';
+      //        echo '<input type = "checkbox" id = "checkbox_checker_stu_id_'.$student_id.'" name = "checkbox_checker_stu_id_'.$student_id.' value=" '.$student_datum['checker_only'].'" '.$checker_only.'> </input>';
               echo '<input type = "hidden" id = "reg_change_stu_id_'.$student_id.'" name = "reg_change_stu_id_'.$student_id.'" value ='. $student_datum['eregistration_id'].'> </input>';
               echo ('<input type = "button" style = "background-color:lightyellow;" class = "dex_change" id = "change_dex_id_'.$student_id.'"  name = "change_dex_id_'.$student_id.'" value = "Change"></input>');
               echo('</td>');
@@ -458,7 +471,6 @@ echo '<div id = team_assignments>';
 
          echo("</tbody>");
    echo("</table>");
-   echo ('<input type = "submit" style = "background-color:yellow;" id = "submit_team"  name = "submit_team" value = "Assign to Teams"></input>');
    
   echo' <input type="hidden" name="eexamtime_id"  value= '.$eexamtime_id.')';
   echo ' <input type="hidden" name="eexamnow_id"  value='.$eexamnow_id.')';
@@ -573,11 +585,19 @@ echo '</div>';
                 echo ('dex');
                 echo ('</th>');
                 echo ('<th>');
-                echo ('Team Captain');
-                echo ('</th>');
+                echo ('<input type = "submit" style = "background-color:yellow;" id = "team_cap_assign"  name = "team_cap_assign" value = "Assign Captains"></input>');
+                         echo ('</th>');
                 echo ('<th>');
                 echo ('Individual Score');
                 echo ('</th>');
+                echo ('<th>');
+               // echo ('Chaos Team');
+                echo ('  <button id ="assign_chaos_team" style = "background-color:yellow;">Assign Chaos</botton> ');
+
+                echo ('</th>');
+                // echo ('<th>');
+                // echo ('Team ID');
+                // echo ('</th>');
                 echo ('<th>');
                 echo ('Team Cohesivity Inst.');
                 echo ('</th>');
@@ -619,6 +639,7 @@ echo '</div>';
                 ":team_num" => $i,
                 ));
                 $team_data = $stmt->fetch();  
+                $chaos_team[$i]=$team_data['chaos_team'];
 
 
 
@@ -633,7 +654,7 @@ echo '</div>';
                 
                 foreach($studentonteam_data as $studentonteam_datum){
                   $student_id = $studentonteam_datum['student_id'];
-                  $team_id = $studentonteam_datum['team_id'];
+                  $team_id[$i] = $studentonteam_datum['team_id'];
                  // echo ' i '.$i;
                   echo('<td>');
 
@@ -647,17 +668,31 @@ echo '</div>';
                       if ($team_cap[$i]==$student_id){$check_flag = 'checked';}else{$check_flag ='';}
                     } else {$check_flag ='';}
                     echo '<input type = "radio" '.$check_flag.' id = "team_'.$i.'_stu_'.$student_id.'" name ="team_'.$i.'" value = "'.$student_id.'" ></input>';  // probably should not be an input box
+
                     echo('</td>');
                     echo('<td>');
                     echo ($individual_score[$student_id]);
-                    
-                    echo('</td>');
+                    if ($j==1){
+                      echo('<td  rowspan ='. $num_rows.'>');
+                      if (isset($chaos_team[$i])){
+                        if ($chaos_team[$i]==1){$check_flag = 'checked';}else{$check_flag ='';}
+                      } else {$check_flag ='';}
+                      echo '<input type = "radio" '.$check_flag.' id = "chaos_team_'.$i.'" name ="chaos_team" value = "'.$team_id[$i].'" ></input>';  // probably should not be an input box
+                      echo('</td>');
+                   }
+                //    if ($j==1){
+                //     echo('<td  rowspan ='. $num_rows.'>');
+                //     echo($team_id[$i]);
+                //    echo('</td>');
+                //  }
+                  echo('</td>');
                     if ($j==1){
                       echo('<td  rowspan ='. $num_rows.'>');
                       echo ($team_data['team_cohesivity_inst'])/10;
                       echo('</td>');
                    }
-                   if ($j==1){
+               
+                 if ($j==1){
                     echo('<td  rowspan ='. $num_rows.'>');
                     echo ($team_data['team_current_avg'])/10;
                     echo('</td>');
@@ -678,7 +713,6 @@ echo '</div>';
 
          echo("</tbody>");
        echo("</table>");
-       echo ('<input type = "submit" style = "background-color:yellow;" id = "team_cap_assign"  name = "team_cap_assign" value = "Assign Team Captains"></input>');
    
        echo' <input type="hidden" name="eexamtime_id"  value= '.$eexamtime_id.')';
        echo ' <input type="hidden" name="eexamnow_id"  value='.$eexamnow_id.')';
@@ -687,7 +721,7 @@ echo '</div>';
             
    echo '</div>';
 
-
+ 
 
 
   $pass = array(
@@ -750,7 +784,7 @@ echo '</div>';
 
         <p style="font-size:75px;"></p>   
         <form method="POST" >
-             <p><input type="hidden" name="eexamtime_id" id="eexamtime_id" value=<?php echo($eexamtime_id);?> ></p>
+             <!-- <p><input type="hidden" name="eexamtime_id" id="eexamtime_id" value=<?php echo($eexamtime_id);?> ></p> -->
              <p><input type = "submit" name = "close" value="Exit - Close Window" id="close_id" size="2" style = "width: 40%; background-color: black; color: white"/> &nbsp &nbsp </p>
         </form>
 
@@ -784,6 +818,96 @@ echo '</div>';
 
       });
       
+   // try using native JS
+
+      document.getElementById('update_num_teams').addEventListener('click',(e)=>{
+        e.preventDefault();
+        const team_num_update = document.getElementById('team_num_update').value;
+        console.log(`number of teams is ${team_num_update}`);
+        const eexamtime_id = document.getElementById('eexamtime_id').value;
+        console.log(`eexamtime_id ${eexamtime_id}`);
+        $.ajax({   // this looks updates the eregistration with the new dex number
+										url: 'update_number_teams.php',
+										method: 'post',
+						
+									data: {eexamtime_id:eexamtime_id,number_teams:team_num_update}
+									}).done(function(){
+                   });
+                   window.location.reload(1);
+
+      })
+      document.getElementById('update_game_flag').addEventListener('click',(e)=>{
+        e.preventDefault();
+        const game_flag_box = document.getElementById('game_flag_box').checked;
+        console.log(`game_flag_box is ${game_flag_box}`);
+         const eexamtime_id = document.getElementById('eexamtime_id').value;
+         console.log(`eexamtime_id ${eexamtime_id}`);
+         let game_flag =1;
+         if (game_flag_box==true){
+            game_flag =1;
+        } else {
+            game_flag =0;
+        }
+        console.log(`game_flag is ${game_flag}`);
+        $.ajax({  
+										url: 'update_game_flag.php',
+										method: 'post',
+						
+									data: {eexamtime_id:eexamtime_id,game_flag:game_flag}
+									}).done(function(){
+                   });
+                  window.location.reload(1);
+
+      })
+
+
+      document.getElementById('assign_chaos_team').addEventListener('click',(e)=>{
+        e.preventDefault();
+        let chaos_team_number = 0;
+      let chaos_team_num = document.getElementsByName('chaos_team');
+      const eexamtime_id = document.getElementById('eexamtime_id').value;
+      const eexamnow_id = document.getElementById('eexamnow_id').value;
+     
+      for (k=0; k<chaos_team_num.length; k++){
+        if (chaos_team_num[k].checked) {
+          chaos_team_number = chaos_team_num[k].value;
+        }
+      }
+    
+        console.log (chaos_team_number);
+        console.log (eexamtime_id);
+        console.log (eexamnow_id);
+            $.ajax({   
+										url: 'update_chaos_team.php',
+										method: 'post',
+									data: {chaos_team_number:chaos_team_number,eexamtime_id:eexamtime_id,eexamnow_id:eexamnow_id}
+									})
+                  .done(function(){
+                   })
+                   ;
+                  window.location.reload(1);
+      
+    })
+/* 
+
+      document.getElementById('assign_chaos_team').addEventListener('click',(e)=>{
+        e.preventDefault();
+        const chaos_team_num = document.getElementById('team_num_update').value;
+        console.log(`number of teams is ${team_num_update}`);
+        const eexamtime_id = document.getElementById('eexamtime_id').value;
+        console.log(`eexamtime_id ${eexamtime_id}`);
+        $.ajax({   // this looks updates the eregistration with the new dex number
+										url: 'update_number_teams.php',
+										method: 'post',
+						
+									data: {eexamtime_id:eexamtime_id,number_teams:team_num_update}
+									}).done(function(){
+                   });
+                   window.location.reload(1);
+
+      })
+ */
+
       $('.dex_change').on('click',function(event){  // this is to update the dex on a student
 
           const  stu_id_string = $(this).attr('id');
@@ -823,10 +947,6 @@ echo '</div>';
 
           }, 1000);
    */
-  
-  
-  
-  
   
    });
          

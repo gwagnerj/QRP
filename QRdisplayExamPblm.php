@@ -103,12 +103,13 @@ FROM `Eactivity`
                 $eexamnow_id = $row['eexamnow_id'];
 
       // get the work_flow  and send it to the JS  (work_flow can be open, bc_if and bc_first)
-  $sql = 'SELECT work_flow FROM Eexamtime WHERE eexamtime_id = :eexamtime_id';
+  $sql = 'SELECT work_flow,game_flag FROM Eexamtime WHERE eexamtime_id = :eexamtime_id';
   $stmt = $pdo->prepare($sql);
   $stmt -> execute(array(
     ':eexamtime_id' => $eexamtime_id,
  )); 
    $work_flows = $stmt->fetch();
+   $game_flag = $work_flows['game_flag'];
    $work_flow = $work_flows['work_flow'];
 //echo 'workflow '.$work_flow;
 
@@ -137,9 +138,6 @@ FROM `Eactivity`
           $pin = $pin_data['pin'];
 
 
-
-               
-
              } else {
                  $_SESSION['error'] = 'examactivity table could not be read in QRdisplayExamPblem.php';
                 header("Location: QRExamRegistration.php");
@@ -155,7 +153,7 @@ FROM `Eactivity`
                     if($row != false){
                         $globephase = $row['globephase']; 
                         $eexamtime_id = $row['eexamtime_id'];
-                      //  $game_flag = $row['game_flag'];
+                    //    $game_flag = $row['game_flag'];
 
                      } else {
                        $_SESSION['error'] = 'examtime table could not read - Exam over or not Initiated';
@@ -165,50 +163,51 @@ FROM `Eactivity`
                         die();     
                     }
                     
-                    if ($globephase !=1){
+                  
+                  
+                    $sql = "SELECT team_cap FROM TeamStudentConnect WHERE `eexamnow_id` = :eexamnow_id AND student_id = :student_id";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt -> execute(array(
+                      ':eexamnow_id' => $eexamnow_id,
+                      ':student_id' => $student_id,
+                    ));
+                    $teamstudentconnect_data = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if ( $teamstudentconnect_data != false){
+                          $team_cap = $teamstudentconnect_data['team_cap'];
+                    } else {$team_cap =0;}
+                  if ($globephase == 0){
+                    $_SESSION['error'] = 'exam has not yet been started';
+                    header("Location: stu_exam_frontpage.php?eregistration_id=".$eregistration_id);
+                  }
+                  
+                    if ($globephase >1){
 
-                        // test to see if we are running a game and if they are the team captaining
-                       if($globephase ==3){
-                        $sql = " SELECT * FROM `Eexamtime` WHERE eexamtime_id_id = :eexamtime_id" ;
-                        $stmt = $pdo->prepare($sql);
-                        $stmt -> execute(array(
-                             ':eexamtime_id' => $eexamtime_id,
-                        ));
-                        $eexamtime_data = $stmt->fetch(PDO::FETCH_ASSOC);
-                        $game_flag = $eexamtime_data['game_flag'];
+                      //   // test to see if we are running a game and if they are the team captaining
+                      //  if($globephase ==3){
+                      //   $sql = " SELECT * FROM `Eexamtime` WHERE eexamtime_id = :eexamtime_id" ;
+                      //   $stmt = $pdo->prepare($sql);
+                      //   $stmt -> execute(array(
+                      //        ':eexamtime_id' => $eexamtime_id,
+                      //   ));
+                      //   $eexamtime_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
 
-                          if ($game_flag ==1){
+                         if ($game_flag ==1){
 
-                            $sql = "SELECT team_cap FROM TeamStudentConnect WHERE `eexamnow_id` = :eexamnow_id AND student_id = :student_id";
-                            $stmt = $pdo->prepare($sql);
-                            $stmt -> execute(array(
-                              ':eexamnow_id' => $eexamnow_id,
-                              ':student_id' => $student_id,
-                            ));
-                            $teamstudentconnect_data = $stmt->fetch();
-                                if ($teamstudentconnect_data['team_cap']==1){
-                                  header("Location: teamcaptain.php");
+                      
+        //                        if ($teamstudentconnect_data['team_cap']==1){
+                                  header('Location: teamcaptain.php?eexamnow_id='.$eexamnow_id.'&student_id='.$student_id);
                                   die();  
                   
                                 }
-                              }
+                       
 
                         }
 
-                         $_SESSION['error'] = 'Exam is not in progress';
-                        header("Location: stu_exam_frontpage.php?eregistration_id=".$eregistration_id );
-                      //  header("Location: StopExam.php" );
-                      
-                        die();     
-                        
-                    }
-                    
-              
-                    
-          
 
+                        
+                  //  }
               $sql = " SELECT `name` FROM `CurrentClass` WHERE currentclass_id = :currentclass_id" ;
                     $stmt = $pdo->prepare($sql);
                     $stmt -> execute(array(
@@ -320,7 +319,12 @@ FROM `Eactivity`
             'cclass_name' => $cclass_name,
             'eexamtime_id' => $eexamtime_id,
             'switch_to_bc' => $switch_to_bc,
-            'work_flow'=> $work_flow
+            'work_flow'=> $work_flow,
+            'team_cap'=> $team_cap,
+            'globephase' => $globephase, 
+            'eexamnow_id' => $eexamnow_id, 
+            'game_flag' => $game_flag, 
+            'student_id' => $student_id, 
           );
 
         // echo ($pass['society_flag']);
@@ -547,12 +551,6 @@ libxml_use_internal_errors(true); // this gets rid of the warning that the p tag
  // only include the document above the checker
     $this_html ='<hr> <div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>';
 
-
-
-
-
-
-
       
                
     // only include the document above the checker
@@ -606,18 +604,78 @@ echo ' alias_num '.$alias_num.'<br>';
       const perc_con = pass['perc_con'];
       const perc_soc = pass['perc_soc'];
       const checker = pass['checker'];
+      const team_cap = pass['team_cap'];
       let switch_to_bc = pass['switch_to_bc'];
       const work_flow = pass['work_flow'];
       const progress = pass['progress'];
+      const globephase = pass['globephase'];
+      const eexamnow_id = pass['eexamnow_id'];
+      const game_flag = pass['game_flag'];
+      const student_id = pass['student_id'];
       console.log('switch_to_bc: '+switch_to_bc);   
 
   $('#questions').prepend('<p> Questions for '+stu_name+':</p>');
+
+
+	// get the current globephase periodically
+
+        let request = true;
+        function fetchPhase() {
+            request = $.ajax({
+                type: "POST",
+                url: "fetchGPhase.php",
+                data: "eexamnow_id="+eexamnow_id,
+                success: function(data){
+                    try{
+                        var arrn = JSON.parse(data);
+                    }
+                    catch(err) {
+                        return;
+                    }
+                    let globephase = arrn.globephase;
+                    console.log(`  globephase is ${globephase}`);
+                    console.log(`  game_flag is ${game_flag}`);
+               
+                 if (globephase >1 && game_flag == 1){
+         //       console.log(`globephase is ${globephase}`);
+                window.location.replace('teamcaptain.php?eexamnow_id='+eexamnow_id+'&student_id='+student_id);
+              }
+
+
+
+
+                }
+            });
+        }
+            setInterval(function() {
+              //  if (request) request.abort(); 
+         //     console.log (`the glabephas is is ${globephase}`);
+                fetchPhase();
+            }, 10000);
+
+
+
+  
+  console.log(`  eexamnow_id is ${eexamnow_id}`);
+  console.log(`  student_id is ${student_id}`);
+
+
+
+
 
 
   	$("#backbutton").css({"background-color":"lightyellow",
             });
     console.log('eregistration_id: '+eregistration_id);
             $("#backbutton").click(function(){
+
+              if (globephase >1 && game_flag == 1){
+         //       console.log(`globephase is ${globephase}`);
+                window.location.replace('teamcaptain.php?eexamnow_id='+eexamnow_id+'&student_id='+student_id);
+              } else if(globephase >1 && game_flag==0){
+                // load their documentation if they need to 
+              }
+              console.log(`globephase is definetly ${globephase}`);
                      window.location.replace('stu_exam_frontpage.php?eregistration_id='+eregistration_id); // would like to put some parameters here instead of relying on session (like below)
 			 });
 
