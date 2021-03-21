@@ -221,6 +221,7 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
       $stmt->execute(array(":eexamtime_id" => $eexamnow_data['eexamtime_id']));
       $eexamtime_data = $stmt->fetch();   
       $game_flag = $eexamtime_data['game_flag'];
+      $gameboard_id = $eexamtime_data['gameboard_id'];
       $number_teams = $eexamtime_data['number_teams'];
       $currentclass_id = $eexamtime_data['currentclass_id'];
       $game_flag = $eexamtime_data['game_flag'];
@@ -378,20 +379,40 @@ if ($teamcap_data != false){
    $team_cap = '';
   }
 
-$chaos_team=array();
-
-
+  $chaos_team=array();
+  // get the gameboards that are available for
+  $sql = 'SELECT gameboard_id, game_board_title,board_catagory FROM GameBoard';
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute();
+  $gameboard_data = $stmt->fetchALL(PDO::FETCH_ASSOC);  
+  $options ='';
+ 
+  foreach($gameboard_data as $gameboard_datum){
+   // $options = $options.'<option value ='. $gameboard_datum["gameboard_id"].'>'.$gameboard_datum["game_board_title"].'</option>';
+   if($gameboard_id == $gameboard_datum["gameboard_id"]) {
+       $options = $options.'<option value ='. $gameboard_datum["gameboard_id"].' selected>'.$gameboard_datum["game_board_title"].'</option>';
+      }
+    else {
+        $options = $options.'<option value ='. $gameboard_datum["gameboard_id"].'>'.$gameboard_datum["game_board_title"].'</option>'; 
+      }
+  } 
 
 // build the student registration table and team student array _______________________________________________________________________________________________________________________________
-echo '<div id = team_assignments>';
+  echo '<div id = team_assignments>';
    echo '<h2> Registered Students / Team Assignments</h2>';
-      echo '<p>&nbsp;&nbsp; Number of Teams: <input type = "number" min = "1" max = "100" id = "team_num_update" name = "team_num_update" value ='.$number_teams.'> </input> <button name "update_num_teams" id = "update_num_teams"  style = "background-color:yellow;" value="update"> update </button>
-      &nbsp; &nbsp; &nbsp; Game? <input type = "checkbox" id = "game_flag_box" name = "game_flag_box" '.$game_flag_checked.'> </input> <button name "update_game_flag" id = "update_game_flag"  style = "background-color:yellow;" value="update"> update </button>
-      &nbsp; &nbsp; &nbsp; 
-      
-      <select id="gameboard" name = "gameboard"><option value ="">Please Select</option><option value ="1">QRTown</option><option value = "2">QRpropylene<?option></select>
-      <button name "update_game_board" id = "update_game_board"  style = "background-color:yellow;" value="update"> update </button>
+      echo '<p>&nbsp;&nbsp; Number of Teams: <input type = "number" min = "1" max = "100" id = "team_num_update" name = "team_num_update" value ='.$number_teams.'>
+       </input> <button name "update_num_teams" id = "update_num_teams"  style = "background-color:yellow;" value="update"> update </button>
+      &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Game? <input type = "checkbox" id = "game_flag_box" name = "game_flag_box" '.$game_flag_checked.'> </input> 
+
+      <select id="gameboard" name = "gameboard">
+      <option value =0>Please Select</option>
+      '.$options.'
+      </select>
+
       </p>';
+
+      // <button name "update_game_flag" id = "update_game_flag"  style = "background-color:yellow;" value="update"> update </button>
+
        
       echo '';
       echo '<form method = "POST" id = "team_assign">';
@@ -836,12 +857,35 @@ echo '</div>';
                    window.location.reload(1);
 
       })
-      document.getElementById('update_game_flag').addEventListener('click',(e)=>{
-        e.preventDefault();
-        const game_flag_box = document.getElementById('game_flag_box').checked;
+
+    let game_flag_box = document.getElementById('game_flag_box').checked;
+    console.log(`the game_flag_box is ${game_flag_box}`);
+
+    if (game_flag_box==true){
+      document.getElementById("gameboard").style.visibility = "visible";
+        } else {
+          document.getElementById("gameboard").style.display = "none";
+        }
+      
+
+
+      document.getElementById('game_flag_box').addEventListener('change',(e)=>{call_update_game(e)
+      });
+
+      document.getElementById('gameboard').addEventListener('change',(e)=>{call_update_game(e)
+      });
+
+
+
+       function call_update_game(){ 
+         //e.preventDefault();
+       game_flag_box = document.getElementById('game_flag_box').checked;
         console.log(`game_flag_box is ${game_flag_box}`);
-         const eexamtime_id = document.getElementById('eexamtime_id').value;
-         console.log(`eexamtime_id ${eexamtime_id}`);
+        const eexamtime_id = document.getElementById('eexamtime_id').value;
+        const gameboard_id = document.getElementById('gameboard').value;
+  //      console.log(`eexamtime_id ${eexamtime_id}`);
+        console.log(`gameboard_id ${gameboard_id}`);
+
          let game_flag =1;
          if (game_flag_box==true){
             game_flag =1;
@@ -849,16 +893,17 @@ echo '</div>';
             game_flag =0;
         }
         console.log(`game_flag is ${game_flag}`);
+       
         $.ajax({  
 										url: 'update_game_flag.php',
 										method: 'post',
 						
-									data: {eexamtime_id:eexamtime_id,game_flag:game_flag}
+									data: {eexamtime_id:eexamtime_id,game_flag:game_flag,gameboard_id:gameboard_id}
 									}).done(function(){
                    });
                   window.location.reload(1);
 
-      })
+      }
 
 
       document.getElementById('assign_chaos_team').addEventListener('click',(e)=>{

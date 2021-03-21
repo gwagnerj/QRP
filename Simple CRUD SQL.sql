@@ -2900,3 +2900,6 @@ ENGINE=InnoDB CHARACTER SET = utf8;
     ALTER TABLE `Team` 
 	ADD `chaos_team` int(1) DEFAULT 0 AFTER `team_name` 
 	
+
+     ALTER TABLE `Eexamtime` 
+	ADD `gameboard_id` int(5) DEFAULT 0 AFTER `game_flag` 

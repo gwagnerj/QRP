@@ -33,13 +33,88 @@ session_start();
 					die();     
 
 				}
-			$sql = "SELECT `team_score` FROM Team WHERE `team_id` =:team_id";
+			$sql = "SELECT team_score,chaos_team FROM Team WHERE `team_id` =:team_id";
 			$stmt = $pdo->prepare($sql);
 			$stmt ->execute(array(':team_id' => $team_id));
 			$team_data = $stmt->fetch();
 			$team_score = $team_data['team_score'];
+			$chaos_team = $team_data['chaos_team'];   // this will either be 0 or 1
 
 
+			$sql = "SELECT eexamtime_id FROM Eexamnow WHERE eexamnow_id = :eexamnow_id";
+			$stmt = $pdo->prepare($sql);
+			$stmt -> execute(array(
+				':eexamnow_id' => $eexamnow_id,
+					
+			));
+			$eexamnow_data = $stmt->fetch(PDO::FETCH_ASSOC);
+			$eexamtime_id = $eexamnow_data['eexamtime_id'];
+
+
+
+			$sql = "SELECT gameboard_id FROM Eexamtime WHERE eexamtime_id =:eexamtime_id ";
+			$stmt = $pdo->prepare($sql);
+			$stmt -> execute(array(
+				':eexamtime_id' => $eexamtime_id,
+					
+			));
+			$eexamtime_data = $stmt->fetch(PDO::FETCH_ASSOC);
+			$gameboard_id = $eexamtime_data['gameboard_id'];
+//			echo ' gameboard_id'.$gameboard_id;
+
+	       $sql = "SELECT * FROM GameBoard WHERE gameboard_id =:gameboard_id";
+			$stmt = $pdo->prepare($sql);
+			$stmt -> execute(array(
+				':gameboard_id' => $gameboard_id,
+					
+			));
+			$gameboard_data = $stmt->fetch(PDO::FETCH_ASSOC);
+//			var_dump($gameboard_data);
+			$game_board_title = $gameboard_data['game_board_title'];
+			$board_image_file = $gameboard_data['board_image_file'];
+
+			$sql = "SELECT * FROM GameAction
+			 LEFT JOIN GameActionGameDevelopmentConnect
+			 ON GameActionGameDevelopmentConnect.gameaction_id = GameAction.gameaction_id
+			 LEFT JOIN GameDevelopment
+
+			 ON GameActionGameDevelopmentConnect.gamedevelopment_id = GameDevelopment.gamedevelopment_id
+			 WHERE GameActionGameDevelopmentConnect.gameboard_id = :gameboard_id";
+			 $stmt = $pdo->prepare($sql);
+			 $stmt -> execute(array(
+				 ':gameboard_id' => $gameboard_id,
+					 
+			 ));
+			 $gameaction_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
+			 $options ='';
+//var_dump($gameaction_data);
+			 foreach ($gameaction_data as $gameaction_datum){
+
+				if($chaos_team == 0){
+
+				$options = $options.'<option value ='. $gameaction_datum["gameaction_id"].'>'.$gameaction_datum["game_action_title"].
+				' Cost: '.$gameaction_datum["fin_onetime_cost"].
+				', Financial: '.$gameaction_datum["fin_onetime_cost"].
+				', Environmental: '.$gameaction_datum["env_ongoing_benefit"].
+				', Societal: '.$gameaction_datum["soc_ongoing_benefit"].
+				', Blocks: '.$gameaction_datum["game_development_title"].
+				' with effect = '.$gameaction_datum["blocking_effect"].
+				'</option>'; 	
+				} else {
+
+					$options = $options.'<option value ='. $gameaction_datum["gamedevelopment_id"].'>'.$gameaction_datum["game_development_title"].
+					' Cost: '.$gameaction_datum["fin_onetime_change"].
+					', Financial: '.$gameaction_datum["fin_onetime_cost"].
+					', Blocked by: '.$gameaction_datum["game_action_title"].
+					' with effect = '.$gameaction_datum["blocking_effect"].
+					'</option>'; 	
+
+				}
+			}
+// var_dump($gameaction_data);
+
+
+ 
 
 	} else {
 		$_SESSION['error'] = "at least one parameter not set";
@@ -65,7 +140,26 @@ session_start();
 <body>
 
 <h1> Team Captains Page </h1>
-<h2> Team Score: <?php echo $team_score; ?> </h>
+<h2> Team Score: <?php echo $team_score; ?> </h2>
+<?php if ($chaos_team == 1){
+	echo '<h2> This is the Chaos Team </h2>';
+} else {
+
+	echo '<h2> This is a Normal Team </h2>';
+}
+
+?>
+<h2> Spend Action Points </h2>
+&nbsp;&nbsp;&nbsp;
+<select id = "action_points" name = "action_points">
+<option value =''> - Select Action - </option>
+<?php
+echo $options;
+ ?>
+
+></select>
+
+
 </body>
 </html>
 
