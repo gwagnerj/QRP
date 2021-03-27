@@ -207,7 +207,7 @@ $sql = 'SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id';
 
 
 
-  $sql = 'SELECT Eregistration.student_id AS student_id,`dex`,`first_name`,`last_name`,`eregistration_id`,checker_only FROM Eregistration
+  $sql = 'SELECT Eregistration.student_id AS student_id,`dex`,`first_name`,`last_name`,`game_name`,`eregistration_id`,checker_only FROM Eregistration
    LEFT JOIN Student ON Student.student_id = Eregistration.student_id WHERE Eregistration.eexamnow_id = :eexamnow_id
    ORDER BY `last_name` ASC
    ';
@@ -431,8 +431,12 @@ if ($teamcap_data != false){
       echo("<tr>");
       echo("<th>");
             echo('Name');
-           echo("</th><th>");
-            echo('dex - Checker Only');
+           echo"</th>";
+           echo "<th>";
+            echo('Alias');
+            echo '</th>';
+            echo "<th>";
+            echo('dex');
             echo '</th>';
             for ($i=1;$i<=$number_teams;$i++){
               echo("<th>");
@@ -448,10 +452,15 @@ if ($teamcap_data != false){
 
           foreach ($student_data as $student_datum){
             $student_id = $student_datum['student_id'];
+            $eregistration_id = $student_datum['eregistration_id'];
             $dex = $student_datum['dex'];
               echo('<tr>');
               echo('<td>');
-              echo $student_datum['first_name'].' '.$student_datum['last_name'];
+              echo $student_datum['first_name'].' '.$student_datum['last_name'].
+              '&nbsp; <input type = "button" style = "background-color:lightyellow;" class = "remove"  id = "remove_student_'.$eregistration_id.'"  name = "remove_student_'.$eregistration_id.'" value = "Remove" >
+              </input>';
+              echo('</td><td>');
+              echo $student_datum['game_name'];
               echo('</td><td>');
 
               // this needs to be an input so I can change it on the fly
@@ -983,8 +992,29 @@ echo '</div>';
 									}).done(function(){
                    });
        });
-  
-  /* 
+
+       
+       $('.remove').on('click',function(event){  // this should remove the studetn from the game/exam through the stu
+
+        const  stu_reg_id = $(this).attr('id');
+          console.log('stu_reg_id: '+stu_reg_id);
+        // extract the student id from the button that was video_clip_checked
+
+        const reg_id_arr= stu_reg_id.split('_');
+        const reg_id = reg_id_arr[2];
+        console.log('reg_id: '+reg_id);
+
+     //    now delete the entry from the eregistration table
+        $.ajax({   // this removes the row from the eregistration table
+                  url: 'remove_registration.php',
+                  method: 'post',
+          
+                data: {eregistration_id:reg_id}
+                }).done(function(){
+                });
+                window.location.reload(1);
+        });
+/* 
        setInterval(function(){ 
          
         document.getElementById("refresh_page").submit();

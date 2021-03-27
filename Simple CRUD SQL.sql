@@ -2903,3 +2903,10 @@ ENGINE=InnoDB CHARACTER SET = utf8;
 
      ALTER TABLE `Eexamtime` 
 	ADD `gameboard_id` int(5) DEFAULT 0 AFTER `game_flag` 
+
+
+     ALTER TABLE `Student` 
+	ADD `game_name` VARCHAR(16) DEFAULT NULL AFTER `last_name` 
+
+     ALTER TABLE `Eregistration` 
+	ADD `kahoot_points` INT(16) DEFAULT 0 AFTER `exam_code` 

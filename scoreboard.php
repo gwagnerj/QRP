@@ -50,10 +50,24 @@ $_SESSION['error']= 'no eexamnow ID in post of session var for backstage';
          <meta http-equiv="X-UA-Compatible" content="IE=edge">
          <meta name="viewport" content="width=device-width, initial-scale=1.0">
          <title>Score Borad</title>
+  <style>
+          #page-wrap {
+            width: 800px;
+            margin: 0 auto;
+        }
+
+
+  </style>
+
      </head>
+   
+
+
      <body>
+     <div id = "page-wrap">
+
      <header>
-         <h2>Quick Response Score Board</h2>
+         <h1>Quick Response Score Board</h1>
          </header>  
      
 
@@ -118,7 +132,7 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
  $problem_ids = $stmt->fetchALL(PDO::FETCH_ASSOC);   
 
-
+ echo '<h1 style ="text-align:center" > Game Code <span  style = "color:red">'.$eexamnow_id.' </span></h1>';
 
 
      echo '<div id = team_score>';
@@ -130,8 +144,9 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
                 echo("<th>");
                 echo('Team Name');
-                    echo("</th><th>");
-                echo('Members');
+                echo("</th>");
+                echo("<th>");
+                echo('Game Name');
                 echo ('</th>');
                 // echo ('<th>');
                 // echo ('dex'); 
@@ -171,7 +186,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 ":team_num" => $i,
                 ));
                 $studentonteam_data = $stmt->fetchALL(PDO::FETCH_ASSOC);  
-        //          var_dump($studentonteam_data);
+          //        var_dump($studentonteam_data);
 
                 if ( $studentonteam_data != false){$num_rows = count($studentonteam_data); } else {$num_rows = 1; }
               echo('<th rowspan ='. $num_rows.'>');
@@ -185,7 +200,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 $team_weighted_ave[$i] = 0;
                 foreach($studentonteam_data as $studentonteam_datum){
                   $student_id = $studentonteam_datum['student_id'];
-                  
+                  $game_name = $studentonteam_datum['game_name'];
                   // get the individual scores
 
 
@@ -360,10 +375,13 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                     
                 foreach($studentonteam_data as $studentonteam_datum){
                   $student_id = $studentonteam_datum['student_id'];
+                  $game_name = $studentonteam_datum['game_name'];
+                  // echo 'game_name '.$game_name;
+                  // echo 'student_id '.$student_id;
                  // echo ' i '.$i;
                   echo('<td>');
 
-                    echo $j;
+                    echo $game_name;
                     echo('</td>');
                     // echo('<td>');
                     // echo ($studentonteam_datum['dex']);
@@ -413,6 +431,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
 
 ?>
+</div>
 
 <script>
 

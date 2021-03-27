@@ -192,3 +192,8 @@ if (isset($_SESSION['error'])){
 </body>
 </html>
 
+<script>
+
+document.getElementById('div2').style.display = 'none';
+</script>
+
