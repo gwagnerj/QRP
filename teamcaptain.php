@@ -88,18 +88,51 @@ session_start();
 			 $gameaction_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
 			 $options ='';
 //var_dump($gameaction_data);
+
+			 	$k = 0;
 			 foreach ($gameaction_data as $gameaction_datum){
+
+				if (isset($gameaction_datum["fin_onetime_cost"])){$fin_ongoing_benefit = '<p> Financial Benefit: '.$gameaction_datum["fin_onetime_cost"].'</p>';} else {$fin_ongoing_benefit ='';}  // placeholder until get a different catagory in data table
+				if (isset($gameaction_datum["env_ongoing_benefit"])){$env_ongoing_benefit = '<p> Environmental Benefit: '.$gameaction_datum["env_ongoing_benefit"].'</p>';} else {$env_ongoing_benefit ='';}
+				if (isset($gameaction_datum["soc_ongoing_benefit"])){$soc_ongoing_benefit = '<p> Societal Benefit: '.$gameaction_datum["soc_ongoing_benefit"].'</p>';} else {$soc_ongoing_benefit ='';}
+				if (isset($gameaction_datum["action_image_file"])){$action_image_file = '<img src = " '.$gameaction_datum["action_image_file"].'">';} else {$action_image_file ='';}
+
+			
 
 				if($chaos_team == 0){
 
-				$options = $options.'<option value ='. $gameaction_datum["gameaction_id"].'>'.$gameaction_datum["game_action_title"].
-				' Cost: '.$gameaction_datum["fin_onetime_cost"].
-				', Financial: '.$gameaction_datum["fin_onetime_cost"].
-				', Environmental: '.$gameaction_datum["env_ongoing_benefit"].
-				', Societal: '.$gameaction_datum["soc_ongoing_benefit"].
-				', Blocks: '.$gameaction_datum["game_development_title"].
-				' with effect = '.$gameaction_datum["blocking_effect"].
-				'</option>'; 	
+				 $cards[$k] = '<div class = "action_card" id = "action_card_'.$gameaction_datum["gameaction_id"].'">
+				 	<h3>'.$gameaction_datum["game_action_title"].'</h3>'.
+					 '<h4> Cost = '.$gameaction_datum["fin_onetime_cost"].'</h4>'.
+					//  '<p> Cost = '.$gameaction_datum["fin_onetime_cost"].'</h4>'.
+					 $fin_ongoing_benefit.
+					 $env_ongoing_benefit.
+					 $soc_ongoing_benefit.
+					 $action_image_file.
+					 
+					 '<button type="button" value = "'.$gameaction_datum["gameaction_id"].'">Add</button>'.
+
+					 '</div>';
+
+					$k=$k+1;
+
+
+
+
+
+
+
+
+
+
+				// $options = $options.'<option value ='. $gameaction_datum["gameaction_id"].'>'.$gameaction_datum["game_action_title"].
+				// ' Cost: '.$gameaction_datum["fin_onetime_cost"].
+				// ', Financial: '.$gameaction_datum["fin_onetime_cost"].
+				// ', Environmental: '.$gameaction_datum["env_ongoing_benefit"].
+				// ', Societal: '.$gameaction_datum["soc_ongoing_benefit"].
+				// ', Blocks: '.$gameaction_datum["game_development_title"].
+				// ' with effect = '.$gameaction_datum["blocking_effect"].
+				// '</option>'; 	
 				} else {
 
 					$options = $options.'<option value ='. $gameaction_datum["gamedevelopment_id"].'>'.$gameaction_datum["game_development_title"].
@@ -136,11 +169,29 @@ session_start();
 	<title>Team Captain</title>
   <!-- <meta http-equiv="refresh" content="10"> -->
 	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+
+<style>
+		.container-1{
+			display:flex;
+			
+		}
+
+		.container-1 div{
+			border:1px #ccc solid;
+			padding:10px;
+		}
+		.card{
+			flex:1;
+		}
+
+</style>
 </head>
+
+
 <body>
 
 <h1> Team Captains Page </h1>
-<h2> Team Score: <?php echo $team_score; ?> </h2>
+<h2><div id = "team_score" value = "<?php echo $team_score; ?>"> Team Score: <?php echo $team_score; ?> </div></h2>
 <?php if ($chaos_team == 1){
 	echo '<h2> This is the Chaos Team </h2>';
 } else {
@@ -150,15 +201,58 @@ session_start();
 
 ?>
 <h2> Spend Action Points </h2>
-&nbsp;&nbsp;&nbsp;
-<select id = "action_points" name = "action_points">
-<option value =''> - Select Action - </option>
-<?php
-echo $options;
- ?>
+<div class = "container-1">
+	
+	<?php 
+	foreach($cards as $card){
+		echo '<div class = "card">';
+			echo $card;
+		echo '</div>';
 
-></select>
+	}
 
+
+	?>
+</div>
+
+<script>
+
+if (document.addEventListener){
+    document.addEventListener("click", function(event){
+        let targetElement = event.target || event.srcElement;
+        console.log(targetElement);
+    });
+} else if (document.attachEvent) {    
+    document.attachEvent("onclick", function(){
+        let targetElement = event.target || event.srcElement;
+        console.log(targetElement);
+    });
+}
+
+
+
+
+
+    //   document.getElementByClassName('card').addEventListener('click',(e)=>{
+    //     e.preventDefault();
+    //     const team_num_update = document.getElementById('team_num_update').value;
+    //     console.log(`number of teams is ${team_num_update}`);
+    //     const eexamtime_id = document.getElementById('eexamtime_id').value;
+    //     console.log(`eexamtime_id ${eexamtime_id}`);
+    //     $.ajax({   // this looks updates the eregistration with the new dex number
+	// 									url: 'update_number_teams.php',
+	// 									method: 'post',
+						
+	// 								data: {eexamtime_id:eexamtime_id,number_teams:team_num_update}
+	// 								}).done(function(){
+    //                });
+    //                window.location.reload(1);
+
+    //   })
+
+
+
+</script>
 
 </body>
 </html>

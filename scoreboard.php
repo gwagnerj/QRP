@@ -393,7 +393,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                     echo('</td>');
                     echo('<td>');
 
-                    echo $kahoot_points/$max_kahoot_score*100;
+                    echo (round($kahoot_points/$max_kahoot_score*1000)/10);
                     echo('</td>');
                     echo('</td>');
                     echo('<td>');
@@ -402,7 +402,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                     echo('</td>');
                     if ($j==1){
                       echo('<td  rowspan ='. $num_rows.'>');
-                      echo ($team_kahoot[$i]);
+                      echo (round($team_kahoot[$i]*10)/10);
                       echo('</td>');
                    }
                    if ($j==1){
