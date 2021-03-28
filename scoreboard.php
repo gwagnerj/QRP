@@ -4,8 +4,11 @@
 
   $range_limit = 25;  //Goes to scoreing team cohesivity
   $stdev_limit = 10;
+  $pre_qr_weight = 25;  // percent of the score made up by the QRgame
 
-    
+  
+
+
     if(isset($_POST['eexamtime_id'])){
         $eexamtime_id = $_POST['eexamtime_id'];
     
@@ -22,21 +25,35 @@
 }
 
 
-if(isset($_POST['eexamnow_id'])){
-$eexamnow_id = $_POST['eexamnow_id'];
+  if(isset($_POST['eexamnow_id'])){
+  $eexamnow_id = $_POST['eexamnow_id'];
 
-} elseif(isset($_GET['eexamnow_id'])){
-$eexamnow_id = $_GET['eexamnow_id'];
+  } elseif(isset($_GET['eexamnow_id'])){
+  $eexamnow_id = $_GET['eexamnow_id'];
 
 
-} elseif(isset($_SESSION['eexamnow_id'])){
-$eexamnow_id = $_SESSION['eexamnow_id'];
+  } elseif(isset($_SESSION['eexamnow_id'])){
+  $eexamnow_id = $_SESSION['eexamnow_id'];
 
-}else{
-$eexamnow_id = '';
-$_SESSION['error']= 'no eexamnow ID in post of session var for backstage';
-}
-
+  }else{
+  $eexamnow_id = '';
+  $_SESSION['error']= 'no eexamnow ID in post of session var for backstage';
+  }
+  if(isset($_POST['pre_qr_weight'])){
+    $pre_qr_weight = $_POST['pre_qr_weight'];
+    
+    } elseif(isset($_GET['pre_qr_weight'])){
+    $pre_qr_weight = $_GET['pre_qr_weight'];
+    
+    
+    } elseif(isset($_SESSION['pre_qr_weight'])){
+    $pre_qr_weight = $_SESSION['pre_qr_weight'];
+    
+    }else{
+    $pre_qr_weight = 25;
+    
+    }
+  
 
 ?>
 
@@ -136,9 +153,9 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
 
      echo '<div id = team_score>';
-      echo '<h2> Team Scores </h2>';
+      
       echo '<form method = "POST" >';
-
+      echo '<h2> Team Scores </h2> <h3>  Pre QR Weight: <input type = "number" min = 0 max = 100 id = "pre_qr_weight" name = "pre_qr_weight" value ="'.$pre_qr_weight.'"></input>&nbsp;<input type = "submit" value = "Submit"> </input></h3>';
       echo ('<table id="table_team_scores" style = "text-align:center" class = "a" border="1" >'."\n");	
           echo("<thead>");
 
@@ -146,7 +163,10 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 echo('Team Name');
                 echo("</th>");
                 echo("<th>");
-                echo('Game Name');
+                echo('Member');
+                echo ('</th>');
+                echo("<th>");
+                echo('Pre_QR');
                 echo ('</th>');
                 // echo ('<th>');
                 // echo ('dex'); 
@@ -156,6 +176,9 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 // echo ('</th>');
                 // echo ('<th>');
                 echo ('Individual Score');
+                echo ('</th>');
+                echo ('<th>');
+                echo ('Team pre_QR');
                 echo ('</th>');
                 echo ('<th>');
                 echo ('Current Cohesivity');
@@ -171,22 +194,49 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 
             echo("<tbody>");
 
+           // Compute who got the high and low kahoot score from their input initialize the vaiables
+            $max_kahoot_score =1;
+            $min_kahoot_score = 100000;
+
+            //Get all of the Kahoot Scores
+
+            $sql = "SELECT kahoot_points FROM Eregistration WHERE eexamnow_id = :eexamnow_id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(array(
+              ":eexamnow_id" => $eexamnow_id,
+              ));
+              $eregistration_kahoot_scores = $stmt->fetchAll();
+           //   var_dump ($eregistration_kahoot_scores);
+            
+              foreach ($eregistration_kahoot_scores as $kahoot_scores){
+                if($kahoot_scores['kahoot_points'] > $max_kahoot_score){$max_kahoot_score = $kahoot_scores['kahoot_points'];}
+                if($kahoot_scores['kahoot_points'] < $min_kahoot_score){$min_kahoot_score = $kahoot_scores['kahoot_points'];}
+              }
+              // echo  ' max kahoot score '. $max_kahoot_score;
+              // echo  ' min kahoot score '. $min_kahoot_score;
+
+
 // $i is the team number  big loop on the data
             for ($i=1;$i<=$number_teams;$i++){
             
               $max_ind_score [$i] = 0.0;  // initializing these max score for the team
               $min_ind_score[$i] = 100.0;
               $team_cohesivity[$i] =1000;
+              $team_kahoot[$i] = 0;
+              $team_kahoot_cumm[$i] =0;
               $cumm[$i] =0;
 
-              $sql = "SELECT * FROM TeamStudentConnect  LEFT JOIN Student ON Student.student_id = TeamStudentConnect.student_id WHERE eexamnow_id = :eexamnow_id AND team_num = :team_num ORDER BY dex ASC";
+              $sql = "SELECT * FROM TeamStudentConnect 
+               LEFT JOIN Student ON Student.student_id = TeamStudentConnect.student_id 
+               LEFT JOIN Eregistration ON eregistration.student_id = Student.student_id AND eregistration.eexamnow_id = TeamStudentConnect.eexamnow_id 
+               WHERE TeamStudentConnect.eexamnow_id = :eexamnow_id AND team_num = :team_num ORDER BY TeamStudentConnect.dex ASC";
               $stmt = $pdo->prepare($sql);
               $stmt->execute(array(
                 ":eexamnow_id" => $eexamnow_id,
                 ":team_num" => $i,
                 ));
                 $studentonteam_data = $stmt->fetchALL(PDO::FETCH_ASSOC);  
-          //        var_dump($studentonteam_data);
+            //      var_dump($studentonteam_data);
 
                 if ( $studentonteam_data != false){$num_rows = count($studentonteam_data); } else {$num_rows = 1; }
               echo('<th rowspan ='. $num_rows.'>');
@@ -201,25 +251,18 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 foreach($studentonteam_data as $studentonteam_datum){
                   $student_id = $studentonteam_datum['student_id'];
                   $game_name = $studentonteam_datum['game_name'];
-                  // get the individual scores
+                  $kahoot_points = $studentonteam_datum['kahoot_points']/$max_kahoot_score*100;
+                  $team_kahoot_cumm[$i]=$team_kahoot_cumm[$i]+$kahoot_points;
+
 
 
           //    var_dump($student_data);
-   //               foreach ($student_data as $student_datum){  // why loop through all of the students??
                     $student_assignment_total = 0;
-                      //  echo('<tr>');
-                      //  echo('<td>');
-                      //  echo $student_datum['first_name'].' '.$student_datum['last_name'];
-                      //  echo("</td>");
              
                  foreach ($problem_ids as $problem_id){ 
-                 //  echo 'problem_ids '.$problem_id ['problem_id'];
                           $sql = 'SELECT  *   FROM Eactivity  WHERE eexamnow_id = :eexamnow_id AND student_id = :student_id  AND problem_id = :problem_id ORDER BY eactivity_id DESC LIMIT 1 ';
-        
-                      //    $sql = 'SELECT DISTINCT * FROM (SELECT *,row_number() OVER (PARTITION BY problem_id ORDER BY eactivity_id DESC ) AS row_number FROM Eactivity ) AS ROWS  WHERE eexamnow_id = :eexamnow_id AND student_id = :student_id ORDER BY alias_num ';
                           $stmt = $pdo->prepare($sql);         
                           $stmt->execute(array(":eexamnow_id" => $eexamnow_id,
-         //                 ':student_id' => $student_datum['student_id'],
                           ':student_id' => $student_id,
                            ':problem_id' =>$problem_id['problem_id']));
                           $eactivity_data  = $stmt->fetchALL(PDO::FETCH_ASSOC);   
@@ -227,48 +270,27 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
         
             
                           foreach ($eactivity_data as $eactivity_datum){
-                            //  echo("<td>");
                               $problem_total = 0;
                               foreach(range('a','j') as $v){
                               
                                   if($eactivity_datum['correct_'.$v] ==1){
-                                    {//echo'<span class = "correct">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';
-                                    $problem_total = $problem_total+ $eexamtime_data['perc_'.$v.'_'.$eactivity_datum['alias_num']];
+                                      $problem_total = $problem_total+ $eexamtime_data['perc_'.$v.'_'.$eactivity_datum['alias_num']];
                                   }
-                                }
                                   elseif($eactivity_datum['display_ans_'.$v] == 1) {
-                                    //echo'<span class = "display_ans">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';
                                   } 
                                   elseif(is_null($eactivity_datum['correct_'.$v] )) {
                                    // echo '__';
                                   } 
                                   elseif($eactivity_datum['correct_'.$v] == 0) {
-                                   // echo'<span class = "not_correct">'. $v .')'.$eactivity_datum["wcount_".$v].' </span>';
                                   } 
                                   else {echo'<span class = "correct">'. $v .')'.$eactivity_datum["wcount_".$v].'</span>';}
                               }
-                            //  echo' '.$problem_total;
-                            
-                              // $student_assignment_total = $student_assignment_total + $problem_total*$eexamtime_data['perc_'.$eactivity_datum['alias_num']]/100;
-                              // $individual_score[$student_datum['student_id']] = round($student_assignment_total*10)/10;
-
-                                 // getting the max and min score on the team
-                              // if($individual_score[$student_datum['student_id']]>$max_ind_score[$i]){$max_ind_score[$i] = $individual_score[$student_datum['student_id']];}
-                              // if($individual_score[$student_datum['student_id']]<$min_ind_score[$i]){$min_ind_score[$i] = $individual_score[$student_datum['student_id']];}
-                              
-                             // echo('  '.$student_datum['student_id'].' := '.$individual_score[$student_datum['student_id']]);
-
-
-                            //  echo("</td>");
                           }
 
                           $student_assignment_total = $student_assignment_total + $problem_total*$eexamtime_data['perc_'.$eactivity_datum['alias_num']]/100;
                           $individual_score[$student_id] = round($student_assignment_total*10)/10;
 
                             // getting the max and min score on the team
-                          
-
-
 
                       }
 
@@ -276,25 +298,15 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                       if($individual_score[$student_id]<$min_ind_score[$i]){$min_ind_score[$i] = $individual_score[$student_id];}
 
         
-                      //  echo("<td>");
-                      //  echo round($student_assignment_total*10)/10;
-                      //  echo("</td>");
-        
-        
-                      // echo('</tr>');
-        
- //     }
+                      
 
-                  $team_weighted_ave[$i] = $team_weighted_ave[$i] + $individual_score[$student_id]/ count($studentonteam_data);
-
-
-
+                      $team_weighted_ave[$i] = $team_weighted_ave[$i] + $individual_score[$student_id]/ count($studentonteam_data);
+                      $team_kahoot[$i] =$team_kahoot_cumm[$i]/ count($studentonteam_data);
 
                 }
                  // var_dump($min_ind_score);
-                // Cmpute the instantaneous team_cohesivity on the team
+                // Compute the instantaneous team_cohesivity on the team
                 $num_stu_on_team[$i] = 0;
-           //     foreach ($student_data as $student_datum){
             foreach($studentonteam_data as $studentonteam_datum){
               $student_id = $studentonteam_datum['student_id'];
               $dev = $team_weighted_ave[$i]-($individual_score[$student_id]);
@@ -331,14 +343,11 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                     $team_data  = $stmt->fetch();   
                     $elapsed_time1 = $team_data['diff_in_secs'];
                     $team_cohesivity_avg = $team_data['team_cohesivity_avg'];
-              //      $team_score = $team_data['team_score'];
                     if ((!is_numeric($team_cohesivity_avg))){$team_cohesivity_avg = 0.0;}
-                  //  if ((!is_numeric($team_score))){$team_score = 0.0;}
                     $counter = $team_data['counter']+1;
                     $team_cohesivity_avg = ($team_cohesivity_avg*($counter-1) + $team_cohesivity[$i])/$counter;
                     $team_cohesivity_avg = round($team_cohesivity_avg);
-               //     echo $team_cohesivity_avg;
-                    $team_score = $team_weighted_ave[$i]*$team_cohesivity_avg/1000;
+                    $team_score = (($team_weighted_ave[$i]*$team_cohesivity_avg/1000)*(100-$pre_qr_weight)+$team_kahoot[$i]*$pre_qr_weight)/100 ;
                     
                   //  echo ' elapse_time1 '. $elapsed_time1;
                 
@@ -376,21 +385,16 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 foreach($studentonteam_data as $studentonteam_datum){
                   $student_id = $studentonteam_datum['student_id'];
                   $game_name = $studentonteam_datum['game_name'];
-                  // echo 'game_name '.$game_name;
-                  // echo 'student_id '.$student_id;
-                 // echo ' i '.$i;
+                  $kahoot_points = $studentonteam_datum['kahoot_points'];
+                  
                   echo('<td>');
 
                     echo $game_name;
                     echo('</td>');
-                    // echo('<td>');
-                    // echo ($studentonteam_datum['dex']);
-                    // echo('</td>');
-                    // echo('<td>');
-                    // if (isset($team_cap[$i])){
-                    //   if ($team_cap[$i]==$student_id){$check_flag = 'checked';}else{$check_flag ='';}
-                    // } else {$check_flag ='';}
-                    // echo '<input type = "radio" '.$check_flag.' id = "team_'.$i.'_stu_'.$student_id.'" name ="team_'.$i.'" value = "'.$student_id.'" ></input>';
+                    echo('<td>');
+
+                    echo $kahoot_points/$max_kahoot_score*100;
+                    echo('</td>');
                     echo('</td>');
                     echo('<td>');
                     echo ($individual_score[$student_id]);
@@ -398,10 +402,15 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                     echo('</td>');
                     if ($j==1){
                       echo('<td  rowspan ='. $num_rows.'>');
-                      echo ($team_cohesivity[$i]/10);
+                      echo ($team_kahoot[$i]);
                       echo('</td>');
                    }
                    if ($j==1){
+                    echo('<td  rowspan ='. $num_rows.'>');
+                    echo ($team_cohesivity[$i]/10);
+                    echo('</td>');
+                 }
+                 if ($j==1){
                     echo('<td  rowspan ='. $num_rows.'>');
                     echo ($team_cohesivity_avg/10);
                     echo('</td>');
@@ -412,12 +421,6 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                     echo('</td>');
                    }
                     echo('<tr>');
-                    // if($j!=1){
-                    //   echo('<td>');
-                    //   echo('</td>');
-                    //   echo('<td>');
-                    //   echo('</td>');
-                    // }
                   $j++;
                 }
 
@@ -426,7 +429,12 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
             }
 
          echo("</tbody>");
-       echo("</table>");
+         echo("</table>");
+
+         echo '<input type="hidden" name="eexamnow_id" value ="'.$eexamnow_id.'"></input>';
+         echo '<input type="hidden" name="eexamtime_id" value ="'.$eexamtime_id.'"></input>';
+        //  echo '<input type="hidden" name="eexamnow_id" value ="'.$eexamnow_id.'"';
+         echo("</form>");
 
 
 
