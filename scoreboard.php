@@ -153,7 +153,9 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
 
      echo '<div id = team_score>';
-      
+
+          // echo "say something";
+     
       echo '<form method = "POST" >';
       echo '<h2> Team Scores </h2> <h3>  Pre QR Weight: <input type = "number" min = 0 max = 100 id = "pre_qr_weight" name = "pre_qr_weight" value ="'.$pre_qr_weight.'"></input>&nbsp;<input type = "submit" value = "Submit"> </input></h3>';
       echo ('<table id="table_team_scores" style = "text-align:center" class = "a" border="1" >'."\n");	
@@ -193,6 +195,17 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                       echo("</thead>");
                 
             echo("<tbody>");
+            // echo('<td>');
+            // echo "say something";
+            // echo('</td>');
+            // echo('<td>');
+            // echo " eexamnow_id ".$eexamnow_id;
+            // echo('</td>');
+            // echo('<td>');
+            // echo " number_teams ".$number_teams;
+            // echo('</td>');
+
+  
 
            // Compute who got the high and low kahoot score from their input initialize the vaiables
             $max_kahoot_score =1;
@@ -206,7 +219,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
               ":eexamnow_id" => $eexamnow_id,
               ));
               $eregistration_kahoot_scores = $stmt->fetchAll();
-           //   var_dump ($eregistration_kahoot_scores);
+     //         var_dump ($eregistration_kahoot_scores);
             
               foreach ($eregistration_kahoot_scores as $kahoot_scores){
                 if($kahoot_scores['kahoot_points'] > $max_kahoot_score){$max_kahoot_score = $kahoot_scores['kahoot_points'];}
@@ -217,7 +230,11 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
 
 // $i is the team number  big loop on the data
+
             for ($i=1;$i<=$number_teams;$i++){
+
+  
+
             
               $max_ind_score [$i] = 0.0;  // initializing these max score for the team
               $min_ind_score[$i] = 100.0;
@@ -226,9 +243,10 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
               $team_kahoot_cumm[$i] =0;
               $cumm[$i] =0;
 
+
               $sql = "SELECT * FROM TeamStudentConnect 
                LEFT JOIN Student ON Student.student_id = TeamStudentConnect.student_id 
-               LEFT JOIN Eregistration ON eregistration.student_id = Student.student_id AND eregistration.eexamnow_id = TeamStudentConnect.eexamnow_id 
+               LEFT JOIN Eregistration ON Eregistration.student_id = Student.student_id AND Eregistration.eexamnow_id = TeamStudentConnect.eexamnow_id 
                WHERE TeamStudentConnect.eexamnow_id = :eexamnow_id AND team_num = :team_num ORDER BY TeamStudentConnect.dex ASC";
               $stmt = $pdo->prepare($sql);
               $stmt->execute(array(
@@ -236,7 +254,9 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 ":team_num" => $i,
                 ));
                 $studentonteam_data = $stmt->fetchALL(PDO::FETCH_ASSOC);  
-            //      var_dump($studentonteam_data);
+             //     var_dump($studentonteam_data);
+
+
 
                 if ( $studentonteam_data != false){$num_rows = count($studentonteam_data); } else {$num_rows = 1; }
               echo('<th rowspan ='. $num_rows.'>');
@@ -316,11 +336,6 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                // echo $cumm[$i];
                $range[$i]= $max_ind_score[$i]-$min_ind_score[$i];
                $sdev[$i] = pow($cumm[$i]/$num_stu_on_team[$i],0.5);
-              //  echo ( ' i '.$i);
-              //  echo ' range '.$range[$i]; 
-              //  echo ' max '.$max_ind_score[$i];
-              //  echo ' min '.$min_ind_score[$i];
-              //  echo ' sdev '.$sdev[$i];
                
                   if($range[$i]>=$range_limit){
                     $team_cohesivity[$i] =  $team_cohesivity[$i]-500;
@@ -426,7 +441,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
             }
             echo('</tr>');
-            }
+        }
 
          echo("</tbody>");
          echo("</table>");
@@ -442,9 +457,11 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 </div>
 
 <script>
+      console.log('window.location.reload');
 
     setTimeout(function(){
       window.location.reload(1);
+      console.log('window.location.reload');
     }, 5000);
 
 

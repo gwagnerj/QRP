@@ -51,7 +51,6 @@ session_start();
 			$eexamtime_id = $eexamnow_data['eexamtime_id'];
 
 
-
 			$sql = "SELECT gameboard_id FROM Eexamtime WHERE eexamtime_id =:eexamtime_id ";
 			$stmt = $pdo->prepare($sql);
 			$stmt -> execute(array(
@@ -60,7 +59,7 @@ session_start();
 			));
 			$eexamtime_data = $stmt->fetch(PDO::FETCH_ASSOC);
 			$gameboard_id = $eexamtime_data['gameboard_id'];
-//			echo ' gameboard_id'.$gameboard_id;
+			// echo ' gameboard_id'.$gameboard_id;
 
 	       $sql = "SELECT * FROM GameBoard WHERE gameboard_id =:gameboard_id";
 			$stmt = $pdo->prepare($sql);
@@ -74,76 +73,88 @@ session_start();
 			$board_image_file = $gameboard_data['board_image_file'];
 
 			$sql = "SELECT * FROM GameAction
-			 LEFT JOIN GameActionGameDevelopmentConnect
-			 ON GameActionGameDevelopmentConnect.gameaction_id = GameAction.gameaction_id
-			 LEFT JOIN GameDevelopment
-
-			 ON GameActionGameDevelopmentConnect.gamedevelopment_id = GameDevelopment.gamedevelopment_id
-			 WHERE GameActionGameDevelopmentConnect.gameboard_id = :gameboard_id";
+			 LEFT JOIN GameBoardGameActionConnect
+			 ON GameBoardGameActionConnect.gameaction_id = GameAction.gameaction_id
+			 WHERE GameBoardGameActionConnect.gameboard_id = :gameboard_id";
 			 $stmt = $pdo->prepare($sql);
 			 $stmt -> execute(array(
 				 ':gameboard_id' => $gameboard_id,
 					 
 			 ));
 			 $gameaction_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
-			 $options ='';
-//var_dump($gameaction_data);
+			//  var_dump($gameaction_data);
 
-			 	$k = 0;
+			 $sql = "SELECT * FROM GameChaos
+			 LEFT JOIN GameBoardGameChaosConnect
+			 ON GameBoardGameChaosConnect.gamechaos_id = GameChaos.gamechaos_id
+			 WHERE GameBoardGameChaosConnect.gameboard_id = :gameboard_id";
+			 $stmt = $pdo->prepare($sql);
+			 $stmt -> execute(array(
+				 ':gameboard_id' => $gameboard_id,
+					 
+			 ));
+			 $gamechaos_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
+
+			 $sql = "SELECT * FROM GamePolitical";
+			 $stmt = $pdo->prepare($sql);
+			 $stmt -> execute();
+			 $gamepolitical_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
+			 $options ='';
+			
+		$cards = array();
+		if($chaos_team == 0){
+
+			$k = 0; 	
 			 foreach ($gameaction_data as $gameaction_datum){
 
-				if (isset($gameaction_datum["fin_onetime_cost"])){$fin_ongoing_benefit = '<p> Financial Benefit: '.$gameaction_datum["fin_onetime_cost"].'</p>';} else {$fin_ongoing_benefit ='';}  // placeholder until get a different catagory in data table
-				if (isset($gameaction_datum["env_ongoing_benefit"])){$env_ongoing_benefit = '<p> Environmental Benefit: '.$gameaction_datum["env_ongoing_benefit"].'</p>';} else {$env_ongoing_benefit ='';}
-				if (isset($gameaction_datum["soc_ongoing_benefit"])){$soc_ongoing_benefit = '<p> Societal Benefit: '.$gameaction_datum["soc_ongoing_benefit"].'</p>';} else {$soc_ongoing_benefit ='';}
+				if (isset($gameaction_datum["cost"])){$cost = '<p> Cost: '.$gameaction_datum["cost"].'</p>';} else {$cost ='';}  
+				if (isset($gameaction_datum["fin_benefit"])){$fin_benefit = '<p> Financial Benefit: '.$gameaction_datum["fin_benefit"].'</p>';} else {$fin_benefit ='';}
+				if (isset($gameaction_datum["env_benefit"])){$env_benefit = '<p> Environmental Benefit: '.$gameaction_datum["env_benefit"].'</p>';} else {$env_benefit ='';}
+				if (isset($gameaction_datum["soc_benefit"])){$soc_benefit = '<p> Societal Benefit: '.$gameaction_datum["soc_benefit"].'</p>';} else {$soc_benefit ='';}
+				if (isset($gameaction_datum["fin_block"])){$fin_block = '<p> Financial Blocking Ability: '.$gameaction_datum["fin_block"].'</p>';} else {$fin_block ='';}
+				if (isset($gameaction_datum["env_block"])){$env_block = '<p> Environmental Blocking Ability: '.$gameaction_datum["env_block"].'</p>';} else {$env_block ='';}
+				if (isset($gameaction_datum["soc_block"])){$soc_block = '<p> Societal Blocking Ability: '.$gameaction_datum["soc_block"].'</p>';} else {$soc_block ='';}
 				if (isset($gameaction_datum["action_image_file"])){$action_image_file = '<img src = " '.$gameaction_datum["action_image_file"].'">';} else {$action_image_file ='';}
-
-			
-
-				if($chaos_team == 0){
 
 				 $cards[$k] = '<div class = "action_card" id = "action_card_'.$gameaction_datum["gameaction_id"].'">
 				 	<h3>'.$gameaction_datum["game_action_title"].'</h3>'.
-					 '<h4> Cost = '.$gameaction_datum["fin_onetime_cost"].'</h4>'.
-					//  '<p> Cost = '.$gameaction_datum["fin_onetime_cost"].'</h4>'.
-					 $fin_ongoing_benefit.
-					 $env_ongoing_benefit.
-					 $soc_ongoing_benefit.
+					 $cost.
+					 $fin_benefit.
+					 $env_benefit.
+					 $soc_benefit.
+					 $fin_block.
+					 $env_block.
+					 $soc_block.
 					 $action_image_file.
-					 
-					 '<button type="button" value = "'.$gameaction_datum["gameaction_id"].'">Add</button>'.
+					 '<button type="button" id = "action_add_button" value = "'.$gameaction_datum["gameaction_id"].'">Add</button>'.
 
 					 '</div>';
-
 					$k=$k+1;
-
-
-
-
-
-
-
-
-
-
-				// $options = $options.'<option value ='. $gameaction_datum["gameaction_id"].'>'.$gameaction_datum["game_action_title"].
-				// ' Cost: '.$gameaction_datum["fin_onetime_cost"].
-				// ', Financial: '.$gameaction_datum["fin_onetime_cost"].
-				// ', Environmental: '.$gameaction_datum["env_ongoing_benefit"].
-				// ', Societal: '.$gameaction_datum["soc_ongoing_benefit"].
-				// ', Blocks: '.$gameaction_datum["game_development_title"].
-				// ' with effect = '.$gameaction_datum["blocking_effect"].
-				// '</option>'; 	
-				} else {
-
-					$options = $options.'<option value ='. $gameaction_datum["gamedevelopment_id"].'>'.$gameaction_datum["game_development_title"].
-					' Cost: '.$gameaction_datum["fin_onetime_change"].
-					', Financial: '.$gameaction_datum["fin_onetime_cost"].
-					', Blocked by: '.$gameaction_datum["game_action_title"].
-					' with effect = '.$gameaction_datum["blocking_effect"].
-					'</option>'; 	
-
 				}
+
+			} else {
+				$k = 0;
+				foreach ($gamechaos_data as $gamechaos_datum){
+					if (isset($gamechaos_datum["chaos_main_effect"])){$chaos_main_effect = $gamechoas_datum["chaos_main_effect"].'</p>';} else {$chaos_main_effect ='';}  
+					if (isset($gamechaos_datum["cost"])){$cost = '<h4> Cost: '.$gamechoas_datum["cost"].'</h4>';} else {$cost ='';}  
+					if (isset($gamechaos_datum["fin_hit"])){$fin_hit = '<p> Financial Hit: '.$gamechaos_datum["fin_hit"].'</p>';} else {$fin_hit ='';}
+					if (isset($gamechaos_datum["env_hit"])){$env_hit = '<p> Environmental Hit: '.$gamechaos_datum["env_hit"].'</p>';} else {$env_hit ='';}
+					if (isset($gamechaos_datum["soc_hit"])){$soc_hit = '<p> Society Hit: '.$gamechaos_datum["soc_hit"].'</p>';} else {$soc_hit ='';}
+					if (isset($gamechaos_datum["chaos_image_file"])){$chaos_image_file = '<img src = " '.$gameaction_datum["chaos_image_file"].'">';} else {$chaos_image_file ='';}
+
+					$cards[$k] = '<div class = "chaos_card" id = "chaos_card_'.$gamechaos_datum["gamechaos_id"].'">
+					<h3>'.$gamechaos_datum["game_chaos_title"].'</h3>'.
+					$cost.
+					$fin_hit.
+					$env_hit.
+					$soc_hit.
+					$chaos_image_file.
+					'<button type="button" id = "chaos_add_button" value = "'.$gamechaos_datum["gameaction_id"].'">Add</button>'.
+					'</div>';
+
+				   $k=$k+1;
 			}
+		}
 // var_dump($gameaction_data);
 
 
@@ -173,9 +184,7 @@ session_start();
 <style>
 		.container-1{
 			display:flex;
-			
 		}
-
 		.container-1 div{
 			border:1px #ccc solid;
 			padding:10px;
