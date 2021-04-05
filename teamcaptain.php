@@ -124,6 +124,7 @@ session_start();
 							'<div class = "card_data">'.
 								'<p> Available <span id = "available_'.$gameaction_datum["gameaction_id"].'"> '.$max_select.'</span></p>'.
 								'<p> Num Selected: <span id = "numselected_'.$gameaction_datum["gameaction_id"].'">0</span></p> <br>'.
+								$action_image_file.
 								'<p> Fin Benefit: <span id = "finben_'.$gameaction_datum["gameaction_id"].'">'.$fin_benefit.'</span></p>'.
 								'<p> Env Benefit: <span id = "envben_'.$gameaction_datum["gameaction_id"].'">'.$env_benefit.'</span></p>'.
 								'<p> Soc Benefit: <span id = "socben_'.$gameaction_datum["gameaction_id"].'">'.$soc_benefit.'</span></p><br>'.
@@ -131,11 +132,8 @@ session_start();
 								'<p> Env Block: <span id = "envblock_'.$gameaction_datum["gameaction_id"].'">'.$env_block.'</span></p>'.
 								'<p> Soc Block: <span id = "socblock_'.$gameaction_datum["gameaction_id"].'">'.$soc_block.'</span></p>'.
 							'</div>'.
-							$action_image_file.
-					 '</div><div class = "remove_button_column"><div class = "remove_button_row">
-						<button type="button" id = "action_remove_button" value = "'.$gameaction_datum["gameaction_id"].'">Drop One</button> </div></div>'.
-
-					 '</div>';
+					'</div> <div class = "remove_button"> <button class ="button" type="button" id = "removebutton_'.$gameaction_datum["gameaction_id"].'" value = "'.$gameaction_datum["gameaction_id"].'">Drop One</button> </div>'.
+					'</div>';
 					$k=$k+1;
 				}
 
@@ -158,21 +156,17 @@ session_start();
 						'<div class = "card_data">'.
 							'<p> Available <span id = "available_'.$gamechaos_datum["gamechaos_id"].'">'.$max_select.'</span></p>'.
 							'<p>Num Selected <span id = "numselected_'.$gamechaos_datum["gamechaos_id"].'"> 0 </span></p>'.
+							$chaos_image_file.
 							'<br><p> Fin Hit: <span id = "finhit_'.$gamechaos_datum["gamechaos_id"].'">'.$fin_hit.'</span></p>'.
 							'<p> Env Hit:<span id = "envhit_'.$gamechaos_datum["gamechaos_id"].'">'.$env_hit.'</span></p>'.
 							'<p> Soc Hit:<span id = "sochit_'.$gamechaos_datum["gamechaos_id"].'">'.$soc_hit.'</span></p>'.
 						'</div>'.
-						$chaos_image_file.
-						'</div> <div class = "remove_button"> <button class ="button" type="button" id = "chaos_remove_button" value = "'.$gamechaos_datum["gamechaos_id"].'">Drop One</button> </div>'.
+						'</div> <div class = "remove_button"> <button class ="button" type="button" id = "removebutton_'.$gamechaos_datum["gamechaos_id"].'" value = "'.$gamechaos_datum["gamechaos_id"].'">Drop One</button> </div>'.
 					'</div>';
 
 				   $k=$k+1;
 			}
 		}
-// var_dump($gameaction_data);
-
-
- 
 
 	} else {
 		$_SESSION['error'] = "at least one parameter not set";
@@ -187,7 +181,7 @@ session_start();
 	<html lang = "en">
 	<head>
 
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<link rel="icon" type="image/png" href="McKetta.png" />  
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<meta Charset = "utf-8">
@@ -203,7 +197,7 @@ session_start();
 	ul {
 			list-style-type: none;
 		}
-		#avaialble_funds{
+		#available_funds{
 			/* width: 20em;
 			height: 20em; */
 			padding: 10px;
@@ -215,7 +209,7 @@ session_start();
 			padding: 0.5em;
 			display:grid;
 			/* grid-template-columns: 18em 18em 18em 18em; */
-			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 			grid-gap:0.5em;
 			justify-content: center;
 
@@ -231,6 +225,7 @@ session_start();
 		}	
 		.card{
 			padding:30px;
+			/* display: flex; */
 		}
 		.card_data{
 			line-height:6px;
@@ -239,29 +234,18 @@ session_start();
 		.button{
 
 			width:100%;
-
+		}
+		#submit_values{
+			background-color:darkred;
+			color:white;
+			
+		}
+		.class_button{
+			justify-content:right;
+			padding-left:200px;
+			border-right:100px; 
 		}
 
-/* 
-		.remove_button_column{
-			 display:flex;
-			 align-self: flex-end;
-			 width:100%;
-			 
-			 flex-direction:row;
-			 align-items: flex-end;
-			 }
-
-			  */
-
-			 /* .remove_button_row{
-			 display:flex;
-			 align-self: flex-end;
-			 width:100%;
-			 
-			 flex-direction:column; 
-			  align-items: flex-end;
-			 } */
  
 
 </style>
@@ -284,7 +268,7 @@ session_start();
 }
 
 ?>
-<h2> Spend Action Points </h2>
+<h2> Click Card to Add &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span class = "left_button"> <button id = "submit_values"  > Submit Values </button></span> </h2>
 <div class = "container-1">
 	
 	<?php 
@@ -298,39 +282,55 @@ session_start();
 
 <script>
 
-
-// document.querySelectorAll('.card').forEach(function(el){
-//   el.addEventListener('click', function() {
-//     console.log(this.id);
-//   });
-// });
-
 	let available_funds = document.getElementById("available_funds").textContent;
 	available_funds = parseInt(available_funds,10);
 	let costs = document.getElementsByClassName('cost');
+	document.getElementById("submit_values").addEventListener("click",()=>{
+		submitValues();
+	});
 
 	for (let i = 0; i < costs.length; i++){
 		let cost = parseInt(costs[i].textContent,10);
 		let cost_id = costs[i].id;
 		cost_id = cost_id.split('_')[1];
 
-		console.log(`id of card ${i} is ${cost_id}`);
-		console.log(`cost of card ${i} is ${cost}`);
-		// get the id for the card
-		
 
 		if (cost<=available_funds){
 			// change the avialability to based on how much they have
 			let available = Math.floor(available_funds/cost);
-				console.log(`The avaiable is ${available}`);
+				// console.log(`The avaiable is ${available}`);
 				document.getElementById("available_"+cost_id).innerText = +available;
 
 
-			document.getElementById("card_"+cost_id).addEventListener("click", () =>{
-				addCard();
-			});
+				document.getElementById("card_"+cost_id).addEventListener("click", function selectcard() {
+				addCard(cost_id,cost);
+				});
 
-			function addCard(){
+				if(document.getElementById("removebutton_"+cost_id)){
+					document.getElementById("removebutton_"+cost_id).addEventListener("click", () =>{
+						removeCard(cost_id,cost);
+				});
+				}
+			
+		} else {
+			document.getElementById("available_"+cost_id).innerText = 0;
+			// this should gray out the 
+		}
+	}
+
+
+
+
+		function addCard(cost_id,cost){
+				let available_funds = document.getElementById("available_funds").textContent;
+				available_funds = parseInt(available_funds,10);
+				let available = document.getElementById("available_"+cost_id).innerText;
+				available =  parseInt(available,10);
+				// console.log ('available '+available)
+				if (cost>available_funds || available < 1 ){
+					return;
+				}
+
 				let env_benefit = fin_benefit = soc_benefit = fin_block = env_block = soc_block = fin_hit = env_hit = soc_hit = 0;
 				let num_selected = document.getElementById("numselected_"+cost_id).innerText;
 
@@ -354,58 +354,117 @@ session_start();
 					// reduce the avialable funds
 					available_funds = available_funds - cost;
 					document.getElementById("available_funds").innerText = available_funds;
-					// now we need to recompute the number avaialbe for all of the cards - this should be a function call
-
+					// now we need to recompute the number avaialbe for all of the cards 
 					// should also update all of the catagories for the score for that team (how many fin, env and soc they are recieving)
+					// console.log(`the cost down in the click function is ${costs}`);
+					for (let i = 0; i < costs.length; i++){
+					    cost = parseInt(costs[i].textContent,10);
+					    cost_id = costs[i].id;
+						cost_id = cost_id.split('_')[1];
+
+						// console.log(`id of card ${i} is ${cost_id}`);
+						// console.log(`cost of card ${i} is ${cost}`);
+
+						if (cost<=available_funds){
+							// change the avialability to based on how much they have
+							let available = Math.floor(available_funds/cost);
+								// console.log(`The avaiable is ${available}`);
+								document.getElementById("available_"+cost_id).innerText = +available;
+								// document.getElementById("card_"+cost_id).addEventListener("click", () =>{
+								// addCard(cost_id,cost);
+							// });
+
+							
+							
+						} else {
+
+							document.getElementById("available_"+cost_id).innerText = 0;
+								// document.getElementById("card_"+cost_id).removeEventListener("click",  addCard);
+						
 
 
+							// this should gray out the 
+						}
+					}
 					// recheck all of the cards to make sure if they  we should remove event listeners
 
 			}
-			
-			
-			// document.getElementById(cost_id).innerHTML = "nope";
-		} else {
 
-			// this should gray out the 
-		}
+			function removeCard(cost_id,cost){
+				
+				let num_selected = parseInt(document.getElementById("numselected_"+cost_id).innerText,10);
+				if (num_selected ==0){
+					return;
+				}
 
-	}
+				let env_benefit = fin_benefit = soc_benefit = fin_block = env_block = soc_block = fin_hit = env_hit = soc_hit = 0;
+				if (document.getElementById("finben_"+cost_id)){fin_benefit =  parseInt(document.getElementById("finben_"+cost_id).innerText,10); if(isNaN(fin_benefit)){fin_benefit = 0;} document.getElementById("financial_points").innerText = parseInt(document.getElementById("financial_points").innerText,10)-fin_benefit; } 
+			    if (document.getElementById("envben_"+cost_id)){env_benefit =  parseInt(document.getElementById("envben_"+cost_id).innerText,10); if(isNaN(env_benefit)){env_benefit = 0;} document.getElementById("environmental_points").innerText = parseInt(document.getElementById("environmental_points").innerText,10)-env_benefit;} 
+				if (document.getElementById("socben_"+cost_id)){soc_benefit =  parseInt(document.getElementById("socben_"+cost_id).innerText,10); if(isNaN(soc_benefit)){soc_benefit = 0;} document.getElementById("societal_points").innerText = parseInt(document.getElementById("societal_points").innerText,10)-soc_benefit;} 
+
+				if (document.getElementById("finblock_"+cost_id)){fin_block =  parseInt(document.getElementById("finblock_"+cost_id).innerText,10); if(isNaN(fin_block)){fin_block = 0;} document.getElementById("financial_blocks").innerText = parseInt(document.getElementById("financial_blocks").innerText,10)-fin_block;} 
+				if (document.getElementById("envblock_"+cost_id)){env_block =  parseInt(document.getElementById("envblock_"+cost_id).innerText,10); if(isNaN(env_block)){env_block = 0;} document.getElementById("environmental_blocks").innerText = parseInt(document.getElementById("environmental_blocks").innerText,10)-env_block;} 
+				if (document.getElementById("socblock_"+cost_id)){soc_block =  parseInt(document.getElementById("socblock_"+cost_id).innerText,10); if(isNaN(soc_block)){soc_block = 0;} document.getElementById("societal_blocks").innerText = parseInt(document.getElementById("societal_blocks").innerText,10)-soc_block;}
+
+				if (document.getElementById("finhit_"+cost_id)){fin_hit =  parseInt(document.getElementById("finhit_"+cost_id).innerText,10); if(isNaN(fin_hit)){fin_hit = 0;} document.getElementById("financial_hits").innerText = parseInt(document.getElementById("financial_hits").innerText,10)-fin_hit;} 
+				if (document.getElementById("envhit_"+cost_id)){env_hit =  parseInt(document.getElementById("envhit_"+cost_id).innerText,10); if(isNaN(env_hit)){env_hit = 0;} document.getElementById("environmental_hits").innerText = parseInt(document.getElementById("environmental_hits").innerText,10)-env_hit;} 
+				if (document.getElementById("sochit_"+cost_id)){soc_hit =  parseInt(document.getElementById("sochit_"+cost_id).innerText,10); if(isNaN(soc_hit)){soc_hit = 0;} document.getElementById("societal_hits").innerText = parseInt(document.getElementById("societal_hits").innerText,10)-soc_hit;} 
+				let available = document.getElementById("available_"+cost_id).innerText;
+				available =  parseInt(available,10)+1;
+				document.getElementById("available_"+cost_id).innerText = available;
+
+				document.getElementById("numselected_"+cost_id).innerText = num_selected-1;
+
+				let available_funds = document.getElementById("available_funds").textContent;
+				available_funds = parseInt(available_funds,10);
+				available_funds = available_funds + cost;
+					document.getElementById("available_funds").innerText = available_funds;
+
+					for (let i = 0; i < costs.length; i++){
+					    cost = parseInt(costs[i].textContent,10);
+					    cost_id = costs[i].id;
+						cost_id = cost_id.split('_')[1];
+
+						// console.log(`id of card ${i} is ${cost_id}`);
+						// console.log(`cost of card ${i} is ${cost}`);
+
+						if (cost<=available_funds){
+							// change the avialability to based on how much they have
+							let available = Math.floor(available_funds/cost);
+								// console.log(`The avaiable is ${available}`);
+								document.getElementById("available_"+cost_id).innerText = +available;
+								// document.getElementById("card_"+cost_id).addEventListener("click", () =>{
+								// addCard(cost_id,cost);
+							// });
+							
+						} else {
+
+							document.getElementById("available_"+cost_id).innerText = 0;
+								// document.getElementById("card_"+cost_id).removeEventListener("click",  addCard);
+							// this should gray out the 
+						}
+					}
+
+			}
+
+			function submitValues(){
+				console.log(`submit values`);
+				// this is where I get the values into the data base via AJAX then move onto another page - maybe teamcaptain 2
 
 
 
 
 
+				// $.ajax({  
+				// 			url: 'update_team_data.php',
+				// 			method: 'post',
+				// 		data: {eexamtime_id:eexamtime_id,game_flag:game_flag,gameboard_id:gameboard_id}
+				// 		}).done(function(){
+                //    });
 
 
-// let userSelection = document.getElementsByClassName('card');
+			}
 
-// for(var i = 0; i < userSelection.length; i++) {
-//   (function(index) {
-//     userSelection[index].addEventListener("click", function(el) {
-// 		let clicked_id = this.id;
-// 		console.log ('clicled Id '+clicked_id);
-// 		console.log (`clicked id is ${clicked_id}`);
-//        console.log("Clicked index: " + index);
-//      })
-//   })(i);
-// }
-    //   document.getElementByClassName('card').addEventListener('click',(e)=>{
-    //     e.preventDefault();
-    //     const team_num_update = document.getElementById('team_num_update').value;
-    //     console.log(`number of teams is ${team_num_update}`);
-    //     const eexamtime_id = document.getElementById('eexamtime_id').value;
-    //     console.log(`eexamtime_id ${eexamtime_id}`);
-    //     $.ajax({   // this looks updates the eregistration with the new dex number
-	// 									url: 'update_number_teams.php',
-	// 									method: 'post',
-						
-	// 								data: {eexamtime_id:eexamtime_id,number_teams:team_num_update}
-	// 								}).done(function(){
-    //                });
-    //                window.location.reload(1);
-
-    //   })
 
 
 
