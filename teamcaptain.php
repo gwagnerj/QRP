@@ -107,26 +107,33 @@ session_start();
 			$k = 0; 	
 			 foreach ($gameaction_data as $gameaction_datum){
 
-				if (isset($gameaction_datum["cost"])){$cost = '<p> Cost: '.$gameaction_datum["cost"].'</p>';} else {$cost ='';}  
-				if (isset($gameaction_datum["fin_benefit"])){$fin_benefit = '<p> Financial Benefit: '.$gameaction_datum["fin_benefit"].'</p>';} else {$fin_benefit ='';}
-				if (isset($gameaction_datum["env_benefit"])){$env_benefit = '<p> Environmental Benefit: '.$gameaction_datum["env_benefit"].'</p>';} else {$env_benefit ='';}
-				if (isset($gameaction_datum["soc_benefit"])){$soc_benefit = '<p> Societal Benefit: '.$gameaction_datum["soc_benefit"].'</p>';} else {$soc_benefit ='';}
-				if (isset($gameaction_datum["fin_block"])){$fin_block = '<p> Financial Blocking Ability: '.$gameaction_datum["fin_block"].'</p>';} else {$fin_block ='';}
-				if (isset($gameaction_datum["env_block"])){$env_block = '<p> Environmental Blocking Ability: '.$gameaction_datum["env_block"].'</p>';} else {$env_block ='';}
-				if (isset($gameaction_datum["soc_block"])){$soc_block = '<p> Societal Blocking Ability: '.$gameaction_datum["soc_block"].'</p>';} else {$soc_block ='';}
+				if (isset($gameaction_datum["cost"])){$cost = '<h4> Cost <span class ="cost" id = "cost_'.$gameaction_datum["gameaction_id"].'">'.$gameaction_datum["cost"].'</span></h4>';} else {$cost ='';}  
+				if (isset($gameaction_datum["max_select"])){$max_select = $gameaction_datum["max_select"].'</p>';} else {$max_select =0;}  
+				if (isset($gameaction_datum["fin_benefit"])){$fin_benefit = $gameaction_datum["fin_benefit"];} else {$fin_benefit ='';}
+				if (isset($gameaction_datum["env_benefit"])){$env_benefit = $gameaction_datum["env_benefit"];} else {$env_benefit ='';}
+				if (isset($gameaction_datum["soc_benefit"])){$soc_benefit = $gameaction_datum["soc_benefit"];} else {$soc_benefit ='';}
+				if (isset($gameaction_datum["fin_block"])){$fin_block = $gameaction_datum["fin_block"];} else {$fin_block ='';}
+				if (isset($gameaction_datum["env_block"])){$env_block = $gameaction_datum["env_block"];} else {$env_block ='';}
+				if (isset($gameaction_datum["soc_block"])){$soc_block = $gameaction_datum["soc_block"];} else {$soc_block ='';}
 				if (isset($gameaction_datum["action_image_file"])){$action_image_file = '<img src = " '.$gameaction_datum["action_image_file"].'">';} else {$action_image_file ='';}
 
-				 $cards[$k] = '<div class = "action_card" id = "action_card_'.$gameaction_datum["gameaction_id"].'">
-				 	<h3>'.$gameaction_datum["game_action_title"].'</h3>'.
-					 $cost.
-					 $fin_benefit.
-					 $env_benefit.
-					 $soc_benefit.
-					 $fin_block.
-					 $env_block.
-					 $soc_block.
-					 $action_image_file.
-					 '<button type="button" id = "action_add_button" value = "'.$gameaction_datum["gameaction_id"].'">Add</button>'.
+				 $cards[$k] = '<div class = "action_card card_container">'.
+				 	'<div class = "card" id = "card_'.$gameaction_datum["gameaction_id"].'">
+							<h3>'.$gameaction_datum["game_action_title"].'</h3>'.
+							$cost.
+							'<div class = "card_data">'.
+								'<p> Available <span id = "available_'.$gameaction_datum["gameaction_id"].'"> '.$max_select.'</span></p>'.
+								'<p> Num Selected: <span id = "numselected_'.$gameaction_datum["gameaction_id"].'">0</span></p> <br>'.
+								'<p> Fin Benefit: <span id = "finben_'.$gameaction_datum["gameaction_id"].'">'.$fin_benefit.'</span></p>'.
+								'<p> Env Benefit: <span id = "envben_'.$gameaction_datum["gameaction_id"].'">'.$env_benefit.'</span></p>'.
+								'<p> Soc Benefit: <span id = "socben_'.$gameaction_datum["gameaction_id"].'">'.$soc_benefit.'</span></p><br>'.
+								'<p> Fin Block: <span id = "finblock_'.$gameaction_datum["gameaction_id"].'">'.$fin_block.'</span></p>'.
+								'<p> Env Block: <span id = "envblock_'.$gameaction_datum["gameaction_id"].'">'.$env_block.'</span></p>'.
+								'<p> Soc Block: <span id = "socblock_'.$gameaction_datum["gameaction_id"].'">'.$soc_block.'</span></p>'.
+							'</div>'.
+							$action_image_file.
+					 '</div><div class = "remove_button_column"><div class = "remove_button_row">
+						<button type="button" id = "action_remove_button" value = "'.$gameaction_datum["gameaction_id"].'">Drop One</button> </div></div>'.
 
 					 '</div>';
 					$k=$k+1;
@@ -135,21 +142,28 @@ session_start();
 			} else {
 				$k = 0;
 				foreach ($gamechaos_data as $gamechaos_datum){
-					if (isset($gamechaos_datum["chaos_main_effect"])){$chaos_main_effect = $gamechoas_datum["chaos_main_effect"].'</p>';} else {$chaos_main_effect ='';}  
-					if (isset($gamechaos_datum["cost"])){$cost = '<h4> Cost: '.$gamechoas_datum["cost"].'</h4>';} else {$cost ='';}  
-					if (isset($gamechaos_datum["fin_hit"])){$fin_hit = '<p> Financial Hit: '.$gamechaos_datum["fin_hit"].'</p>';} else {$fin_hit ='';}
-					if (isset($gamechaos_datum["env_hit"])){$env_hit = '<p> Environmental Hit: '.$gamechaos_datum["env_hit"].'</p>';} else {$env_hit ='';}
-					if (isset($gamechaos_datum["soc_hit"])){$soc_hit = '<p> Society Hit: '.$gamechaos_datum["soc_hit"].'</p>';} else {$soc_hit ='';}
-					if (isset($gamechaos_datum["chaos_image_file"])){$chaos_image_file = '<img src = " '.$gameaction_datum["chaos_image_file"].'">';} else {$chaos_image_file ='';}
+					if (isset($gamechaos_datum["chaos_main_effect"])){$chaos_main_effect = $gamechaos_datum["chaos_main_effect"].'</p>';} else {$chaos_main_effect ='';}  
+					if (isset($gamechaos_datum["max_select"])){$max_select = $gamechaos_datum["max_select"].'</p>';} else {$max_select =0;}  
+					if (isset($gamechaos_datum["cost"])){$cost = '<h4> Cost <span class ="cost" id = "cost_'.$gamechaos_datum["gamechaos_id"].'">'.$gamechaos_datum["cost"].'</span></h4>';} else {$cost ='';}  
+					if (isset($gamechaos_datum["fin_hit"])){$fin_hit = $gamechaos_datum["fin_hit"];} else {$fin_hit ='';}
+					if (isset($gamechaos_datum["env_hit"])){$env_hit = $gamechaos_datum["env_hit"];} else {$env_hit ='';}
+					if (isset($gamechaos_datum["soc_hit"])){$soc_hit = $gamechaos_datum["soc_hit"];} else {$soc_hit ='';}
+					if (isset($gamechaos_datum["chaos_image_file"])){$chaos_image_file = '<img src = " '.$gamechaos_datum["chaos_image_file"].'">';} else {$chaos_image_file ='';}
 
-					$cards[$k] = '<div class = "chaos_card" id = "chaos_card_'.$gamechaos_datum["gamechaos_id"].'">
-					<h3>'.$gamechaos_datum["game_chaos_title"].'</h3>'.
-					$cost.
-					$fin_hit.
-					$env_hit.
-					$soc_hit.
-					$chaos_image_file.
-					'<button type="button" id = "chaos_add_button" value = "'.$gamechaos_datum["gameaction_id"].'">Add</button>'.
+					$cards[$k] = '<div class = "chaos_card card_container">
+					<div class= "card" id = "card_'.$gamechaos_datum["gamechaos_id"].'">
+						<h3>'.$gamechaos_datum["game_chaos_title"].'</h3>'.
+						
+						$cost.
+						'<div class = "card_data">'.
+							'<p> Available <span id = "available_'.$gamechaos_datum["gamechaos_id"].'">'.$max_select.'</span></p>'.
+							'<p>Num Selected <span id = "numselected_'.$gamechaos_datum["gamechaos_id"].'"> 0 </span></p>'.
+							'<br><p> Fin Hit: <span id = "finhit_'.$gamechaos_datum["gamechaos_id"].'">'.$fin_hit.'</span></p>'.
+							'<p> Env Hit:<span id = "envhit_'.$gamechaos_datum["gamechaos_id"].'">'.$env_hit.'</span></p>'.
+							'<p> Soc Hit:<span id = "sochit_'.$gamechaos_datum["gamechaos_id"].'">'.$soc_hit.'</span></p>'.
+						'</div>'.
+						$chaos_image_file.
+						'</div> <div class = "remove_button"> <button class ="button" type="button" id = "chaos_remove_button" value = "'.$gamechaos_datum["gamechaos_id"].'">Drop One</button> </div>'.
 					'</div>';
 
 				   $k=$k+1;
@@ -182,16 +196,73 @@ session_start();
 	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 
 <style>
+	p{ 
+		padding:0px;
+	
+	}
+	ul {
+			list-style-type: none;
+		}
+		#avaialble_funds{
+			/* width: 20em;
+			height: 20em; */
+			padding: 10px;
+			margin:2em;
+			border: 2px solid green;
+		}
+
 		.container-1{
-			display:flex;
+			padding: 0.5em;
+			display:grid;
+			/* grid-template-columns: 18em 18em 18em 18em; */
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			grid-gap:0.5em;
+			justify-content: center;
+
 		}
-		.container-1 div{
-			border:1px #ccc solid;
+		.card_container{
+			display: flex;
 			padding:10px;
-		}
+			border:1px solid black;
+		
+			flex-direction:column;
+			/* flex-grow:column; */
+
+		}	
 		.card{
-			flex:1;
+			padding:30px;
 		}
+		.card_data{
+			line-height:6px;
+		}
+
+		.button{
+
+			width:100%;
+
+		}
+
+/* 
+		.remove_button_column{
+			 display:flex;
+			 align-self: flex-end;
+			 width:100%;
+			 
+			 flex-direction:row;
+			 align-items: flex-end;
+			 }
+
+			  */
+
+			 /* .remove_button_row{
+			 display:flex;
+			 align-self: flex-end;
+			 width:100%;
+			 
+			 flex-direction:column; 
+			  align-items: flex-end;
+			 } */
+ 
 
 </style>
 </head>
@@ -200,12 +271,16 @@ session_start();
 <body>
 
 <h1> Team Captains Page </h1>
-<h2><div id = "team_score" value = "<?php echo $team_score; ?>"> Team Score: <?php echo $team_score; ?> </div></h2>
+<h2><span id = "team_score" value = "<?php echo $team_score; ?>"> Action Points Earned: <?php echo $team_score; ?> </span>  &nbsp; &nbsp; Available  <span id = "available_funds" value="0" > <?php echo $team_score; ?> </span></h2>
 <?php if ($chaos_team == 1){
-	echo '<h2> This is the Chaos Team </h2>';
+	echo '<h2 style = "color:red;"> This is the Chaos Team </h2>';
+	echo '<h2> Hits: &nbsp; Financial  <span id = "financial_hits" value="0" > 0 </span> &nbsp; Environmental  <span id = "environmental_hits" value="0" > 0 </span>  &nbsp; Societal  <span id = "societal_hits" value="0" > 0 </span></h2>';
+	
 } else {
-
-	echo '<h2> This is a Normal Team </h2>';
+	echo '<h2> Points:  &nbsp; Financial  <span id = "financial_points" value="0" > 0 </span> &nbsp; Environmental  <span id = "environmental_points" value="0" > 0 </span>  &nbsp; Societal  <span id = "societal_points" value="0" > 0 </span></h2>';
+	echo '<h2> Blocks:  &nbsp; Financial  <span id = "financial_blocks" value="0" > 0 </span> &nbsp; Environmental  <span id = "environmental_blocks" value="0" > 0 </span>  &nbsp; Societal  <span id = "societal_blocks" value="0" > 0 </span></h2>';
+	
+	// echo '<h2> This is a Normal Team </h2>';
 }
 
 ?>
@@ -214,10 +289,7 @@ session_start();
 	
 	<?php 
 	foreach($cards as $card){
-		echo '<div class = "card">';
-			echo $card;
-		echo '</div>';
-
+				echo $card;
 	}
 
 
@@ -226,22 +298,98 @@ session_start();
 
 <script>
 
-if (document.addEventListener){
-    document.addEventListener("click", function(event){
-        let targetElement = event.target || event.srcElement;
-        console.log(targetElement);
-    });
-} else if (document.attachEvent) {    
-    document.attachEvent("onclick", function(){
-        let targetElement = event.target || event.srcElement;
-        console.log(targetElement);
-    });
-}
+
+// document.querySelectorAll('.card').forEach(function(el){
+//   el.addEventListener('click', function() {
+//     console.log(this.id);
+//   });
+// });
+
+	let available_funds = document.getElementById("available_funds").textContent;
+	available_funds = parseInt(available_funds,10);
+	let costs = document.getElementsByClassName('cost');
+
+	for (let i = 0; i < costs.length; i++){
+		let cost = parseInt(costs[i].textContent,10);
+		let cost_id = costs[i].id;
+		cost_id = cost_id.split('_')[1];
+
+		console.log(`id of card ${i} is ${cost_id}`);
+		console.log(`cost of card ${i} is ${cost}`);
+		// get the id for the card
+		
+
+		if (cost<=available_funds){
+			// change the avialability to based on how much they have
+			let available = Math.floor(available_funds/cost);
+				console.log(`The avaiable is ${available}`);
+				document.getElementById("available_"+cost_id).innerText = +available;
+
+
+			document.getElementById("card_"+cost_id).addEventListener("click", () =>{
+				addCard();
+			});
+
+			function addCard(){
+				let env_benefit = fin_benefit = soc_benefit = fin_block = env_block = soc_block = fin_hit = env_hit = soc_hit = 0;
+				let num_selected = document.getElementById("numselected_"+cost_id).innerText;
+
+				if (document.getElementById("finben_"+cost_id)){fin_benefit =  parseInt(document.getElementById("finben_"+cost_id).innerText,10); if(isNaN(fin_benefit)){fin_benefit = 0;} document.getElementById("financial_points").innerText = parseInt(document.getElementById("financial_points").innerText,10)+fin_benefit; } 
+			    if (document.getElementById("envben_"+cost_id)){env_benefit =  parseInt(document.getElementById("envben_"+cost_id).innerText,10); if(isNaN(env_benefit)){env_benefit = 0;} document.getElementById("environmental_points").innerText = parseInt(document.getElementById("environmental_points").innerText,10)+env_benefit;} 
+				if (document.getElementById("socben_"+cost_id)){soc_benefit =  parseInt(document.getElementById("socben_"+cost_id).innerText,10); if(isNaN(soc_benefit)){soc_benefit = 0;} document.getElementById("societal_points").innerText = parseInt(document.getElementById("societal_points").innerText,10)+soc_benefit;} 
+
+				if (document.getElementById("finblock_"+cost_id)){fin_block =  parseInt(document.getElementById("finblock_"+cost_id).innerText,10); if(isNaN(fin_block)){fin_block = 0;} document.getElementById("financial_blocks").innerText = parseInt(document.getElementById("financial_blocks").innerText,10)+fin_block;} 
+				if (document.getElementById("envblock_"+cost_id)){env_block =  parseInt(document.getElementById("envblock_"+cost_id).innerText,10); if(isNaN(env_block)){env_block = 0;} document.getElementById("environmental_blocks").innerText = parseInt(document.getElementById("environmental_blocks").innerText,10)+env_block;} 
+				if (document.getElementById("socblock_"+cost_id)){soc_block =  parseInt(document.getElementById("socblock_"+cost_id).innerText,10); if(isNaN(soc_block)){soc_block = 0;} document.getElementById("societal_blocks").innerText = parseInt(document.getElementById("societal_blocks").innerText,10)+soc_block;}
+
+				if (document.getElementById("finhit_"+cost_id)){fin_hit =  parseInt(document.getElementById("finhit_"+cost_id).innerText,10); if(isNaN(fin_hit)){fin_hit = 0;} document.getElementById("financial_hits").innerText = parseInt(document.getElementById("financial_hits").innerText,10)+fin_hit;} 
+				if (document.getElementById("envhit_"+cost_id)){env_hit =  parseInt(document.getElementById("envhit_"+cost_id).innerText,10); if(isNaN(env_hit)){env_hit = 0;} document.getElementById("environmental_hits").innerText = parseInt(document.getElementById("environmental_hits").innerText,10)+env_hit;} 
+				if (document.getElementById("sochit_"+cost_id)){soc_hit =  parseInt(document.getElementById("sochit_"+cost_id).innerText,10); if(isNaN(soc_hit)){soc_hit = 0;} document.getElementById("societal_hits").innerText = parseInt(document.getElementById("societal_hits").innerText,10)+soc_hit;} 
+
+			//	 console.log(`soc hit is ${soc_hit}`)
+					num_selected = parseInt(num_selected,10) + 1;
+
+					// change the number selected on the card
+					document.getElementById("numselected_"+cost_id).innerText = num_selected;
+					// reduce the avialable funds
+					available_funds = available_funds - cost;
+					document.getElementById("available_funds").innerText = available_funds;
+					// now we need to recompute the number avaialbe for all of the cards - this should be a function call
+
+					// should also update all of the catagories for the score for that team (how many fin, env and soc they are recieving)
+
+
+					// recheck all of the cards to make sure if they  we should remove event listeners
+
+			}
+			
+			
+			// document.getElementById(cost_id).innerHTML = "nope";
+		} else {
+
+			// this should gray out the 
+		}
+
+	}
 
 
 
 
 
+
+
+// let userSelection = document.getElementsByClassName('card');
+
+// for(var i = 0; i < userSelection.length; i++) {
+//   (function(index) {
+//     userSelection[index].addEventListener("click", function(el) {
+// 		let clicked_id = this.id;
+// 		console.log ('clicled Id '+clicked_id);
+// 		console.log (`clicked id is ${clicked_id}`);
+//        console.log("Clicked index: " + index);
+//      })
+//   })(i);
+// }
     //   document.getElementByClassName('card').addEventListener('click',(e)=>{
     //     e.preventDefault();
     //     const team_num_update = document.getElementById('team_num_update').value;

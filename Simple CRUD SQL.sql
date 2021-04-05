@@ -2792,39 +2792,43 @@ ENGINE=InnoDB CHARACTER SET = utf8;
      CREATE TABLE IF NOT EXISTS `GameAction` ( /*  these are the action cards for the board game of this*/
 		`gameaction_id` INT(11) NOT NULL AUTO_INCREMENT,
         `game_action_title` VARCHAR(50) NOT NULL, 
-        `fin_onetime_cost` INT(11) NOT NULL, 
-        `fin_ongoing_cost` int(11),
-        `env_ongoing_benefit`  INT(11), 
-        `soc_ongoing_benefit`  INT(11), 
         `action_image_file`  VARCHAR(50), 
         `action_html_file`  VARCHAR(50), 
         `action_video_file`  VARCHAR(50), 
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+         CONSTRAINT UNIQUE (game_action_title),
 	    	PRIMARY KEY (`gameaction_id`))
         ENGINE=InnoDB DEFAULT CHARSET=utf8;   
-
-
-         CREATE TABLE IF NOT EXISTS `GameDevelopment` (
-	    	`gamedevelopment_id` INT(11) NOT NULL AUTO_INCREMENT,
-        `game_development_title` VARCHAR(50) NOT NULL, 
-        `development_catagory` VARCHAR(20) NOT NULL, 
-        `fin_onetime_change` int(11),
-        `env_onetime_change`  INT(11), 
-        `soc_onetime_change`  INT(11), 
-        `cash_flow_change`  INT(11), 
-        `production_change`  INT(11), 
-        `margin_change`  INT(11), 
-        `fin_wt_change`  INT(11), 
-        `env_wt_change`  INT(11), 
-        `soc_wt_change`  INT(11), 
-        `development_image_file`  VARCHAR(50), 
-        `development_html_file`  VARCHAR(50), 
-        `development_video_file`  VARCHAR(50), 
+       
+       
+         CREATE TABLE IF NOT EXISTS `GameChaos` (
+	    	`gamechaos_id` INT(11) NOT NULL AUTO_INCREMENT,
+        `game_chaos_title` VARCHAR(50) NOT NULL, 
+        `chaos_image_file`  VARCHAR(50), 
+        `chaos_html_file`  VARCHAR(50), 
+        `chaos_video_file`  VARCHAR(50), 
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	    	PRIMARY KEY (`gamedevelopment_id`))
+        CONSTRAINT UNIQUE (game_chaos_title),
+	    	PRIMARY KEY (`gamechaos_id`))
         ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+
+         CREATE TABLE IF NOT EXISTS `GamePolitical` (
+	    	`gamepolitical_id` INT(11) NOT NULL AUTO_INCREMENT,
+        `game_political_title` VARCHAR(50) NOT NULL, 
+        `fin_wt`  INT(5), 
+        `env_wt`  INT(5), 
+        `soc_wt`  INT(5), 
+        `political_image_file`  VARCHAR(50), 
+        `political_html_file`  VARCHAR(50), 
+        `political_video_file`  VARCHAR(50), 
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	    	PRIMARY KEY (`gamepolitical_id`))
+        ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+
+
 
          CREATE TABLE IF NOT EXISTS `GameBoard` (
 	    	`gameboard_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -2838,38 +2842,73 @@ ENGINE=InnoDB CHARACTER SET = utf8;
 	    	PRIMARY KEY (`gameboard_id`))
         ENGINE=InnoDB DEFAULT CHARSET=utf8;   
 
+      CREATE TABLE IF NOT EXISTS GameBoardGameActionConnect (
+            `gameboardgameactionconnect_id` INT(11) NOT NULL AUTO_INCREMENT,
+            `gameaction_id` INT(11) NOT NULL,
+            `gameboard_id` INT(11) NOT NULL,
+             `cost` INT(6) NOT NULL, 
+            `fin_benefit` int(6),
+            `env_benefit`  INT(6), 
+            `soc_benefit`  INT(6), 
+            `fin_block`  INT(6), 
+            `env_block`  INT(6), 
+            `soc_block`  INT(6), 
+            `max_select`  INT(3), 
+            CONSTRAINT FOREIGN KEY (`gameaction_id`) REFERENCES GameAction (gameaction_id),
+            CONSTRAINT FOREIGN KEY (`gameboard_id`) REFERENCES GameBoard ( `gameboard_id`),
+            CONSTRAINT UNIQUE (gameaction_id,gameboard_id),
+            PRIMARY KEY (gameboardgameactionconnect_id)
+          ) ENGINE=InnoDB CHARACTER SET = utf8;    
 
-  CREATE TABLE IF NOT EXISTS GameActionGameDevelopmentConnect (
-    	`gameactiongamedevelopmentconnect_id` INT(11) NOT NULL AUTO_INCREMENT,
-      `gameaction_id` INT(11) NOT NULL,
-      `gamedevelopment_id` INT(11) NOT NULL,
-      `gameboard_id` INT(11) NOT NULL,
-      `blocking_effect` INT(11) DEFAULT 0,
-      CONSTRAINT FOREIGN KEY (`gameaction_id`) REFERENCES GameAction (gameaction_id),
-      CONSTRAINT FOREIGN KEY (`gamedevelopment_id`) REFERENCES GameDevelopment ( `gamedevelopment_id`),
-      CONSTRAINT FOREIGN KEY (`gameboard_id`) REFERENCES GameBoard ( `gameboard_id`),
-      CONSTRAINT UNIQUE (gamedevelopment_id,gameaction_id,gameboard_id),
-      PRIMARY KEY (gameactiongamedevelopmentconnect_id)
-    ) ENGINE=InnoDB CHARACTER SET = utf8;    
+      CREATE TABLE IF NOT EXISTS GameBoardGameChaosConnect (
+            `gameboardgamechaosconnect_id` INT(11) NOT NULL AUTO_INCREMENT,
+            `gamechaos_id` INT(11) NOT NULL,
+            `gameboard_id` INT(11) NOT NULL,
+           `chaos_main_effect` VARCHAR(20) NOT NULL, 
+            `cost` int(6),
+            `fin_hit`  INT(5), 
+            `env_hit`  INT(5), 
+            `soc_hit`  INT(5), 
+             `max_select`  INT(3) DEFAULT 1, -- maximum number of times card can be selected in a round
+            CONSTRAINT FOREIGN KEY (`gamechaos_id`) REFERENCES GameChaos (gamechaos_id),
+            CONSTRAINT FOREIGN KEY (`gameboard_id`) REFERENCES GameBoard ( `gameboard_id`),
+            CONSTRAINT UNIQUE (gamechaos_id,gameboard_id),
+            PRIMARY KEY (gameboardgamechaosconnect_id)
+          ) ENGINE=InnoDB CHARACTER SET = utf8;    
 
 
-     CREATE TABLE IF NOT EXISTS `GameBoardSetup` ( 
-		`gameboardsetup_id` INT(11) NOT NULL AUTO_INCREMENT,
-        `gameboard_id` INT(11) NOT NULL, 
-        `round` INT(3) NOT NULL, 
-        `num_concept_questions` INT(3),
-        `max_concept_points`  INT(5), 
-        `concept_weighting`  INT(3), 
-        `quant_weighting`  INT(3),  
-        `reflection_weighting`INT(3), 
-        `percent_to_know_point` INT(3), 
-        `know_to_capacity` INT(3), 
-        `max_cap_inc` INT(3), 
-        `development_intesity_factor` INT(3), 
-        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	    	PRIMARY KEY (`gameboardsetup_id`))
-        ENGINE=InnoDB DEFAULT CHARSET=utf8;   
+
+  -- CREATE TABLE IF NOT EXISTS GameActionGameDevelopmentConnect (
+  --   	`gameactiongamedevelopmentconnect_id` INT(11) NOT NULL AUTO_INCREMENT,
+  --     `gameaction_id` INT(11) NOT NULL,
+  --     `gamedevelopment_id` INT(11) NOT NULL,
+  --     `gameboard_id` INT(11) NOT NULL,
+  --     `blocking_effect` INT(11) DEFAULT 0,
+  --     CONSTRAINT FOREIGN KEY (`gameaction_id`) REFERENCES GameAction (gameaction_id),
+  --     CONSTRAINT FOREIGN KEY (`gamedevelopment_id`) REFERENCES GameDevelopment ( `gamedevelopment_id`),
+  --     CONSTRAINT FOREIGN KEY (`gameboard_id`) REFERENCES GameBoard ( `gameboard_id`),
+  --     CONSTRAINT UNIQUE (gamedevelopment_id,gameaction_id,gameboard_id),
+  --     PRIMARY KEY (gameactiongamedevelopmentconnect_id)
+  --   ) ENGINE=InnoDB CHARACTER SET = utf8;    
+
+
+    --  CREATE TABLE IF NOT EXISTS `GameBoardSetup` ( 
+		-- `gameboardsetup_id` INT(11) NOT NULL AUTO_INCREMENT,
+    --     `gameboard_id` INT(11) NOT NULL, 
+    --     `round` INT(3) NOT NULL, 
+    --     `num_concept_questions` INT(3),
+    --     `max_concept_points`  INT(5), 
+    --     `concept_weighting`  INT(3), 
+    --     `quant_weighting`  INT(3),  
+    --     `reflection_weighting`INT(3), 
+    --     `percent_to_know_point` INT(3), 
+    --     `know_to_capacity` INT(3), 
+    --     `max_cap_inc` INT(3), 
+    --     `development_intesity_factor` INT(3), 
+    --     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    --     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	  --   	PRIMARY KEY (`gameboardsetup_id`))
+    --     ENGINE=InnoDB DEFAULT CHARSET=utf8;   
 
 
   ALTER TABLE `Problem` 
@@ -2910,3 +2949,27 @@ ENGINE=InnoDB CHARACTER SET = utf8;
 
      ALTER TABLE `Eregistration` 
 	ADD `kahoot_points` INT(16) DEFAULT 0 AFTER `exam_code` 
+
+      ALTER TABLE `Team` 
+	ADD `fin_score` int(5) DEFAULT 0 AFTER `counter`, 
+	ADD `env_score` int(5) DEFAULT 0 AFTER `fin_score`, 
+	ADD `soc_score` int(5) DEFAULT 0 AFTER `env_score`, 
+	ADD `fin_block` int(5) DEFAULT 0 AFTER `soc_score`, 
+	ADD `env_block` int(5) DEFAULT 0 AFTER `fin_block`, 
+	ADD `soc_block` int(5) DEFAULT 0 AFTER `env_block`, 
+	ADD `final_score` int(5) DEFAULT 0 AFTER `soc_score`
+
+-- this connects all three talbes if we want to have the certain actions block certain chaos
+      CREATE TABLE IF NOT EXISTS GameBoardChaosActionConnect (
+            `gameboardchaosactionconnect_id` INT(11) NOT NULL AUTO_INCREMENT,
+            `gamechaos_id` INT(11) NOT NULL,
+            `gameboard_id` INT(11) NOT NULL,
+            `gameaction_id` INT(11) NOT NULL,
+            `chaos_action_block` INT(5) NOT NULL,
+            CONSTRAINT FOREIGN KEY (`gamechaos_id`) REFERENCES GameChaos (gamechaos_id),
+            CONSTRAINT FOREIGN KEY (`gameboard_id`) REFERENCES GameBoard ( `gameboard_id`),
+            CONSTRAINT FOREIGN KEY (`gameaction_id`) REFERENCES GameAction ( `gameaction_id`),
+            CONSTRAINT UNIQUE (gamechaos_id,gameboard_id,gameaction_id),
+            PRIMARY KEY (gameboardchaosactionconnect_id)
+          ) ENGINE=InnoDB CHARACTER SET = utf8;    
+
