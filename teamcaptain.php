@@ -59,7 +59,7 @@ session_start();
 			));
 			$eexamtime_data = $stmt->fetch(PDO::FETCH_ASSOC);
 			$gameboard_id = $eexamtime_data['gameboard_id'];
-			// echo ' gameboard_id'.$gameboard_id;
+//  echo ' gameboard_id'.$gameboard_id;
 
 	       $sql = "SELECT * FROM GameBoard WHERE gameboard_id =:gameboard_id";
 			$stmt = $pdo->prepare($sql);
@@ -68,7 +68,7 @@ session_start();
 					
 			));
 			$gameboard_data = $stmt->fetch(PDO::FETCH_ASSOC);
-//			var_dump($gameboard_data);
+	// var_dump($gameboard_data);
 			$game_board_title = $gameboard_data['game_board_title'];
 			$board_image_file = $gameboard_data['board_image_file'];
 
@@ -82,7 +82,7 @@ session_start();
 					 
 			 ));
 			 $gameaction_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
-			//  var_dump($gameaction_data);
+	//  var_dump($gameaction_data);
 
 			 $sql = "SELECT * FROM GameChaos
 			 LEFT JOIN GameBoardGameChaosConnect
@@ -255,6 +255,7 @@ session_start();
 <body>
 
 <h1> Team Captains Page </h1>
+
 <h2><span id = "team_score" value = "<?php echo $team_score; ?>"> Action Points Earned: <?php echo $team_score; ?> </span>  &nbsp; &nbsp; Available  <span id = "available_funds" value="0" > <?php echo $team_score; ?> </span></h2>
 <?php if ($chaos_team == 1){
 	echo '<h2 style = "color:red;"> This is the Chaos Team </h2>';
@@ -278,6 +279,9 @@ session_start();
 
 
 	?>
+ <input type="hidden" id = "team_id" name="team_id" value = "<?php echo $team_id; ?>"></input>
+
+
 </div>
 
 <script>
@@ -449,18 +453,44 @@ session_start();
 
 			function submitValues(){
 				console.log(`submit values`);
+				let fin_score = env_score = soc_score = fin_block = env_block = soc_block = fin_hit = env_hit = soc_hit = 0;
+
 				// this is where I get the values into the data base via AJAX then move onto another page - maybe teamcaptain 2
+				if (document.getElementById("financial_points")){ fin_score = document.getElementById("financial_points").innerText;}
+				if(document.getElementById("environmental_points")){ env_score = document.getElementById("environmental_points").innerText;}
+				if( document.getElementById("societal_points")){ soc_score = document.getElementById("societal_points").innerText;}
+				if( document.getElementById("financial_blocks")) {fin_block = document.getElementById("financial_blocks").innerText;}
+				if(document.getElementById("environmental_blocks")) {env_block = document.getElementById("environmental_blocks").innerText;}
+				if(document.getElementById("societal_blocks")) { soc_block = document.getElementById("societal_blocks").innerText;}
+				if(document.getElementById("financial_hits")){fin_hit = document.getElementById("financial_hits").innerText;}
+				if(document.getElementById("environmental_hits")) {env_hit = document.getElementById("environmental_hits").innerText;}
+				if(document.getElementById("societal_hits")) {soc_hit = document.getElementById("societal_hits").innerText;}
+				const team_id = document.getElementById("team_id").value;
+				let available_funds = document.getElementById("available_funds").textContent;
+				console.log (`team_id is ${team_id}`);
 
 
 
+				$.ajax({  
+					url: 'update_team_data.php',
+					method: 'post',
+				    data: {
+						team_id:team_id,
+						fin_score:fin_score,
+						env_score:env_score,
+						soc_score:soc_score,
+						fin_block:fin_block,
+						env_block:env_block,
+						soc_block:soc_block,
+						fin_block:fin_block,
+						fin_hit:fin_hit,
+						env_hit:env_hit,
+						soc_hit:soc_hit
+					}
+						}).done(function(){
+                   });
 
-
-				// $.ajax({  
-				// 			url: 'update_team_data.php',
-				// 			method: 'post',
-				// 		data: {eexamtime_id:eexamtime_id,game_flag:game_flag,gameboard_id:gameboard_id}
-				// 		}).done(function(){
-                //    });
+				   window.location.replace("teamcaptain2.php?team_id="+team_id+"&available_funds="+available_funds);
 
 
 			}
