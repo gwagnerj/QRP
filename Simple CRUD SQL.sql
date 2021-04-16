@@ -2957,7 +2957,15 @@ ENGINE=InnoDB CHARACTER SET = utf8;
 	ADD `fin_block` int(5) DEFAULT 0 AFTER `soc_score`, 
 	ADD `env_block` int(5) DEFAULT 0 AFTER `fin_block`, 
 	ADD `soc_block` int(5) DEFAULT 0 AFTER `env_block`, 
-	ADD `final_score` int(5) DEFAULT 0 AFTER `soc_score`
+	ADD `fin_hit` int(5) DEFAULT 0 AFTER `soc_block`, 
+	ADD `env_hit` int(5) DEFAULT 0 AFTER `fin_hit`, 
+	ADD `soc_hit` int(5) DEFAULT 0 AFTER `env_hit`, 
+	ADD `pol_points` int(5) DEFAULT 0 AFTER `soc_hit`, 
+	ADD `gamepolitical_id` int(5) DEFAULT 0 AFTER `pol_points`, 
+	ADD `final_score` int(5) DEFAULT 0 AFTER `soc_hit`
+
+
+
 
 -- this connects all three talbes if we want to have the certain actions block certain chaos
       CREATE TABLE IF NOT EXISTS GameBoardChaosActionConnect (

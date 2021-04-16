@@ -123,6 +123,7 @@ session_start();
 							$cost.
 							'<div class = "card_data">'.
 								'<p> Available <span id = "available_'.$gameaction_datum["gameaction_id"].'"> '.$max_select.'</span></p>'.
+								'<p><input  type = "hidden" id = "maxavailable_'.$gameaction_datum["gameaction_id"].'" value = "'.$max_select.'" ></input></p>'.
 								'<p> Num Selected: <span id = "numselected_'.$gameaction_datum["gameaction_id"].'">0</span></p> <br>'.
 								$action_image_file.
 								'<p> Fin Benefit: <span id = "finben_'.$gameaction_datum["gameaction_id"].'">'.$fin_benefit.'</span></p>'.
@@ -154,8 +155,9 @@ session_start();
 						
 						$cost.
 						'<div class = "card_data">'.
-							'<p> Available <span id = "available_'.$gamechaos_datum["gamechaos_id"].'">'.$max_select.'</span></p>'.
-							'<p>Num Selected <span id = "numselected_'.$gamechaos_datum["gamechaos_id"].'"> 0 </span></p>'.
+						'<p> Available <span id = "available_'.$gamechaos_datum["gamechaos_id"].'">'.$max_select.'</span></p>'.
+						'<p><input  type = "hidden" id = "maxavailable_'.$gamechaos_datum["gamechaos_id"].'" value = "'.$max_select.'"></input></p>'.
+						'<p>Num Selected <span id = "numselected_'.$gamechaos_datum["gamechaos_id"].'"> 0 </span></p>'.
 							$chaos_image_file.
 							'<br><p> Fin Hit: <span id = "finhit_'.$gamechaos_datum["gamechaos_id"].'">'.$fin_hit.'</span></p>'.
 							'<p> Env Hit:<span id = "envhit_'.$gamechaos_datum["gamechaos_id"].'">'.$env_hit.'</span></p>'.
@@ -192,7 +194,6 @@ session_start();
 <style>
 	p{ 
 		padding:0px;
-	
 	}
 	ul {
 			list-style-type: none;
@@ -203,6 +204,11 @@ session_start();
 			padding: 10px;
 			margin:2em;
 			border: 2px solid green;
+		}
+
+		.gray_out_card{ 
+			background-color: gray;
+  			 opacity:0.4; 
 		}
 
 		.container-1{
@@ -218,6 +224,7 @@ session_start();
 			display: flex;
 			padding:10px;
 			border:1px solid black;
+
 		
 			flex-direction:column;
 			/* flex-grow:column; */
@@ -297,11 +304,14 @@ session_start();
 		let cost = parseInt(costs[i].textContent,10);
 		let cost_id = costs[i].id;
 		cost_id = cost_id.split('_')[1];
+		let max_available = parseInt(document.getElementById("maxavailable_"+cost_id).value,10);
+		// console.log("max available "+max_available);
 
 
 		if (cost<=available_funds){
 			// change the avialability to based on how much they have
 			let available = Math.floor(available_funds/cost);
+				available = Math.min(max_available,available);
 				// console.log(`The avaiable is ${available}`);
 				document.getElementById("available_"+cost_id).innerText = +available;
 
@@ -318,7 +328,9 @@ session_start();
 			
 		} else {
 			document.getElementById("available_"+cost_id).innerText = 0;
-			// this should gray out the 
+		 document.getElementById("card_"+cost_id).classList.add("gray_out_card");
+
+
 		}
 	}
 
@@ -332,6 +344,8 @@ session_start();
 				available =  parseInt(available,10);
 				// console.log ('available '+available)
 				if (cost>available_funds || available < 1 ){
+				 document.getElementById("card_"+cost_id).classList.add("gray_out_card");
+
 					return;
 				}
 
@@ -358,24 +372,39 @@ session_start();
 					// reduce the avialable funds
 					available_funds = available_funds - cost;
 					document.getElementById("available_funds").innerText = available_funds;
-					// now we need to recompute the number avaialbe for all of the cards 
-					// should also update all of the catagories for the score for that team (how many fin, env and soc they are recieving)
-					// console.log(`the cost down in the click function is ${costs}`);
+					available = parseInt(document.getElementById("available_"+cost_id).innerText,10)-1;
+
+
+					if (available < 1){
+						document.getElementById("card_"+cost_id).classList.add("gray_out_card");
+						}
 					for (let i = 0; i < costs.length; i++){
 					    cost = parseInt(costs[i].textContent,10);
 					    cost_id = costs[i].id;
 						cost_id = cost_id.split('_')[1];
+						let num_selected = document.getElementById("numselected_"+cost_id).innerText;
+						num_selected = parseInt(num_selected,10);
 
-						// console.log(`id of card ${i} is ${cost_id}`);
-						// console.log(`cost of card ${i} is ${cost}`);
+
+						console.log(`id of card ${i} is ${cost_id}`);
+						console.log(`cost of card ${i} is ${cost}`);
 
 						if (cost<=available_funds){
 							// change the avialability to based on how much they have
-							let available = Math.floor(available_funds/cost);
+							let max_available = parseInt(document.getElementById("maxavailable_"+cost_id).value,10);
+							console.log(`max available ${max_available}`);
+							let avaiable = parseInt(document.getElementById("available_"+cost_id).innerText,10);
+							console.log(`available_why ${available}`);
+							 available = Math.min(Math.floor(available_funds/cost),max_available-num_selected);
 								// console.log(`The avaiable is ${available}`);
 								document.getElementById("available_"+cost_id).innerText = +available;
 								// document.getElementById("card_"+cost_id).addEventListener("click", () =>{
 								// addCard(cost_id,cost);
+								if (available == 0){
+									document.getElementById("card_"+cost_id).classList.add("gray_out_card");
+								}
+
+
 							// });
 
 							
@@ -383,8 +412,7 @@ session_start();
 						} else {
 
 							document.getElementById("available_"+cost_id).innerText = 0;
-								// document.getElementById("card_"+cost_id).removeEventListener("click",  addCard);
-						
+							document.getElementById("card_"+cost_id).classList.add("gray_out_card");
 
 
 							// this should gray out the 
@@ -413,9 +441,11 @@ session_start();
 				if (document.getElementById("finhit_"+cost_id)){fin_hit =  parseInt(document.getElementById("finhit_"+cost_id).innerText,10); if(isNaN(fin_hit)){fin_hit = 0;} document.getElementById("financial_hits").innerText = parseInt(document.getElementById("financial_hits").innerText,10)-fin_hit;} 
 				if (document.getElementById("envhit_"+cost_id)){env_hit =  parseInt(document.getElementById("envhit_"+cost_id).innerText,10); if(isNaN(env_hit)){env_hit = 0;} document.getElementById("environmental_hits").innerText = parseInt(document.getElementById("environmental_hits").innerText,10)-env_hit;} 
 				if (document.getElementById("sochit_"+cost_id)){soc_hit =  parseInt(document.getElementById("sochit_"+cost_id).innerText,10); if(isNaN(soc_hit)){soc_hit = 0;} document.getElementById("societal_hits").innerText = parseInt(document.getElementById("societal_hits").innerText,10)-soc_hit;} 
+			
 				let available = document.getElementById("available_"+cost_id).innerText;
 				available =  parseInt(available,10)+1;
-				document.getElementById("available_"+cost_id).innerText = available;
+				document.getElementById("card_"+cost_id).classList.remove("gray_out_card");
+
 
 				document.getElementById("numselected_"+cost_id).innerText = num_selected-1;
 
@@ -423,28 +453,32 @@ session_start();
 				available_funds = parseInt(available_funds,10);
 				available_funds = available_funds + cost;
 					document.getElementById("available_funds").innerText = available_funds;
-
 					for (let i = 0; i < costs.length; i++){
 					    cost = parseInt(costs[i].textContent,10);
 					    cost_id = costs[i].id;
 						cost_id = cost_id.split('_')[1];
 
-						// console.log(`id of card ${i} is ${cost_id}`);
-						// console.log(`cost of card ${i} is ${cost}`);
+						let max_available = parseInt(document.getElementById("maxavailable_"+cost_id).value,10);
+
 
 						if (cost<=available_funds){
 							// change the avialability to based on how much they have
-							let available = Math.floor(available_funds/cost);
+							let num_selected = document.getElementById("numselected_"+cost_id).innerText;
+
+
+								available = Math.min(Math.floor(available_funds/cost),max_available-num_selected);
 								// console.log(`The avaiable is ${available}`);
 								document.getElementById("available_"+cost_id).innerText = +available;
-								// document.getElementById("card_"+cost_id).addEventListener("click", () =>{
-								// addCard(cost_id,cost);
-							// });
+								// remove grayout from
+								if (available>0){
+									document.getElementById("card_"+cost_id).classList.remove("gray_out_card");
+								}
 							
 						} else {
 
 							document.getElementById("available_"+cost_id).innerText = 0;
-								// document.getElementById("card_"+cost_id).removeEventListener("click",  addCard);
+							 document.getElementById("card_"+cost_id).classList.add("gray_out_card");
+
 							// this should gray out the 
 						}
 					}
@@ -465,9 +499,23 @@ session_start();
 				if(document.getElementById("financial_hits")){fin_hit = document.getElementById("financial_hits").innerText;}
 				if(document.getElementById("environmental_hits")) {env_hit = document.getElementById("environmental_hits").innerText;}
 				if(document.getElementById("societal_hits")) {soc_hit = document.getElementById("societal_hits").innerText;}
+				let available_funds = document.getElementById("available_funds").innerText;
+
 				const team_id = document.getElementById("team_id").value;
-				let available_funds = document.getElementById("available_funds").textContent;
 				console.log (`team_id is ${team_id}`);
+				console.log (`available_funds ${available_funds}`);
+				console.log (`fin_score is ${fin_score}`);
+				console.log (`env_score is ${env_score}`);
+				console.log (`soc_score is ${soc_score}`);
+				console.log (`fin_block is ${fin_block}`);
+				console.log (`env_block is ${env_block}`);
+				console.log (`soc_block is ${soc_block}`);
+				console.log (`fin_hit is ${fin_hit}`);
+				console.log (`env_hit is ${env_hit}`);
+				console.log (`soc_hit is ${soc_hit}`);
+
+
+
 
 
 
@@ -485,13 +533,15 @@ session_start();
 						fin_block:fin_block,
 						fin_hit:fin_hit,
 						env_hit:env_hit,
-						soc_hit:soc_hit
+						soc_hit:soc_hit,
+						available_funds:available_funds
 					}
 						}).done(function(){
+			 			   window.location.replace("teamcaptain2.php?team_id="+team_id);
+
                    });
 
-				   window.location.replace("teamcaptain2.php?team_id="+team_id+"&available_funds="+available_funds);
-
+	
 
 			}
 

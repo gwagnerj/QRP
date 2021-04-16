@@ -412,7 +412,7 @@ if ($teamcap_data != false){
       </p>';
 
       // <button name "update_game_flag" id = "update_game_flag"  style = "background-color:yellow;" value="update"> update </button>
-
+      $number_teams_plus = $number_teams +1;
        
       echo '';
       echo '<form method = "POST" id = "team_assign">';
@@ -423,7 +423,7 @@ if ($teamcap_data != false){
       echo("</th>");
       echo("<th>");
       echo("</th>");
-      echo('<th colspan ="'.$number_teams.'" >');
+      echo('<th colspan ="'.$number_teams_plus.'" >');
       echo ('<input type = "submit" style = "background-color:yellow;" id = "submit_team"  name = "submit_team" value = "Assign to Teams"></input>');
 
       echo("</th>");
@@ -488,6 +488,8 @@ if ($teamcap_data != false){
           echo("<th>");
           echo('Total on Team');
           echo("</th>");
+          echo('<td>');
+          echo('</td>');
           echo('<td>');
           echo('</td>');
 
@@ -811,6 +813,101 @@ echo '</div>';
       <p><input type = "submit" name = "scoreboard_submit" value="Show Score Board" id="scoreboard_submit" size="2" style = "width: 30%; background-color: green; color: white"/>  </p>  
   
   </form>
+
+  <h2> Team Actions </h2>
+  <table id="table_team_actions" style = "text-align:center" class = "a" border="1">
+  <thead>
+  <tr>
+  <th>Team Number</th>
+  <th>fin_score</th>
+  <th>env_score</th>
+  <th>soc_score</th>
+  <th>fin_block</th>
+  <th>env_block</th>
+  <th>soc_block</th>
+  <th>fin_hit</th>
+  <th>env_hit</th>
+  <th>soc_hit</th>
+  <th>pol_points</th>
+  <th>politcal_id</th>
+  </tr>
+
+  </thead>
+ 
+  <?php
+  // $sql = "SELECT * FROM Team WHERE 	eexamnow_id = :eexamnow_id AND currentclass_id = :currentclass_id";
+  // $stmt = $pdo->prepare($sql);
+  // $stmt->execute(array(
+  //   ":eexamnow_id" => $eexamnow_id,
+  //   ":currentclass_id" => $currentclass_id,
+  //   ));
+  //   $team_data = $stmt->fetchAll();  
+
+  // // var_dump($team_data);
+
+  // foreach ($team_data as $team_datum){
+      //var_dump($team_datum);
+
+ // }
+
+
+ for ($i=1;$i<=$number_teams;$i++){
+
+  $sql = "SELECT * FROM Team WHERE eexamnow_id = :eexamnow_id AND team_num = :team_num ";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(array(
+    ":eexamnow_id" => $eexamnow_id,
+    ":team_num" => $i,
+    ));
+    $team_datum = $stmt->fetch();  
+
+  echo ('<tr>');
+      echo ('<td>');
+      echo $team_datum['team_num'];
+      echo ('</td>');
+      echo ('<td>');
+      echo $team_datum['fin_score'];
+      echo ('</td>');
+      echo ('<td>');
+      echo $team_datum['env_score'];
+      echo ('</td>');
+      echo ('<td>');
+      echo $team_datum['soc_score'];
+      echo ('</td>');
+      echo ('<td>');
+      echo $team_datum['fin_block'];
+      echo ('</td>');
+      echo ('<td>');
+      echo $team_datum['env_block'];
+      echo ('</td>');
+      echo ('<td>');
+      echo $team_datum['soc_block'];
+      echo ('</td>');
+      echo ('<td>');
+      echo $team_datum['fin_hit'];
+      echo ('</td>');
+      echo ('<td>');
+      echo $team_datum['env_hit'];
+      echo ('</td>');
+      echo ('<td>');
+      echo $team_datum['soc_hit'];
+      echo ('</td>');
+      echo ('<td>');
+      echo $team_datum['pol_points'];
+      echo ('</td>');
+      echo ('<td>');
+      echo $team_datum['gamepolitical_id'];
+      echo ('</td>');
+      echo '</tr>';
+
+ }
+
+
+  ?>
+
+<tbody>
+  </table>
+
 
         <p style="font-size:75px;"></p>   
         <form method="POST" >

@@ -6,7 +6,17 @@
   $stdev_limit = 10;
   $pre_qr_weight = 25;  // percent of the score made up by the QRgame
 
-  
+//  unset ($_SESSION['rando']);
+
+// this is the value that will be used to pick the political environment
+    if(isset($_SESSION['rando'])){
+      $rando = $_SESSION['rando'];
+
+    }else{
+      $rando = rand(1,1000);
+      $_SESSION['rando'] = $rando;
+      $_SESSION['success']= 'rando is set';
+    }
 
 
     if(isset($_POST['eexamtime_id'])){
@@ -51,7 +61,6 @@
     
     }else{
     $pre_qr_weight = 25;
-    
     }
   
 
@@ -61,31 +70,47 @@
      <html lang="en">
      <head>
      <link rel="icon" type="image/png" href="McKetta.png" />  
-         <meta charset="UTF-8">
-        <!--    <meta http-equiv="refresh" content="10">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
+
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">        <!--    <meta http-equiv="refresh" content="10">
         <meta http-equiv="refresh" content="5; URL=scoreboard.php">  -->
          <meta http-equiv="X-UA-Compatible" content="IE=edge">
          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-         <title>Score Borad</title>
+         <title>Score Board</title>
   <style>
           #page-wrap {
             width: 800px;
             margin: 0 auto;
-        }
+       }
+        img.animated-gif{
+          width: 40px;
+          height: auto;   
+      }
+      td {
+  height: 20px;
+  /* width:0.8rem; */
+  /* vertical-align: bottom; */
+}
+#table_team_results_before{
+  width: 120%;
+}
+/* #table_team_results_after tr  {
+  /* width: 110%; */
+  height: 300%;
+} */
 
 
   </style>
 
      </head>
-   
-
-
      <body>
      <div id = "page-wrap">
 
      <header>
          <h1>Quick Response Score Board</h1>
          </header>  
+
+         <!-- <input type = "hidden" id = "rando" name="rando" value = "<?php echo ($rando); ?>"></input> -->
      
 
 
@@ -154,11 +179,10 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
      echo '<div id = team_score>';
 
-          // echo "say something";
      
       echo '<form method = "POST" >';
       echo '<h2> Team Scores </h2> <h3>  Pre QR Weight: <input type = "number" min = 0 max = 100 id = "pre_qr_weight" name = "pre_qr_weight" value ="'.$pre_qr_weight.'"></input>&nbsp;<input type = "submit" value = "Submit"> </input></h3>';
-      echo ('<table id="table_team_scores" style = "text-align:center" class = "a" border="1" >'."\n");	
+      echo ('<table id="table_team_scores" style = "text-align:center" class = "table" border="1" >'."\n");	
           echo("<thead>");
 
                 echo("<th>");
@@ -195,15 +219,6 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                       echo("</thead>");
                 
             echo("<tbody>");
-            // echo('<td>');
-            // echo "say something";
-            // echo('</td>');
-            // echo('<td>');
-            // echo " eexamnow_id ".$eexamnow_id;
-            // echo('</td>');
-            // echo('<td>');
-            // echo " number_teams ".$number_teams;
-            // echo('</td>');
 
   
 
@@ -225,9 +240,6 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 if($kahoot_scores['kahoot_points'] > $max_kahoot_score){$max_kahoot_score = $kahoot_scores['kahoot_points'];}
                 if($kahoot_scores['kahoot_points'] < $min_kahoot_score){$min_kahoot_score = $kahoot_scores['kahoot_points'];}
               }
-              // echo  ' max kahoot score '. $max_kahoot_score;
-              // echo  ' min kahoot score '. $min_kahoot_score;
-
 
 // $i is the team number  big loop on the data
 
@@ -443,13 +455,473 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
             echo('</tr>');
         }
 
-         echo("</tbody>");
-         echo("</table>");
+      echo("</tbody>");
+    echo("</table>");
 
-         echo '<input type="hidden" name="eexamnow_id" value ="'.$eexamnow_id.'"></input>';
-         echo '<input type="hidden" name="eexamtime_id" value ="'.$eexamtime_id.'"></input>';
-        //  echo '<input type="hidden" name="eexamnow_id" value ="'.$eexamnow_id.'"';
-         echo("</form>");
+    echo '<input type="hidden" name="eexamnow_id" value ="'.$eexamnow_id.'"></input>';
+    echo '<input type="hidden" name="eexamtime_id" value ="'.$eexamtime_id.'"></input>';
+    echo("</form>");
+
+        // get how many political cards there are for this game_name
+
+      echo "<br>";
+      echo '<button id = "show_results_button" class="btn btn-info" >Show Team Selections</button>';
+      echo "<br>";
+      echo "<br>";
+        echo '<div id = "show_results" class="table">';
+            echo '<table id="table_team_results_before" style = "text-align:bottom; " class = "table"  border="1"> ';
+            echo '<thead>';
+            echo '<tr>';
+            echo '<th>Team </th>';
+            echo '<th>Score</th>';
+            // echo '<th colspan="3" id = >SCORE</th>';
+            // echo '<th>Env</th>';
+            // echo '<th>Soc</th>';
+            echo '<th >Blocks</th>';
+            // echo '<th>E Block</th>';
+            // echo '<th>S Block</th>';
+            echo '<th>Hits</th>';
+            // echo '<th>E Hit</th>';
+            // echo '<th>S Hit</th>';
+            echo '<th>Pol Points</th>';
+            echo '<th>Political Pick</th>';
+            echo '<tr>';
+            echo '</thead>';
+            echo '<tbody>';
+    // set some initial values for computing the political environmental_hits
+            
+
+        // echo ('rando is '.$rando);
+
+        $pol_picks = array();
+        $fin_hit = $env_hit = $soc_hit =0;
+        $chaos_team_num = 0;            // chaos team will be zero if there is no chaos team
+
+            for ($i=1;$i<=$number_teams;$i++){
+                $sql = "SELECT * FROM Team LEFT JOIN GamePolitical ON GamePolitical.gamepolitical_id = Team.gamepolitical_id WHERE eexamnow_id = :eexamnow_id AND team_num = :team_num ";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(array(
+                  ":eexamnow_id" => $eexamnow_id,
+                  ":team_num" => $i,
+                  ));
+                  $team_datum = $stmt->fetch();  
+                
+                  // this tallys the votes for each of the political envioronment
+                  if (isset($pol_picks[$team_datum["gamepolitical_id"]])){
+                    $pol_picks[$team_datum["gamepolitical_id"]]+=$team_datum["pol_points"];
+                  } else {
+                    $pol_picks[$team_datum["gamepolitical_id"]]=$team_datum["pol_points"];
+                  }
+
+                  $fin_hit +=  $team_datum['fin_hit'];          
+                  $env_hit +=  $team_datum['env_hit'];          
+                  $soc_hit +=  $team_datum['soc_hit'];     
+                  
+                  $fin_score[$i]= $team_datum['fin_score'];
+                  $env_score[$i]= $team_datum['env_score'];
+                  $soc_score[$i]= $team_datum['soc_score'];
+                  $fin_block[$i]= $team_datum['fin_block'];
+                  $env_block[$i]= $team_datum['env_block'];
+                  $soc_block[$i]= $team_datum['soc_block'];
+                  $team_id[$i]= $team_datum['team_id'];
+                  $pol_points[$i] = $team_datum['pol_points'];
+                  $political_image_file[$i] = $team_datum['political_image_file'];
+                  $gamepolitical_id [$i] = $team_datum['gamepolitical_id'];
+                  $game_political_title[$i]= $team_datum['game_political_title'];
+           
+                  if ($team_datum['chaos_team']==1){
+                    $chaos_team_num = $i;
+                  }
+            }
+            $fin_score_max = max($fin_score);
+            $env_score_max = max($env_score);
+            $soc_score_max = max($soc_score);
+            $grand_score_max = max($fin_score_max,$env_score_max,$soc_score_max);
+            if ( $grand_score_max==0){$grand_score_max =1;}
+            $fin_block_max = max($fin_block);
+            $env_block_max = max($env_block);
+            $soc_block_max = max($soc_block);
+            $grand_block_max = max($fin_block_max,$env_block_max,$soc_block_max);
+           
+
+            for ($i=1;$i<=$number_teams;$i++){
+                  echo ('<tr>');
+                  echo ('<th >');
+                 if ($chaos_team_num !=$i) {echo 'Team '.$i;} else {echo 'Chaos-Team '.$i;} 
+                  echo ('</th>');
+                  echo ('<td>');
+
+
+                      echo '<table  class="charts-css column hide-data show-labels data-spacing-1">';
+                     echo '<thead>
+                      <tr>
+                        <th scope="col"> Month </th>
+                        <th scope="col"> Progress </th>
+                      </tr>
+                    </thead>';
+                      echo '<tbody>';
+                     if( $fin_score[$i]>1){$FS = $fin_score[$i];} else {$FS = "";} 
+                     if( $env_score[$i]>1){$ES = $env_score[$i];} else {$ES = "";} 
+                     if( $soc_score[$i]>1){$SS = $soc_score[$i];} else {$SS = "";} 
+                     if( $fin_block[$i]>1){$FB = $fin_block[$i];} else {$FB = "";} 
+                     if( $env_block[$i]>1){$EB = $env_block[$i];} else {$EB = "";} 
+                     if( $soc_block[$i]>1){$SB = $soc_block[$i];} else {$SB = "";} 
+                     if($i == $chaos_team_num && $fin_hit>1){$FH = $fin_hit;} else {$FH = "";} 
+                     if($i == $chaos_team_num &&  $env_hit>1){$EH = $env_hit;} else {$EH = "";} 
+                     if($i == $chaos_team_num &&  $soc_hit>1){$SH = $soc_hit;} else {$SH = "";} 
+
+                          echo ('<tr><th class="gx_label" scope = "row">'. $FS .'</th><td style="--size: calc( '. $fin_score[$i]/$grand_score_max.' ) ;--color:#892816; vertical-align:bottom;"> ');
+                          // echo $fin_score[$i];
+                          echo ('</td></tr>');
+                          echo ('<tr><th class="gx_label" scope = "row">'.$ES .'</th><td style="--size: calc( '. $env_score[$i]/$grand_score_max.'); --color:#4c884a; vertical-align:bottom;"> ');
+                          // echo $env_score[$i];
+                          echo ('</td></tr>');
+                          echo ('<tr><th class="gx_label" scope = "row">'.$SS.'</th><td  style="--size: calc(  '. $soc_score[$i]/$grand_score_max.');  --color:#6e4a88; vertical-align:bottom;">');
+                          // echo $soc_score[$i];
+                          echo ('</td></tr>');
+                  echo '</tbody></table>';
+
+                  echo ('<td>');
+                    echo '<table  class="charts-css column hide-data show-labels data-spacing-1">';
+                        echo '<tbody>';
+                            echo ('<tr><th class="gx_label" scope = "row">'.$FB.'</th><td style="--size: calc( '. $fin_block[$i]/$grand_block_max.' ) ;--color:#892816; vertical-align:bottom;"> ');
+                            // echo $fin_score[$i];
+                            echo ('</td></tr>');
+                            echo ('<tr><th scope = "row">'. $EB.'</th><td style="--size: calc( '. $env_block[$i]/$grand_block_max.'); --color:#4c884a; vertical-align:bottom;"> ');
+                            // echo $env_score[$i];
+                            echo ('</td></tr>');
+                            echo ('<tr><th scope = "row">'. $SB.'</th><td  style="--size: calc(  '. $soc_block[$i]/$grand_block_max.');  --color:#6e4a88; vertical-align:bottom;">');
+                            // echo $soc_score[$i];
+                            echo ('</td></tr>');
+                      echo '</tbody></table>';
+
+                  echo ('</td>');
+
+              
+                  echo ('<td>');
+                      echo '<table  class="charts-css column hide-data show-labels data-spacing-1">';
+                      echo '<tbody>';
+                          echo ('<tr><th class="gx_label" scope = "row">'.$FH.'</th><td style="--size: calc( '. $FH.'/100 ) ;--color:#892816; vertical-align:bottom;"> ');
+                          // echo $fin_score[$i];
+                          echo ('</td></tr>');
+                          echo ('<tr><th scope = "row">'. $EH.'</th><td style="--size: calc( '. $EH.'/100 ); --color:#4c884a; vertical-align:bottom;"> ');
+                          // echo $env_score[$i];
+                          echo ('</td></tr>');
+                          echo ('<tr><th scope = "row">'. $SH.'</th><td  style="--size: calc(  '. $SH.'/100 );  --color:#6e4a88; vertical-align:bottom;">');
+                          // echo $soc_score[$i];
+                          echo ('</td></tr>');
+                      echo '</tbody></table>';
+                  echo ('<td>');
+                  echo $pol_points[$i];
+                  echo ('</td>');
+                  echo ('<td>');
+                  echo  '<img src ="'. $political_image_file[$i].'">';
+                  echo ('</td>');
+                  echo '</tr>';
+            }
+
+            
+            echo '</tbody>';
+            echo '</table>';
+// echo 'fin hit'.$fin_hit;
+// echo 'env hit'.$env_hit;
+// echo 'soc hit'.$soc_hit;
+
+            echo "<br>";
+
+            echo '<button id = "after_hits_button" class="btn btn-info" >Results After Hits</button>';
+            echo "<br>";
+         echo '</div>';
+         echo '<div id = after_hits>';
+        //  echo' <iframe src="https://giphy.com/embed/YlHNdso9AwzpjntD1g" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/cartoonhangover-cute-cartoon-hangover-YlHNdso9AwzpjntD1g">via GIPHY</a></p>';
+        //  echo' <iframe src="https://giphy.com/embed/3ohfFH3gJpepwS5DEY" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/filmeditor-christmas-movies-bill-murray-3ohfFH3gJpepwS5DEY">via GIPHY</a></p>';
+
+         echo "<br>";
+
+
+        echo ' <table id="table_team_results_after" style = "text-align:center" class = "table" border="1"> ';
+        echo '<thead>';
+        echo '<tr>';
+        echo '<th>Team Number</th>';
+        echo '<th>Score After Hits</th>';
+        // echo '<th>Env</th>';
+        // echo '<th>Soc</th>';
+        echo '</tr>';
+        echo '</thead>';
+        echo '<tbody>';
+
+        // compute the hits if there is no chaos team for now just using average of the team scores to get the hits
+          if ($chaos_team_num == 0){
+            $fin_hit = array_sum($fin_score) / count($fin_score);
+            $env_hit = array_sum($env_score) / count($env_score);
+            $soc_hit = array_sum($soc_score) / count($soc_score);
+
+          }
+
+
+        $fin_tot_block = $env_tot_block = $soc_tot_block =0;
+
+        for ($i=1;$i<=$number_teams;$i++){
+            $fin_lost[$i] = $fin_score[$i]*((min(100,$fin_block[$i]))/100)*$fin_hit/100;
+            $fin_tot_block +=$fin_lost[$i];
+            $fin_score[$i] = $fin_score[$i]-$fin_lost[$i];
+            $env_lost[$i] = $env_score[$i]*((min(100,$env_block[$i]))/100)*$env_hit/100;
+            $env_tot_block +=$env_lost[$i];
+            $env_score[$i] = $env_score[$i]-$env_lost[$i];
+            $soc_lost[$i] = $soc_score[$i]*((min(100,$soc_block[$i]))/100)*$soc_hit/100;
+            $soc_tot_block +=$soc_lost[$i];
+            $soc_score[$i] = $soc_score[$i]-$soc_lost[$i];
+           
+
+                if ($i!=$chaos_team_num){
+                  echo '<tr style=" height:100px;">';
+                  echo ('<th>');
+                  echo 'Team '.$i;
+                  echo ('</th>');
+                  echo ('<td>');
+                    // echo $fin_score[$i];
+
+
+                            echo '<table  class="charts-css column hide-data show-labels data-spacing-1">';
+                            echo '<tbody>';
+                            if( $fin_score[$i]>1){$FS = $fin_score[$i];} else {$FS = "";} 
+                            if( $env_score[$i]>1){$ES = $env_score[$i];} else {$ES = "";} 
+                            if( $soc_score[$i]>1){$SS = $soc_score[$i];} else {$SS = "";} 
+                            if( $fin_block[$i]>1){$FB = $fin_block[$i];} else {$FB = "";} 
+                            if( $env_block[$i]>1){$EB = $env_block[$i];} else {$EB = "";} 
+                            if( $soc_block[$i]>1){$SB = $soc_block[$i];} else {$SB = "";} 
+                            // if($i == $chaos_team_num && $fin_hit>1){$FH = $fin_hit;} else {$FH = "";} 
+                            // if($i == $chaos_team_num &&  $env_hit>1){$EH = $env_hit;} else {$EH = "";} 
+                            // if($i == $chaos_team_num &&  $soc_hit>1){$SH = $soc_hit;} else {$SH = "";} 
+
+                                echo ('<tr><th class="gx_label" scope = "row">'. $FS .'</th><td style="--size: calc('. $fin_score[$i]/$grand_score_max.') ;--color:#892816; vertical-align:bottom;"> ');
+                                // echo $fin_score[$i];
+                                echo ('</td></tr>');
+                                echo ('<tr><th class="gx_label" scope = "row">'.$ES .'</th><td style="--size: calc( '. $env_score[$i]/$grand_score_max.'); --color:#4c884a; vertical-align:bottom;"> ');
+                                // echo $env_score[$i];
+                                echo ('</td></tr>');
+                                echo ('<tr><th class="gx_label" scope = "row">'.$SS.'</th><td  style="--size: calc(  '. $soc_score[$i]/$grand_score_max.');  --color:#6e4a88; vertical-align:bottom;">');
+                                // echo $soc_score[$i];
+                                echo ('</td></tr>');
+                        echo '</tbody></table>';
+
+
+
+                    echo ('</td>');
+                    // echo ('<td>');
+                    // echo $env_score[$i];
+                    // echo ('</td>');
+                    // echo ('<td>');
+                    // echo $soc_score[$i];
+                    // echo ('</td>');
+                
+                echo'</tr>';
+              } 
+
+          }
+          // now calculate the chaos teams values - base it on how the average number of points they took away in each catagory
+
+          $chaos_team_factor = 5;
+          if ($chaos_team_num != 0){$denominator = $number_teams-1;} else {$denominator = $number_teams;}
+
+          $fin_score[$chaos_team_num] = $fin_tot_block/($denominator)*$chaos_team_factor;
+          $env_score[$chaos_team_num] = $env_tot_block/($denominator)*$chaos_team_factor;
+          $soc_score[$chaos_team_num] = $soc_tot_block/($denominator)*$chaos_team_factor;
+          if ($chaos_team_num != 0){
+              echo '<tr style="height:100px;">';
+              echo ('<th>');
+              echo 'Chaos - Team '. $chaos_team_num;
+              echo ('</th>');
+              echo ('<td>');
+
+              echo '<table  class="charts-css column hide-data show-labels data-spacing-1">';
+              echo '<tbody>';
+                           if(  $fin_score[$chaos_team_num]>1){$FH =   $fin_score[$chaos_team_num];} else {$FH = "";} 
+                            if(  $env_score[$chaos_team_num] >1){$EH =  $env_score[$chaos_team_num] ;} else {$EH = "";} 
+                            if(  $soc_score[$chaos_team_num] >1){$SH =  $soc_score[$chaos_team_num] ;} else {$SH = "";} 
+                            $max_hit = max(  $fin_score[$chaos_team_num], $env_score[$chaos_team_num] , $soc_score[$chaos_team_num] );
+
+                            echo ('<tr><th class="gx_label" scope = "row">'. $FH .'</th><td style="--size: calc('.   $fin_score[$chaos_team_num]/$max_hit.') ;--color:#892816; vertical-align:bottom;"> ');
+                            // echo $fin_score[$i];
+                            echo ('</td></tr>');
+                            echo ('<tr><th class="gx_label" scope = "row">'.$EH .'</th><td style="--size: calc('.  $env_score[$chaos_team_num] /$max_hit.'); --color:#4c884a; vertical-align:bottom;"> ');
+                            // echo $env_score[$i];
+                            echo ('</td></tr>');
+                            echo ('<tr><th class="gx_label" scope = "row">'.$SH.'</th><td  style="--size: calc( '.  $soc_score[$chaos_team_num] /$max_hit.');  --color:#6e4a88; vertical-align:bottom;">');
+                            // echo $soc_score[$i];
+                            echo ('</td></tr>');
+                    echo '</tbody></table>';
+
+
+
+
+
+
+
+
+
+
+
+
+
+                // echo $fin_score[$chaos_team_num];
+
+
+
+
+
+
+
+                echo ('</td>');
+                // echo ('<td>');
+                // echo $env_score[$chaos_team_num];
+                // echo ('</td>');
+                // echo ('<td>');
+                // echo $soc_score[$chaos_team_num];
+                // echo ('</td>');
+                echo'</tr>';
+          }
+
+        echo '</tbody>';
+        echo '</table>';
+
+
+
+
+        echo "<br>";
+        echo '<button id = "political_environment_button" class="btn btn-info" >Political Environment</button>';
+        echo "<br>";
+        echo "<br>";
+
+
+
+        echo '</div>';
+
+          echo '<div id = "political_environment">';
+
+
+         // computer points after hits are
+         //
+        //  var_dump($pol_picks);
+         $pol_picks_keys = array_keys($pol_picks);
+         // now need to select the political environment
+         $tot_points = 0;
+        //  $i = 0;
+         foreach($pol_picks as $pol_pick){
+          // var_dump($pol_pick);
+          // echo ('<br>');
+          // echo ($pol_pick);
+          $tot_points+=$pol_pick;
+          // echo ('<br>');
+          // echo ($pol_picks_keys[$i]);
+          // $i++;
+        }
+        // echo '<br> total points are '.$tot_points;
+        $breaks[0] = 0;
+        $i=1;
+        if ($tot_points ==0){$tot_points=1;}
+        $gamepolitical_id = $fin_wt = $env_wt = $soc_wt =0;  // just initializing some vars
+
+        foreach($pol_picks as $pol_pick){
+          $breaks[$i]= $breaks[$i-1]+intdiv(($pol_pick+0)*1000,$tot_points);
+          if($rando<$breaks[$i] && $rando >= $breaks[$i-1]){$gamepolitical_id = $pol_picks_keys[$i-1];}
+          $i=$i+1;
+
+        }
+        // var_dump($breaks);
+      //  echo 'gamepolitical_id: '. $gamepolitical_id;
+
+
+
+
+
+
+
+
+
+       $sql = "SELECT * FROM GamePolitical WHERE gamepolitical_id = :gamepolitical_id";
+       $stmt = $pdo->prepare($sql);
+       $stmt->execute(array(
+         ":gamepolitical_id" => $gamepolitical_id,
+         ));
+         $gamepolitical_datum = $stmt->fetch();  
+
+         if($gamepolitical_datum){
+         $game_political_title = $gamepolitical_datum['game_political_title'];
+        //  echo 'title '.$game_political_title;
+         $fin_wt = $gamepolitical_datum['fin_wt'];
+         $env_wt = $gamepolitical_datum['env_wt'];
+         $soc_wt = $gamepolitical_datum['soc_wt'];
+         $political_image_file = $gamepolitical_datum['political_image_file'];
+
+         echo '<h2>Political Climate - '. $game_political_title.'</h2>';
+         echo '<img src ="'. $political_image_file.'"> ';
+         }
+         echo "<br>";
+         echo '<button id = "final_results_button" class="btn btn-info" >Final Results</button>';
+         echo "<br>";
+
+         echo '</div>';
+
+         echo '<div id = "final_results">';
+
+         
+
+         echo "<br>";
+
+
+         echo '  <table id="table_team_results_after" style = "text-align:center" class = "table" border="1"> ';
+         echo '<thead>';
+         echo '<tr>';
+         echo '<th>Team Number</th>';
+         echo '<th>Final Score</th>';
+         echo '<tr>';
+         echo '</thead>';
+         echo '<tbody>';
+
+         for ($i=1;$i<=$number_teams;$i++){
+           $fin_score[$i] = $fin_score[$i]*$fin_wt/100;
+           $env_score[$i] = $env_score[$i]*$env_wt/100;
+           $soc_score[$i] = $soc_score[$i]*$soc_wt/100;
+
+
+            $final_scores[$i] = $fin_score[$i]+$env_score[$i]+$soc_score[$i];
+            echo '<tr>';
+            echo ('<td>');
+            echo $i;
+            echo ('</td>');
+            echo ('<td>');
+            echo  $final_scores[$i];
+            echo ('</td>');
+            echo'</tr>';
+
+            $sql = 'UPDATE Team SET 
+                -- fin_score = :fin_score, 
+                -- env_score = :env_score,
+                -- soc_score = :soc_score,
+                final_score = :final_score
+              WHERE
+                team_id = :team_id
+              ';
+            			$stmt = $pdo->prepare($sql);	
+                  $stmt->execute(array(
+                    ":team_id"   =>  $team_id[$i], 
+                    // ":fin_score" => intval($fin_score[$i]),
+                    // ":env_score" => intval($env_score[$i]),
+                    // ":soc_score" => intval($soc_score[$i]),
+                    ":final_score" => intval($final_scores[$i])
+                  ));
+         }
+
+         echo '</tbody>';
+       echo '</table>';
+ 
+       echo '</div>';
+
+
+        // var_dump($final_scores);
+         
+         
 
 
 
@@ -457,12 +929,70 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 </div>
 
 <script>
-      console.log('window.location.reload');
+      // console.log('window.location.reload');
 
-    setTimeout(function(){
-      window.location.reload(1);
-      console.log('window.location.reload');
-    }, 5000);
+    var update_time = 5000;
+    var cycle = 1;
+  
+
+    document.getElementById("show_results").style.display="none";
+    document.getElementById("after_hits").style.display="none";
+    document.getElementById("political_environment").style.display="none";
+    document.getElementById("final_results").style.display="none";
+
+         document.getElementById("show_results_button").addEventListener("click", () => {
+
+          showFirstSection(show_results);
+         })
+
+         document.getElementById("after_hits_button").addEventListener("click", () => {
+          showNextSection(after_hits);
+         })
+
+         document.getElementById("political_environment_button").addEventListener("click", () => {
+          showNextSection(political_environment);
+         })
+         document.getElementById("final_results_button").addEventListener("click", () => {
+          showNextSection(final_results);
+         })
+
+
+
+         function showNextSection(section){
+            const x = document.getElementById(section.id);
+            if (x.style.display === "none") {
+              x.style.display = "block";
+            } else {
+              x.style.display = "none";
+            }
+         }
+
+         function showFirstSection(section){
+            const x = document.getElementById(section.id);
+            if (x.style.display === "none") {
+             window['cycle'] = 0;
+              x.style.display = "block";
+            } else {
+              x.style.display = "none";
+              window['cycle'] = 1;
+            }
+         }
+        //  console.log (`cycle is ${cycle}`);
+
+        //  document.getElementById("compute_final_results").addEventListener("click", () => {
+        //    computeFinalResults();
+        //  })
+
+         function computeFinalResults(){
+            console.log("show final results table");
+          }
+
+          setTimeout(function(){
+
+         if(cycle == 1){ window.location.reload(1)};
+          // console.log('window.location.reload');
+        }, update_time);
+
 
 
 </script>

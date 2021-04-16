@@ -3,24 +3,27 @@
     session_start();
 
     $team_id = $_GET['team_id'];
-    $available_funds = $_GET['available_funds'];
     // echo 'available funds: '.$available_funds;
     // echo '<br>';
     // echo 'team_id: '.$team_id;
     // echo '<br>';
 
     $sql = "SELECT * FROM Team WHERE `team_id` =:team_id";
-    $stmt = $pdo->prepare($sql);
-    $stmt ->execute(array(':team_id' => $team_id));
-    $team_data = $stmt->fetch();
-    $team_score = $team_data['team_score'];
-    $chaos_team = $team_data['chaos_team'];   // this will either be 0 or 1
-    $eexamnow_id= $team_data['eexamnow_id'];   
+        $stmt = $pdo->prepare($sql);
+        $stmt ->execute(array(':team_id' => $team_id));
+        $team_data = $stmt->fetch();
+
+        $team_score = $team_data['team_score'];
+        $chaos_team = $team_data['chaos_team'];   // this will either be 0 or 1
+        $eexamnow_id= $team_data['eexamnow_id'];   
+        $available_funds = $team_data['pol_points'];
+        $chaos_team = $team_data['chaos_team'];
+
 
     $sql = "SELECT * FROM GamePolitical";
-    $stmt = $pdo->prepare($sql);
-    $stmt -> execute();
-    $gamepolitical_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
+        $stmt = $pdo->prepare($sql);
+        $stmt -> execute();
+        $gamepolitical_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
     $options ='';
 
     $cards = array();
@@ -30,24 +33,21 @@
                  $soc_wt = $gamepolitical_datum['soc_wt'];
                  $env_wt = $gamepolitical_datum['env_wt'];
                  $political_image_file = $gamepolitical_datum['political_image_file'];
-                 $cards[$k] = '<div class = "political_card card_container">'.
-                    '<div class = "card" id = "card_'.$gamepolitical_datum['gamepolitical_id'].'">
-                            <h2>'.$gamepolitical_datum["game_political_title"].'<label> <input type = radio name = "radio_select" value = "'.$gamepolitical_datum["gamepolitical_id"].'"></input></label></h2>'.
-                            '<div class = "card_data">'.
-                           '<img src ="'. $political_image_file.'">'.
-                           '<h2> Weights </h2>'.
-                            '<p> Financial: <span id = "finwt_'.$gamepolitical_datum["gamepolitical_id"].'">'.$fin_wt.'</span></p>'.
-                            '<p> Environmental: <span id = "envwt_'.$gamepolitical_datum["gamepolitical_id"].'">'.$env_wt.'</span></p>'.
-                            '<p> Societal: <span id = "socwt_'.$gamepolitical_datum["gamepolitical_id"].'">'.$soc_wt.'</span></p>'.
+                    $cards[$k] = '<div class = "political_card card_container">'.
+                        '<div class = "card" id = "card_'.$gamepolitical_datum['gamepolitical_id'].'">
+                          <h2>'.$gamepolitical_datum["game_political_title"].'</h2>'.
+                                '<div class = "card_data">'.
+                            '<img src ="'. $political_image_file.'">'.
+                            '<h2> Weights </h2>'.
+                                '<p> Financial: <span id = "finwt_'.$gamepolitical_datum["gamepolitical_id"].'">'.$fin_wt.'</span></p>'.
+                                '<p> Environmental: <span id = "envwt_'.$gamepolitical_datum["gamepolitical_id"].'">'.$env_wt.'</span></p>'.
+                                '<p> Societal: <span id = "socwt_'.$gamepolitical_datum["gamepolitical_id"].'">'.$soc_wt.'</span></p>'.
+                        '</div>'.
                     '</div>'.
-                 '</div>'.
                  '</div>';
 
                  $k=$k+1;
              }
-
-
-
 
 ?>
 
@@ -70,6 +70,11 @@
 padding:0.5em 0em 0.5em 0em;
 
     }
+
+    .gray_out_card{ 
+			background-color: gray;
+  			 opacity:0.4; 
+		}
 
     #button_container{
         padding:0em 0em 0em 2em;
@@ -128,7 +133,22 @@ input[type=radio] {
 
 <h1> Select Desired Political Environment </h1>
 <h1><span id = "error"></span></h1>
+<?php if ($chaos_team == 1){
+	echo '<h2 style = "color:red;"> This is the Chaos Team </h2>';
+
+	echo '<h2>Selected Hits: &nbsp; Financial  <span id = "financial_hits" value="0" > '.$team_data["fin_hit"].' </span> &nbsp; Environmental  <span id = "environmental_hits" value="0" >'.$team_data["env_hit"].'</span>  &nbsp; Societal  <span id = "societal_hits" value="0" > '.$team_data["soc_hit"].' </span></h2>';
+	
+} else {
+	echo '<h2>Selected Points:  &nbsp; Financial  <span id = "financial_points" value="0" > '.$team_data["fin_score"].' </span> &nbsp; Environmental  <span id = "environmental_points" value="0" > '.$team_data["env_score"].' </span>  &nbsp; Societal  <span id = "societal_points" value="0" > '.$team_data["soc_score"].' </span></h2>';
+	echo '<h2>Selected Blocks:  &nbsp; Financial  <span id = "financial_blocks" value="0" > '.$team_data["fin_block"].' </span> &nbsp; Environmental  <span id = "environmental_blocks" value="0" > '.$team_data["env_block"].' </span>  &nbsp; Societal  <span id = "societal_blocks" value="0" > '.$team_data["soc_block"].' </span></h2>';
+	
+	// echo '<h2> This is a Normal Team </h2>';
+}
+?>
 <h2> Funds for Selection: <span id ="available_funds"> <?php echo $available_funds; ?></span></h2>
+<input type="hidden" id = "gamepolitical_id" value = ""></input>
+<div id = "no_selection_error"> </div>'
+
 <div class = "container-1">
             <?php 
             foreach($cards as $card){
@@ -144,12 +164,68 @@ input[type=radio] {
     <button id="submit_button"> Submit </button>
 </div>
 <script>
-document.getElementById("submit_button").addEventListener("click",()=>{
-    console.log("Submit Button");
-    // make sure one of the radio buttons is selected if not make error, get the funds avaialble and Ajax to a table then go to next or exit and values are on score board
+    document.getElementById("submit_button").addEventListener("click",()=>{
+       // console.log("Submit Button");
 
-})
+      let gamepolitical_id = document.getElementById("gamepolitical_id").value;
+      console.log ("gamepolitical_id "+gamepolitical_id);
+      if(!gamepolitical_id){
+        document.getElementById("no_selection_error").innerHTML = '<<h1 style = "color:red;"> Selection Must Be made Before Submit </h1>';
+        return;
+      } 
 
+      document.getElementById("no_selection_error").innerHTML = '';
+      const team_id = document.getElementById("team_id").value;
+      $.ajax({  
+					url: 'update_team_politics.php',
+					method: 'post',
+				    data: {
+						team_id:team_id,
+						gamepolitical_id:gamepolitical_id
+					}
+						}).done(function(){
+			 			   window.location.replace("teamcaptain3.php?team_id="+team_id);
+
+                   });
+
+
+
+      // get the values for the fin
+        // make sure one of the radio buttons is selected if not make error, get the value of the radio button, get the funds avaialble and Ajax to a table then go to next or exit and values are on score board
+
+    })
+
+    let cards = document.getElementsByClassName('card');
+    for (let i = 0; i < cards.length; i++){
+        let card = parseInt(cards[i].textContent,10);
+		let card_id = cards[i].id;
+		card_id = card_id.split('_')[1];
+        // console.log(`card id is ${card_id}`);
+        document.getElementById("card_"+card_id).addEventListener("click", () => {
+				addCard(card_id);
+			});
+
+
+    }
+
+    function addCard(card_id){
+
+        console.log (`gamepolitical_id is ${card_id}`);
+        document.getElementById("gamepolitical_id").value = card_id;
+
+        for (let i = 0; i < cards.length; i++){
+            let card = parseInt(cards[i].textContent,10);
+            let card_id2 = cards[i].id;
+            card_id2 = card_id2.split('_')[1];
+            if (card_id2 != card_id){
+                document.getElementById("card_"+card_id2).classList.add("gray_out_card");   
+
+            } else {
+                document.getElementById("card_"+card_id2).classList.remove("gray_out_card");  
+            }
+
+        }
+    }
 
 
 </script>
