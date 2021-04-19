@@ -42,7 +42,7 @@
 </head>
 <body>
 
-<h1> Game Results </h1>
+<h1> Watch Score Board for Game Results </h1>
 
     
 </body>

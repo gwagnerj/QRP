@@ -136,11 +136,17 @@ input[type=radio] {
 <?php if ($chaos_team == 1){
 	echo '<h2 style = "color:red;"> This is the Chaos Team </h2>';
 
-	echo '<h2>Selected Hits: &nbsp; Financial  <span id = "financial_hits" value="0" > '.$team_data["fin_hit"].' </span> &nbsp; Environmental  <span id = "environmental_hits" value="0" >'.$team_data["env_hit"].'</span>  &nbsp; Societal  <span id = "societal_hits" value="0" > '.$team_data["soc_hit"].' </span></h2>';
+	echo '<h2>Selected Hits:  <span style = "color:#892816;">  &nbsp; Financial  <span id = "financial_hits" value="0" > '.$team_data["fin_hit"].' </span></span>
+    <span style = "color:#4c884a;">&nbsp; Environmental  <span id = "environmental_hits" value="0" >'.$team_data["env_hit"].'</span> </span>
+    <span style = "color:#6e4a88;">  &nbsp; Societal  <span id = "societal_hits" value="0" > '.$team_data["soc_hit"].' </span></span></h2>';
 	
 } else {
-	echo '<h2>Selected Points:  &nbsp; Financial  <span id = "financial_points" value="0" > '.$team_data["fin_score"].' </span> &nbsp; Environmental  <span id = "environmental_points" value="0" > '.$team_data["env_score"].' </span>  &nbsp; Societal  <span id = "societal_points" value="0" > '.$team_data["soc_score"].' </span></h2>';
-	echo '<h2>Selected Blocks:  &nbsp; Financial  <span id = "financial_blocks" value="0" > '.$team_data["fin_block"].' </span> &nbsp; Environmental  <span id = "environmental_blocks" value="0" > '.$team_data["env_block"].' </span>  &nbsp; Societal  <span id = "societal_blocks" value="0" > '.$team_data["soc_block"].' </span></h2>';
+	echo '<h2>Selected Points:  &nbsp; <span style = "color:#892816;">  Financial  <span id = "financial_points" value="0" > '.$team_data["fin_score"].' </span></span>
+    <span style = "color:#4c884a;"> &nbsp; Environmental  <span id = "environmental_points" value="0" > '.$team_data["env_score"].' </span></span>
+    <span style = "color:#6e4a88;">    &nbsp; Societal  <span id = "societal_points" value="0" > '.$team_data["soc_score"].' </span></span></h2>';
+	echo '<h2>Selected Blocks:  &nbsp;  <span style = "color:#892816;">  Financial  <span id = "financial_blocks" value="0" > '.$team_data["fin_block"].' </span></span>
+    <span style = "color:#4c884a;"> &nbsp; Environmental  <span id = "environmental_blocks" value="0" > '.$team_data["env_block"].' </span> </span>
+    <span style = "color:#6e4a88;">    &nbsp; Societal  <span id = "societal_blocks" value="0" > '.$team_data["soc_block"].' </span></span></h2>';
 	
 	// echo '<h2> This is a Normal Team </h2>';
 }

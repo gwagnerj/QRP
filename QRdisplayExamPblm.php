@@ -196,14 +196,18 @@ FROM `Eactivity`
                          if ($game_flag ==1){
 
                       
-        //                        if ($teamstudentconnect_data['team_cap']==1){
+                                if ($teamstudentconnect_data['team_cap']==1){
                                   header('Location: teamcaptain.php?eexamnow_id='.$eexamnow_id.'&student_id='.$student_id);
                                   die();  
                   
+                                } else {
+                                  header('Location: teamcaptainnot.php?eexamnow_id='.$eexamnow_id.'&student_id='.$student_id);
+                                  die();  
                                 }
-                       
 
-                        }
+                         }
+
+                     }
 
 
                         

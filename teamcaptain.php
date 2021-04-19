@@ -266,11 +266,17 @@ session_start();
 <h2><span id = "team_score" value = "<?php echo $team_score; ?>"> Action Points Earned: <?php echo $team_score; ?> </span>  &nbsp; &nbsp; Available  <span id = "available_funds" value="0" > <?php echo $team_score; ?> </span></h2>
 <?php if ($chaos_team == 1){
 	echo '<h2 style = "color:red;"> This is the Chaos Team </h2>';
-	echo '<h2> Hits: &nbsp; Financial  <span id = "financial_hits" value="0" > 0 </span> &nbsp; Environmental  <span id = "environmental_hits" value="0" > 0 </span>  &nbsp; Societal  <span id = "societal_hits" value="0" > 0 </span></h2>';
+	echo '<h2> Hits: &nbsp;  <span style = "color:#892816;"> Financial  <span id = "financial_hits" value="0" > 0 </span> </span> 
+	 <span style = "color:#4c884a;">  &nbsp; Environmental  <span id = "environmental_hits" value="0" > 0 </span> </span>
+	 <span style = "color:#6e4a88;"> &nbsp; Societal  <span id = "societal_hits" value="0" > 0  </span> </span></h2>';
 	
 } else {
-	echo '<h2> Points:  &nbsp; Financial  <span id = "financial_points" value="0" > 0 </span> &nbsp; Environmental  <span id = "environmental_points" value="0" > 0 </span>  &nbsp; Societal  <span id = "societal_points" value="0" > 0 </span></h2>';
-	echo '<h2> Blocks:  &nbsp; Financial  <span id = "financial_blocks" value="0" > 0 </span> &nbsp; Environmental  <span id = "environmental_blocks" value="0" > 0 </span>  &nbsp; Societal  <span id = "societal_blocks" value="0" > 0 </span></h2>';
+	echo '<h2 > Points: <span style = "color:#892816;"> &nbsp; Financial  <span id = "financial_points" value="0" > 0 </span></span> 
+		<span style = "color:#4c884a;"> &nbsp; Environmental  <span id = "environmental_points" value="0" > 0 </span> </span> 
+		<span style = "color:#6e4a88;"> &nbsp; Societal  <span id = "societal_points" value="0" > 0 </span></h2>';
+	echo '<h2> Blocks:  <span style = "color:#892816;"> &nbsp; Financial  <span id = "financial_blocks" value="0" > 0 </span></span> 
+		<span style = "color:#4c884a;">  &nbsp; Environmental  <span id = "environmental_blocks" value="0" > 0 </span> </span> 
+		<span style = "color:#6e4a88;"> &nbsp; Societal  <span id = "societal_blocks" value="0" > 0 </span> </span> </h2>';
 	
 	// echo '<h2> This is a Normal Team </h2>';
 }
@@ -356,7 +362,7 @@ session_start();
 			    if (document.getElementById("envben_"+cost_id)){env_benefit =  parseInt(document.getElementById("envben_"+cost_id).innerText,10); if(isNaN(env_benefit)){env_benefit = 0;} document.getElementById("environmental_points").innerText = parseInt(document.getElementById("environmental_points").innerText,10)+env_benefit;} 
 				if (document.getElementById("socben_"+cost_id)){soc_benefit =  parseInt(document.getElementById("socben_"+cost_id).innerText,10); if(isNaN(soc_benefit)){soc_benefit = 0;} document.getElementById("societal_points").innerText = parseInt(document.getElementById("societal_points").innerText,10)+soc_benefit;} 
 
-				if (document.getElementById("finblock_"+cost_id)){fin_block =  parseInt(document.getElementById("finblock_"+cost_id).innerText,10); if(isNaN(fin_block)){fin_block = 0;} document.getElementById("financial_blocks").innerText = parseInt(document.getElementById("financial_blocks").innerText,10)+fin_block;} 
+				if (document.getElementById("finblock_"+cost_id)){fin_block =  parseInt(document.getElementById("finblock_"+cost_id).innerText,10); if(isNaN(fin_block)){fin_block = 0;} document.getElementById("financial_blocks").innerText = parseInt(document.getElementById("financial_blocks").innerText,10)+fin_block; }
 				if (document.getElementById("envblock_"+cost_id)){env_block =  parseInt(document.getElementById("envblock_"+cost_id).innerText,10); if(isNaN(env_block)){env_block = 0;} document.getElementById("environmental_blocks").innerText = parseInt(document.getElementById("environmental_blocks").innerText,10)+env_block;} 
 				if (document.getElementById("socblock_"+cost_id)){soc_block =  parseInt(document.getElementById("socblock_"+cost_id).innerText,10); if(isNaN(soc_block)){soc_block = 0;} document.getElementById("societal_blocks").innerText = parseInt(document.getElementById("societal_blocks").innerText,10)+soc_block;}
 
@@ -404,11 +410,6 @@ session_start();
 									document.getElementById("card_"+cost_id).classList.add("gray_out_card");
 								}
 
-
-							// });
-
-							
-							
 						} else {
 
 							document.getElementById("available_"+cost_id).innerText = 0;
@@ -493,12 +494,12 @@ session_start();
 				if (document.getElementById("financial_points")){ fin_score = document.getElementById("financial_points").innerText;}
 				if(document.getElementById("environmental_points")){ env_score = document.getElementById("environmental_points").innerText;}
 				if( document.getElementById("societal_points")){ soc_score = document.getElementById("societal_points").innerText;}
-				if( document.getElementById("financial_blocks")) {fin_block = document.getElementById("financial_blocks").innerText;}
-				if(document.getElementById("environmental_blocks")) {env_block = document.getElementById("environmental_blocks").innerText;}
-				if(document.getElementById("societal_blocks")) { soc_block = document.getElementById("societal_blocks").innerText;}
-				if(document.getElementById("financial_hits")){fin_hit = document.getElementById("financial_hits").innerText;}
-				if(document.getElementById("environmental_hits")) {env_hit = document.getElementById("environmental_hits").innerText;}
-				if(document.getElementById("societal_hits")) {soc_hit = document.getElementById("societal_hits").innerText;}
+				if( document.getElementById("financial_blocks")) {fin_block = Math.min(document.getElementById("financial_blocks").innerText,100);}
+				if(document.getElementById("environmental_blocks")) {env_block =  Math.min(document.getElementById("environmental_blocks").innerText,100);}
+				if(document.getElementById("societal_blocks")) { soc_block =  Math.min( document.getElementById("societal_blocks").innerText,100);}
+				if(document.getElementById("financial_hits")){fin_hit = Math.min( document.getElementById("financial_hits").innerText,100);}
+				if(document.getElementById("environmental_hits")) {env_hit = Math.min( document.getElementById("environmental_hits").innerText,100);}
+				if(document.getElementById("societal_hits")) {soc_hit = Math.min( document.getElementById("societal_hits").innerText,100);}
 				let available_funds = document.getElementById("available_funds").innerText;
 
 				const team_id = document.getElementById("team_id").value;
@@ -513,11 +514,6 @@ session_start();
 				console.log (`fin_hit is ${fin_hit}`);
 				console.log (`env_hit is ${env_hit}`);
 				console.log (`soc_hit is ${soc_hit}`);
-
-
-
-
-
 
 				$.ajax({  
 					url: 'update_team_data.php',
@@ -541,12 +537,7 @@ session_start();
 
                    });
 
-	
-
 			}
-
-
-
 
 </script>
 
