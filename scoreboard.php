@@ -732,7 +732,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
           }
           // now calculate the chaos teams values - base it on how the average number of points they took away in each catagory
 
-          $chaos_team_factor = 5;
+          $chaos_team_factor = 2;
           if ($chaos_team_num != 0){$denominator = $number_teams-1;} else {$denominator = $number_teams;}
 
           $fin_score[$chaos_team_num] = $fin_tot_block/($denominator)*$chaos_team_factor;

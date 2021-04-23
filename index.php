@@ -4,7 +4,7 @@ session_start();
 
    
 // initialize some values
-$game_code_err = $first_name_err = $last_name_err = $game_name_err = $vers_code_err= $radio_select_err= $globephase = $eexamtime_id = $updated_at ='';
+$game_code_err = $first_name_err = $last_name_err = $game_name_err = $vers_code_err= $radio_select_err= $globephase = $eexamtime_id = $updated_at = $team_num = $team_num_err = '';
 $game_code = $first_name = $last_name = $game_name = $vers_code= $qrcode ='';
 $game_points ='0';
  $checker_only = '1';
@@ -28,6 +28,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         // $game_point_err = 'Please enter game points.';
     } else{
         $game_points = trim($_POST["game_points"]);
+    }
+    // Check if team_num is empty
+    if(empty(trim($_POST["team_num"]))){
+        $team_num_err = 'Please enter your team number.';
+    } else{
+        $team_num = trim($_POST["team_num"]);
     }
     // Check if first_name is empty
     if(empty(trim($_POST["first_name"]))){
@@ -227,6 +233,10 @@ if (isset($_SESSION['error'])){
     <style type="text/css">
         body{ font: 14px sans-serif; }
         .wrapper{ width: 350px; padding: 20px; }
+        .check{ 
+        margin-left:10px;
+        }
+
     </style>
 </head>
 <body>
@@ -247,6 +257,21 @@ if (isset($_SESSION['error'])){
                 <input type="text" name="game_points" class="form-control" value="<?php echo $game_points; ?>"></input>
                
             </div>    
+            <div class="form-group <?php echo (!empty($team_num_err)) ? 'has-error' : ''; ?>">
+                <label>Team Number </label>
+                <input type="number" min="1" max="99" name="team_num" class="form-control" value="<?php echo $team_num; ?>">
+                <span class="help-block"><?php echo $team_num_err; ?></span>
+            </div>   
+
+            <label>Team Captain</label>
+            <div class="form-check check">
+               
+                <label>  <input type="radio" name="team_cap" class="form-control" value="yes" required > Yes </input></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label>  <input type="radio" name="team_cap" class="form-control" value="no" required checked > No </input></label>
+                <br><br>
+               
+            </div>    
+
             <div class="form-group <?php echo (!empty($first_name_err)) ? 'has-error' : ''; ?>">
                 <label>First (given) name </label>
                 <input type="text" name="first_name"class="form-control" value="<?php echo $first_name; ?>">
