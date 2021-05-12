@@ -1,42 +1,35 @@
 <?php
-	require_once "pdo.php";
-	session_start();
-	
-	
-    if (isset($_POST['iid'])) {
-	$iid = $_POST['iid'];
-} elseif(isset($_GET['iid'])){
+require_once 'pdo.php';
+session_start();
+
+if (isset($_POST['iid'])) {
+    $iid = $_POST['iid'];
+} elseif (isset($_GET['iid'])) {
     $iid = $_GET['iid'];
 } else {
-	 $_SESSION['error'] = 'invalid User_id in QRAssignmentStart0 ';
-      			header( 'Location: QRPRepo.php' ) ;
-				die();
+    $_SESSION['error'] = 'invalid User_id in QRAssignmentStart0 ';
+    header('Location: QRPRepo.php');
+    die();
 }
 // fix bug if no class is selected and get a pdo error____________________________________________
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
+    // see if the We already have a entry in the Assigntime table for this one or its new
 
+    $new_flag = 0;
 
-
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name']) ) {
-    
- 
-   // see if the We already have a entry in the Assigntime table for this one or its new
-   
-   $new_flag = 0;
-   
-   
-    $sql = 'SELECT assigntime_id FROM Assigntime WHERE currentclass_id = :currentclass_id AND iid = :iid AND assign_num = :assign_num';     
-          $stmt = $pdo->prepare($sql);
-           $stmt -> execute(array (
-           ':currentclass_id' => $_POST['currentclass_id'],
-           ':assign_num' => $_POST['active_assign'],
-           ':iid' => $_POST['iid'],
-           )); 
-            $assigntime_data = $stmt->fetch();   
-           if ($assigntime_data == false){
-                $new_flag = 1;
-           }
+    $sql =
+        'SELECT assigntime_id FROM Assigntime WHERE currentclass_id = :currentclass_id AND iid = :iid AND assign_num = :assign_num';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ':currentclass_id' => $_POST['currentclass_id'],
+        ':assign_num' => $_POST['active_assign'],
+        ':iid' => $_POST['iid'],
+    ]);
+    $assigntime_data = $stmt->fetch();
+    if ($assigntime_data == false) {
+        $new_flag = 1;
+    }
     /*     
          //  echo(' assigntime_id: '.$assigntime_id);
            echo(' currentclass_id: '.$_POST['currentclass_id']);
@@ -44,17 +37,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name']) ) {
            echo(' iid: '.$_POST['iid']);
            echo(' new_flag: '.$new_flag);
            die();
-          */  
-          // now go to the QRAssignmentStart2 with the assigntime_id 
-                        header( 'Location: QRAssignmentStart1.php?currentclass_id='.$_POST["currentclass_id"].'&assign_num='.$_POST['active_assign'].'&iid='.$_POST['iid'].'&new_flag='.$new_flag);
-                        die();
-         
-        
+          */
+
+    // now go to the QRAssignmentStart2 with the assigntime_id
+    header(
+        'Location: QRAssignmentStart1.php?currentclass_id=' .
+            $_POST['currentclass_id'] .
+            '&assign_num=' .
+            $_POST['active_assign'] .
+            '&iid=' .
+            $_POST['iid'] .
+            '&new_flag=' .
+            $new_flag
+    );
+    die();
 }
 
 // this is called from the main repo and this will Collect the information on a particular assignment from the instructor then moves onto .  THis file was coppied form QRExamStart.php
 
-        
 /* 		
 			$alias_num = $exam_num = $cclass_id = '';   
 			
@@ -64,25 +64,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name']) ) {
             $stmt -> execute(array(':iid' => $iid));
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	 */
-     
+
 // this will be called form the main repo when the game master wants to run a game
 // this is just to get the game number and go on to QRGMaster.php with a post of the game number.
 // Validity will be checked in that file and sent back here if it is not valid
 
-$_SESSION['counter']=0;  // this is for the score board
+$_SESSION['counter'] = 0; // this is for the score board
 
-
-
-	if ( isset($_SESSION['error']) ) {
-			echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
-			unset($_SESSION['error']);
-		}
-		if ( isset($_SESSION['success']) ) {
-			echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
-			unset($_SESSION['success']);
-		}
-
-	?>
+if (isset($_SESSION['error'])) {
+    echo '<p style="color:red">' . $_SESSION['error'] . "</p>\n";
+    unset($_SESSION['error']);
+}
+if (isset($_SESSION['success'])) {
+    echo '<p style="color:green">' . $_SESSION['success'] . "</p>\n";
+    unset($_SESSION['success']);
+}
+?>
 <!DOCTYPE html>
 <html lang = "en">
 <head>
@@ -116,19 +113,14 @@ $_SESSION['counter']=0;  // this is for the score board
 </header>
 
 <?php
-	
-		if ( isset($_SESSION['error']) ) {
-			echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
-			unset($_SESSION['error']);
-		}
-		if ( isset($_SESSION['success']) ) {
-			echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
-			unset($_SESSION['success']);
-		}
-	
- 
- 
- 
+if (isset($_SESSION['error'])) {
+    echo '<p style="color:red">' . $_SESSION['error'] . "</p>\n";
+    unset($_SESSION['error']);
+}
+if (isset($_SESSION['success'])) {
+    echo '<p style="color:green">' . $_SESSION['success'] . "</p>\n";
+    unset($_SESSION['success']);
+}
 ?>
 
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
@@ -140,16 +132,15 @@ $_SESSION['counter']=0;  // this is for the score board
 				<select name = "currentclass_id" id = "currentclass_id">
 				 <option value = "" selected disabled hidden > Select Course  </option> 
 				<?php
-                   
-					$sql = 'SELECT * FROM `CurrentClass` WHERE `iid` = :iid';
-					$stmt = $pdo->prepare($sql);
-					$stmt -> execute(array(':iid' => $iid));
-					while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
-						{ ?>
-						<option value="<?php echo $row['currentclass_id']; ?>" ><?php echo $row['name']; ?> </option>
-						<?php
- 							}
-                    ?>
+    $sql = 'SELECT * FROM `CurrentClass` WHERE `iid` = :iid';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':iid' => $iid]);
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
+						<option value="<?php echo $row['currentclass_id']; ?>" ><?php echo $row[
+    'name'
+]; ?> </option>
+						<?php }
+    ?>
                     
                     
 				</select>
@@ -164,7 +155,7 @@ $_SESSION['counter']=0;  // this is for the score board
                 <br>
             
                     
-            <p><input type="hidden" name="iid" id="iid" value=<?php echo($iid);?> ></p>
+            <p><input type="hidden" name="iid" id="iid" value=<?php echo $iid; ?> ></p>
 			<p><input type="hidden" name="where_from" id="where_from" value="QRAssignmentStart0" ></p>
 			<p><input type = "submit" name = "submit_name" id = "submit_id" value = "Start / Edit Assignment Activation"></p><hr><br>
             <p><input type="submit" formaction="remove_assignment.php" value="Deactivate Assignment"></p><br>

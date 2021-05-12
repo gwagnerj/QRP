@@ -1,9 +1,8 @@
 <?php
-require_once "pdo.php";
-require_once "simple_html_dom.php";
-include 'phpqrcode/qrlib.php'; 
+require_once 'pdo.php';
+require_once 'simple_html_dom.php';
+include 'phpqrcode/qrlib.php';
 session_start();
-
 
 // this strips out the get parameters so they are not in the url - its is not really secure data but I would rather not having people messing with them
 // if they do not what they are doing
@@ -19,328 +18,328 @@ session_start();
         }
     }
     */
-   // if we are comming in on a get we should get the eregistration_id and then populate the variables we need for the tables:
+// if we are comming in on a get we should get the eregistration_id and then populate the variables we need for the tables:
 
-    if ((isset($_GET['eregistration_id']) || isset($_POST['eregistration_id'])) && (isset($_GET['problem_id']) || isset($_POST['problem_id']))){
-          if (isset($_GET['eregistration_id'])){
-              $eregistration_id = $_GET['eregistration_id'];
-          }elseif(isset($_POST['eregistration_id'])){
-              $eregistration_id = $_POST['eregistration_id'];
-          }
-          if(isset($_GET['problem_id'])){
-            $problem_id = $_GET['problem_id'];
-          }elseif(isset($_POST['problem_id'])){
-            $problem_id = $_POST['problem_id'];
-          }
-      } else{
-        $_SESSION['error'] = 'Lost eregistration_id or problem_id in QRDisplayExamPblm';
-        header("Location: stu_exam_frontpage.php?eregistration_id=".$eregistration_id);
-        die();   
+if (
+    (isset($_GET['eregistration_id']) || isset($_POST['eregistration_id'])) &&
+    (isset($_GET['problem_id']) || isset($_POST['problem_id']))
+) {
+    if (isset($_GET['eregistration_id'])) {
+        $eregistration_id = $_GET['eregistration_id'];
+    } elseif (isset($_POST['eregistration_id'])) {
+        $eregistration_id = $_POST['eregistration_id'];
+    }
+    if (isset($_GET['problem_id'])) {
+        $problem_id = $_GET['problem_id'];
+    } elseif (isset($_POST['problem_id'])) {
+        $problem_id = $_POST['problem_id'];
+    }
+} else {
+    $_SESSION['error'] =
+        'Lost eregistration_id or problem_id in QRDisplayExamPblm';
+    header(
+        'Location: stu_exam_frontpage.php?eregistration_id=' . $eregistration_id
+    );
+    die();
+}
 
-      }
-      
-    
-        // get the eactivity form the data tables
-        
-        $sql = ' SELECT `eactivity_id`
+// get the eactivity form the data tables
+
+$sql = ' SELECT `eactivity_id`
           FROM `Eactivity` WHERE `eregistration_id` = :eregistration_id AND `problem_id` = :problem_id ORDER BY eactivity_id DESC LIMIT 1';
-          $stmt = $pdo->prepare($sql);
-          $stmt->execute(array(
-            ':eregistration_id' => $eregistration_id,
-            ':problem_id' => $problem_id
-          ));
-          $eactivity_id_data = $stmt->fetch(PDO::FETCH_ASSOC);
-          //var_dump($eactivity_id_data);
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    ':eregistration_id' => $eregistration_id,
+    ':problem_id' => $problem_id,
+]);
+$eactivity_id_data = $stmt->fetch(PDO::FETCH_ASSOC);
+//var_dump($eactivity_id_data);
 
-          $eactivity_id = $eactivity_id_data['eactivity_id'];
-     //    echo ('<br>');
-     //     echo ('eactivity_id: '.$eactivity_id);
-      
+$eactivity_id = $eactivity_id_data['eactivity_id'];
+//    echo ('<br>');
+//     echo ('eactivity_id: '.$eactivity_id);
 
-          
- // initialize some vars
- 
-  $complete = '';
-    $alias_num = '';
-    $iid = '';
-    $cclass_id = '';
-    $pin = '';
-    $exam_code ='';
-  
-	$stu_name = '';
-	$instr_last='';
-    $cclass_name='';
-    $dex='';
-    $globephase = 0;
+// initialize some vars
+
+$complete = '';
+$alias_num = '';
+$iid = '';
+$cclass_id = '';
+$pin = '';
+$exam_code = '';
+
+$stu_name = '';
+$instr_last = '';
+$cclass_name = '';
+$dex = '';
+$globephase = 0;
 
 // get the information needed form the SQL tables
- $sql = "SELECT checker_only,switch_to_bc,progress, dex,currentclass_id,alias_num,Eregistration.exam_code AS exam_code,last_name,first_name,  Eregistration.eexamnow_id AS eexamnow_id, eexamtime_id, Eregistration.student_id AS student_id
+$sql = "SELECT checker_only,switch_to_bc,progress, dex,currentclass_id,alias_num,Eregistration.exam_code AS exam_code,last_name,first_name,  Eregistration.eexamnow_id AS eexamnow_id, eexamtime_id, Eregistration.student_id AS student_id
 FROM `Eactivity`
          LEFT JOIN Eregistration ON Eregistration.eregistration_id = Eactivity.eregistration_id
          LEFT JOIN Student ON Student.student_id = Eactivity.student_id
          LEFT JOIN Eexamnow ON Eexamnow.eexamnow_id = Eactivity.eexamnow_id
          
     WHERE eactivity_id = :eactivity_id";
-           $stmt = $pdo->prepare($sql);
-           $stmt -> execute(array(
-             ':eactivity_id' => $eactivity_id,
-          )); 
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-          //  var_dump($row);
-             if($row != false){
-                 $eexamtime_id = $row['eexamtime_id']; 
- //               $iid = $row['iid'];
-                $switch_to_bc = $row['switch_to_bc'];
-                if (is_null($switch_to_bc)){$switch_to_bc = 0;}
-                $progress = $row['progress'];
-                $checker_only = $row['checker_only'];
-                $dex = $row['dex'];
-                $student_id = $row['student_id'];
-                $stu_name = $row['first_name'].' '.$row['last_name'];
-                $exam_code = $row['exam_code'];
-                $cclass_id = $row['currentclass_id'];
-                $suspend_flag = 0;
-                $eexamnow_id = $row['eexamnow_id'];
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    ':eactivity_id' => $eactivity_id,
+]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+//  var_dump($row);
+if ($row != false) {
+    $eexamtime_id = $row['eexamtime_id'];
+    //               $iid = $row['iid'];
+    $switch_to_bc = $row['switch_to_bc'];
+    if (is_null($switch_to_bc)) {
+        $switch_to_bc = 0;
+    }
+    $progress = $row['progress'];
+    $checker_only = $row['checker_only'];
+    $dex = $row['dex'];
+    $student_id = $row['student_id'];
+    $stu_name = $row['first_name'] . ' ' . $row['last_name'];
+    $exam_code = $row['exam_code'];
+    $cclass_id = $row['currentclass_id'];
+    $suspend_flag = 0;
+    $eexamnow_id = $row['eexamnow_id'];
 
-      // get the work_flow  and send it to the JS  (work_flow can be open, bc_if and bc_first)
-  $sql = 'SELECT work_flow,game_flag FROM Eexamtime WHERE eexamtime_id = :eexamtime_id';
-  $stmt = $pdo->prepare($sql);
-  $stmt -> execute(array(
-    ':eexamtime_id' => $eexamtime_id,
- )); 
-   $work_flows = $stmt->fetch();
-   $game_flag = $work_flows['game_flag'];
-   $work_flow = $work_flows['work_flow'];
-//echo 'workflow '.$work_flow;
-
-
-// var_dump($row);
-
-         $sql = 'SELECT iid FROM CurrentClass
-                WHERE currentclass_id = :currentclass_id';
-                  $stmt = $pdo->prepare($sql);
-                  $stmt -> execute(array(
-                  ':currentclass_id' => $cclass_id,
-                  )); 
-                  $iid_data = $stmt->fetch(PDO::FETCH_ASSOC);
-                  $iid = $iid_data['iid']; 
-
-
-
-        $sql = 'SELECT pin FROM StudentCurrentClassConnect 
-        WHERE student_id = :student_id AND currentclass_id = :currentclass_id';
-          $stmt = $pdo->prepare($sql);
-          $stmt -> execute(array(
-          ':student_id' => $student_id,
-          ':currentclass_id' => $cclass_id,
-          )); 
-          $pin_data = $stmt->fetch(PDO::FETCH_ASSOC);
-          $pin = $pin_data['pin'];
-
-
-             } else {
-                 $_SESSION['error'] = 'examactivity table could not be read in QRdisplayExamPblem.php';
-                header("Location: QRExamRegistration.php");
-                die();  
-             }
-
-            $sql = " SELECT * FROM `Eexamnow` WHERE eexamnow_id = :eexamnow_id" ;
-                    $stmt = $pdo->prepare($sql);
-                    $stmt -> execute(array(
-                         ':eexamnow_id' => $eexamnow_id,
-                    ));
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                    if($row != false){
-                        $globephase = $row['globephase']; 
-                        $eexamtime_id = $row['eexamtime_id'];
-                    //    $game_flag = $row['game_flag'];
-
-                     } else {
-                       $_SESSION['error'] = 'examtime table could not read - Exam over or not Initiated';
-                    //    header("Location: QRExamRegistration.php");
-                      //  header("Location: StopExam.php");
-
-                        die();     
-                    }
-                    
-                  
-                  
-                    $sql = "SELECT team_cap FROM TeamStudentConnect WHERE `eexamnow_id` = :eexamnow_id AND student_id = :student_id";
-                    $stmt = $pdo->prepare($sql);
-                    $stmt -> execute(array(
-                      ':eexamnow_id' => $eexamnow_id,
-                      ':student_id' => $student_id,
-                    ));
-                    $teamstudentconnect_data = $stmt->fetch(PDO::FETCH_ASSOC);
-                    if ( $teamstudentconnect_data != false){
-                          $team_cap = $teamstudentconnect_data['team_cap'];
-                    } else {$team_cap =0;}
-                  if ($globephase == 0){
-                    $_SESSION['error'] = 'exam has not yet been started';
-                    header("Location: stu_exam_frontpage.php?eregistration_id=".$eregistration_id);
-                  }
-                  
-                    if ($globephase >1){
-
-                      //   // test to see if we are running a game and if they are the team captaining
-                      //  if($globephase ==3){
-                      //   $sql = " SELECT * FROM `Eexamtime` WHERE eexamtime_id = :eexamtime_id" ;
-                      //   $stmt = $pdo->prepare($sql);
-                      //   $stmt -> execute(array(
-                      //        ':eexamtime_id' => $eexamtime_id,
-                      //   ));
-                      //   $eexamtime_data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-
-
-                         if ($game_flag ==1){
-
-                      
-                                if ($teamstudentconnect_data['team_cap']==1){
-                                  header('Location: teamcaptain.php?eexamnow_id='.$eexamnow_id.'&student_id='.$student_id);
-                                  die();  
-                  
-                                } else {
-                                  header('Location: teamcaptainnot.php?eexamnow_id='.$eexamnow_id.'&student_id='.$student_id);
-                                  die();  
-                                }
-
-                         }
-
-                     }
-
-
-                        
-                  //  }
-              $sql = " SELECT `name` FROM `CurrentClass` WHERE currentclass_id = :currentclass_id" ;
-                    $stmt = $pdo->prepare($sql);
-                    $stmt -> execute(array(
-                         ':currentclass_id' => $cclass_id,
-                    ));
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                    if($row != false){
-                        $cclass_name = $row['name']; 
-                    } else {
-                       $_SESSION['error'] = 'Currentclass table could not read - Class Not Valid';
-                       
-                    }     
-             $sql = " SELECT * FROM `Eexam` WHERE currentclass_id = :currentclass_id AND problem_id = :problem_id AND iid = :iid" ;
-                    $stmt = $pdo->prepare($sql);
-                    $stmt -> execute(array(
-                         ':currentclass_id' => $cclass_id,
-                           ':problem_id' => $problem_id,
-                             ':iid' => $iid,
-                    ));
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                    if($row != false){
-                        $alias_num = $row['alias_num']; 
-                        $eexam_id = $row['eexam_id'];
-                        $exam_num = $row['exam_num'];
-                    }                     
-                    	
-
-  $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
+    // get the work_flow  and send it to the JS  (work_flow can be open, bc_if and bc_first)
+    $sql =
+        'SELECT work_flow,game_flag FROM Eexamtime WHERE eexamtime_id = :eexamtime_id';
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(':problem_id' => $problem_id));
-	$pblm_data = $stmt -> fetch();
-    $contrib_id = $pblm_data['users_id'];
-    $nm_author = $pblm_data['nm_author'];
-    $specif_ref = $pblm_data['specif_ref'];
-    $htmlfilenm = $pblm_data['htmlfilenm'];
+    $stmt->execute([
+        ':eexamtime_id' => $eexamtime_id,
+    ]);
+    $work_flows = $stmt->fetch();
+    $game_flag = $work_flows['game_flag'];
+    $work_flow = $work_flows['work_flow'];
+    //echo 'workflow '.$work_flow;
+
+    // var_dump($row);
+
+    $sql = 'SELECT iid FROM CurrentClass
+                WHERE currentclass_id = :currentclass_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ':currentclass_id' => $cclass_id,
+    ]);
+    $iid_data = $stmt->fetch(PDO::FETCH_ASSOC);
+    $iid = $iid_data['iid'];
+
+    $sql = 'SELECT pin FROM StudentCurrentClassConnect 
+        WHERE student_id = :student_id AND currentclass_id = :currentclass_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ':student_id' => $student_id,
+        ':currentclass_id' => $cclass_id,
+    ]);
+    $pin_data = $stmt->fetch(PDO::FETCH_ASSOC);
+    $pin = $pin_data['pin'];
+} else {
+    $_SESSION['error'] =
+        'examactivity table could not be read in QRdisplayExamPblem.php';
+    header('Location: QRExamRegistration.php');
+    die();
+}
+
+$sql = ' SELECT * FROM `Eexamnow` WHERE eexamnow_id = :eexamnow_id';
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    ':eexamnow_id' => $eexamnow_id,
+]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($row != false) {
+    $globephase = $row['globephase'];
+    $eexamtime_id = $row['eexamtime_id'];
+    //    $game_flag = $row['game_flag'];
+} else {
+    $_SESSION['error'] =
+        'examtime table could not read - Exam over or not Initiated';
+    //    header("Location: QRExamRegistration.php");
+    //  header("Location: StopExam.php");
+
+    die();
+}
+
+$sql =
+    'SELECT team_cap FROM TeamStudentConnect WHERE `eexamnow_id` = :eexamnow_id AND student_id = :student_id';
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    ':eexamnow_id' => $eexamnow_id,
+    ':student_id' => $student_id,
+]);
+$teamstudentconnect_data = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($teamstudentconnect_data != false) {
+    $team_cap = $teamstudentconnect_data['team_cap'];
+} else {
+    $team_cap = 0;
+}
+if ($globephase == 0) {
+    $_SESSION['error'] = 'exam has not yet been started';
+    header(
+        'Location: stu_exam_frontpage.php?eregistration_id=' . $eregistration_id
+    );
+}
+
+if ($globephase > 1) {
+    //   // test to see if we are running a game and if they are the team captaining
+    //  if($globephase ==3){
+    //   $sql = " SELECT * FROM `Eexamtime` WHERE eexamtime_id = :eexamtime_id" ;
+    //   $stmt = $pdo->prepare($sql);
+    //   $stmt -> execute(array(
+    //        ':eexamtime_id' => $eexamtime_id,
+    //   ));
+    //   $eexamtime_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($game_flag == 1) {
+        if ($teamstudentconnect_data['team_cap'] == 1) {
+            header(
+                'Location: teamcaptain.php?eexamnow_id=' .
+                    $eexamnow_id .
+                    '&student_id=' .
+                    $student_id
+            );
+            die();
+        } else {
+            header(
+                'Location: teamcaptainnot.php?eexamnow_id=' .
+                    $eexamnow_id .
+                    '&student_id=' .
+                    $student_id
+            );
+            die();
+        }
+    }
+}
+
+//  }
+$sql =
+    ' SELECT `name` FROM `CurrentClass` WHERE currentclass_id = :currentclass_id';
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    ':currentclass_id' => $cclass_id,
+]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($row != false) {
+    $cclass_name = $row['name'];
+} else {
+    $_SESSION['error'] = 'Currentclass table could not read - Class Not Valid';
+}
+$sql =
+    ' SELECT * FROM `Eexam` WHERE currentclass_id = :currentclass_id AND problem_id = :problem_id AND iid = :iid';
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    ':currentclass_id' => $cclass_id,
+    ':problem_id' => $problem_id,
+    ':iid' => $iid,
+]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($row != false) {
+    $alias_num = $row['alias_num'];
+    $eexam_id = $row['eexam_id'];
+    $exam_num = $row['exam_num'];
+}
+
+$sql = 'SELECT * FROM Problem WHERE problem_id = :problem_id';
+$stmt = $pdo->prepare($sql);
+$stmt->execute([':problem_id' => $problem_id]);
+$pblm_data = $stmt->fetch();
+$contrib_id = $pblm_data['users_id'];
+$nm_author = $pblm_data['nm_author'];
+$specif_ref = $pblm_data['specif_ref'];
+$htmlfilenm = $pblm_data['htmlfilenm'];
 
 // this is the old way with substituting the variables in with the JS - now we are going to build this up with the php just like the homework - need to steel code from QRdisplayPblem.php
 
-
-        $htmlfilenm = "uploads/".$htmlfilenm;
+$htmlfilenm = 'uploads/' . $htmlfilenm;
 // if($checker_only ==0){
-        // read in the names of the variables for the problem
-            $nv = 0;  // number of non-null variables
-           for ($i = 0; $i <= 13; $i++) {
-                if($pblm_data['nv_'.($i+1)]!='Null' ){
-                    $nvar[$i]=$pblm_data['nv_'.($i+1)];
-                    $nv++;
-                 }
-           }
-         
-            $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
-            $stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
-            $row = $stmt->fetch();
- 
-            $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
-            $stmt->execute(array(":problem_id" => $problem_id, ":dex" => 1));
-            $BC_row = $stmt->fetch();
-                 
-         //  var_dump($BC_vari);
+// read in the names of the variables for the problem
+$nv = 0; // number of non-null variables
+for ($i = 0; $i <= 13; $i++) {
+    if ($pblm_data['nv_' . ($i + 1)] != 'Null') {
+        $nvar[$i] = $pblm_data['nv_' . ($i + 1)];
+        $nv++;
+    }
+}
 
+$stmt = $pdo->prepare(
+    'SELECT * FROM Input where problem_id = :problem_id AND dex = :dex'
+);
+$stmt->execute([':problem_id' => $problem_id, ':dex' => $dex]);
+$row = $stmt->fetch();
 
-           // Read in the value for the input variables
-           
-            for ($i = 0; $i < $nv; $i++) {
-                if($row['v_'.($i+1)]!='Null' ){
+$stmt = $pdo->prepare(
+    'SELECT * FROM Input where problem_id = :problem_id AND dex = :dex'
+);
+$stmt->execute([':problem_id' => $problem_id, ':dex' => 1]);
+$BC_row = $stmt->fetch();
 
-                  $pattern[$i]= '/##'.$nvar[$i].',.+?##/';
-                  $vari[$i] = $row['v_'.($i+1)];
-                  $BC_vari[$i] = $BC_row['v_'.($i+1)];
-                 
-                 //   $base_case = preg_replace($pattern[$i],$BC_row[$i],$base_case);
-                    //           echo ('  $vari[$i]: '. $vari[$i]);
-                    
-                }
-            }
-           // see if we need a reflections button
-         // think if we want to add reflection type questions to exam problems - right now they are not in the exam table (they are in the assign table) 
-          /*  
+//  var_dump($BC_vari);
+
+// Read in the value for the input variables
+
+for ($i = 0; $i < $nv; $i++) {
+    if ($row['v_' . ($i + 1)] != 'Null') {
+        $pattern[$i] = '/##' . $nvar[$i] . ',.+?##/';
+        $vari[$i] = $row['v_' . ($i + 1)];
+        $BC_vari[$i] = $BC_row['v_' . ($i + 1)];
+
+        //   $base_case = preg_replace($pattern[$i],$BC_row[$i],$base_case);
+        //           echo ('  $vari[$i]: '. $vari[$i]);
+    }
+}
+// see if we need a reflections button
+// think if we want to add reflection type questions to exam problems - right now they are not in the exam table (they are in the assign table)
+/*  
            if ($ref_choice!=0 || $reflect_flag !=0 || $explore_flag !=0 || $connect_flag !=0 || $society_flag !=0){
              $reflection_button_flag = 1;  
            } else {
              $reflection_button_flag = 0; 
            }
             */
-           
-        //------------------------------------------------------------------------------------------------------------
 
-        // passing my php varables into the js varaibles needed for the script below
+//------------------------------------------------------------------------------------------------------------
 
-        // Sneak the exam_flag in
+// passing my php varables into the js varaibles needed for the script below
 
+// Sneak the exam_flag in
 
-// } 
+// }
 
-        $pass = array(
-            'checker'=>$checker_only,
-           'eregistration_id' => $eregistration_id,
-           'progress' => $progress,
-            'dex' => $dex,
-            'problem_id' => $problem_id,
-            'stu_name' => $stu_name,
-           'pin' => $pin,
-            'iid' => $iid,
-            'alias_num' => $alias_num,
-            'exam_num' => $exam_num,
-            'assign_num' => $exam_num,
-            'cclass_id' => $cclass_id,
-            'eactivity_id' => $eactivity_id,
-            'cclass_name' => $cclass_name,
-            'eexamtime_id' => $eexamtime_id,
-            'switch_to_bc' => $switch_to_bc,
-            'work_flow'=> $work_flow,
-            'team_cap'=> $team_cap,
-            'globephase' => $globephase, 
-            'eexamnow_id' => $eexamnow_id, 
-            'game_flag' => $game_flag, 
-            'student_id' => $student_id, 
-          );
+$pass = [
+    'checker' => $checker_only,
+    'eregistration_id' => $eregistration_id,
+    'progress' => $progress,
+    'dex' => $dex,
+    'problem_id' => $problem_id,
+    'stu_name' => $stu_name,
+    'pin' => $pin,
+    'iid' => $iid,
+    'alias_num' => $alias_num,
+    'exam_num' => $exam_num,
+    'assign_num' => $exam_num,
+    'cclass_id' => $cclass_id,
+    'eactivity_id' => $eactivity_id,
+    'cclass_name' => $cclass_name,
+    'eexamtime_id' => $eexamtime_id,
+    'switch_to_bc' => $switch_to_bc,
+    'work_flow' => $work_flow,
+    'team_cap' => $team_cap,
+    'globephase' => $globephase,
+    'eexamnow_id' => $eexamnow_id,
+    'game_flag' => $game_flag,
+    'student_id' => $student_id,
+];
 
-        // echo ($pass['society_flag']);
-        //die();
-        echo '<script>';
-        echo 'var pass = ' . json_encode($pass) . ';';
-        echo '</script>';
-          
+// echo ($pass['society_flag']);
+//die();
+echo '<script>';
+echo 'var pass = ' . json_encode($pass) . ';';
+echo '</script>';
 
- 
- // 
-
+//
 ?>
 
 <!DOCTYPE html>
@@ -421,171 +420,169 @@ FROM `Eactivity`
 <body>
 
 <form method = "POST" Action = "">
-<input type="hidden" id = "problem_id" name="problem_id" value="<?php echo ($problem_id)?>" >
-<input type="hidden" id = "eregistration_id" name="eregistration_id" value="<?php echo ($eregistration_id)?>" >
+<input type="hidden" id = "problem_id" name="problem_id" value="<?php echo $problem_id; ?>" >
+<input type="hidden" id = "eregistration_id" name="eregistration_id" value="<?php echo $eregistration_id; ?>" >
 
 </form>
   <!-- <div style="background-image: url('Water_Mark_for_exam.png');">  -->
-<?php   
+<?php
+echo '<img id = "water_mark" src="uploads/Water_Mark_for_exam_trans_bckgrnd.png" >';
 
+$html = new simple_html_dom();
+$html->load_file($htmlfilenm);
+$header_stuff = new simple_html_dom();
+$header_stuff->load_file('exam_problem_header_stuff.html');
+// subbing in the header
+$header_stuff->find('#stu_name', 0)->innertext = $stu_name;
+$header_stuff->find('#course', 0)->innertext = $cclass_name;
+$header_stuff->find('#exam_num', 0)->innertext = $exam_num;
+$header_stuff->find('#problem_num', 0)->innertext = $alias_num;
 
+echo $header_stuff;
 
-        echo('<img id = "water_mark" src="uploads/Water_Mark_for_exam_trans_bckgrnd.png" >');
+$problem = $html->find('#problem', 0);
+$base_case = $html->find('#problem', 0);
 
-
-
- 
-
-
-
-
-  $html = new simple_html_dom();
-      $html->load_file($htmlfilenm);
-      $header_stuff = new simple_html_dom();
-      $header_stuff -> load_file('exam_problem_header_stuff.html');
-            // subbing in the header
-       $header_stuff ->find('#stu_name',0)->innertext = $stu_name;
-      $header_stuff ->find('#course',0)->innertext = $cclass_name;
-       $header_stuff ->find('#exam_num',0)->innertext = $exam_num;
-       $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
-       
-       echo($header_stuff);
-       
-       
-
-  $problem = $html->find('#problem',0);
-  $base_case = $html->find('#problem',0); 
-
-  
-   for( $i=0;$i<$nv;$i++){
-           if($row['v_'.($i+1)]!='Null' ){
-            $problem = preg_replace($pattern[$i],$vari[$i],$problem);
-            $base_case = preg_replace($pattern[$i],$BC_vari[$i],$base_case);
-
-           }
-        }
-  // put the images into the problem statement part of the document     
-    $dom = new DOMDocument();
-   libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
-       $dom->loadHTML('<?xml encoding="utf-8" ?>' . $problem);
-       $images = $dom->getElementsByTagName('img');
-        foreach ($images as $image) {
-            $src = $image->getAttribute('src');
-             $src = 'uploads/'.$src;
-             $src = urldecode($src);
-             $type = pathinfo($src, PATHINFO_EXTENSION);
-             $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
-             $image->setAttribute("src", $base64); 
-             $problem = $dom->saveHTML();
-       }
-       
-       // turn problem back into and simple_html_dom object that I can replace the varaible images on 
-       
-      if(str_get_html($problem) != false){
-           $problem =str_get_html($problem); 
-           $keep = 0;
-           $varImages = $problem -> find('.var_image');
-           foreach($varImages as $varImage) {
-              $var_image_id = $varImage -> id;  
-              
-               for( $i=0;$i<$nv;$i++){
-                  if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
-                } 
-                
-                If ($keep==0){
-                    //  get rid of the caption and the image
-                       $varImage->find('.MsoNormal',0)->outertext = '';
-                       $varImage->find('.MsoCaption',0)->outertext = '';
-                } else {
-                     //  get rid of the caption 
-                    $varImage->find('.MsoCaption',0)->outertext = '';
-                }
-                 $keep = 0;
-            }
-      }
-
-
-  // repeat with the base_case ______________________________________________________________________
-     
-         // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
-         for( $i=0;$i<$nv;$i++){
-          if($row['v_'.($i+1)]!='Null' ){
-             $base_case = preg_replace($pattern[$i],$vari[$i],$base_case);
-          }
-     }
-      
-       $dom = new DOMDocument();
-libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
-    $dom->loadHTML('<?xml encoding="utf-8" ?>' . $base_case);
-    $images = $dom->getElementsByTagName('img');
-     foreach ($images as $image) {
-         $src = $image->getAttribute('src');
-          $src = 'uploads/'.$src;
-          $src = urldecode($src);
-          $type = pathinfo($src, PATHINFO_EXTENSION);
-          $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
-          $image->setAttribute("src", $base64); 
-          $base_case = $dom->saveHTML();
+for ($i = 0; $i < $nv; $i++) {
+    if ($row['v_' . ($i + 1)] != 'Null') {
+        $problem = preg_replace($pattern[$i], $vari[$i], $problem);
+        $base_case = preg_replace($pattern[$i], $BC_vari[$i], $base_case);
     }
-    
-    // turn base-case back into and simple_html_dom object that I can replace the varaible images on 
-    
-     if(str_get_html($base_case) != false){
-        $base_case =str_get_html($base_case); 
-        $keep = 0;
-        $varImages = $base_case -> find('.var_image');
-        foreach($varImages as $varImage) {
-           $var_image_id = $varImage -> id;  
-           
-            for( $i=0;$i<$nv;$i++){
-               if(trim($var_image_id) == trim($BC_vari[$i])){$keep = 1;} 
-             } 
-             If ($keep==0){
-                 //  get rid of the caption and the image
-                    $varImage->find('.MsoNormal',0)->outertext = '';
-                    $varImage->find('.MsoCaption',0)->outertext = '';
-             } else {
-                  //  get rid of the caption 
-                 $varImage->find('.MsoCaption',0)->outertext = '';
-             }
-              $keep = 0;
-         } 
-     }
-      
- // only include the document above the checker
-    $this_html ='<hr> <div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>';
+}
+// put the images into the problem statement part of the document
+$dom = new DOMDocument();
+libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
+$dom->loadHTML('<?xml encoding="utf-8" ?>' . $problem);
+$images = $dom->getElementsByTagName('img');
+foreach ($images as $image) {
+    $src = $image->getAttribute('src');
+    $src = 'uploads/' . $src;
+    $src = urldecode($src);
+    $type = pathinfo($src, PATHINFO_EXTENSION);
+    $base64 =
+        'data:image/' .
+        $type .
+        ';base64,' .
+        base64_encode(file_get_contents($src));
+    $image->setAttribute('src', $base64);
+    $problem = $dom->saveHTML();
+}
 
-      
-               
-    // only include the document above the checker
-      // $this_html ='<hr><br>'.$problem;
-       $this_html = $problem.' <div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>';
+// turn problem back into and simple_html_dom object that I can replace the varaible images on
 
- 
-   // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
-       for( $i=0;$i<$nv;$i++){
-             if($row['v_'.($i+1)]!='Null' ){
-                $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
-             }
+if (str_get_html($problem) != false) {
+    $problem = str_get_html($problem);
+    $keep = 0;
+    $varImages = $problem->find('.var_image');
+    foreach ($varImages as $varImage) {
+        $var_image_id = $varImage->id;
+
+        for ($i = 0; $i < $nv; $i++) {
+            if (trim($var_image_id) == trim($vari[$i])) {
+                $keep = 1;
+            }
         }
-  echo $this_html; 
 
- 
+        if ($keep == 0) {
+            //  get rid of the caption and the image
+            $varImage->find('.MsoNormal', 0)->outertext = '';
+            $varImage->find('.MsoCaption', 0)->outertext = '';
+        } else {
+            //  get rid of the caption
+            $varImage->find('.MsoCaption', 0)->outertext = '';
+        }
+        $keep = 0;
+    }
+}
+
+// repeat with the base_case ______________________________________________________________________
+
+// substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+for ($i = 0; $i < $nv; $i++) {
+    if ($row['v_' . ($i + 1)] != 'Null') {
+        $base_case = preg_replace($pattern[$i], $vari[$i], $base_case);
+    }
+}
+
+$dom = new DOMDocument();
+libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
+$dom->loadHTML('<?xml encoding="utf-8" ?>' . $base_case);
+$images = $dom->getElementsByTagName('img');
+foreach ($images as $image) {
+    $src = $image->getAttribute('src');
+    $src = 'uploads/' . $src;
+    $src = urldecode($src);
+    $type = pathinfo($src, PATHINFO_EXTENSION);
+    $base64 =
+        'data:image/' .
+        $type .
+        ';base64,' .
+        base64_encode(file_get_contents($src));
+    $image->setAttribute('src', $base64);
+    $base_case = $dom->saveHTML();
+}
+
+// turn base-case back into and simple_html_dom object that I can replace the varaible images on
+
+if (str_get_html($base_case) != false) {
+    $base_case = str_get_html($base_case);
+    $keep = 0;
+    $varImages = $base_case->find('.var_image');
+    foreach ($varImages as $varImage) {
+        $var_image_id = $varImage->id;
+
+        for ($i = 0; $i < $nv; $i++) {
+            if (trim($var_image_id) == trim($BC_vari[$i])) {
+                $keep = 1;
+            }
+        }
+        if ($keep == 0) {
+            //  get rid of the caption and the image
+            $varImage->find('.MsoNormal', 0)->outertext = '';
+            $varImage->find('.MsoCaption', 0)->outertext = '';
+        } else {
+            //  get rid of the caption
+            $varImage->find('.MsoCaption', 0)->outertext = '';
+        }
+        $keep = 0;
+    }
+}
+
+// only include the document above the checker
+$this_html =
+    '<hr> <div id = "base_case"><h2>Base_Case:</h2>' . $base_case . '</div>';
+
+// only include the document above the checker
+// $this_html ='<hr><br>'.$problem;
+$this_html =
+    $problem .
+    ' <div id = "base_case"><h2>Base_Case:</h2>' .
+    $base_case .
+    '</div>';
+
+// substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+for ($i = 0; $i < $nv; $i++) {
+    if ($row['v_' . ($i + 1)] != 'Null') {
+        $this_html = preg_replace($pattern[$i], $vari[$i], $this_html);
+    }
+}
+echo $this_html;
+
 /* 
 echo ' dex '.$dex.'<br>';
 echo ' pin '.$pin.'<br>';
 echo ' alias_num '.$alias_num.'<br>';
  */
- ?>
+?>
 
 
  <div id = 'examchecker'>
- <iframe src="QRExamCheck.php?exam_num=<?php echo($exam_num);?>&cclass_id=<?php echo($cclass_id);?>&alias_num=<?php echo($alias_num);?>&pin=<?php echo($pin);?>&iid=<?php echo($iid);?>&eactivity_id=<?php echo($eactivity_id);?>&problem_id=<?php echo($problem_id);?>&dex=<?php echo($dex);?>" style = "width:80%; height:70%;"></iframe>
+ <iframe src="QRExamCheck.php?exam_num=<?php echo $exam_num; ?>&cclass_id=<?php echo $cclass_id; ?>&alias_num=<?php echo $alias_num; ?>&pin=<?php echo $pin; ?>&iid=<?php echo $iid; ?>&eactivity_id=<?php echo $eactivity_id; ?>&problem_id=<?php echo $problem_id; ?>&dex=<?php echo $dex; ?>" style = "width:80%; height:70%;"></iframe>
 
  </div>
 
  <div id = 'BC_checker'>
-   <iframe   src="QRExamCheck.php?exam_num=<?php echo($exam_num);?>&cclass_id=<?php echo($cclass_id);?>&alias_num=<?php echo($alias_num);?>&pin=<?php echo($pin);?>&iid=<?php echo($iid);?>&eactivity_id=<?php echo($eactivity_id);?>&problem_id=<?php echo($problem_id);?>&dex=1>" style = "width:80%; height:70%;"></iframe>
+   <iframe   src="QRExamCheck.php?exam_num=<?php echo $exam_num; ?>&cclass_id=<?php echo $cclass_id; ?>&alias_num=<?php echo $alias_num; ?>&pin=<?php echo $pin; ?>&iid=<?php echo $iid; ?>&eactivity_id=<?php echo $eactivity_id; ?>&problem_id=<?php echo $problem_id; ?>&dex=1>" style = "width:80%; height:70%;"></iframe>
 
 
 </div>

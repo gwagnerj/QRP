@@ -1,54 +1,71 @@
 <?php
-    require_once "pdo.php";
-    session_start();
+require_once 'pdo.php';
+session_start();
 
-    $team_id = $_GET['team_id'];
-    // echo 'available funds: '.$available_funds;
-    // echo '<br>';
-    // echo 'team_id: '.$team_id;
-    // echo '<br>';
+$team_id = $_GET['team_id'];
+// echo 'available funds: '.$available_funds;
+// echo '<br>';
+// echo 'team_id: '.$team_id;
+// echo '<br>';
 
-    $sql = "SELECT * FROM Team WHERE `team_id` =:team_id";
-        $stmt = $pdo->prepare($sql);
-        $stmt ->execute(array(':team_id' => $team_id));
-        $team_data = $stmt->fetch();
+$sql = 'SELECT * FROM Team WHERE `team_id` =:team_id';
+$stmt = $pdo->prepare($sql);
+$stmt->execute([':team_id' => $team_id]);
+$team_data = $stmt->fetch();
 
-        $team_score = $team_data['team_score'];
-        $chaos_team = $team_data['chaos_team'];   // this will either be 0 or 1
-        $eexamnow_id= $team_data['eexamnow_id'];   
-        $available_funds = $team_data['pol_points'];
-        $chaos_team = $team_data['chaos_team'];
+$team_score = $team_data['team_score'];
+$chaos_team = $team_data['chaos_team']; // this will either be 0 or 1
+$eexamnow_id = $team_data['eexamnow_id'];
+$available_funds = $team_data['pol_points'];
+$chaos_team = $team_data['chaos_team'];
 
+$sql = 'SELECT * FROM GamePolitical';
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$gamepolitical_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
+$options = '';
 
-    $sql = "SELECT * FROM GamePolitical";
-        $stmt = $pdo->prepare($sql);
-        $stmt -> execute();
-        $gamepolitical_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
-    $options ='';
+$cards = [];
+$k = 0;
+foreach ($gamepolitical_data as $gamepolitical_datum) {
+    $fin_wt = $gamepolitical_datum['fin_wt'];
+    $soc_wt = $gamepolitical_datum['soc_wt'];
+    $env_wt = $gamepolitical_datum['env_wt'];
+    $political_image_file = $gamepolitical_datum['political_image_file'];
+    $cards[$k] =
+        '<div class = "political_card card_container">' .
+        '<div class = "card" id = "card_' .
+        $gamepolitical_datum['gamepolitical_id'] .
+        '">
+                          <h2>' .
+        $gamepolitical_datum['game_political_title'] .
+        '</h2>' .
+        '<div class = "card_data">' .
+        '<img src ="' .
+        $political_image_file .
+        '">' .
+        '<h2> Weights </h2>' .
+        '<p> Financial: <span id = "finwt_' .
+        $gamepolitical_datum['gamepolitical_id'] .
+        '">' .
+        $fin_wt .
+        '</span></p>' .
+        '<p> Environmental: <span id = "envwt_' .
+        $gamepolitical_datum['gamepolitical_id'] .
+        '">' .
+        $env_wt .
+        '</span></p>' .
+        '<p> Societal: <span id = "socwt_' .
+        $gamepolitical_datum['gamepolitical_id'] .
+        '">' .
+        $soc_wt .
+        '</span></p>' .
+        '</div>' .
+        '</div>' .
+        '</div>';
 
-    $cards = array();
-    $k = 0; 	
-			 foreach ($gamepolitical_data as $gamepolitical_datum){
-                 $fin_wt = $gamepolitical_datum['fin_wt'];
-                 $soc_wt = $gamepolitical_datum['soc_wt'];
-                 $env_wt = $gamepolitical_datum['env_wt'];
-                 $political_image_file = $gamepolitical_datum['political_image_file'];
-                    $cards[$k] = '<div class = "political_card card_container">'.
-                        '<div class = "card" id = "card_'.$gamepolitical_datum['gamepolitical_id'].'">
-                          <h2>'.$gamepolitical_datum["game_political_title"].'</h2>'.
-                                '<div class = "card_data">'.
-                            '<img src ="'. $political_image_file.'">'.
-                            '<h2> Weights </h2>'.
-                                '<p> Financial: <span id = "finwt_'.$gamepolitical_datum["gamepolitical_id"].'">'.$fin_wt.'</span></p>'.
-                                '<p> Environmental: <span id = "envwt_'.$gamepolitical_datum["gamepolitical_id"].'">'.$env_wt.'</span></p>'.
-                                '<p> Societal: <span id = "socwt_'.$gamepolitical_datum["gamepolitical_id"].'">'.$soc_wt.'</span></p>'.
-                        '</div>'.
-                    '</div>'.
-                 '</div>';
-
-                 $k=$k+1;
-             }
-
+    $k = $k + 1;
+}
 ?>
 
 
@@ -133,34 +150,48 @@ input[type=radio] {
 
 <h1> Select Desired Political Environment </h1>
 <h1><span id = "error"></span></h1>
-<?php if ($chaos_team == 1){
-	echo '<h2 style = "color:red;"> This is the Chaos Team </h2>';
+<?php if ($chaos_team == 1) {
+    echo '<h2 style = "color:red;"> This is the Chaos Team </h2>';
 
-	echo '<h2>Selected Hits:  <span style = "color:#892816;">  &nbsp; Financial  <span id = "financial_hits" value="0" > '.$team_data["fin_hit"].' </span></span>
-    <span style = "color:#4c884a;">&nbsp; Environmental  <span id = "environmental_hits" value="0" >'.$team_data["env_hit"].'</span> </span>
-    <span style = "color:#6e4a88;">  &nbsp; Societal  <span id = "societal_hits" value="0" > '.$team_data["soc_hit"].' </span></span></h2>';
-	
+    echo '<h2>Selected Hits:  <span style = "color:#892816;">  &nbsp; Financial  <span id = "financial_hits" value="0" > ' .
+        $team_data['fin_hit'] .
+        ' </span></span>
+    <span style = "color:#4c884a;">&nbsp; Environmental  <span id = "environmental_hits" value="0" >' .
+        $team_data['env_hit'] .
+        '</span> </span>
+    <span style = "color:#6e4a88;">  &nbsp; Societal  <span id = "societal_hits" value="0" > ' .
+        $team_data['soc_hit'] .
+        ' </span></span></h2>';
 } else {
-	echo '<h2>Selected Points:  &nbsp; <span style = "color:#892816;">  Financial  <span id = "financial_points" value="0" > '.$team_data["fin_score"].' </span></span>
-    <span style = "color:#4c884a;"> &nbsp; Environmental  <span id = "environmental_points" value="0" > '.$team_data["env_score"].' </span></span>
-    <span style = "color:#6e4a88;">    &nbsp; Societal  <span id = "societal_points" value="0" > '.$team_data["soc_score"].' </span></span></h2>';
-	echo '<h2>Selected Blocks:  &nbsp;  <span style = "color:#892816;">  Financial  <span id = "financial_blocks" value="0" > '.$team_data["fin_block"].' </span></span>
-    <span style = "color:#4c884a;"> &nbsp; Environmental  <span id = "environmental_blocks" value="0" > '.$team_data["env_block"].' </span> </span>
-    <span style = "color:#6e4a88;">    &nbsp; Societal  <span id = "societal_blocks" value="0" > '.$team_data["soc_block"].' </span></span></h2>';
-	
-	// echo '<h2> This is a Normal Team </h2>';
-}
-?>
+    echo '<h2>Selected Points:  &nbsp; <span style = "color:#892816;">  Financial  <span id = "financial_points" value="0" > ' .
+        $team_data['fin_score'] .
+        ' </span></span>
+    <span style = "color:#4c884a;"> &nbsp; Environmental  <span id = "environmental_points" value="0" > ' .
+        $team_data['env_score'] .
+        ' </span></span>
+    <span style = "color:#6e4a88;">    &nbsp; Societal  <span id = "societal_points" value="0" > ' .
+        $team_data['soc_score'] .
+        ' </span></span></h2>';
+    echo '<h2>Selected Blocks:  &nbsp;  <span style = "color:#892816;">  Financial  <span id = "financial_blocks" value="0" > ' .
+        $team_data['fin_block'] .
+        ' </span></span>
+    <span style = "color:#4c884a;"> &nbsp; Environmental  <span id = "environmental_blocks" value="0" > ' .
+        $team_data['env_block'] .
+        ' </span> </span>
+    <span style = "color:#6e4a88;">    &nbsp; Societal  <span id = "societal_blocks" value="0" > ' .
+        $team_data['soc_block'] .
+        ' </span></span></h2>';
+
+    // echo '<h2> This is a Normal Team </h2>';
+} ?>
 <h2> Funds for Selection: <span id ="available_funds"> <?php echo $available_funds; ?></span></h2>
 <input type="hidden" id = "gamepolitical_id" value = ""></input>
 <div id = "no_selection_error"> </div>'
 
 <div class = "container-1">
-            <?php 
-            foreach($cards as $card){
-                        echo $card;
-            }
-            ?>
+            <?php foreach ($cards as $card) {
+                echo $card;
+            } ?>
             
         <input type="hidden" id = "team_id" name="team_id" value = "<?php echo $team_id; ?>"></input>
 

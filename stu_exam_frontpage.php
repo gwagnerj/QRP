@@ -33,7 +33,7 @@ $sql = 'SELECT Eexamnow.eexamnow_id AS eexamnow_id, globephase, Eexamnow.eexamti
   $big_data = $stmt -> fetch(PDO::FETCH_ASSOC);
 // var_dump($big_data);
 
-if ($big_data == false) {
+if (!$big_data) {
     $_SESSION['error'] = 'big_data was not found or exam has ended';
     header('Location:  QRExamRegistration1.php');
     die;

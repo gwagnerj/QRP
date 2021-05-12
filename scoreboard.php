@@ -94,6 +94,7 @@
       #table_team_results_before{
         width: 120%;
       }
+   
       /* #table_team_results_after tr  {
         /* width: 110%; */
         height: 300%;
@@ -118,7 +119,7 @@
      <div id = "page-wrap">
 
      <header>
-         <h1>Quick Response Score Board</h1>
+         <!-- <h1>Quick Response Score Board</h1> -->
          </header>  
 
          <!-- <input type = "hidden" id = "rando" name="rando" value = "<?php echo ($rando); ?>"></input> -->
@@ -185,17 +186,20 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
  $problem_ids = $stmt->fetchALL(PDO::FETCH_ASSOC);   
 
- echo '<h1 style ="text-align:center" > Game Code <span  style = "color:red">'.$eexamnow_id.' </span></h1>';
+ echo '<h2 style ="text-align:center" > Quick Response Score Board - Game Code <span  style = "color:red">'.$eexamnow_id.' </span></h2>';
 
 
      echo '<div id = team_score>';
 
      
       echo '<form method = "POST" >';
-      echo '<h2> Team Scores </h2> <h3>  Pre QR Weight: <input type = "number" min = 0 max = 100 id = "pre_qr_weight" name = "pre_qr_weight" value ="'.$pre_qr_weight.'"></input>&nbsp;<input type = "submit" value = "Submit"> </input></h3>';
-      echo ('<table id="table_team_scores" style = "text-align:center" class = "table" border="1" >'."\n");	
+      echo '<h3>  Pre QR Weight: <input type = "number" min = 0 max = 100 id = "pre_qr_weight" name = "pre_qr_weight" value ="'.$pre_qr_weight.'"></input>&nbsp;<input type = "submit" value = "Submit"> </input></h3>';
+      echo ('<table id="table_team_scores" cellpadding ="0" style = "text-align:center"  border="1" >'."\n");	
           echo("<thead>");
 
+                echo("<th>");
+                echo('Team Num');
+                echo("</th>");
                 echo("<th>");
                 echo('Team Name');
                 echo("</th>");
@@ -266,6 +270,20 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
               $team_kahoot_cumm[$i] =0;
               $cumm[$i] =0;
 
+              $sql = "SELECT `team_name` FROM Team  WHERE team_num = :team_num AND eexamnow_id = :eexamnow_id";
+              $stmt = $pdo->prepare($sql);
+              $stmt->execute(array(
+                ":eexamnow_id" => $eexamnow_id,
+                ":team_num" => $i,
+                ));
+
+                $teams_name  = $stmt->fetch();   
+                if ($teams_name){
+                    $team_name = $teams_name['team_name'];
+                } else {
+                  $team_name ='';
+                }
+
 
               $sql = "SELECT * FROM TeamStudentConnect 
                LEFT JOIN Student ON Student.student_id = TeamStudentConnect.student_id 
@@ -279,12 +297,17 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 $studentonteam_data = $stmt->fetchALL(PDO::FETCH_ASSOC);  
              //     var_dump($studentonteam_data);
 
+      
 
 
                 if ( $studentonteam_data != false){$num_rows = count($studentonteam_data); } else {$num_rows = 1; }
-              echo('<th rowspan ='. $num_rows.'>');
+              echo('<tr id = "team_'.$i.'"> <th  rowspan ='. $num_rows.'>');
               echo ('Team '.$i);
             echo('</th>');
+            echo ('<th  rowspan ='. $num_rows.'>');
+              echo ($team_name);
+            echo('</th>');
+
          //   echo 'num_stu on team: '.$num_stu_on_team;
             
             if ($studentonteam_data != false){
@@ -444,21 +467,29 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                       echo('</td>');
                    }
                    if ($j==1){
-                    echo('<td  rowspan ='. $num_rows.'>');
-                    echo ($team_cohesivity[$i]/10);
+                    $cohesivity_background= "";
+                    if ($team_cohesivity[$i] < 950){ $cohesivity_background='yellow';} 
+                    if ($team_cohesivity[$i] < 400){ $cohesivity_background='pink';} 
+                     echo('<td style = "background-color:'.$cohesivity_background.';" rowspan ='. $num_rows.'>');
+                     echo ($team_cohesivity[$i]/10);
                     echo('</td>');
                  }
                  if ($j==1){
-                    echo('<td  rowspan ='. $num_rows.'>');
+                   $cohesivity_background= "";
+                   if ($team_cohesivity_avg < 950){ $cohesivity_background='lightyellow';} 
+                   if ($team_cohesivity_avg < 600){ $cohesivity_background='pink';} 
+                    echo('<td style = "background-color:'.$cohesivity_background.';" rowspan ='. $num_rows.'>');
                     echo ($team_cohesivity_avg/10);
+                    // echo '&nbsp;';
+                    // echo ($team_cohesivity_avg);
                     echo('</td>');
                  }
                  if ($j==1){
                     echo('<td  rowspan ='. $num_rows.'>');
-                    echo (round($team_score*10)/10);
+                    echo  (round($team_score*10)/10);
                     echo('</td>');
                    }
-                    echo('<tr>');
+                  echo('<tr >');
                   $j++;
                 }
 
@@ -893,7 +924,8 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
             echo ('</th>');
             echo ('<th>');
-            echo '<span class = "final_scores">'. $final_scores[$i].'</span>';
+            $round_final_score = round($final_scores[$i]*100)/100;
+            echo '<span class = "final_scores">'.$round_final_score.'</span>';
             echo ('</th>');
 
             echo'</tr>';
