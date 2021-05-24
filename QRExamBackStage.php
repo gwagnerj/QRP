@@ -1025,21 +1025,7 @@ if (isset($_SESSION['success'])) {
 
   </thead>
  
-  <?php // $sql = "SELECT * FROM Team WHERE 	eexamnow_id = :eexamnow_id AND currentclass_id = :currentclass_id";
-// $sql = "SELECT * FROM Team WHERE 	eexamnow_id = :eexamnow_id AND currentclass_id = :currentclass_id";
-?>// $stmt = $pdo->prepare($sql);
-  // $stmt->execute(array(
-  //   ":eexamnow_id" => $eexamnow_id,
-  //   ":currentclass_id" => $currentclass_id,
-  //   ));
-  //   $team_data = $stmt->fetchAll();
-
-  // // var_dump($team_data);
-
-  // foreach ($team_data as $team_datum){
-  //var_dump($team_datum);
-
-  // }
+  <?php
 
   for ($i = 1; $i <= $number_teams; $i++) {
       $sql =
@@ -1324,12 +1310,12 @@ if (isset($_SESSION['success'])) {
         console.log (" eregistration_id "+ eregistration_id );
 
         $.ajax({   // this changes the team-name 
-										url: 'change_pregame_points.php',
-										method: 'post',
-						
-									data: {eregistration_id:eregistration_id,change_kahoot_pts:change_kahoot_pts}
-									}).done(function(){
-                   });
+                        url: 'change_pregame_points.php',
+                        method: 'post',
+        
+                    data: {eregistration_id:eregistration_id,change_kahoot_pts:change_kahoot_pts}
+                    }).done(function(){
+                 });
       }
   
  

@@ -2,6 +2,9 @@
 	session_start();
 	require_once "pdo.php";
     require_once "simple_html_dom.php";
+    require_once 'Encryption.php';
+    require_once '..\encryption_base.php';
+
 	$problem_type ='0';
 $_SESSION['checker']=2;  // tells where the getiid where to come to
 	if (isset($_SESSION['username'])) {
@@ -1269,41 +1272,137 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 
 
 
-					 if ($pblm_data['videonm1']!==false){
-						 $vid_num =1;
-						$path1 = "Video/".$pblm_data['videonm1'];
-					if (strpos(trim($tag->plaintext),'++vid1')!== false)
-					{
-								$html = str_replace($tag->outertext,'<div id = "video1"><video id="vid1" class = "video-js" 
-								playsinline preload = "auto" data-setup="{}"  width="640"   height="264" liveui="false"  controls = "controls" >
-								<source src = "'.$path1.'"   type="video/mp4" > '. $tag->outertext,$html);
-					}
+                     if ($pblm_data['videonm1'] !== false) {
+                        $vid_num = 1;
+                        $path1 = 'Video/' . $pblm_data['videonm1'];
+                        if (strpos(trim($tag->plaintext), '++vid1') !== false) {
+                            $html = str_replace(
+                                $tag->outertext,
+                                '<div id = "vid1_container" class = "vid_container"> 
+                                        <video id = "vid1" class = "video" width = "640" controls preload = "metadata">
+                                         <source src =  "' .
+                                    $path1 .
+                                    '"   type="video/mp4" ></video>' .   '<div id = "vid1_question_container" class = "question">'.
+                                    $tag->outertext,
+                                $html
+                            );
+    
+                            //    $html = str_replace($tag->outertext,'<div id = "video1"><video id="vid1" class = "video-js"
+                            //     playsinline preload = "auto" data-setup="{}"  width="640"   height="264" liveui="false"  controls = "controls" >
+                            //     <source src = "'.$path1.'"   type="video/mp4" > '. $tag->outertext,$html);
+                        }
+    
+                        $num_Q = 1;
+                        $nmax = 20;
+                        $Q_found = true;
+                        while ($num_Q < $nmax) {
+                            // put the video number and problem number also in the questions id
+                            $pattern1 = '::Q-1-' . $num_Q;
+                            $pattern2 = 'Q-1-' . $num_Q . '::';
+                            // $regex_pattern = $pattern1."(.*?)".$pattern2;
+                            // $tag_text = trim($tag->plaintext);
+                            // $position1 =  strpos($tag_text,$pattern1)+5;
+                            // $position2 = strpos($tag_text,$pattern2)-1;
+                            // $length = $position2 - $position1;
+                            // $full_question= substr($tag_text,$position1,$length);
+                            // list($k, $v) = explode(',', $full_question);
+                            // $full_question_arr[ $k ] = $v;
+    
+                            // these will go in the Questions data table  the time can stay here but
+    
+                            if (
+                                strpos(trim($tag->plaintext), $pattern1) !== false
+                            ) {
+                                $question_old_text = trim($tag->plaintext);
+                                $question_old_text_array = explode(',', $question_old_text);
+           //?                   $question_old_text_array[0] = explode(' ',$question_old_text_array[0])[1]; // get rid of the ::Q-1-1 markup
 
-								$num_Q=1;
-								$nmax = 20;
-								$Q_found = true;
-								while ($num_Q<$nmax){  // put the video number and problem number also in the questions id
-									$pattern1 = "::Q-1-".$num_Q;
-									$pattern2 = "Q-1-".$num_Q."::";
-									// $regex_pattern = $pattern1."(.*?)".$pattern2;
-									// $tag_text = trim($tag->plaintext);
-									// $position1 =  strpos($tag_text,$pattern1)+5;
-									// $position2 = strpos($tag_text,$pattern2)-1;
-									// $length = $position2 - $position1;
-									// $full_question= substr($tag_text,$position1,$length);
-									// list($k, $v) = explode(',', $full_question);	
-									// $full_question_arr[ $k ] = $v;
+			//?					$question_old_text_array[$q_o_t_a_length-1] = explode(' ',$question_old_text_array[$q_o_t_a_length-1])[0]; // get rid of the Q-1-1:: markup
+		 						//   var_dump($question_old_text_array);
+                                //  echo '<br>';
+
+                                $q_o_t_a_length =  count($question_old_text_array) - 1; //question old text array length
+								// echo (' $q_o_t_a_length '.$q_o_t_a_length);
+								// echo '<br>';
+                              
 								
-	// these will go in the Questions data table  the time can stay here but 
-									
-									if( strpos(trim($tag->plaintext),$pattern1)!== false) {$html = str_replace($tag->outertext,'<div id="Q-1-'.$num_Q.'-'.$problem_id.'" class = "vid-question">' . $tag->outertext,$html);} else {$Q_found = false;}
-									if (strpos(trim($tag->plaintext),$pattern2)!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
-									$num_Q++;
+								$Encryption = new Encryption();
+
+								$target_array_length = count($question_old_text_array)/2;
+								//! can do encryption here
+								$time_show =  $Encryption -> encrypt($question_old_text_array[1],$enc_key);
+
+								$text_show = $Encryption -> encrypt ($question_old_text_array[3],$enc_key);
+								
+								$time_entry = htmlspecialchars('<div class = "time display_none">'.$time_show.'</div>');
+								$text_entry = htmlspecialchars('<div class = "text display_none">'.$text_show.'</div>');
+								$key_value = explode(' ',$question_old_text_array[$q_o_t_a_length])[0];  // this removes the Q1-1-1:: at the end of the question
+								$key_show = $Encryption->encrypt($key_value,$enc_key);  //! encrypt here
+
+								$key_entry = htmlspecialchars('<div class = "key display_none">'.$key_show.'</div>');
+
+
+								$target_array[0] = $time_entry;
+								$target_array[1] = $text_entry;
+								$target_array[$target_array_length] = $key_entry;
+								for ($i = 2; $i < $target_array_length-1; $i++) {
+									$string = htmlspecialchars($question_old_text_array[2*$i+1]);
+									$string = $Encryption -> encrypt($string,$enc_key);
+									//! can encrypt here
+									$j = $i-1;
+									$target_array[$i] = htmlspecialchars('<div class = "option-'.$j.' display_none " >'.$string.'</div>');
 								}
-					
-					if (strpos(trim($tag->plaintext),'vid1++')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</video></div>",$html);}
-				}
-	
+
+
+                                $target_text = implode(' ', $target_array );
+                                					// 	 echo ' new_text: '.$target_text;
+    
+                                					// die();
+    
+                                $html = str_replace(
+                                    $tag->outertext,
+                                    '<div id="Q-1-' .
+                                        $num_Q .
+                                        '-' .
+                                        $problem_id .
+                                        '" class = "vid' .
+                                        $vid_num .
+                                        '-question">' .
+                                        htmlspecialchars_decode(
+                                            $target_text
+                                        ) .
+                                        $tag->outertext,
+                                    $html
+                                );
+                            }
+							//  else {
+                            //     $Q_found = false;
+                            // }
+                            if (
+                                strpos(trim($tag->plaintext), $pattern2) !== false
+                            ) {
+                                $html = str_replace(
+                                    $tag->outertext,
+                                    $tag->outertext . '</div>',
+                                    $html
+                                );
+    
+                                $html = str_replace(
+                                    $tag->plaintext,
+                                    '', //clearing out the text of the problem cinse we should have captured everything
+                                    $html
+                                );
+                            }
+                            $num_Q++;
+                        }
+    
+                        if (strpos(trim($tag->plaintext), 'vid1++') !== false) {
+							$html = str_replace('++vid1','',$html);
+							$html = str_replace('vid1++','',$html);
+                            
+                        }
+                    }
+        
 	
 
 
