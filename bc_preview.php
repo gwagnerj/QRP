@@ -13,6 +13,9 @@ if (isset($_POST['problem_id'])) {
 } else {
     $_SESSION['error'] = 'no problem id in bc_preview';
 }
+$salt = $problem_id*$problem_id;
+$enc_key = $enc_key.$salt;
+
 
 $sql = 'SELECT * FROM Problem WHERE problem_id = :problem_id';
 $stmt = $pdo->prepare($sql);
@@ -224,13 +227,23 @@ echo $reflection_text;
 }
 .display_none { display: none;
 }
+.gray-out { background-color:black;
+            padding: 0 3px 0 3px;
+           
+}
+.gray-out:after{
+   color:white;
+    content:'watch video';
+}
 
 
 </style>
+echo "<script>document.write(localStorage.setItem('enc_key', '".$enc_key."'))</script>";
 
 <script> 
-    var enc_key = '<?php echo $enc_key; ?>';
-    // console.log('enc_key ',enc_key);
+ //   var enc_key = '<?php echo $enc_key; ?>';
+ const enc_key = localStorage.getItem('enc_key');
+    //  console.log('enc_key ',enc_key);
         var vid1 = document.getElementById("vid1")
       
 
@@ -246,11 +259,14 @@ echo $reflection_text;
             function getTime(e){
                 let event = e.currentTarget;
                 console.log (" event ",event)
-                let quiz_items = event.getElementsByClassName("vid1-question") // need to loop throut these
+  //?              let quiz_items = event.getElementsByClassName("vid1-question") // need to loop throut these
+  //?              let quiz_items = document.getElementsByClassName("vid1-question") // need to loop throut these
+                let quiz_items = vid1_question_container.getElementsByClassName("vid1-question") // need to loop throut these
+
                  console.log("the quiz_items are ",quiz_items);
                 let encryption = new Encryption();
                 // const nodeItems = document.getElementsByClassName('node-item');
-                let question_number = 0; // counter for displaying the right question
+                var question_number = 0; // counter for displaying the right question
                 let trip = 0;
                     for (const quiz_item of  quiz_items) {
                         console.log (" quiz_item ",quiz_item);
@@ -258,16 +274,18 @@ echo $reflection_text;
                         //  let pause_time = encryption.decrypt(quiz_item.querySelector(".time").innerText,enc_key);  //getting the time that has been encoded 64
 
                         // let pause_time = encryption.decrypt(Q_1_1.querySelector(".time").innertext,enc_key);  //getting the time that has been encoded 64
+                        let div_id = quiz_item.id;
+                        console.log (" div_id ",div_id);
                         let question = quiz_item.querySelector(".text").innerText;  //getting the question that has been encoded 64
-                        question = encryption.decrypt(question,enc_key); 
+                        question = encryption.decrypt(question,localStorage.getItem('enc_key')); 
                         console.log (" question ",question);
                         let pause_time =  quiz_item.querySelector(".time").innerText; 
-                        pause_time = encryption.decrypt(pause_time,enc_key); 
+                        pause_time = encryption.decrypt(pause_time,localStorage.getItem('enc_key')); 
                         console.log (" pause time ",pause_time);
 
 
-                        let option1 =  encryption.decrypt(quiz_item.querySelector(".option-1").innerText,enc_key); //getting the option that has been//getting the question that has been encoded 64
-                        // question = encryption.decrypt(question,enc_key);
+                        let option1 =  encryption.decrypt(quiz_item.querySelector(".option-1").innerText,localStorage.getItem('enc_key')); //getting the option that has been//getting the question that has been encoded 64
+                        // question = encryption.decrypt(question,localStorage.getItem('enc_key'));
                         // console.log (" the question is ",question);
 
                         console.log (" the option1 is ",option1);
@@ -281,19 +299,24 @@ echo $reflection_text;
                          
                             if (event.currentTime >pause_time){
                                     vid1.pause();
-                                    vid1.classList.add("hidden");
+                                    vid1.classList.add("display_none");
                                     if (trip == 0){ trip = 1;
-                                         displayQuestion(question_number);
+       //?                                  displayQuestion(question_number);
+                                         displayQuestion(div_id);
                                     }
                                  }
                             //  console.log(event.currentTime);
 
                         },250);
                        
-                       function displayQuestion(Q_number){
+                       function displayQuestion(div_id){
                             let vid1_question_container = document.getElementById('vid1_question_container');
                             vid1_question_container.innerHTML += 'Hello ';
-                            vid1_question_container.innerHTML += Q_number;
+                            let quest = document.getElementById(div_id);
+                            console.log (" quest ",quest);
+                            vid1_question_container.innerHTML += div_id;
+  //?                           vid1_question_container.innerHTML += quest.querySelector(".text").innerText;
+                             vid1_question_container.innerHTML += encryption.decrypt(quest.querySelector(".text").innerText,enc_key);
                             question_number ++;
                         }
 

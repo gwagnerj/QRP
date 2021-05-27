@@ -37,6 +37,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 
 	   
 		$problem_id=$_POST['problem_id'];
+		$enc_key = $enc_key.$problem_id*$problem_id;
 
 		
 		//Get the filename from the docxfile that was uploaded
@@ -243,9 +244,12 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 					// now put the name of the variables into the Problem table and the values into the Input Table
 					$handle = fopen($_FILES['inputdata']['tmp_name'], "r");
 					$lines=0;  //set this to ignore the header row in the csv file
-			
+				
 							While($data=fgetcsv($handle)) {
+								$input_values[$lines] = $data;
+
 								 If ($lines==0){
+								
 									// put the variable names in the problem table
 									$sql = "UPDATE Problem SET nv_1 = :nv_1, nv_2 = :nv_2,nv_3 = :nv_3, nv_4 = :nv_4,nv_5 = :nv_5, nv_6 = :nv_6,nv_7 = :nv_7, 
 											nv_8 = :nv_8, nv_9 = :nv_9,nv_10 = :nv_10, nv_11 = :nv_11,nv_12 = :nv_12, nv_13 = :nv_13,nv_14 = :nv_14
@@ -271,7 +275,10 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 								
 								If ($lines>0){
 									
+	
+									
 									// put the input values Input table
+
 									$sql = "UPDATE Input SET problem_id = :problem_id, dex = :dex, v_1 = :v_1, v_2 = :v_2, v_3 = :v_3, v_4 = :v_4,v_5 = :v_5, v_6 = :v_6, v_7 = :v_7, 
 										v_8 = :v_8, v_9 = :v_9, v_10 = :v_10, v_11 = :v_11,v_12 = :v_12, v_13 = :v_13, v_14 = :v_14 
 										WHERE problem_id = :problem_id AND dex = :dex";
@@ -299,6 +306,10 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 								$lines = $lines+1;
 							}
 							fclose($handle);
+               			// var_dump($input_values);
+						//    echo '<br><br>';
+						//    die();
+
 					
 					$inputdata=addslashes($_FILES['inputdata']['tmp_name']);
 					$inputname=addslashes($_FILES['inputdata']['name']);
@@ -1022,8 +1033,11 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 						if($filename[1]=='csv') {  // this is the file extension where the 0 entry is the file name
 							$handle = fopen($_FILES['Qa']['tmp_name'], "r");
 							$lines=0;  //set this to ignore the header row in the csv file
-			
+				//			$k = 0;
 							While($data=fgetcsv($handle)) {
+			//?					$answer_values[$k][$lines] = $data;
+								$answer_values[$lines] = $data;
+					//			$k++;
 								 If ($lines==0){
 									if($data[0] == 'tol_type')
 									{
@@ -1378,9 +1392,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 							//  else {
                             //     $Q_found = false;
                             // }
-                            if (
-                                strpos(trim($tag->plaintext), $pattern2) !== false
-                            ) {
+                            if (strpos(trim($tag->plaintext), $pattern2) !== false) {
                                 $html = str_replace(
                                     $tag->outertext,
                                     $tag->outertext . '</div>',
@@ -1395,6 +1407,50 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                             }
                             $num_Q++;
                         }
+						$start_param = $end_param =0;
+						if (strpos(trim($tag->plaintext), '::Param') !== false) {
+							$start_param = strpos(trim($tag->plaintext), '::Param')+8;
+                            $html = str_replace($tag->innertext,
+							'<div id = "vid1_param" class = "problem_parameter display_none">'.$tag->innertext,
+                                $html
+							);
+						}
+
+						if (strpos(trim($tag->plaintext), 'Param::') !== false) {
+							$end_param = strpos(trim($tag->plaintext), 'Param::');
+                            $html = str_replace($tag->innertext,
+								$tag->innertext.'</div>',
+                                $html
+							);
+                        }
+						if ($end_param > $start_param){  // we have a parameter we need to hide until video is run
+							$param_content = trim(substr($tag->plaintext,$start_param,$end_param-$start_param));
+							$start_pos = strpos($param_content,"##");
+							$end_pos =  strpos($param_content,"##",$start_pos+2);
+							$param = substr($param_content,$start_pos,$end_pos+2-$start_pos);  // get the valeu for ##var,type,bcval##
+
+							// $html = str_replace($param_content,
+							// 	'<span class = "gray-out">'.$param_content.'</span>',
+							// 	$html
+							// );
+							$html = str_replace("Param::","",$html);
+							$html = str_replace("::Param","",$html);
+							
+							// echo (' param '.$param );
+							// die();
+							 
+						}
+
+
+
+						if (strpos(trim($tag->plaintext), 'vid1++') !== false) {
+							$html = str_replace(
+								$tag->outertext,
+								$tag->outertext.'</div></div>',   // this closes the video container also
+								$html);
+						 }
+
+
     
                         if (strpos(trim($tag->plaintext), 'vid1++') !== false) {
 							$html = str_replace('++vid1','',$html);
@@ -1498,6 +1554,19 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 
                 $tags = $html->find('#problem p');  // finds all of the p tags in the div with the ID problem
                 foreach($tags as $tag){
+					// if ($param_content != false){
+					// 	$html = str_replace($param_content,
+					// 	'<span class = "gray-out">'.$param_content.'</span>',
+					// 	$html);
+					// }
+
+                    //  if ($param_content != false && strpos(trim($tag->plaintext),$param_content)!== false) {
+					// 	 $html = str_replace($param_content,'<span class = "gray-out">'.$param_content.'</span>',$html);
+					//  }
+                     if ($param != false && strpos(trim($tag->plaintext),$param)!= false) {
+						 $html = str_replace($param,'<span class = "gray-out">'.$param.'</span>',$html);
+					 }
+
                       if (strpos(trim($tag->plaintext),'p==a==p')!== false) {$html = str_replace($tag->outertext,'<div id="questions">' . $tag->outertext,$html);}
                         if (strpos(trim($tag->plaintext),'==t')!== false) {$html = str_replace($tag->innertext,$tag->innertext.'</div>',$html);}
                     
@@ -1505,7 +1574,34 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                         if (strpos(trim($tag->plaintext),'p=='.$v.'==p')!== false) { $html = str_replace($tag->outertext,'<div id="part'.$v.'">' . $tag->outertext.'</div>',$html);}
                     }
                 }
-                
+
+				
+			for ($k=0; $k<= 10; $k++){
+				$answers[$k] = array_column($answer_values,$k);
+				$answer[$k] = implode(',',$answers[$k]);
+				$answer[$k] = $Encryption -> encrypt($answer[$k],$enc_key); // encrypt the answers and put them 
+				
+			}
+			for ($k=0; $k<= 13; $k++){
+			
+				$inputs[$k] = array_column($input_values,$k);
+				$var_names[$k] = $inputs[$k][0];
+				$input[$k] = implode(',',$inputs[$k]);
+				$input[$k] = $Encryption -> encrypt($input[$k],$enc_key); // encrypt the answers and put them 
+			}
+			for ($k=1; $k<= 13; $k++){
+				$pattern[$k] = '/##' . $var_names[$k] . ',.+?##/';
+			}
+
+			
+			// var_dump($input);
+			// echo '<br><br>';
+//!			var_dump($pattern);
+//!			echo '<br><br>';
+			// var_dump($var_names);
+			// echo '<br><br>';
+//!			die(); 
+
                 $html = str_get_html($html);
                 
                   $tags = $html->find('#reflections p');
@@ -1533,11 +1629,19 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                 $html = str_replace('==x','',$html);
                 $html = str_replace('v==','',$html);
                 $html = str_replace('==v','',$html);
-
+			$k = 1;
              foreach(range('a','j') as $v){
-               $html = str_replace('p=='.$v,$v.')',$html); 
-               $html = str_replace('==p','',$html); 
+				$html = str_replace('p=='.$v,'<span id = "part_'.$v.'" data-ans = " '. $answer[$k].'" >'.$v.')',$html);   // put the answers in the data-ans then encrypt it
+				$k++;
+				$html = str_replace('==p','</span>',$html); 
              }
+
+			 for ($k=1; $k<= 13; $k++){
+	//			$html = str_replace($pattern[$k],'<span id = "'.$pattern[$k].'" data-input = " '. $input[$k].'" >.'$pattern[$k]'.</span>)',$html);   // put the answers in the data-ans then encrypt it
+				$html = preg_replace($pattern[$k],'<span class = "'.$input[$k].'">'.str_replace('/','',$pattern[$k]).'</span>' ,$html);   // put the answers in the data-ans then encrypt it
+
+			}
+
              
                // put a div around all of the captions
                 $html = str_get_html($html);
