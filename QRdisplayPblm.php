@@ -2,6 +2,8 @@
 require_once "pdo.php";
 require_once "simple_html_dom.php";
 include 'phpqrcode/qrlib.php'; 
+require_once '..\encryption_base.php';
+
 session_start();
 
 // this strips out the get parameters so they are not in the url - its is not really secure data but I would rather not having people messing with them
@@ -51,6 +53,10 @@ session_start();
      $assign_data = $stmt -> fetch();
      $assignment_num = $assign_data['assign_num'];
       $alias_num = $assign_data['alias_num'];    
+
+      $salt = $problem_id*$problem_id;
+      $enc_key = $enc_key.$salt;
+
          
 	$reflect_flag = $assign_data['reflect_flag'];    
     $explore_flag = $assign_data['explore_flag'];    
@@ -238,6 +244,9 @@ $pass = array(
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+<script src="./crypto-js-4.0.0/crypto-js.js"></script><!-- https://github.com/brix/crypto-js/releases crypto-js.js can be download from here -->
+<script src="Encryption.js"></script>
+
 <script type="text/javascript" charset="utf-8" src="qrcode.js"></script>
 <style>
 
@@ -250,6 +259,21 @@ $pass = array(
 #qrcode_id_bc{
    background-color: #e6f7ff;  
 }
+
+.hidden {
+    visibility: hidden;
+}
+.display_none { display: none;
+}
+.gray-out { background-color:black;
+            padding: 0 3px 0 3px;
+           
+}
+.gray-out:after{
+   color:white;
+    content:'watch video';
+}
+
 
 </style>
 </head>
@@ -539,9 +563,10 @@ $pass = array(
    echo $this_html; 
   // unlink('temp2 png');
  
- 
+  echo "<script>document.write(localStorage.setItem('enc_key', '".$enc_key."'))</script>";
+
  ?>
- <script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
+ <!-- <script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script> -->
 <script>
 // try to read in a value from the iframe
  
@@ -901,37 +926,37 @@ change_count();
    // const pausetime = 1000;
 
 
-  const vid1_flag = document.getElementById("vid1")
-  console.log ("vid1_flag "+vid1_flag);
-   if (vid1_flag){
-        const myPlayer = videojs('vid1', {
-        playbackRates: [0.5,0.75, 1, 1.25, 1.5,1.75],
-        controlBar: {
-        fullscreenToggle: true,
-        playToggle: true,
-        captionsButton: true,
-        chaptersButton: false,            
-        subtitlesButton: true,
-        remainingTimeDisplay: true,
-        progressControl: {
-          seekBar: false
-        },
-   //     fullscreenToggle: false,
-        playbackRateMenuButton: true,
-        }
-        });
+  // const vid1_flag = document.getElementById("vid1")
+  // console.log ("vid1_flag "+vid1_flag);
+  //  if (vid1_flag){
+  //       const myPlayer = videojs('vid1', {
+  //       playbackRates: [0.5,0.75, 1, 1.25, 1.5,1.75],
+  //       controlBar: {
+  //       fullscreenToggle: true,
+  //       playToggle: true,
+  //       captionsButton: true,
+  //       chaptersButton: false,            
+  //       subtitlesButton: true,
+  //       remainingTimeDisplay: true,
+  //       progressControl: {
+  //         seekBar: false
+  //       },
+  //  //     fullscreenToggle: false,
+  //       playbackRateMenuButton: true,
+  //       }
+  //       });
     
-        myPlayer.on('timeupdate', function(e) {
-          if (typeof pausetime !== 'undefined') {
-              if (myPlayer.currentTime() >= pausetime) {
-                  myPlayer.pause();
-              }
-           }
-        });
-        function skip(t) {
-        myPlayer.currentTime(myPlayer.currentTime() +t);
-        }
-      }
+  //       myPlayer.on('timeupdate', function(e) {
+  //         if (typeof pausetime !== 'undefined') {
+  //             if (myPlayer.currentTime() >= pausetime) {
+  //                 myPlayer.pause();
+  //             }
+  //          }
+  //       });
+  //       function skip(t) {
+  //       myPlayer.currentTime(myPlayer.currentTime() +t);
+  //       }
+  //     }
   });
 
 </script>
