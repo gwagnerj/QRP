@@ -38,6 +38,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	   
 		$problem_id=$_POST['problem_id'];
 		$enc_key = $enc_key.$problem_id*$problem_id;
+		$vid_enc_key = $vid_enc_key.$problem_id*$problem_id+$problem_id;
 
 		
 		//Get the filename from the docxfile that was uploaded
@@ -1296,7 +1297,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                                         <video id = "vid1" class = "video" width = "640" controls preload = "metadata">
                                          <source src =  "' .
                                     $path1 .
-                                    '"   type="video/mp4" ></video>' .   '<div id = "vid1_question_container" class = "question">'.
+                                    '"   type="video/mp4" ></video>' .   '<div id = "vid1_question_container" class = "vid_questions"><div class = "display-question"></div>'.
                                     $tag->outertext,
                                 $html
                             );
@@ -1344,14 +1345,14 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 
 								$target_array_length = count($question_old_text_array)/2;
 								//! can do encryption here
-								$time_show =  $Encryption -> encrypt($question_old_text_array[1],$enc_key);
+								$time_show =  $Encryption -> encrypt($question_old_text_array[1],$vid_enc_key);
 
-								$text_show = $Encryption -> encrypt ($question_old_text_array[3],$enc_key);
+								$text_show = $Encryption -> encrypt ($question_old_text_array[3],$vid_enc_key);
 								
 								$time_entry = htmlspecialchars('<div class = "time display_none">'.$time_show.'</div>');
 								$text_entry = htmlspecialchars('<div class = "text display_none">'.$text_show.'</div>');
 								$key_value = explode(' ',$question_old_text_array[$q_o_t_a_length])[0];  // this removes the Q1-1-1:: at the end of the question
-								$key_show = $Encryption->encrypt($key_value,$enc_key);  //! encrypt here
+								$key_show = $Encryption->encrypt($key_value,$vid_enc_key);  //! encrypt here
 
 								$key_entry = htmlspecialchars('<div class = "key display_none">'.$key_show.'</div>');
 
@@ -1361,10 +1362,10 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 								$target_array[$target_array_length] = $key_entry;
 								for ($i = 2; $i < $target_array_length-1; $i++) {
 									$string = htmlspecialchars($question_old_text_array[2*$i+1]);
-									$string = $Encryption -> encrypt($string,$enc_key);
+									$string = $Encryption -> encrypt($string,$vid_enc_key);
 									//! can encrypt here
 									$j = $i-1;
-									$target_array[$i] = htmlspecialchars('<div class = "option-'.$j.' display_none " >'.$string.'</div>');
+									$target_array[$i] = htmlspecialchars('<div class = "option option-'.$j.' display_none " >'.$string.'</div>');
 								}
 
 
@@ -1379,9 +1380,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                                         $num_Q .
                                         '-' .
                                         $problem_id .
-                                        '" class = "vid' .
-                                        $vid_num .
-                                        '-question">' .
+                                        '" class = "vid-question">' .                                    
                                         htmlspecialchars_decode(
                                             $target_text
                                         ) .
@@ -1401,12 +1400,13 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
     
                                 $html = str_replace(
                                     $tag->plaintext,
-                                    '', //clearing out the text of the problem cinse we should have captured everything
+                                    '', //clearing out the text of the problem since we should have captured everything
                                     $html
                                 );
                             }
                             $num_Q++;
                         }
+
 						$start_param = $end_param =0;
 						if (strpos(trim($tag->plaintext), '::Param') !== false) {
 							$start_param = strpos(trim($tag->plaintext), '::Param')+8;
@@ -1551,7 +1551,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                
              $html = str_get_html($html);
                 
-
+ 				$trip = 0;  //! trying to fix the problem oh havving a gray-out tag within a gray-out tag
                 $tags = $html->find('#problem p');  // finds all of the p tags in the div with the ID problem
                 foreach($tags as $tag){
 					// if ($param_content != false){
@@ -1564,7 +1564,10 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 					// 	 $html = str_replace($param_content,'<span class = "gray-out">'.$param_content.'</span>',$html);
 					//  }
                      if ($param != false && strpos(trim($tag->plaintext),$param)!= false) {
+						 if ($trip == 0){  //! just do it once
 						 $html = str_replace($param,'<span class = "gray-out">'.$param.'</span>',$html);
+						 $trip = 1;
+						 }
 					 }
 
                       if (strpos(trim($tag->plaintext),'p==a==p')!== false) {$html = str_replace($tag->outertext,'<div id="questions">' . $tag->outertext,$html);}
@@ -1579,7 +1582,8 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 			for ($k=0; $k<= 10; $k++){
 				$answers[$k] = array_column($answer_values,$k);
 				$answer[$k] = implode(',',$answers[$k]);
-				$answer[$k] = $Encryption -> encrypt($answer[$k],$enc_key); // encrypt the answers and put them 
+				$enc_key_key = $enc_key.$k; //! just to make it not worth it - every part has a different key and every problem has a different encryption key
+				$answer[$k] = $Encryption -> encrypt($answer[$k],$enc_key_key); // encrypt the answers (this is the key for the key :)  and put them 
 				
 			}
 			for ($k=0; $k<= 13; $k++){
@@ -1587,7 +1591,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 				$inputs[$k] = array_column($input_values,$k);
 				$var_names[$k] = $inputs[$k][0];
 				$input[$k] = implode(',',$inputs[$k]);
-				$input[$k] = $Encryption -> encrypt($input[$k],$enc_key); // encrypt the answers and put them 
+				$input[$k] = $Encryption -> encrypt($input[$k],$enc_key); // encrypt the input and put them - all the inputs have the same encryption key for a particualr problem
 			}
 			for ($k=1; $k<= 13; $k++){
 				$pattern[$k] = '/##' . $var_names[$k] . ',.+?##/';
@@ -1631,14 +1635,14 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                 $html = str_replace('==v','',$html);
 			$k = 1;
              foreach(range('a','j') as $v){
-				$html = str_replace('p=='.$v,'<span id = "part_'.$v.'" data-ans = " '. $answer[$k].'" >'.$v.')',$html);   // put the answers in the data-ans then encrypt it
+				$html = str_replace('p=='.$v,'<span id = "part_'.$v.'" data-key = " '. $answer[$k].'" >'.$v.')',$html);   // put the answers in the data-ans then encrypt it
 				$k++;
 				$html = str_replace('==p','</span>',$html); 
              }
 
 			 for ($k=1; $k<= 13; $k++){
 	//			$html = str_replace($pattern[$k],'<span id = "'.$pattern[$k].'" data-input = " '. $input[$k].'" >.'$pattern[$k]'.</span>)',$html);   // put the answers in the data-ans then encrypt it
-				$html = preg_replace($pattern[$k],'<span class = "'.$input[$k].'">'.str_replace('/','',$pattern[$k]).'</span>' ,$html);   // put the answers in the data-ans then encrypt it
+				$html = preg_replace($pattern[$k],'<span class="input" data-input = "'.$input[$k].'">'.str_replace('/','',$pattern[$k]).'</span>' ,$html);   // put the answers in the data-ans then encrypt it
 
 			}
 

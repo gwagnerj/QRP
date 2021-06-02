@@ -90,7 +90,7 @@ INNER JOIN productlines t2
    
         //   echo (' student_id '.$student_id);
         //  echo (' currentclass_id '.$currentclass_id);
-       //  die(); //  echo (' student_id '.$student_id);
+        // die(); //  echo (' student_id '.$student_id);
             
    
               $sql = 'SELECT * FROM `StudentCurrentClassConnect` WHERE `student_id` = :student_id AND `currentclass_id` = :currentclass_id';
