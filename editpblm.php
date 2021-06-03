@@ -1297,14 +1297,10 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                                         <video id = "vid1" class = "video" width = "640" controls preload = "metadata">
                                          <source src =  "' .
                                     $path1 .
-                                    '"   type="video/mp4" ></video>' .   '<div id = "vid1_question_container" class = "vid_questions"><div class = "display-question"></div>'.
+                                    '"   type="video/mp4" ></video>' .   '<div id = "vid1-controls" class = "vid-controls"></div><div id = "vid1_question_container" class = "vid_questions"><div class = "display-question"></div>'.
                                     $tag->outertext,
                                 $html
                             );
-    
-                            //    $html = str_replace($tag->outertext,'<div id = "video1"><video id="vid1" class = "video-js"
-                            //     playsinline preload = "auto" data-setup="{}"  width="640"   height="264" liveui="false"  controls = "controls" >
-                            //     <source src = "'.$path1.'"   type="video/mp4" > '. $tag->outertext,$html);
                         }
     
                         $num_Q = 1;
@@ -1314,33 +1310,14 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                             // put the video number and problem number also in the questions id
                             $pattern1 = '::Q-1-' . $num_Q;
                             $pattern2 = 'Q-1-' . $num_Q . '::';
-                            // $regex_pattern = $pattern1."(.*?)".$pattern2;
-                            // $tag_text = trim($tag->plaintext);
-                            // $position1 =  strpos($tag_text,$pattern1)+5;
-                            // $position2 = strpos($tag_text,$pattern2)-1;
-                            // $length = $position2 - $position1;
-                            // $full_question= substr($tag_text,$position1,$length);
-                            // list($k, $v) = explode(',', $full_question);
-                            // $full_question_arr[ $k ] = $v;
-    
-                            // these will go in the Questions data table  the time can stay here but
     
                             if (
                                 strpos(trim($tag->plaintext), $pattern1) !== false
                             ) {
                                 $question_old_text = trim($tag->plaintext);
                                 $question_old_text_array = explode(',', $question_old_text);
-           //?                   $question_old_text_array[0] = explode(' ',$question_old_text_array[0])[1]; // get rid of the ::Q-1-1 markup
-
-			//?					$question_old_text_array[$q_o_t_a_length-1] = explode(' ',$question_old_text_array[$q_o_t_a_length-1])[0]; // get rid of the Q-1-1:: markup
-		 						//   var_dump($question_old_text_array);
-                                //  echo '<br>';
 
                                 $q_o_t_a_length =  count($question_old_text_array) - 1; //question old text array length
-								// echo (' $q_o_t_a_length '.$q_o_t_a_length);
-								// echo '<br>';
-                              
-								
 								$Encryption = new Encryption();
 
 								$target_array_length = count($question_old_text_array)/2;
@@ -1408,16 +1385,16 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                         }
 
 						$start_param = $end_param =0;
-						if (strpos(trim($tag->plaintext), '::Param') !== false) {
-							$start_param = strpos(trim($tag->plaintext), '::Param')+8;
+						if (strpos(trim($tag->plaintext), '::Param1') !== false) {
+							$start_param = strpos(trim($tag->plaintext), '::Param1')+9;
                             $html = str_replace($tag->innertext,
 							'<div id = "vid1_param" class = "problem_parameter display_none">'.$tag->innertext,
                                 $html
 							);
 						}
 
-						if (strpos(trim($tag->plaintext), 'Param::') !== false) {
-							$end_param = strpos(trim($tag->plaintext), 'Param::');
+						if (strpos(trim($tag->plaintext), 'Param1::') !== false) {
+							$end_param = strpos(trim($tag->plaintext), 'Param1::');
                             $html = str_replace($tag->innertext,
 								$tag->innertext.'</div>',
                                 $html
@@ -1427,21 +1404,11 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 							$param_content = trim(substr($tag->plaintext,$start_param,$end_param-$start_param));
 							$start_pos = strpos($param_content,"##");
 							$end_pos =  strpos($param_content,"##",$start_pos+2);
-							$param = substr($param_content,$start_pos,$end_pos+2-$start_pos);  // get the valeu for ##var,type,bcval##
+							$param1 = substr($param_content,$start_pos,$end_pos+2-$start_pos);  // get the valeu for ##var,type,bcval##
 
-							// $html = str_replace($param_content,
-							// 	'<span class = "gray-out">'.$param_content.'</span>',
-							// 	$html
-							// );
-							$html = str_replace("Param::","",$html);
-							$html = str_replace("::Param","",$html);
-							
-							// echo (' param '.$param );
-							// die();
-							 
+							$html = str_replace("Param1::","",$html);
+							$html = str_replace("::Param1","",$html);
 						}
-
-
 
 						if (strpos(trim($tag->plaintext), 'vid1++') !== false) {
 							$html = str_replace(
@@ -1449,8 +1416,6 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 								$tag->outertext.'</div></div>',   // this closes the video container also
 								$html);
 						 }
-
-
     
                         if (strpos(trim($tag->plaintext), 'vid1++') !== false) {
 							$html = str_replace('++vid1','',$html);
@@ -1468,39 +1433,141 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 
 
 				if ($pblm_data['videonm2']!==false){
+					$vid_num = 2;
 					$path2 = "Video/".$pblm_data['videonm2'];
-				if (strpos(trim($tag->plaintext),'++vid2')!== false)
-				{
-							$html = str_replace($tag->outertext,'<div id = "video2"><video id="vid2" class = "video-js" 
-							playsinline preload = "auto" data-setup="{}"  width="640"   height="264" liveui="false"  controls = "controls" >
-							<source src = "'.$path2.'"   type="video/mp4" > '. $tag->outertext,$html);
-
-				}		
+					if (strpos(trim($tag->plaintext), '++vid2') !== false) {
+						$html = str_replace(
+							$tag->outertext,
+							'<div id = "vid2_container" class = "vid_container"> 
+									<video id = "vid2" class = "video" width = "640" controls preload = "metadata">
+									 <source src =  "' .
+								$path2 .
+								'"   type="video/mp4" ></video>' .   '<div id = "vid1-controls" class = "vid-controls"></div><div id = "vid2_question_container" class = "vid_questions"><div class = "display-question"></div>'.
+								$tag->outertext,
+							$html
+						);
+					}	
 							$num_Q=1;
 							$nmax = 20;
 							$Q_found = true;
 							while ($num_Q<$nmax){  // put the video number and problem number also in the questions id
 								$pattern1 = "::Q-2-".$num_Q;
 								$pattern2 = "Q-2-".$num_Q."::";
-								// $regex_pattern = $pattern1."(.*?)".$pattern2;
-								// $tag_text = trim($tag->plaintext);
-								// $position1 =  strpos($tag_text,$pattern1)+5;
-								// $position2 = strpos($tag_text,$pattern2)-1;
-								// $length = $position2 - $position1;
-								// $full_question= substr($tag_text,$position1,$length);
-								// list($k, $v) = explode(',', $full_question);	
-								// $full_question_arr[ $k ] = $v;
 							
-// these will go in the Questions data table  the time can stay here but 
-								
-								if( strpos(trim($tag->plaintext),$pattern1)!== false) {$html = str_replace($tag->outertext,'<div id="Q-2-'.$num_Q.'-'.$problem_id.'" class = "vid-question">' . $tag->outertext,$html);} else {$Q_found = false;}
-								if (strpos(trim($tag->plaintext),$pattern2)!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+								if (
+									strpos(trim($tag->plaintext), $pattern1) !== false
+								) {
+									$question_old_text = trim($tag->plaintext);
+									$question_old_text_array = explode(',', $question_old_text);
+	
+									$q_o_t_a_length =  count($question_old_text_array) - 1; //question old text array length
+									$Encryption = new Encryption();
+	
+									$target_array_length = count($question_old_text_array)/2;
+									//! can do encryption here
+									$time_show =  $Encryption -> encrypt($question_old_text_array[1],$vid_enc_key);
+	
+									$text_show = $Encryption -> encrypt ($question_old_text_array[3],$vid_enc_key);
+									
+									$time_entry = htmlspecialchars('<div class = "time display_none">'.$time_show.'</div>');
+									$text_entry = htmlspecialchars('<div class = "text display_none">'.$text_show.'</div>');
+									$key_value = explode(' ',$question_old_text_array[$q_o_t_a_length])[0];  // this removes the Q1-2-1:: at the end of the question
+									$key_show = $Encryption->encrypt($key_value,$vid_enc_key);  //! encrypt here
+	
+									$key_entry = htmlspecialchars('<div class = "key display_none">'.$key_show.'</div>');
+	
+	
+									$target_array[0] = $time_entry;
+									$target_array[1] = $text_entry;
+									$target_array[$target_array_length] = $key_entry;
+									for ($i = 2; $i < $target_array_length-1; $i++) {
+										$string = htmlspecialchars($question_old_text_array[2*$i+1]);
+										$string = $Encryption -> encrypt($string,$vid_enc_key);
+										//! can encrypt here
+										$j = $i-1;
+										$target_array[$i] = htmlspecialchars('<div class = "option option-'.$j.' display_none " >'.$string.'</div>');
+									}
+	
+	
+									$target_text = implode(' ', $target_array );
+														// 	 echo ' new_text: '.$target_text;
+		
+														// die();
+		
+									$html = str_replace(
+										$tag->outertext,
+										'<div id="Q-2-' .
+											$num_Q .
+											'-' .
+											$problem_id .
+											'" class = "vid-question">' .                                    
+											htmlspecialchars_decode(
+												$target_text
+											) .
+											$tag->outertext,
+										$html
+									);
+								}
+								//  else {
+								//     $Q_found = false;
+								// }
+								if (strpos(trim($tag->plaintext), $pattern2) !== false) {
+									$html = str_replace(
+										$tag->outertext,
+										$tag->outertext . '</div>',
+										$html
+									);
+		
+									$html = str_replace(
+										$tag->plaintext,
+										'', //clearing out the text of the problem since we should have captured everything
+										$html
+									);
+								}
 								$num_Q++;
 							}
-				
-				if (strpos(trim($tag->plaintext),'vid2++')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</video></div>",$html);}
-			}
-
+	
+							$start_param = $end_param =0;
+							if (strpos(trim($tag->plaintext), '::Param2') !== false) {
+								$start_param = strpos(trim($tag->plaintext), '::Param2')+9;
+								$html = str_replace($tag->innertext,
+								'<div id = "vid2_param" class = "problem_parameter display_none">'.$tag->innertext,
+									$html
+								);
+							}
+	
+							if (strpos(trim($tag->plaintext), 'Param2::') !== false) {
+								$end_param = strpos(trim($tag->plaintext), 'Param2::');
+								$html = str_replace($tag->innertext,
+									$tag->innertext.'</div>',
+									$html
+								);
+							}
+							if ($end_param > $start_param){  // we have a parameter we need to hide until video is run
+								$param_content = trim(substr($tag->plaintext,$start_param,$end_param-$start_param));
+								$start_pos = strpos($param_content,"##");
+								$end_pos =  strpos($param_content,"##",$start_pos+2);
+								$param2 = substr($param_content,$start_pos,$end_pos+2-$start_pos);  // get the valeu for ##var,type,bcval##
+	
+								$html = str_replace("Param2::","",$html);
+								$html = str_replace("::Param2","",$html);
+							}
+	
+							if (strpos(trim($tag->plaintext), 'vid2++') !== false) {
+								$html = str_replace(
+									$tag->outertext,
+									$tag->outertext.'</div></div>',   // this closes the video container also
+									$html);
+							 }
+		
+							if (strpos(trim($tag->plaintext), 'vid2++') !== false) {
+								$html = str_replace('++vid2','',$html);
+								$html = str_replace('vid2++','',$html);
+								
+							}
+						}
+			
+	
 
 
 
@@ -1551,24 +1618,27 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                
              $html = str_get_html($html);
                 
- 				$trip = 0;  //! trying to fix the problem oh havving a gray-out tag within a gray-out tag
+ 				$trip1 = $trip2 = $trip3 = 0;  //! trying to fix the problem oh havving a gray-out tag within a gray-out tag
                 $tags = $html->find('#problem p');  // finds all of the p tags in the div with the ID problem
                 foreach($tags as $tag){
-					// if ($param_content != false){
-					// 	$html = str_replace($param_content,
-					// 	'<span class = "gray-out">'.$param_content.'</span>',
-					// 	$html);
-					// }
-
-                    //  if ($param_content != false && strpos(trim($tag->plaintext),$param_content)!== false) {
-					// 	 $html = str_replace($param_content,'<span class = "gray-out">'.$param_content.'</span>',$html);
-					//  }
-                     if ($param != false && strpos(trim($tag->plaintext),$param)!= false) {
-						 if ($trip == 0){  //! just do it once
-						 $html = str_replace($param,'<span class = "gray-out">'.$param.'</span>',$html);
-						 $trip = 1;
+                     if ($param1 != false && strpos(trim($tag->plaintext),$param1)!= false) {
+						 if ($trip1 == 0){  //! just do it once
+						 $html = str_replace($param1,'<span class = "gray-out">'.$param1.'</span>',$html);
+						 $trip1 = 1;
 						 }
 					 }
+                     if ($param2 != false && strpos(trim($tag->plaintext),$param2)!= false) {
+						 if ($trip2 == 0){  //! just do it once
+						 $html = str_replace($param2,'<span class = "gray-out">'.$param2.'</span>',$html);
+						 $trip2 = 1;
+						 }
+					 }
+                    //  if ($param3 != false && strpos(trim($tag->plaintext),$param3)!= false) {
+					// 	 if ($trip3 == 0){  //! just do it once
+					// 	 $html = str_replace($param3,'<span class = "gray-out">'.$param3.'</span>',$html);
+					// 	 $trip3 = 1;
+					// 	 }
+					//  }
 
                       if (strpos(trim($tag->plaintext),'p==a==p')!== false) {$html = str_replace($tag->outertext,'<div id="questions">' . $tag->outertext,$html);}
                         if (strpos(trim($tag->plaintext),'==t')!== false) {$html = str_replace($tag->innertext,$tag->innertext.'</div>',$html);}
@@ -1919,33 +1989,33 @@ if(strlen($vid3)>2) {
 		
 		<?php
 			$video_clip_checked = ($row['video_clip']==1 ? 'checked' : '');
-			echo('&nbsp &nbsp <input type="checkbox" name="video_clip" value = 1 id = "clip" '.$video_clip_checked.' size= 20  >&nbsp &nbsp Problem has link to video clip for the students <br>');
+			echo('&nbsp; &nbsp; <input type="checkbox" name="video_clip" value = 1 id = "clip" '.$video_clip_checked.' size= 20  >&nbsp; &nbsp; Problem has link to video clip for the students <br>');
 		?>
 	</div>
 	<div id = "simulation_assets"> 
 
 		<?php
 			$simulation_assets_checked = ($row['simulation']==1 ? 'checked' : '');
-			echo('&nbsp &nbsp <input type="checkbox" name="simulation" value = 1 id = "sim" '.$simulation_assets_checked.' size= 20  >&nbsp &nbsp Problem has link to simulation for the students <br>');
+			echo('&nbsp; &nbsp; <input type="checkbox" name="simulation" value = 1 id = "sim" '.$simulation_assets_checked.' size= 20  >&nbsp; &nbsp; Problem has link to simulation for the students <br>');
 		?>
 
 
 
 	</div>
 	<div id = "demonstration"> 
-		&nbsp &nbsp <input type="checkbox" name="demonstration" value = 1 id = "demo" size= 20  >&nbsp &nbsp Problem has instructions for an associated demonstration for instructors - these do nothing yet <br>
+		&nbsp; &nbsp; <input type="checkbox" name="demonstration" value = 1 id = "demo" size= 20  >&nbsp; &nbsp; Problem has instructions for an associated demonstration for instructors - these do nothing yet <br>
 
 	</div>
 	<div id = "activity"> 
-		&nbsp &nbsp <input type="checkbox" name="activity" value = 1 id = "activ" size= 20  >&nbsp &nbsp Problem has instructions for an associated activity for instructors - these do nothing yet<br>
+		&nbsp; &nbsp; <input type="checkbox" name="activity" value = 1 id = "activ" size= 20  >&nbsp; &nbsp; Problem has instructions for an associated activity for instructors - these do nothing yet<br>
 
 	</div>
 	<br>
 	<div id = "problem_type">
 		
-		&nbsp Problem is Best Described as a: </br>
-		&nbsp &nbsp <input type="radio" name="problem_type" value=0 <?php if($problem_type == 0){ echo 'checked';} ?>> Homework Problem<br>
-		&nbsp &nbsp <input type="radio" name="problem_type" value=1 id = "problem_type" <?php if($problem_type == 1){ echo 'checked';} ?>>Quiz or Examination Problem:
+		&nbsp; Problem is Best Described as a: </br>
+		&nbsp; &nbsp; <input type="radio" name="problem_type" value=0 <?php if($problem_type == 0){ echo 'checked';} ?>> Homework Problem<br>
+		&nbsp; &nbsp; <input type="radio" name="problem_type" value=1 id = "problem_type" <?php if($problem_type == 1){ echo 'checked';} ?>>Quiz or Examination Problem:
 	</div>
 
 
@@ -1965,7 +2035,7 @@ if(strlen($vid3)>2) {
 
 
 	<div id = "stats"> 
-	&nbsp Will your edits significantly change student performance? </br>
+	&nbsp; Will your edits significantly change student performance? </br>
 		
 		<?php
 				if ($row['status']=== 'New Compl') {
@@ -1979,7 +2049,7 @@ if(strlen($vid3)>2) {
 					$locked = ' disabled ';	
 				}
 				
-			echo('&nbsp &nbsp <input type="checkbox" name="reset_hist" value = 1 id = "reset_hist" '.' '.$reset_hist.' '.$locked.' size= 20  >&nbsp &nbsp Yes - Reset Statistics <br>');
+			echo('&nbsp; &nbsp; <input type="checkbox" name="reset_hist" value = 1 id = "reset_hist" '.' '.$reset_hist.' '.$locked.' size= 20  >&nbsp; &nbsp; Yes - Reset Statistics <br>');
 		?>
 	
 	<input type ="hidden" id = "problem_owner" value = "<?php if ($user_id == $row['users_id']){echo '1';} else {echo'0';}?>">
@@ -1989,7 +2059,7 @@ if(strlen($vid3)>2) {
 	
 	<div id = "allow_clones"> 
 	<p>Avalability of Problem to Other Contributors:</p>
-	&nbsp Clones: </br>
+	&nbsp; Clones: </br>
 		
 		<?php
 				if ($row['allow_clone']===0) {
@@ -2001,7 +2071,7 @@ if(strlen($vid3)>2) {
 				} else {
 					$allow_clone = 'checked';
 				}
-			echo('&nbsp &nbsp <input type="checkbox" name="allow_clone" value = 1 id = "allow_clone" '.$allow_clone.' size= 20  >&nbsp &nbsp Allow other contributors to <b> clone problem </b>, modify and resubmit as new problem <br>');
+			echo('&nbsp; &nbsp; <input type="checkbox" name="allow_clone" value = 1 id = "allow_clone" '.$allow_clone.' size= 20  >&nbsp; &nbsp; Allow other contributors to <b> clone problem </b>, modify and resubmit as new problem <br>');
 		?>
 	</div>
 	<?php
@@ -2027,14 +2097,14 @@ if(strlen($vid3)>2) {
 	
 	<div id = "allow_edits">
 		</br>
-		&nbsp Edits: </br>
-		&nbsp &nbsp <input type="radio" name="allow_edit" value=0 <?php if($allow_edit == 0){ echo 'checked';} ?>> Only allow me to edit this problem<br>
-		&nbsp &nbsp <input type="radio" name="allow_edit" value=1 id = "allow_edit1" <?php if($allow_edit == 1){ echo 'checked';} ?>> Allow myself and Users with the following IDs to edit:
+		&nbsp; Edits: </br>
+		&nbsp; &nbsp; <input type="radio" name="allow_edit" value=0 <?php if($allow_edit == 0){ echo 'checked';} ?>> Only allow me to edit this problem<br>
+		&nbsp; &nbsp; <input type="radio" name="allow_edit" value=1 id = "allow_edit1" <?php if($allow_edit == 1){ echo 'checked';} ?>> Allow myself and Users with the following IDs to edit:
 		<input type = "number" name = "edit_id1" id = "edit_id1" min = "0" max = "10000" value = "<?php if ($row['edit_id1'] !=null){echo $row['edit_id1'];} else{echo'';}?>">
 		<input type = "number" name = "edit_id2" id = "edit_id2" min = "0" max = "10000" value = "<?php if ($row['edit_id2'] !=null){echo $row['edit_id2'];} else{echo'';}?>">
 		<input type = "number" name = "edit_id3" id = "edit_id3" min = "0" max = "10000" value = "<?php if ($row['edit_id3'] !=null){echo $row['edit_id3'];} else{echo'';}?>">
 		&nbsp; &nbsp; &nbsp;  for a listing of ID's: <a href="getiid.php" target = "_blank"><b>Click Here</b></a></font></br>
-		&nbsp &nbsp <input type="radio" name="allow_edit" value=2 <?php if($allow_edit == 2){ echo 'checked';} ?>> Allow any other full contributors to make edits freely <br>
+		&nbsp; &nbsp; <input type="radio" name="allow_edit" value=2 <?php if($allow_edit == 2){ echo 'checked';} ?>> Allow any other full contributors to make edits freely <br>
 	</div>
 	
 	<p> link to Base Case web solution (if available):
