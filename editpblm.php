@@ -1287,22 +1287,26 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 
 
 
+
+
+
+
+
                      if ($pblm_data['videonm1'] !== false) {
                         $vid_num = 1;
                         $path1 = 'Video/' . $pblm_data['videonm1'];
                         if (strpos(trim($tag->plaintext), '++vid1') !== false) {
                             $html = str_replace(
                                 $tag->outertext,
-                                '<div id = "vid1_container" class = "vid_container"> 
+                                '<div id = "vid1_container" class = "vid_container"> <div class = "video-info"></div>
                                         <video id = "vid1" class = "video" width = "640" controls preload = "metadata">
                                          <source src =  "' .
                                     $path1 .
-                                    '"   type="video/mp4" ></video>' .   '<div id = "vid1-controls" class = "vid-controls"></div><div id = "vid1_question_container" class = "vid_questions"><div class = "display-question"></div>'.
+                                    '"   type="video/mp4" ></video>' .   '<div id = "vid1-controls" class = "vid-controls"></div><div id = "vid1_question_container" class = "vid_questions"><div class = "display-question-info"></div><div id = "display_question_vid1" class = "display-question"></div>'.
                                     $tag->outertext,
                                 $html
                             );
                         }
-    
                         $num_Q = 1;
                         $nmax = 20;
                         $Q_found = true;
@@ -1315,6 +1319,8 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                                 strpos(trim($tag->plaintext), $pattern1) !== false
                             ) {
                                 $question_old_text = trim($tag->plaintext);
+								// echo ('$question_old_text '.$question_old_text);
+								// echo'<br>';
                                 $question_old_text_array = explode(',', $question_old_text);
 
                                 $q_o_t_a_length =  count($question_old_text_array) - 1; //question old text array length
@@ -1329,9 +1335,20 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 								$time_entry = htmlspecialchars('<div class = "time display_none">'.$time_show.'</div>');
 								$text_entry = htmlspecialchars('<div class = "text display_none">'.$text_show.'</div>');
 								$key_value = explode(' ',$question_old_text_array[$q_o_t_a_length])[0];  // this removes the Q1-1-1:: at the end of the question
+								$key_data = explode(';',$key_value);
+								$key_data_sum = array_sum($key_data);
+								
+				//				$video_points_total = $video_points_total + 5 + 2;
+
+								
+								// var_dump($key_data_sum);
+								// echo '<br>';
+								// var_dump($video_points_total);
+	
+
 								$key_show = $Encryption->encrypt($key_value,$vid_enc_key);  //! encrypt here
 
-								$key_entry = htmlspecialchars('<div class = "key display_none">'.$key_show.'</div>');
+								$key_entry = htmlspecialchars('<div  class = "key display_none" data-total = "'.$key_data_sum.'">'.$key_show.'</div>');
 
 
 								$target_array[0] = $time_entry;
@@ -1339,10 +1356,13 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 								$target_array[$target_array_length] = $key_entry;
 								for ($i = 2; $i < $target_array_length-1; $i++) {
 									$string = htmlspecialchars($question_old_text_array[2*$i+1]);
-									$string = $Encryption -> encrypt($string,$vid_enc_key);
+//!								echo ("string ".$string);
+//!									 die();
+								$string = $Encryption -> encrypt($string,$vid_enc_key);
 									//! can encrypt here
 									$j = $i-1;
 									$target_array[$i] = htmlspecialchars('<div class = "option option-'.$j.' display_none " >'.$string.'</div>');
+	//								$target_array[$i] = '<div class = "option option-'.$j.' display_none " >'.$string.'</div>';
 								}
 
 
@@ -1365,9 +1385,6 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                                     $html
                                 );
                             }
-							//  else {
-                            //     $Q_found = false;
-                            // }
                             if (strpos(trim($tag->plaintext), $pattern2) !== false) {
                                 $html = str_replace(
                                     $tag->outertext,
@@ -1381,14 +1398,13 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                                     $html
                                 );
                             }
-                            $num_Q++;
-                        }
-
+							$num_Q++;
+						}
 						$start_param = $end_param =0;
 						if (strpos(trim($tag->plaintext), '::Param1') !== false) {
 							$start_param = strpos(trim($tag->plaintext), '::Param1')+9;
                             $html = str_replace($tag->innertext,
-							'<div id = "vid1_param" class = "problem_parameter display_none">'.$tag->innertext,
+							'<div id = "vid1_param"  class = "problem_parameter display_none">'.$tag->innertext,
                                 $html
 							);
 						}
@@ -1438,11 +1454,11 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 					if (strpos(trim($tag->plaintext), '++vid2') !== false) {
 						$html = str_replace(
 							$tag->outertext,
-							'<div id = "vid2_container" class = "vid_container"> 
+							'<div id = "vid2_container" class = "vid_container"> <div class = "video-info"></div>
 									<video id = "vid2" class = "video" width = "640" controls preload = "metadata">
 									 <source src =  "' .
 								$path2 .
-								'"   type="video/mp4" ></video>' .   '<div id = "vid1-controls" class = "vid-controls"></div><div id = "vid2_question_container" class = "vid_questions"><div class = "display-question"></div>'.
+								'"   type="video/mp4" ></video>' .   '<div id = "vid2-controls" class = "vid-controls"></div><div id = "vid2_question_container" class = "vid_questions"><div class = "display-question-info"></div> <div id = "display_question_vid2" class = "display-question"></div>'.
 								$tag->outertext,
 							$html
 						);
@@ -1459,11 +1475,20 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 								) {
 									$question_old_text = trim($tag->plaintext);
 									$question_old_text_array = explode(',', $question_old_text);
+
+									// var_dump ($question_old_text_array);
+									// if ($num_Q==3){die;}
 	
 									$q_o_t_a_length =  count($question_old_text_array) - 1; //question old text array length
 									$Encryption = new Encryption();
 	
 									$target_array_length = count($question_old_text_array)/2;
+									// echo "<br>";
+									// var_dump ($question_old_text_array);
+									// echo "<br>";
+
+									// echo ("taget_array length ".$target_array_length);
+									// echo "<br>";
 									//! can do encryption here
 									$time_show =  $Encryption -> encrypt($question_old_text_array[1],$vid_enc_key);
 	
@@ -1482,14 +1507,32 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 									$target_array[$target_array_length] = $key_entry;
 									for ($i = 2; $i < $target_array_length-1; $i++) {
 										$string = htmlspecialchars($question_old_text_array[2*$i+1]);
+//										echo 'string: '.$string.'<br>';
+
 										$string = $Encryption -> encrypt($string,$vid_enc_key);
 										//! can encrypt here
 										$j = $i-1;
 										$target_array[$i] = htmlspecialchars('<div class = "option option-'.$j.' display_none " >'.$string.'</div>');
 									}
-	
-	
+									ksort($target_array);
+									// echo "<br>";
+									// echo "<br>";
+									// echo 'taget array:  ';
+									
+									// var_dump ($target_array);
+									// echo "<br>";
+
 									$target_text = implode(' ', $target_array );
+								
+
+									// var_dump ($target_text);
+									// echo "<br>";
+									// echo "<br>";
+									// echo "<br>";
+									// echo "<br>";
+
+	//								if ($num_Q==3){die;}
+
 														// 	 echo ' new_text: '.$target_text;
 		
 														// die();
@@ -1571,7 +1614,6 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 
 
 
-
 			if ($pblm_data['videonm3']!==false){
 				$path3 = "Video/".$pblm_data['videonm3'];
 			if (strpos(trim($tag->plaintext),'++vid3')!== false)
@@ -1623,13 +1665,19 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                 foreach($tags as $tag){
                      if ($param1 != false && strpos(trim($tag->plaintext),$param1)!= false) {
 						 if ($trip1 == 0){  //! just do it once
-						 $html = str_replace($param1,'<span class = "gray-out">'.$param1.'</span>',$html);
+					//	$param1_trim = trim($param1,"##"); //* remove those characters from the value so it does not get substituted
+				//			$html = str_replace($param1,'<span class = "param-name display_none">'.$param1_trim.'</span><span class = "gray-out">'.$param1.'</span>',$html);  // display_none is a css class in other files that hides the value
+							$html = str_replace($param1,'</span><span  class = "gray-out gray-out-vid1">'.$param1.'</span>',$html);  // display_none is a css class in other files that hides the value
 						 $trip1 = 1;
 						 }
 					 }
                      if ($param2 != false && strpos(trim($tag->plaintext),$param2)!= false) {
 						 if ($trip2 == 0){  //! just do it once
-						 $html = str_replace($param2,'<span class = "gray-out">'.$param2.'</span>',$html);
+				//			$param2_trim = trim($param2,"##"); //* remove those characters from the value so it does not get substituted
+							$html = str_replace($param2,'</span><span  class = "gray-out gray-out-vid2">'.$param2.'</span>',$html);  // display_none is a css class in other files that hides the value
+
+
+				//		 $html = str_replace($param2,'<span class = "gray-out">'.$param2.'</span>',$html);
 						 $trip2 = 1;
 						 }
 					 }
@@ -1725,6 +1773,9 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                     $html = str_replace($tag->outertext,'<div class = "caption" id="caption_id_'.$i.'">' . $tag->outertext.'</div>',$html);
                     $i++;  
                  }
+
+
+		
                  
             // for images with variable captions group the image with the caption in a div named for the text in the caption less the markup
 
@@ -1777,7 +1828,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                     ));
             } 
          }
-       
+
         
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
         
