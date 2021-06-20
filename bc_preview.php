@@ -78,6 +78,11 @@ for ($i = 0; $i <= $nv; $i++) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 <script src="./crypto-js-4.0.0/crypto-js.js"></script><!-- https://github.com/brix/crypto-js/releases crypto-js.js can be download from here -->
 <script src="Encryption.js"></script>
+<script src="drawingtool/painterro-1.2.57.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
+<!-- the above link is to add the icons for the video player buttons -->
+
+
 <script type="text/javascript" charset="utf-8" src="qrcode.js"></script>
 <title><?php echo 'bc_' . $problem_id; ?></title>
 </head>
@@ -89,9 +94,11 @@ for ($i = 0; $i <= $nv; $i++) {
 
 $html = new simple_html_dom();
 $html->load_file($htmlfilenm);
-//            echo ('<h2> htmlfilenm: '.$htmlfilenm.'</h2>');
+   //        echo ('<h2> htmlfilenm: '.$htmlfilenm.'</h2>');
+   
 
 $base_case = $html->find('#problem', 0);
+//? echo ('$base_case '.$base_case);
 $reflection_text = $html->find('#reflections', 0);
 // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
 
@@ -126,6 +133,7 @@ foreach (range('a', 'j') as $m) {
         $base_case
     );
 }
+// echo $base_case;
 
 // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
 for ($i = 0; $i < $nv; $i++) {
@@ -251,12 +259,17 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
 }
 .wrong {
     background-color:pink;
+    opacity: 0.9;
+
 }
 .part-correct {
-    background-color:yellow;
+    background-color:lightyellow;
+    opacity: 0.9;
+
 }
 .correct {
-    background-color:lightgreen;
+     background-color:lightgreen; 
+     opacity: 0.9;
 }
 .low-opacity{
      opacity: 0.4;
@@ -265,12 +278,36 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
     border:2px solid
 }
 
+.btn{ 
+    background-color:blue;
+    color:white;
+    cursor:pointer;
+    padding: 0.3em 0.5em;
+  font-size: 1.3em;
+}
+.btn:hover{
+    background-color:darkblue;
+}
+.drawing_container{ 
+    position:relative;
+    border:2px solid;
+    padding: 0.3em 0.5em;
+}
+
+img {
+  position: relative;
+  left: 0px;
+  top: 0px;
+  z-index: -1;
+}
+
+
 </style>
 
 
 <script>
   // initialize variables
-
+ 
   var score = 0;
   var vid_current_time_ar = new Array(0, 0, 0); //? this should be updated as the video gets pause either by the program or user
   var vid_current_index_ar = new Array(0, 0, 0); //? this is the progress through each video - index will need to be updated as we go
@@ -285,7 +322,7 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
   //    var vid_question_points_ar = new Array();
   //    var vid_question_point_total_ar = new Array();
   var q_points_ar = new Array(); // an array of array of points for each question in each video
-  var total_points_ar = new Array(); // just the total points for each video
+  var total_points_ar = new Array(); // just the total points available for each video
   total_points_ar[0] = 1;
   total_points_ar[1] = 1;
   total_points_ar[2] = 1;
@@ -301,9 +338,6 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
   vid_container_ar[0] = document.getElementById("vid1_container");
   vid_container_ar[1] = document.getElementById("vid2_container");
   vid_container_ar[2] = document.getElementById("vid3_container");
-
-
-
 
 
   console.log("vid_ar: ", vid_ar);
@@ -326,11 +360,7 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
 
 
   for (let i = 0; i < 3; i++) {
-
-
       if (vid_ar[i]) {
-
-
           //    function initialize(){ 
 
 
@@ -371,32 +401,52 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
 
               vid_ar[i].removeAttribute("controls")
 
-              vid_controls_ar[i].innerHTML += '<button class = "start-video-button"> Start Video </button>';
+              vid_controls_ar[i].innerHTML += '<button class = "start-video-button fa fa-play btn "> Play </button>';
               if (i != 0) {
                   vid_controls_ar[i].classList.add('display_none') // start off by only displaying the first video
                   vid_container_ar[i].classList.add("low-opacity");
               }
-              vid_controls_ar[i].innerHTML += '<button class = "resume-video-button display_none"> Resume Video </button>';
-              vid_controls_ar[i].innerHTML += '<button class = "pause-video-button  display_none"> Pause Video </button>';
+              vid_controls_ar[i].innerHTML += '<button class = "resume-video-button display_none fa fa-play btn "> Resume Video </button>';
+              vid_controls_ar[i].innerHTML += '<button class = "pause-video-button  display_none fa fa-pause btn "> Pause Video </button>';
               vid_controls_ar[i].innerHTML += '<div class = "speed-video-slider-container display_none" ><label for="speed"> Play Back Speed </label> <input type = "range" name = "speed" min = "0.6" max = "1.8" step = "0.2" class = "speed-video-slider" value = "1">  </input><output class = "output-speed" for = "speed" > 1 </output></div>';
               //   vid_controls_ar[i].innerHTML += '&nbsp; Video Progress <progress min ="0" max = "100" value = "0" class = "progress-bar"> Video Progress </progress><output class = "progress-bar-value"></output>';
-              vid_container_ar[i].querySelector(".video-info").innerHTML += '&nbsp; Video Progress <progress min ="0" max = "100" value = "0" class = "progress-bar"> Video Progress </progress><output class = "progress-bar-value"></output>';
+ //?             vid_container_ar[i].querySelector(".video-info").innerHTML += '&nbsp; Video Progress <progress min ="0" max = "100" value = "0" class = "progress-bar"> Video Progress </progress><output class = "progress-bar-value"></output>';
+             var progress_bar = document.createElement("div");
+             progress_bar.innerHTML = '&nbsp; Video Progress <progress min ="0" max = "100" value = "0" class = "progress-bar"> Video Progress </progress><output class = "progress-bar-value"></output>';
+             vid_container_ar[i].querySelector(".video-info").prepend(progress_bar);
+          //  vid_container_ar[i].querySelector(".video-info").innerHTML += '&nbsp; Video Progress <progress min ="0" max = "100" value = "0" class = "progress-bar"> Video Progress </progress><output class = "progress-bar-value"></output>';
+              vid_container_ar[i].querySelector(".video-info").innerHTML += '<span class = "video-results try-again display_none"> <p> Please, Try Again: You missed some questions </p> </span>';
+              vid_container_ar[i].querySelector(".video-info").innerHTML += '<span class = "video-results good display_none"> <p> Great Score </p> </span>';
 
 
 
               vid_container_ar[i].querySelector(".start-video-button").addEventListener("click", function (e) {
                   let video_container = e.target.parentNode.parentNode;
                   video = video_container.querySelector(".video");
+                  let video_id = video.id;
+                  let video_num = video_id.charAt(video_id.length - 1);
+                  let video_index = parseInt(video_num) - 1;
+                  console.log("video_index", video_index);
+                  //  localStorage.setItem('video_index',video_index);
                   video_container.querySelector(".pause-video-button").classList.remove("display_none");
+
+                  video_container.querySelector(".try-again").classList.add("display_none");
+                  video_container.querySelector(".good").classList.add("display_none");
+                  video_container.querySelector(".video-scores").classList.add("display_none");
+                  video_container.querySelector(".video-scores").innerHTML = '<span class = "scores"> Scores: </span>';
                   video_container.querySelector(".speed-video-slider-container").classList.remove("display_none");
                   console.log("video", video);
+
+                  //                 localStorage.setItem('upcoming_q_index',0);
                   this.classList.add("display_none");
-                  runTillPause(video, i, 0, vid_current_time_ar[i])
+                  total_earned_points_ar[video_index] = 0; //! need to probably make sure the score is reinitilized for this video container
+                  runTillPause(video, i, 0, 0)
               })
 
               vid_container_ar[i].querySelector(".pause-video-button").addEventListener("click", function (e) {
                   let video_container = e.target.parentNode.parentNode;
                   let video = video_container.querySelector(".video");
+
                   video_container.querySelector(".resume-video-button").classList.remove("display_none");
                   console.log("video", video);
                   video_container.querySelector(".speed-video-slider-container").classList.add("display_none");
@@ -412,6 +462,7 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
 
                   console.log("video", video);
                   this.classList.add("display_none");
+
                   video.play();
 
               })
@@ -440,9 +491,9 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
 
   function runTillPause(video, video_index, upcoming_q_index, start_time) { //? Play the selected video from the start time until the pause time of the upcoming question then call a function to display the upcoming question by sending them the upcoming question element
 
-     
-    localStorage.setItem('video_index',video_index);
-    localStorage.setItem('upcoming_q_index',upcoming_q_index);
+
+      localStorage.setItem('video_index', video_index);
+      localStorage.setItem('upcoming_q_index', upcoming_q_index);
       video.removeAttribute("controls")
       console.log("video_index1", video_index);
       console.log("upcoming_q_index0.5", upcoming_q_index)
@@ -461,7 +512,7 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
       //    console.log("video.currentTime:",  video.currentTime);
 
       var trip = 0;
-      localStorage.setItem('trip',0);
+      localStorage.setItem('trip', 0);
 
 
       console.log("pause_time", pause_time);
@@ -485,20 +536,16 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
 
 
       video.play();
+      var trip2 = 0;
       setInterval(function () {
-          monitorVideo();
-      }, 250);
-
-
-      function monitorVideo() {
-       let upcoming_q_index = parseInt(localStorage.getItem("upcoming_q_index"));
-        let video_index = parseInt(localStorage.getItem("video_index"));
-  //      console.log ("video_index1.6", video_index);
-        let vid_num = video_index + 1;
-        let vid_id = "vid"+vid_num;
- //       console.log ("vid_id1.6", vid_id)
-        video = document.getElementById(vid_id);
-  //      console.log("video1.6", video)
+          let upcoming_q_index = parseInt(localStorage.getItem("upcoming_q_index"));
+          let video_index = parseInt(localStorage.getItem("video_index"));
+          //      console.log ("video_index1.6", video_index);
+          let vid_num = video_index + 1;
+          let vid_id = "vid" + vid_num;
+          //       console.log ("vid_id1.6", vid_id)
+          video = document.getElementById(vid_id);
+          //      console.log("video1.6", video)
           let display_question_info = video.parentNode.querySelector(".display-question-info");
           let q_num = upcoming_q_index + 1;
           let v_num = video_index + 1;
@@ -512,17 +559,17 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
               video.parentNode.querySelector(".pause-video-button").classList.add("display_none");
               video.parentNode.querySelector(".speed-video-slider-container").classList.add("display_none");
               video.parentNode.querySelector(".video-info").classList.add("display_none");
-            let trip = parseInt(localStorage.getItem("trip"));
+              let trip = parseInt(localStorage.getItem("trip"));
 
               if (trip == 0) {
 
                   display_question_info.innerHTML = '<h3>  Question ' + q_num + ' of ' + vid_num_questions_ar[video_index] + '</h3>';
-                  displayQuestion( upcoming_q_index, video_index); //! this is where we call to diplay the function
+                  displayQuestion(upcoming_q_index, video_index); //! this is where we call to diplay the function
 
                   vid_current_index_ar[video_index]++;
 
                   trip = 1; // kind of a bad way to only do it once - figure a better way
-                  localStorage.setItem('trip',1);
+                  localStorage.setItem('trip', 1);
               }
           } else {
               //* update the progress bar
@@ -532,47 +579,66 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
               if (total_points_ar[video_index] > 0) {
                   percent_score_for_video = total_earned_points_ar[video_index] / total_points_ar[video_index] * 100
               }
-        //      console.log("percent_score_for_video", percent_score_for_video);
-              if (percent > 95 && percent_score_for_video > 95) {
+              //      console.log("percent_score_for_video", percent_score_for_video);
+              if (percent > 99) {
+                  video.parentNode.querySelector(".pause-video-button").classList.add("display_none");
+                  video.parentNode.querySelector(".start-video-button").classList.remove("display_none");
+                if (percent_score_for_video<95){ video.parentNode.querySelector(".try-again").classList.remove("display_none");
+}
+                  vid_current_index_ar[video_index] = 0; // starting over 
+                  upcoming_q_index = 0;
+
+              }
+              
+             
+              
+              
+
+
+
+              if (percent > 98 && percent_score_for_video > 95) {
                   for (gray_out of gray_outs) {
                       gray_out.classList.remove("gray-out");
                       video.parentNode.querySelector(".pause-video-button").classList.add("display_none");
                       video.parentNode.querySelector(".speed-video-slider-container").classList.add("display_none");
+             //        video.parentNode.querySelector(".resume-video").classList.add("display_none");
+                      video.parentNode.querySelector(".good").classList.remove("display_none");
                       video.parentNode.querySelector(".start-video-button").classList.remove("display_none");
                   }
 
-                  if(vid_controls_ar[v_num]){
-                  vid_controls_ar[v_num].classList.remove('display_none')  //! only if there is one to remove
-                  vid_container_ar[v_num].classList.remove("low-opacity");
+                  if (vid_controls_ar[v_num]) {
+                      vid_controls_ar[v_num].classList.remove('display_none') //! only if there is one to remove
+                      vid_container_ar[v_num].classList.remove("low-opacity");
 
                   }
-                  // upcoming_q_index = 0; //! need to move on to the next video
-                  // video_index = v_num; //! need to move on to the next video
 
 
               }
 
           }
-      };
+
+
+      }, 250);
+
   }
 
 
 
 
 
-  function displayQuestion( q_index, video_index) {
+  function displayQuestion(q_index, video_index) {
       console.log("video_index2", video_index);
-      let vid_num = parseInt(video_index)+1;
-      let vid_id = "vid"+ vid_num;
-      let q_num = parseInt(q_index)+1;
+      let vid_num = parseInt(video_index) + 1;
+      let vid_id = "vid" + vid_num;
+      let q_num = parseInt(q_index) + 1;
       let problem_id = parseInt(localStorage.getItem("problem_id"));
-      let q_id =  "Q-"+vid_num+"-"+q_num+"-"+problem_id;
-      console.log("q_id",q_id);
-   
+      let q_id = "Q-" + vid_num + "-" + q_num + "-" + problem_id;
+      console.log("q_id", q_id);
+
       let vid_question = document.getElementById(q_id);
 
       //   vid_question_container = upcoming_question.parentElement;
-    //  let vid_question = document.getElementById(upcoming_question.id); //! thowing an error if you do the 2nd video : TypeError: Cannot read property 'id' of
+      //  let vid_question = document.getElementById(upcoming_question.id); //! thowing an error if you do the 2nd video : TypeError: Cannot read property 'id' of
       let vid_question_container = vid_question.parentElement;
       vid_question_container.classList.remove("hidden");
       let display_question = vid_question_container.querySelector(".display-question");
@@ -584,9 +650,14 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
       keys = keys.split(";")
       //           console.log("keys ", keys);
       let key_total = 0;
-
+      let pos_key = 0;
       for (var m = 0; m < keys.length; m++) {
-          key_total += parseInt(keys[m]);
+          if (parseInt(keys[m]) > 0) {
+              pos_key = parseInt(keys[m]);
+          } else {
+              pos_key = 0;
+          }
+          key_total += pos_key;
       }
       let one_answer = false;
       for (var m = 0; m < keys.length; m++) {
@@ -601,38 +672,55 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
 
           for (const option of options) {
               let key = keys[k - 1];
-             display_question.innerHTML += '<input type="radio" class = "response" id = "response_' + k + '" name  = "response"  value = "' + key + '"  >' + encryption.decrypt(option.innerText, localStorage.getItem('vid_enc_key')) + '</input><br><br>'
-            //   display_question.innerHTML += '<input type="radio" class = "response" id = "response_' + k + '" name  = "response"  value = "' + key + '"  >'
-            //   display_question.innerHTML += encryption.decrypt(option.innerText, localStorage.getItem('vid_enc_key')) 
-            //   display_question.innerHTML += '</input><br><br>'
+              //!      display_question.innerHTML += '<input type="radio" class = "response" id = "response_' + k + '" name  = "response"  value = "' + key + '"  >' + encryption.decrypt(option.innerText, localStorage.getItem('vid_enc_key')) + '</input><br><br>'
+ //?             display_question.innerHTML += '<input type="radio"  class = "response" id = "response_' + k + '" name  = "response"  value = "' + key + '"  >' + option.innerHTML + '</input><br><br>'
+              display_question.innerHTML += '<input type="radio"  class = "response" id = "response_' + k + '" name  = "response" onclick = "showSubmit()" value = "' + key + '"  >' + option.innerHTML + '</input><br><br>'
+              //   display_question.innerHTML += '<input type="radio" class = "response" id = "response_' + k + '" name  = "response"  value = "' + key + '"  >'
+              //   display_question.innerHTML += encryption.decrypt(option.innerText, localStorage.getItem('vid_enc_key')) 
+              //   display_question.innerHTML += '</input><br><br>'
               k++;
           }
-          display_question.innerHTML += '<button class = "submit_button" id = "active-button option-' + k + '" onclick = "checkResponse(' + video_index + ',' + q_index + ' )" > Submit </button>';
+          display_question.innerHTML += '<button class = "submit_button btn fa fa-arrow-circle-up display_none" id = "active-button option-' + k + '" onclick = "checkResponse(' + video_index + ',' + q_index + ' )" > Submit </button>';
+          
 
       } else {
           // put in checkboxes
+          display_question.innerHTML += "<p> Select All That Apply </p>"
           let k = 1;
 
           for (const option of options) {
               let key = keys[k - 1]
-              display_question.innerHTML += '<input type="checkbox" class = "response" id = "response_' + k + '" value = "' + key + '" >' + encryption.decrypt(option.innerText, localStorage.getItem('vid_enc_key')) + '</input><br><br>'
+              //      display_question.innerHTML += '<input type="checkbox" class = "response" id = "response_' + k + '" value = "' + key + '" >' + encryption.decrypt(option.innerText, localStorage.getItem('vid_enc_key')) + '</input><br><br>'
+              display_question.innerHTML += '<input type="checkbox" class = "response" id = "response_' + k + '"  onclick = "showSubmit()" value = "' + key + '" >' + option.innerText + '</input><br><br>'
               k++;
           }
-          display_question.innerHTML += '<button class = "submit_button" id = "active-button option-' + k + '" onclick = "checkResponse(' + video_index + ',' + q_index + ' )" > Submit </button>';
+          display_question.innerHTML += '<button class = "submit_button  btn fa fa-arrow-circle-up display_none" id = "active-button option-' + k + '" onclick = "checkResponse(' + video_index + ',' + q_index + ' )" > Submit </button>';
       }
 
+
+     
       // let k = 1;
 
 
-      let vid_container = vid_question_container.parentElement.id;
+      let vid_container_id = vid_question_container.parentElement.id;
+      let vid_container = vid_question_container.parentElement
+      console.log("vid_container 6/17/21",vid_container);
+      //display_question = vid_container.querySelector(".display-question");
 
 
-      vid_question_container.innerHTML += '<br><button class = "resume-video hidden" onclick = "resumeVideo(' + vid_container + ',' + video_index + ' )"> Resume Video </button>';
+ //?     vid_question_container.innerHTML += '<br><button id = "resume_after_submit_vid'+video_index+'" class = "resume-video hidden btn fa fa-play" onclick = "resumeVideo(' + vid_container + ',' + video_index + ' )"> Resume Video </button>';
+        display_question.innerHTML += '<br><button id = "resume_after_submit_vid'+video_index+'" class = "resume-video hidden btn fa fa-play" onclick = "resumeVideo(' + vid_container_id + ',' + video_index + ' )"> Resume Video </button>';
   }
+
+  function showSubmit(){
+             let submit_button = document.querySelector(".submit_button");
+              submit_button.classList.remove("display_none");
+          };
 
 
   function checkResponse(video_index, q_index) {
       console.log("q_index", q_index);
+      let q_num = parseInt(q_index)+1;
       document.querySelector(".submit_button").classList.add("hidden");
       console.log("video_index3", video_index);
       //  console.log ("number of questions in video", vid_ar[video_index].length);
@@ -642,7 +730,8 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
       let selected_keys = document.querySelectorAll('input[class="response"]:checked'); // which values were checked
 
       n = selected_keys.length; // how many responses were made (1 with radio buttons but could be more)
-
+      if (n==0){return;}
+    
       console.log("n:", n)
       console.log("selected_keys ", selected_keys)
 
@@ -652,7 +741,7 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
           console.log("selected_keys[j] ", selected_keys[j].value)
           question_total += parseInt(selected_keys[j].value); // how many points did they get with their selections
       }
-
+      question_total = Math.max(question_total, 0); // cant get negative points for an attmepted question
 
 
       console.log(" question_total", question_total);
@@ -661,6 +750,7 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
       console.log("question ", question);
       let question_container = question.parentNode;
       let video_container = question_container.parentNode;
+      let video_scores = video_container.querySelector(".video-scores");
       console.log("question_container ", question_container);
       let vid_questions = question_container.querySelectorAll(".vid-question")
       console.log("vid_questions ", vid_questions);
@@ -672,11 +762,17 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
       let total_available_in_video = 0;
 
       for (m = 0; m < vid_questions.length; m++) {
-          
+
           q_points_available_ar[m] = parseInt(vid_questions[m].querySelector(".key").dataset.total);
-          if(isNaN(q_points_available_ar[m])){q_points_available_ar[m] = 100;}
-          total_available_in_video += parseInt(q_points_available_ar[m]);
-          console.log ( "q_points_available_ar[m]", q_points_available_ar[m]);
+          if (isNaN(q_points_available_ar[m])) {
+              q_points_available_ar[m] = 100;
+          }
+
+          if (q_points_available_ar[m] > 0) {
+              total_available_in_video += parseInt(q_points_available_ar[m]);
+          }
+          console.log("q_points_available_ar[m]", q_points_available_ar[m]);
+
           if (m <= q_index) {
               total_points_available_thus_far_in_video += parseInt(q_points_available_ar[m]);
           }
@@ -697,13 +793,16 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
 
 
 
-      let resume_video_button = video_container.querySelector(".resume-video");  
+      let resume_video_button = video_container.querySelector(".resume-video");
       resume_video_button.classList.remove("hidden");
-      score += parseInt(question_total);
+      resume_video_button.classList.remove("display_none");
+      // score += parseInt(question_total);
+      score = total_earned_points_ar.reduce((a, b) => parseInt(a) + parseInt(b), 0); //? summing an array with reduce method
 
 
       console.log("total_points_ar", total_points_ar)
-
+      video_scores.classList.remove("display_none");
+      video_scores.innerHTML += 'q'+q_num+' ' + question_total + '%, ';
 
       if (question_total < 30) {
 
@@ -711,7 +810,7 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
           question.innerHTML += "<h2> Incorrect </h2>";
           question.innerHTML += "<h2> Question Percentage is: " + question_total + " </h2>";
           question.innerHTML += "<h2> Total Score is: " + score + " </h2>";
-
+        
       } else if (question_total < 95) {
 
 
@@ -758,7 +857,10 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
       video.parentNode.querySelector(".video-info").classList.remove("display_none");
       console.log("video2", video);
       video.play();
+
       current_index = vid_current_index_ar[video_index];
+      console.log("current_index in function resume video", current_index);
+      //  current_index =  parseInt(localStorage.getItem("upcoming_q_index"));
       previous_index = current_index - 1;
       start_time = pause_vid_ar[video_index][previous_index];
       //! if the next value of the pause vid array does not exits then the there are not more questions
@@ -771,8 +873,57 @@ echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."
   function manualPause(e, video_index, upcoming_q_index, start_time) {
       console.log("videos manually paused");
   }
+
+  let drawing_tool = document.querySelector(".drawing_container");
+  if(drawing_tool){
+  Painterro({
+      activeColor: '#00ff00', // default brush color is green
+      id: "drawing_container1",
+      defaultFontSize: 20,
+      shadowScale: 0,
+      defaultArrowLength: 50,
+      toolbarPosition: 'top',
+      availableFontSizes: [4, 8, 12, 16, 20, 24, 36],
+      defaultLineWidth: 6,
+      defaultTool: 'rect',
+
+      //   availableEraserWidths: [4,8,12,20,30,50,100],
+      //   initTextStyle:"16px 'Open Sans', sans-serif"
+      //   hiddenTools: ['crop', 'line', 'arrow', 'rect', 'ellipse', 'brush', 'text', 'rotate', 'resize', 'save', 'open', 'close', 'undo', 'redo', 'zoomin', 'zoomout'],
+      hiddenTools: ['save', 'close'],
+      //     defaultFontSize:16,
+      //     defaultEraserWidth: 10,
+ //?  }).show('uploads/p454_0_QRPropylene Control valve and dynamics_files/image001.png');
+  }).show();
+
+
+
+  // var drawing_bar = document.getElementById('drawing_container1-bar');
+  // var drawing_btn_open = drawing_bar.querySelector(".ptro-icon-open");
+  // console.log ("drawing_btn_open", drawing_btn_open);
+
+  //drawing_btn_open.click();
+
+  var drawing_btn_close1 = document.getElementById('drawing-btn-close1');
+  var drawing_btn_open1 = document.getElementById('drawing-btn-open1');
+
+  drawing_btn_close1.addEventListener('click', function () {
+      drawing_btn_open1.classList.remove("display_none");
+      drawing_btn_close1.classList.add("display_none");
+      drawing_container1.classList.add("display_none");
+
+  })
+
+  drawing_btn_open1.addEventListener('click', function () {
+      drawing_btn_open1.classList.add("display_none");
+      drawing_btn_close1.classList.remove("display_none");
+      drawing_container1.classList.remove("display_none");
+
+  })
+}
+
     
-</script>
+ </script>
 
 
 

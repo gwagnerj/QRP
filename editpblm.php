@@ -1261,7 +1261,12 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
             $run_before2 = $html->find('#old_unspecified', 0);  
 
             if ($run_before == false && $run_before2 == false) {
+
 				$vid_num = 0;
+			$param2 = $param1 = $param3 = false;          //? initialize some vars
+
+
+
                $tags = $html->find('p');
                $html = str_replace($html->find('p' , 0),'<div id = "quote">'.$html->find('p' , 0).'</div>',$html);
              
@@ -1286,6 +1291,41 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                      if (strpos(trim($tag->plaintext),'==w')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
 
 
+					 if (strpos(trim($tag->plaintext), '++drawing') !== false) {
+						$height = "95vh;";
+						$width = "95vw";
+
+						$drawing_tag = trim($tag->innertext);
+						if (strpos(trim(strtolower($drawing_tag)),"large")){
+							$size = "large";
+							$height = "95vh;";
+							$width = "95vw";
+						} else if (strpos(trim(strtolower($drawing_tag)),"medium")){
+							$size = "medium";
+							$height = "70vh;";
+							$width = "70vw";
+
+						} else if (strpos(trim(strtolower($drawing_tag)),"small")){
+							$size = "small";
+							$height = "40vh;";
+							$width = "40vw";
+
+						}
+
+
+				//		$size = substr($drawing_tag,10,strlen($drawing_tag)-10);
+						// echo ("size ".$size);
+						// die;
+						$html = str_replace(
+							$tag->outertext,
+							'<div id = "drawing-open1" class = "drawing-open" >
+								<button id = "drawing-btn-close1" class = "drawing-btn-close btn fa fa-window-close ">Close Drawing Tool</button>
+								<button id = "drawing-btn-open1" class = "drawing-btn-open btn fas fa-expand display_none">Open Drawing Tool</button>
+							  </div>
+							  <div id = "drawing_container1" class = "drawing_container" style = "width:'.$width.'; height:'.$height.' " ></div>',
+							$html
+						);
+					}
 
 
 
@@ -1298,7 +1338,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                         if (strpos(trim($tag->plaintext), '++vid1') !== false) {
                             $html = str_replace(
                                 $tag->outertext,
-                                '<div id = "vid1_container" class = "vid_container"> <div class = "video-info"></div>
+                                '<div id = "vid1_container" class = "vid_container"> <div class = "video-info"><div class = "video-scores"></div></div>
                                         <video id = "vid1" class = "video" width = "640" controls preload = "metadata">
                                          <source src =  "' .
                                     $path1 .
@@ -1318,9 +1358,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                             if (
                                 strpos(trim($tag->plaintext), $pattern1) !== false
                             ) {
-                                $question_old_text = trim($tag->plaintext);
-								// echo ('$question_old_text '.$question_old_text);
-								// echo'<br>';
+                                $question_old_text = trim($tag->innertext);
                                 $question_old_text_array = explode(',', $question_old_text);
 
                                 $q_o_t_a_length =  count($question_old_text_array) - 1; //question old text array length
@@ -1336,15 +1374,10 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 								$text_entry = htmlspecialchars('<div class = "text display_none">'.$text_show.'</div>');
 								$key_value = explode(' ',$question_old_text_array[$q_o_t_a_length])[0];  // this removes the Q1-1-1:: at the end of the question
 								$key_data = explode(';',$key_value);
-								$key_data_sum = array_sum($key_data);
-								
-				//				$video_points_total = $video_points_total + 5 + 2;
-
-								
-								// var_dump($key_data_sum);
-								// echo '<br>';
-								// var_dump($video_points_total);
-	
+								$key_data_sum = 0;
+								foreach ($key_data as $key_datum) {
+									if($key_datum>0){$key_data_sum =$key_data_sum + $key_datum;}
+								}
 
 								$key_show = $Encryption->encrypt($key_value,$vid_enc_key);  //! encrypt here
 
@@ -1355,21 +1388,15 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 								$target_array[1] = $text_entry;
 								$target_array[$target_array_length] = $key_entry;
 								for ($i = 2; $i < $target_array_length-1; $i++) {
-									$string = htmlspecialchars($question_old_text_array[2*$i+1]);
-//!								echo ("string ".$string);
-//!									 die();
-								$string = $Encryption -> encrypt($string,$vid_enc_key);
+									$string = $question_old_text_array[2*$i+1];
+				
 									//! can encrypt here
 									$j = $i-1;
 									$target_array[$i] = htmlspecialchars('<div class = "option option-'.$j.' display_none " >'.$string.'</div>');
-	//								$target_array[$i] = '<div class = "option option-'.$j.' display_none " >'.$string.'</div>';
 								}
 
-
+								ksort($target_array);
                                 $target_text = implode(' ', $target_array );
-                                					// 	 echo ' new_text: '.$target_text;
-    
-                                					// die();
     
                                 $html = str_replace(
                                     $tag->outertext,
@@ -1393,7 +1420,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                                 );
     
                                 $html = str_replace(
-                                    $tag->plaintext,
+                                    $tag->innertext,
                                     '', //clearing out the text of the problem since we should have captured everything
                                     $html
                                 );
@@ -1449,12 +1476,14 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 
 
 				if ($pblm_data['videonm2']!==false){
+			
 					$vid_num = 2;
 					$path2 = "Video/".$pblm_data['videonm2'];
 					if (strpos(trim($tag->plaintext), '++vid2') !== false) {
 						$html = str_replace(
 							$tag->outertext,
-							'<div id = "vid2_container" class = "vid_container"> <div class = "video-info"></div>
+							'<div id = "vid2_container" class = "vid_container"> <div class = "video-info"><div class = "video-scores"></div></div>
+					
 									<video id = "vid2" class = "video" width = "640" controls preload = "metadata">
 									 <source src =  "' .
 								$path2 .
@@ -1476,19 +1505,11 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 									$question_old_text = trim($tag->plaintext);
 									$question_old_text_array = explode(',', $question_old_text);
 
-									// var_dump ($question_old_text_array);
-									// if ($num_Q==3){die;}
 	
 									$q_o_t_a_length =  count($question_old_text_array) - 1; //question old text array length
 									$Encryption = new Encryption();
 	
 									$target_array_length = count($question_old_text_array)/2;
-									// echo "<br>";
-									// var_dump ($question_old_text_array);
-									// echo "<br>";
-
-									// echo ("taget_array length ".$target_array_length);
-									// echo "<br>";
 									//! can do encryption here
 									$time_show =  $Encryption -> encrypt($question_old_text_array[1],$vid_enc_key);
 	
@@ -1497,9 +1518,16 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 									$time_entry = htmlspecialchars('<div class = "time display_none">'.$time_show.'</div>');
 									$text_entry = htmlspecialchars('<div class = "text display_none">'.$text_show.'</div>');
 									$key_value = explode(' ',$question_old_text_array[$q_o_t_a_length])[0];  // this removes the Q1-2-1:: at the end of the question
+									$key_data = explode(';',$key_value);
+									$key_data_sum = 0;
+									foreach ($key_data as $key_datum) {
+										if($key_datum>0){$key_data_sum =$key_data_sum + $key_datum;}
+									}
+	
+		
 									$key_show = $Encryption->encrypt($key_value,$vid_enc_key);  //! encrypt here
 	
-									$key_entry = htmlspecialchars('<div class = "key display_none">'.$key_show.'</div>');
+									$key_entry = htmlspecialchars('<div  class = "key display_none" data-total = "'.$key_data_sum.'">'.$key_show.'</div>');
 	
 	
 									$target_array[0] = $time_entry;
@@ -1507,36 +1535,14 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 									$target_array[$target_array_length] = $key_entry;
 									for ($i = 2; $i < $target_array_length-1; $i++) {
 										$string = htmlspecialchars($question_old_text_array[2*$i+1]);
-//										echo 'string: '.$string.'<br>';
-
-										$string = $Encryption -> encrypt($string,$vid_enc_key);
 										//! can encrypt here
 										$j = $i-1;
 										$target_array[$i] = htmlspecialchars('<div class = "option option-'.$j.' display_none " >'.$string.'</div>');
 									}
 									ksort($target_array);
-									// echo "<br>";
-									// echo "<br>";
-									// echo 'taget array:  ';
-									
-									// var_dump ($target_array);
-									// echo "<br>";
 
 									$target_text = implode(' ', $target_array );
-								
 
-									// var_dump ($target_text);
-									// echo "<br>";
-									// echo "<br>";
-									// echo "<br>";
-									// echo "<br>";
-
-	//								if ($num_Q==3){die;}
-
-														// 	 echo ' new_text: '.$target_text;
-		
-														// die();
-		
 									$html = str_replace(
 										$tag->outertext,
 										'<div id="Q-2-' .
@@ -1551,9 +1557,6 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 										$html
 									);
 								}
-								//  else {
-								//     $Q_found = false;
-								// }
 								if (strpos(trim($tag->plaintext), $pattern2) !== false) {
 									$html = str_replace(
 										$tag->outertext,
@@ -1562,7 +1565,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 									);
 		
 									$html = str_replace(
-										$tag->plaintext,
+										$tag->innertext,
 										'', //clearing out the text of the problem since we should have captured everything
 										$html
 									);
@@ -1661,7 +1664,8 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
              $html = str_get_html($html);
                 
  				$trip1 = $trip2 = $trip3 = 0;  //! trying to fix the problem oh havving a gray-out tag within a gray-out tag
-                $tags = $html->find('#problem p');  // finds all of the p tags in the div with the ID problem
+   //!               $tags = $html->find('#problem p');  // finds all of the p tags in the div with the ID problem
+              $tags = $html->find('p');  // finds all of the p tags in the div with the ID problem
                 foreach($tags as $tag){
                      if ($param1 != false && strpos(trim($tag->plaintext),$param1)!= false) {
 						 if ($trip1 == 0){  //! just do it once
@@ -1671,8 +1675,22 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 						 $trip1 = 1;
 						 }
 					 }
+
+					 
+					//  echo ("param2_2 ".$param2);
+					//  echo "<br>";
+					//  echo ("tag ".$tag->plaintext);
+					//  echo "<br>";
+					//  echo "<br>";
+
+					//  echo ("strpos ".strpos(trim($tag->plaintext),$param2));
+				
+					 
+
+
                      if ($param2 != false && strpos(trim($tag->plaintext),$param2)!= false) {
 						 if ($trip2 == 0){  //! just do it once
+
 				//			$param2_trim = trim($param2,"##"); //* remove those characters from the value so it does not get substituted
 							$html = str_replace($param2,'</span><span  class = "gray-out gray-out-vid2">'.$param2.'</span>',$html);  // display_none is a css class in other files that hides the value
 
@@ -1695,6 +1713,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                         if (strpos(trim($tag->plaintext),'p=='.$v.'==p')!== false) { $html = str_replace($tag->outertext,'<div id="part'.$v.'">' . $tag->outertext.'</div>',$html);}
                     }
                 }
+//				die;
 
 				
 			for ($k=0; $k<= 10; $k++){
