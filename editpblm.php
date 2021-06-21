@@ -1314,8 +1314,34 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 
 
 				//		$size = substr($drawing_tag,10,strlen($drawing_tag)-10);
-						// echo ("size ".$size);
-						// die;
+						// echo ("$drawing_tag ".$drawing_tag);
+						if (strpos($tag->outertext,",")){  // we have a background image for the drawing
+							
+					//?		$drawing_first_part_of_tag = explode(",",$tag->outertext)[0];
+							$drawing_first_part_of_tag = substr($tag->outertext,0,strpos($tag->outertext,",")+1);
+
+
+							$html = str_replace(
+								$drawing_first_part_of_tag,
+								'<div id = "drawing-open1" class = "drawing-open" >
+									<button id = "drawing-btn-close1" class = "drawing-btn-close btn fa fa-window-close ">Close Drawing Tool</button>
+									<button id = "drawing-btn-open1" class = "drawing-btn-open btn fas fa-expand display_none">Open Drawing Tool</button>
+								  </div>
+								  <div id = "drawing_container1" class = "drawing_container" style = "width:'.$width.'; height:'.$height.' " ><div class = "drawing-tool-background display_none">',
+								$html
+							);
+							$drawing_last_part_of_tag = substr($tag->outertext,strripos($tag->outertext,"drawing"));
+							$html = str_replace($drawing_last_part_of_tag,'</div></div>',$html);
+	
+
+	        	//		echo ($drawing_last_part_of_tag);
+				//		var_dump (explode(",",$tag->outertext));
+				//		 die;
+
+
+						} else {
+
+
 						$html = str_replace(
 							$tag->outertext,
 							'<div id = "drawing-open1" class = "drawing-open" >
@@ -1326,6 +1352,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 							$html
 						);
 					}
+				}
 
 
 

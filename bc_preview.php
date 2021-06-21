@@ -95,6 +95,13 @@ for ($i = 0; $i <= $nv; $i++) {
 $html = new simple_html_dom();
 $html->load_file($htmlfilenm);
    //        echo ('<h2> htmlfilenm: '.$htmlfilenm.'</h2>');
+
+   // find the names of the images for any drawing tool background image_set_pixel
+
+   $drawing_tool_background = $html->find('.drawing-tool-background');
+   $drawing_tool_background_arr = $drawing_tool_background[0];
+   $drawing_tool_background_src = $drawing_tool_background_arr->children(0)->getAttribute("src");
+
    
 
 $base_case = $html->find('#problem', 0);
@@ -238,6 +245,7 @@ echo $reflection_text;
 
 echo "<script>document.write(localStorage.setItem('vid_enc_key', '".$vid_enc_key."'))</script>";
 echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."'))</script>";
+echo "<script>document.write(localStorage.setItem('drawing_tool_background_src', '". $drawing_tool_background_src."'))</script>";
 
 ?>
 <style>
@@ -873,7 +881,11 @@ img {
   function manualPause(e, video_index, upcoming_q_index, start_time) {
       console.log("videos manually paused");
   }
-
+let drawing_tool_background_src = localStorage.getItem('drawing_tool_background_src');
+drawing_tool_background_src = drawing_tool_background_src.replace("%20"," ");
+//drawing_tool_background_src = drawing_tool_background_src.replace("20"," ");
+drawing_tool_background_src = "uploads/"+drawing_tool_background_src;
+console.log("drawing_tool_background_src: " + drawing_tool_background_src);
   let drawing_tool = document.querySelector(".drawing_container");
   if(drawing_tool){
   Painterro({
@@ -893,8 +905,8 @@ img {
       hiddenTools: ['save', 'close'],
       //     defaultFontSize:16,
       //     defaultEraserWidth: 10,
- //?  }).show('uploads/p454_0_QRPropylene Control valve and dynamics_files/image001.png');
-  }).show();
+ //?   }).show('uploads/p454_0_QRPropylene Control valve and dynamics_files/image001.png');
+   }).show(drawing_tool_background_src);
 
 
 
