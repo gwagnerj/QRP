@@ -1,0 +1,59 @@
+.hidden {
+    visibility: hidden;
+}
+.display_none { display: none;
+}
+.gray-out { background-color:black;
+            padding: 0 3px 0 3px;
+           
+}
+.gray-out:after{
+   color:white;
+    content:'watch video';
+}
+.question{
+   display:flexbox;
+}
+.wrong {
+    background-color:pink;
+    opacity: 0.9;
+
+}
+.part-correct {
+    background-color:lightyellow;
+    opacity: 0.9;
+
+}
+.correct {
+     background-color:lightgreen; 
+     opacity: 0.9;
+}
+.low-opacity{
+     opacity: 0.4;
+    }
+.display-question {
+    border:2px solid
+}
+
+.butn{ 
+    background-color:blue;
+    color:white;
+    cursor:pointer;
+    padding: 0.3em 0.5em;
+  font-size: 1.3em;
+}
+.butn:hover{
+    background-color:darkblue;
+}
+.drawing_container{ 
+    position:relative;
+    border:2px solid;
+    padding: 0.3em 0.5em;
+}
+
+img {
+  position: relative;
+  left: 0px;
+  top: 0px;
+  z-index: -1;
+}

@@ -55,8 +55,10 @@ session_start();
       $alias_num = $assign_data['alias_num'];    
 
       $salt = $problem_id*$problem_id;
+      $salt2 = $problem_id*$problem_id+$problem_id;
       $enc_key = $enc_key.$salt;
-
+      $vid_enc_key = $vid_enc_key.$salt2;
+      
          
 	$reflect_flag = $assign_data['reflect_flag'];    
     $explore_flag = $assign_data['explore_flag'];    
@@ -217,12 +219,19 @@ $pass = array(
       'perc_exp' => $assigntime_data['perc_exp_'.$alias_num],
       'perc_con' => $assigntime_data['perc_con_'.$alias_num],
       'perc_soc' => $assigntime_data['perc_soc_'.$alias_num],
-       'switch_to_bc' => $switch_to_bc
+       'switch_to_bc' => $switch_to_bc,
       
     );
     echo '<script>';
     echo 'var pass = ' . json_encode($pass) . ';';
     echo '</script>';
+
+ // echo "<script>document.write(localStorage.setItem('enc_key', '".$enc_key."'))</script>";
+  echo "<script>window.localStorage.setItem('enc_key', '" . $enc_key . "');</script>";
+  echo "<script>window.localStorage.setItem('vid_enc_key', '" . $vid_enc_key . "');</script>";
+  echo "<script>window.localStorage.setItem('problem_id', '" . $problem_id . "');</script>";
+//   echo "<script>document.write(localStorage.setItem('vid_enc_key', '".$vid_enc_key."'))</script>";
+// echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."'))</script>";
 
 
 
@@ -231,6 +240,7 @@ $pass = array(
 <html lang = "en">
 <head>
 <meta charset="UTF-8">
+
 
 <link rel="icon" type="image/png" href="McKetta.png" >
 
@@ -247,6 +257,12 @@ $pass = array(
 <script src="./crypto-js-4.0.0/crypto-js.js"></script><!-- https://github.com/brix/crypto-js/releases crypto-js.js can be download from here -->
 <script src="Encryption.js"></script>
 
+<script src="drawingtool/painterro-1.2.57.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
+ <link rel="stylesheet" href="displayProblem.css"> 
+
+
+
 <script type="text/javascript" charset="utf-8" src="qrcode.js"></script>
 <style>
 
@@ -259,7 +275,7 @@ $pass = array(
 #qrcode_id_bc{
    background-color: #e6f7ff;  
 }
-
+/* 
 .hidden {
     visibility: hidden;
 }
@@ -273,9 +289,11 @@ $pass = array(
    color:white;
     content:'watch video';
 }
-
+ */
 
 </style>
+
+
 </head>
 
 <body>
@@ -302,6 +320,15 @@ $pass = array(
       //        $header_stuff ->find('#now',0)->innertext = $now;
       // $header_stuff ->find('#window_closes',0)->innertext = $window_closes;
 
+
+      $drawing_tool_background = $html->find('.drawing-tool-background');
+      if ($drawing_tool_background){
+        $drawing_tool_background_arr = $drawing_tool_background[0];
+        $drawing_tool_background_src = $drawing_tool_background_arr->children(0)->getAttribute("src");
+      // echo "<script>document.write(localStorage.setItem('drawing_tool_background_src', '". $drawing_tool_background_src."'))</script>";
+      echo "<script>window.localStorage.setItem('drawing_tool_background_src', '" . $drawing_tool_background_src . "');</script>";
+
+      }
       
       if ($perc_late_p_prob !=0){
          $header_stuff ->find('#late_penalty',0)->innertext = 'Late Penalty on Problem: '.$perc_late_p_prob.'%';
@@ -563,16 +590,42 @@ $pass = array(
    echo $this_html; 
   // unlink('temp2 png');
  
-  echo "<script>document.write(localStorage.setItem('enc_key', '".$enc_key."'))</script>";
+
 
  ?>
  <!-- <script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script> -->
-<script>
-// try to read in a value from the iframe
  
+<style>
+  img {
+  position: relative;
+  left: 0px;
+  top: 0px;
+  z-index: -1;
+}
+</style>
 
+ 
+<script>
 
  $(document).ready(function(){
+   
+
+  window.addEventListener('error', function(event) { window.location.reload(true); })
+
+
+//   if (typeof window.interactiveVideoJSloaded == 'undefined') {
+//     console.log ("window.interactiveVideoJSloaded","undefined");
+//     console.log ("window.vid_ar",window.vid_ar);
+//     $.getScript('interactiveVideos.js');
+// } else {
+// console.log ("window.interactiveVideoJSloaded",window.interactiveVideoJSloaded);
+// console.log ("window.vid_ar",window.vid_ar);
+
+// }
+
+
+
+  console.log ("here we go");
     
     var activity_id = pass['activity_id']; 
      var stu_name = pass['stu_name']; 
@@ -613,7 +666,10 @@ $pass = array(
         }
          //Turn this off for now - will release this feature later   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   
-          
+         $.getScript('interactiveVideos.js'); 
+
+
+   
     
     
      var qr_code = false;
@@ -919,7 +975,17 @@ change_count();
    $('#connect').append('('+perc_con+' %)');
    $('#society').append('('+perc_soc+' %)');
 
-
+  //  let start_button_active = document.querySelector(".start-video-button");
+  //   location.reload(true);
+  // console.log ("start_button_active", start_button_active);
+  
+  // // if (typeof pause_vid_ar=='undefined') {
+  // if (start_button_active == null && one_time == true) {
+  //   location.reload(true);
+  //   console.log("hard reload");
+  // } else {
+  //   console.log("no hard reload");
+  // }
 
 
     // added the video-js player here to
@@ -960,6 +1026,10 @@ change_count();
   });
 
 </script>
+
+<script src="interactiveVideos.js"></script> 
+
+<script src = "drawingTool.js"> </script>
 
  
 </body>

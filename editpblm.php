@@ -1324,8 +1324,8 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 							$html = str_replace(
 								$drawing_first_part_of_tag,
 								'<div id = "drawing-open1" class = "drawing-open" >
-									<button id = "drawing-btn-close1" class = "drawing-btn-close btn fa fa-window-close ">Close Drawing Tool</button>
-									<button id = "drawing-btn-open1" class = "drawing-btn-open btn fas fa-expand display_none">Open Drawing Tool</button>
+									<button id = "drawing-btn-close1" class = "drawing-btn-close butn fa fa-window-close ">Close Drawing Tool</button>
+									<button id = "drawing-btn-open1" class = "drawing-btn-open butn fas fa-expand display_none">Open Drawing Tool</button>
 								  </div>
 								  <div id = "drawing_container1" class = "drawing_container" style = "width:'.$width.'; height:'.$height.' " ><div class = "drawing-tool-background display_none">',
 								$html
@@ -1345,8 +1345,8 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 						$html = str_replace(
 							$tag->outertext,
 							'<div id = "drawing-open1" class = "drawing-open" >
-								<button id = "drawing-btn-close1" class = "drawing-btn-close btn fa fa-window-close ">Close Drawing Tool</button>
-								<button id = "drawing-btn-open1" class = "drawing-btn-open btn fas fa-expand display_none">Open Drawing Tool</button>
+								<button id = "drawing-btn-close1" class = "drawing-btn-close butn fa fa-window-close ">Close Drawing Tool</button>
+								<button id = "drawing-btn-open1" class = "drawing-btn-open butn fas fa-expand display_none">Open Drawing Tool</button>
 							  </div>
 							  <div id = "drawing_container1" class = "drawing_container" style = "width:'.$width.'; height:'.$height.' " ></div>',
 							$html
@@ -1742,13 +1742,20 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                 }
 //				die;
 
-				
+			$Encryption = new Encryption();		
 			for ($k=0; $k<= 10; $k++){
 				$answers[$k] = array_column($answer_values,$k);
 				$answer[$k] = implode(',',$answers[$k]);
 				$enc_key_key = $enc_key.$k; //! just to make it not worth it - every part has a different key and every problem has a different encryption key
-				$answer[$k] = $Encryption -> encrypt($answer[$k],$enc_key_key); // encrypt the answers (this is the key for the key :)  and put them 
+			    // echo ("enc_key_key ".$enc_key_key);
+				// var_dump($answer);
+				// echo '<br>';
+				// echo ('k '.$k);
+				// echo '<br>';
+				// echo ('answer[$k]'.$answer[$k] );
 				
+				$answer[$k] = $Encryption -> encrypt($answer[$k],$enc_key_key); // encrypt the answers (this is the key for the key :)  and put them 
+				// die;
 			}
 			for ($k=0; $k<= 13; $k++){
 			
