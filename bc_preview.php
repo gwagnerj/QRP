@@ -2,7 +2,7 @@
 session_start();
 require_once 'pdo.php';
 require_once 'simple_html_dom.php';
-require_once '..\encryption_base.php';
+require_once '../encryption_base.php';
 
 if (isset($_POST['problem_id'])) {
     $problem_id = $_POST['problem_id'];
@@ -100,9 +100,10 @@ $html->load_file($htmlfilenm);
    // find the names of the images for any drawing tool background image_set_pixel
 
    $drawing_tool_background = $html->find('.drawing-tool-background');
+   if ($drawing_tool_background){
    $drawing_tool_background_arr = $drawing_tool_background[0];
    $drawing_tool_background_src = $drawing_tool_background_arr->children(0)->getAttribute("src");
-
+   }
    
 
 $base_case = $html->find('#problem', 0);

@@ -6,6 +6,8 @@
     require_once '..\encryption_base.php';
 
 	$problem_type ='0';
+	$sequential = '1';
+
 $_SESSION['checker']=2;  // tells where the getiid where to come to
 	if (isset($_SESSION['username'])) {
 		$username=$_SESSION['username'];
@@ -554,6 +556,20 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':problem_type' => 0,
+					':pblm_num' => $_POST['problem_id']));	
+			}	
+		// problem sequential
+			if($_POST['sequential']==1)	{
+				$sql = "UPDATE Problem SET sequential = :sequential WHERE problem_id = :pblm_num";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':sequential' => 1,
+					':pblm_num' => $_POST['problem_id']));	
+			} else 	{
+				$sql = "UPDATE Problem SET sequential = :sequential WHERE problem_id = :pblm_num";
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':sequential' => 0,
 					':pblm_num' => $_POST['problem_id']));	
 			}	
 				
@@ -1919,6 +1935,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	}
 
 	$problem_type = $row['problem_type'];
+	$sequential = $row['sequential'];
 	$p = htmlentities($row['title']);
 	$gf = htmlentities($row['game_prob_flag']);
 	//print_r($gf);
@@ -2119,7 +2136,14 @@ if(strlen($vid3)>2) {
 		
 		&nbsp; Problem is Best Described as a: </br>
 		&nbsp; &nbsp; <input type="radio" name="problem_type" value=0 <?php if($problem_type == 0){ echo 'checked';} ?>> Homework Problem<br>
-		&nbsp; &nbsp; <input type="radio" name="problem_type" value=1 id = "problem_type" <?php if($problem_type == 1){ echo 'checked';} ?>>Quiz or Examination Problem:
+		&nbsp; &nbsp; <input type="radio" name="problem_type" value=1  <?php if($problem_type == 1){ echo 'checked';} ?>>Quiz or Examination Problem:
+	</div>
+	<br>
+	<div id = "sequential">
+		
+		&nbsp; Problem parts should be presented: </br>
+		&nbsp; &nbsp; <input type="radio" name="sequential" value=1 <?php if($sequential == 1){ echo 'checked';} ?>> Sequentially (minimizes Chegging)<br>
+		&nbsp; &nbsp; <input type="radio" name="sequential" value=0  <?php if($sequential == 0){ echo 'checked';}  ?>> Simultaneously (student needs to determine solve order)
 	</div>
 
 

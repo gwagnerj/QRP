@@ -2981,3 +2981,8 @@ ENGINE=InnoDB CHARACTER SET = utf8;
             PRIMARY KEY (gameboardchaosactionconnect_id)
           ) ENGINE=InnoDB CHARACTER SET = utf8;    
 
+
+  ALTER TABLE `Problem` 
+	ADD `sequential` int(2) DEFAULT 1 AFTER `society`, 
+  ADD `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER `sequntial` ,
+  ADD `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER `created_at`
