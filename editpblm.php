@@ -3,7 +3,7 @@
 	require_once "pdo.php";
     require_once "simple_html_dom.php";
     require_once 'Encryption.php';
-    require_once '..\encryption_base.php';
+    require_once '../encryption_base.php';
 
 	$problem_type ='0';
 	$sequential = '1';
@@ -40,7 +40,8 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	   
 		$problem_id=$_POST['problem_id'];
 		$enc_key = $enc_key.$problem_id*$problem_id;
-		$vid_enc_key = $vid_enc_key.$problem_id*$problem_id+$problem_id;
+		$vid_key_last_part = $problem_id*$problem_id+$problem_id;
+		$vid_enc_key = $vid_enc_key.$vid_key_last_part;
 
 		
 		//Get the filename from the docxfile that was uploaded
@@ -2141,7 +2142,7 @@ if(strlen($vid3)>2) {
 	<br>
 	<div id = "sequential">
 		
-		&nbsp; Problem parts should be presented: </br>
+		&nbsp; Problem parts should be presented (default behavior): </br>
 		&nbsp; &nbsp; <input type="radio" name="sequential" value=1 <?php if($sequential == 1){ echo 'checked';} ?>> Sequentially (minimizes Chegging)<br>
 		&nbsp; &nbsp; <input type="radio" name="sequential" value=0  <?php if($sequential == 0){ echo 'checked';}  ?>> Simultaneously (student needs to determine solve order)
 	</div>

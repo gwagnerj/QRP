@@ -2982,7 +2982,13 @@ ENGINE=InnoDB CHARACTER SET = utf8;
           ) ENGINE=InnoDB CHARACTER SET = utf8;    
 
 
+  ALTER TABLE `Assign` 
+	ADD `sequential` int(2) DEFAULT 1 AFTER `exp_date`, 
+  ADD `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER `sequential` ,
+  ADD `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER `created_at`
+  
+  
   ALTER TABLE `Problem` 
 	ADD `sequential` int(2) DEFAULT 1 AFTER `society`, 
-  ADD `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER `sequntial` ,
+  ADD `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER `sequential` ,
   ADD `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER `created_at`

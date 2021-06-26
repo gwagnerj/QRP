@@ -2,7 +2,7 @@
 require_once "pdo.php";
 require_once "simple_html_dom.php";
 include 'phpqrcode/qrlib.php'; 
-require_once '..\encryption_base.php';
+require_once '../encryption_base.php';
 
 session_start();
 

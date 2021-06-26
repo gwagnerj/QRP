@@ -3,7 +3,7 @@ require_once "pdo.php";
 session_start();
 
 
-
+// $sequential = 1;
 
 if (isset($_POST['assign_id'])&& $_POST['assign_id'] != ''){
    $assign_id =  $_POST['assign_id'];
@@ -67,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['Submitted'])) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':zip' => $problem_id));
 	$problem_data = $stmt -> fetch();
+	$sequential = $problem_data['sequential'];  // Default value for sequential
 
 	
 	// Check to see if this instructor has any currentclasses
@@ -148,6 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['Submitted'])) {
 		$grader_id1 = $Assign_data['grader_id1'];
 		$grader_id2 = $Assign_data['grader_id2'];
 		$grader_id3 = $Assign_data['grader_id3'];
+		$sequential = $Assign_data['sequential'];
 		$activate_flag = 0;
 	} else {
 		
@@ -250,6 +252,9 @@ if(isset($_POST['Activate']) && $assign_id == ''){
 			if(isset($_POST['grader_id3'])){
 				$grader_id3=$_POST['grader_id3'];
 			} 
+			if(isset($_POST['sequential'])){
+				$sequential=$_POST['sequential'];
+			} 
 
 
 		// check to make sure the problem number for that assignment and class is not already in the system
@@ -273,10 +278,10 @@ if(isset($_POST['Activate']) && $assign_id == ''){
  // Prepare an insert statement
         $sql = "INSERT INTO Assign (instr_last, iid, university,  assign_num, prob_num, pp_flag1, pp_flag2,pp_flag3, pp_flag4,reflect_flag,explore_flag,
 		connect_flag,society_flag,reflect_pr_flag,explore_pr_flag,connect_pr_flag,society_pr_flag,postp_flag1,postp_flag2,postp_flag3,grader_id1,grader_id2,grader_id3,alias_num,
-		currentclass_id,sec_desig_1,sec_desig_2,sec_desig_3,sec_desig_4,sec_desig_5,sec_desig_6)
+		currentclass_id,sec_desig_1,sec_desig_2,sec_desig_3,sec_desig_4,sec_desig_5,sec_desig_6,sequential)
 		VALUES (:instr_last, :iid,:university,  :assign_num,:prob_num, :pp_flag1, :pp_flag2,:pp_flag3, :pp_flag4,:reflect_flag, :explore_flag,
 		:connect_flag, :society_flag,:reflect_pr_flag,:explore_pr_flag,:connect_pr_flag,:society_pr_flag,:postp_flag1, :postp_flag2,:postp_flag3,:grader_id1,:grader_id2,:grader_id3,:alias_num,
-		:currentclass_id,:sec_desig_1,:sec_desig_2,:sec_desig_3,:sec_desig_4,:sec_desig_5,:sec_desig_6)";
+		:currentclass_id,:sec_desig_1,:sec_desig_2,:sec_desig_3,:sec_desig_4,:sec_desig_5,:sec_desig_6,:sequential)";
          
        
 			$stmt = $pdo->prepare($sql);
@@ -311,7 +316,8 @@ if(isset($_POST['Activate']) && $assign_id == ''){
 				':sec_desig_3' => $sec_desig_3,
 				':sec_desig_4' => $sec_desig_4,
 				':sec_desig_5' => $sec_desig_5,
-				':sec_desig_6' => $sec_desig_6
+				':sec_desig_6' => $sec_desig_6,
+				':sequential' => $sequential
 				));
       	 $_SESSION['success'] = 'the problem was attached to the assignment';
 
@@ -426,14 +432,17 @@ if(isset($_POST['Activate']) && $assign_id == ''){
 		if(isset($_POST['grader_id3'])){
 			$grader_id3=$_POST['grader_id3'];
 		} 
-		
+		if(isset($_POST['sequential'])){
+			$sequential=$_POST['sequential'];
+		} 
+	
  
    
    	$sql = "UPDATE Assign SET  assign_t_created = :assign_t_created, assign_num = :assign_num, pp_flag1 = :pp_flag1, pp_flag2= :pp_flag2,
 			pp_flag3 = :pp_flag3, pp_flag4 = :pp_flag4, reflect_flag = :reflect_flag, explore_flag = :explore_flag, connect_flag = :connect_flag,
 			society_flag = :society_flag, reflect_flag = :reflect_flag, explore_pr_flag = :explore_pr_flag, connect_pr_flag = :connect_pr_flag,
 			society_pr_flag = :society_pr_flag, postp_flag1 = :postp_flag1, postp_flag2 = :postp_flag2, postp_flag3 = :postp_flag3, ref_choice = :choice, 
-			grader_id1 = :grader_id1, grader_id2 = :grader_id2, grader_id3 = :grader_id3, alias_num = :alias_num
+			grader_id1 = :grader_id1, grader_id2 = :grader_id2, grader_id3 = :grader_id3, alias_num = :alias_num,sequential = :sequential
 					WHERE assign_id = :assign_id";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
@@ -460,7 +469,9 @@ if(isset($_POST['Activate']) && $assign_id == ''){
 			':postp_flag3' => $postp_flag3,
 			':grader_id1' => $grader_id1,
 			':grader_id2' => $grader_id2,
-			':grader_id3' => $grader_id3
+			':grader_id3' => $grader_id3,
+			':sequential' => $sequential
+
 			));
 			 $_SESSION['success'] = 'the problem was successfully edited';
 	       echo  "<script type='text/javascript'>";
@@ -595,6 +606,14 @@ if(isset($_POST['Activate']) && $assign_id == ''){
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "reflection" id = "society_flag"  name="society" <?php if($society_flag ==1){echo ('checked');  }?> > Society  
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class = "peer_review" id = "society_pr_flag" name="society_pr_flag" <?php if($society_pr_flag ==1){echo ('checked');  }?> >  <br>
 			<br>
+
+			<div id = "sequential">
+		
+		&nbsp; Problem parts should be presented: </br>
+		&nbsp; &nbsp; <input type="radio" name="sequential" value=1 <?php if($sequential == 1){ echo 'checked';} ?>> Sequentially (minimizes Chegging)<br>
+		&nbsp; &nbsp; <input type="radio" name="sequential" value=0  <?php if($sequential == 0){ echo 'checked';}  ?>> Simultaneously (student needs to determine solve order)
+	</div>
+
             
         <!--    
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choice" class = "choice_class" value = 1 <?php if($choice ==1){echo ('checked');  }?> > Any One  <br>
