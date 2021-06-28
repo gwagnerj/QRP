@@ -52,7 +52,8 @@ session_start();
      ':problem_id' => $problem_id));
      $assign_data = $stmt -> fetch();
      $assignment_num = $assign_data['assign_num'];
-      $alias_num = $assign_data['alias_num'];    
+      $alias_num = $assign_data['alias_num']; 
+      $sequential = $assign_data['sequential'];   
 
       $salt = $problem_id*$problem_id;
       $salt2 = $problem_id*$problem_id+$problem_id;
@@ -220,6 +221,8 @@ $pass = array(
       'perc_con' => $assigntime_data['perc_con_'.$alias_num],
       'perc_soc' => $assigntime_data['perc_soc_'.$alias_num],
        'switch_to_bc' => $switch_to_bc,
+       'sequential' => $sequential
+
       
     );
     echo '<script>';
@@ -641,6 +644,34 @@ $pass = array(
       var perc_con = pass['perc_con'];
       var perc_soc = pass['perc_soc'];
       var switch_to_bc = pass['switch_to_bc'];
+      var sequential = pass['sequential'];
+
+      var parts = new Array(10);
+       parts[0] = document.getElementById("parta");
+       parts[1] = document.getElementById("partb");
+       parts[2] = document.getElementById("partc");
+      parts[3] = document.getElementById("partd");
+      parts[4] = document.getElementById("parte");
+      parts[5] = document.getElementById("partf");
+      parts[6] = document.getElementById("partg");
+      parts[7] = document.getElementById("parth");
+      parts[8] = document.getElementById("parti");
+      parts[9] = document.getElementById("partj");
+
+      console.log("parts",parts);
+
+
+
+      if (sequential ==1){ 
+    //    let checker_part_b = document.getElementById('checker2').contentWindow.document.getElementById('part-b-display').innerText;
+    //    let checker_part_c = document.getElementById('checker2').contentWindow.document.getElementById('part-c-display').innerText;
+    //    // let checker_part_d = document.getElementById('checker2').contentWindow.document.getElementById('part-d-display').innerText;
+    //    console.log ("checker_part_b",checker_part_b);
+    //    if (checker_part_b=="display_none"){ part_b.classList.add('display_none'); }
+    //    if (checker_part_c=="display_none"){ part_c.classList.add('display_none'); }
+    //  //  if (checker_part_d=="display_none"){ part_d.classList.add('display_none'); }
+
+      }
        if (switch_to_bc == 1){
          $('#base_case').show();
          $('#BC_checker').show();
@@ -679,13 +710,33 @@ $pass = array(
                //  var total_count = $("#checker2").contents().find("#total_count").html();
                 var total_count = $("#checker2").contents().find("#total_count").text();
                  var PScore = $("#checker2").contents().find("#PScore").val();
+                 let checker_display_parts = new Array(10);
+                 checker_display_parts[0] =document.getElementById('checker2').contentWindow.document.getElementById('part-a-display');
+                 checker_display_parts[1] =document.getElementById('checker2').contentWindow.document.getElementById('part-b-display');
+                 checker_display_parts[2] =document.getElementById('checker2').contentWindow.document.getElementById('part-c-display');
+                 checker_display_parts[3] =document.getElementById('checker2').contentWindow.document.getElementById('part-d-display');
+                 checker_display_parts[4] =document.getElementById('checker2').contentWindow.document.getElementById('part-e-display');
+                 checker_display_parts[5] =document.getElementById('checker2').contentWindow.document.getElementById('part-f-display');
+                 checker_display_parts[6] =document.getElementById('checker2').contentWindow.document.getElementById('part-g-display');
+                 checker_display_parts[7] =document.getElementById('checker2').contentWindow.document.getElementById('part-h-display');
+                 checker_display_parts[8] =document.getElementById('checker2').contentWindow.document.getElementById('part-i-display');
+                 checker_display_parts[9] =document.getElementById('checker2').contentWindow.document.getElementById('part-j-display');
+                 console.log("checker_display_parts",checker_display_parts);
+                //  let display_b = $("#checker2").contents().find("#part-b-display").text();
+                //  let display_j = $("#checker2").contents().find("#part-j-display").text();
+           //      let display_c = $("#checker2").contents().find("#part-c-display").text();
                   switch_to_bc = $("#checker2").contents().find("#switch_to_bc").val();
-                 
-                var parent_test = document.getElementById('checker2').contentWindow.test;
-              
-                   var test2 = myFrame.test;
-                
-              //  console.log('test from parent: '+test);  
+            //    console.log('display_b',display_b);  
+            for ( let k=0;k<9;k++){
+              if (checker_display_parts[k]){if(checker_display_parts[k].innerText =="display_none"){parts[k].classList.add("display_none");} else {parts[k].classList.remove("display_none");}}
+
+
+            }
+
+              //   if (display_b =="display_none"){parts[1].classList.add("display_none");} else {parts[1].classList.remove("display_none");}
+              // if (display_j){if( display_j =="display_none"){parts[9].classList.add("display_none");} else {parts[9].classList.remove("display_none");}}
+
+
              
                    console.log('blah: '+total_count);
                   console.log('PScore: '+PScore);
@@ -1024,6 +1075,8 @@ change_count();
   //       }
   //     }
   });
+
+
 
 </script>
 
