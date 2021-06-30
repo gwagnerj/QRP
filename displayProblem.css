@@ -57,3 +57,21 @@ img {
   top: 0px;
   z-index: -1;
 }
+.problem-parts{
+    font-size: 1.1em;
+}
+.parts-question{
+    margin: 10px;
+    color:darkblue;
+    font-size: 1.1em;
+
+}
+
+.display_blur {
+     text-shadow: 0px 0px 10px black ;
+    color:transparent;
+    /* background-color:lightblue;
+    opacity:0.4;
+    z-index: -5; */
+}
+

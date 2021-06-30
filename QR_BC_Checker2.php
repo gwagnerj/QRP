@@ -68,7 +68,8 @@ session_start();
      $assign_data = $stmt -> fetch();
      $assignment_num = $assign_data['assign_num'];
      $alias_num = $assign_data['alias_num'];    
-     
+     $sequential = $assign_data['sequential'];  
+
        $sql = 'SELECT * FROM Assigntime WHERE assign_num = :assign_num AND currentclass_id = :currentclass_id'; // may not want everything here
      $stmt = $pdo->prepare($sql);
      $stmt->execute(array(':assign_num' => $assignment_num,
@@ -439,6 +440,71 @@ session_start();
             
     }
   
+    $sequential_part_display_ar = array();  // tells if I should display part or not
+    $first_one_index = 0;
+    
+    for( $j=9; $j>=0; $j--){
+        if ($partsFlag[$j]){
+            $first_one_index = $j;
+        }
+    }
+    $sequential_part_display_ar[ $first_one_index] = "display";  // always display the first one - usually part a)
+
+ //   find the current part that the student is working on
+    $current_part=-1;
+    $k = 0;
+    foreach(range('a','j') as $v){
+       if ($corr[$v] =="Correct"){
+           $current_part = $k;
+       }
+       $k++;
+    }
+
+    echo ("current part ".$current_part);
+    echo '<br>';
+    $next_one = true;
+    for ($m=$current_part;$m<=8; $m++)  {
+        if($partsFlag[$m+1] && $next_one){
+            $current_part = $m+1;
+            $next_one = false;
+        }
+}
+echo ("current part ".$current_part);
+echo '<br>';
+   
+    for( $j=$first_one_index+1; $j<=9; $j++){  // set them all to display or display none then correct them later
+     if ($sequential == 0){ 
+      $sequential_part_display_ar[$j]= "display";
+     } else {
+      $sequential_part_display_ar[$j]= "display_none";
+     } 
+  }
+          $next_one = false;
+    for( $j=$first_one_index; $j<=8; $j++){
+      if (($sequential == 1 && $corr[$corr_key[$j]]=="Correct" || $next_one)  ){  // logic if the next one is not a checker problem part (e.g. part b and d are checker problem part but a and c are free response or drawing...)
+  
+          $next_one = true;
+          if ($partsFlag[$j+1] && $next_one ){  // only display the current part
+              $next_one = false;
+              $sequential_part_display_ar[$j+1]= "display_blur";
+          }
+
+  
+      }
+  }
+
+  for ($j = $first_one_index;$j<=9; $j++){
+    if ($j == $current_part){
+        $sequential_part_display_ar[$j]= "display";
+      } else {
+        $sequential_part_display_ar[$j]= "display_blur"; 
+      }
+
+  }
+
+
+  var_dump($sequential_part_display_ar);
+
 		
 	?>
 	
@@ -460,6 +526,8 @@ session_start();
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+        <link rel="stylesheet" href="displayProblem.css"> 
+
 <style>
 
     .btn-default{
@@ -527,8 +595,10 @@ session_start();
        
     if($attempt_type ==1 || ($attempt_type ==2 && $count_tot <= $num_attempts)){
 	if ($partsFlag[0]){ ?> 
-	<div id = "part_a">
-    <p> a): <input  [ type=number]{width: 5%;} id = "a" name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> count <?php echo(@$wrongCount[0].' '); ?> 
+    <div id = "part-a-BC-container" class = "checker-parts-conatiner  <?php echo $sequential_part_display_ar[0]; ?> ">
+    <div id = "part-a-BC-question" class = "parts-question"></div>
+    <div id = "part-a-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[0]; ?></div>
+	<div id = "part-a-BC" class = "problem-parts <?php echo $sequential_part_display_ar[0]; ?>"> a)(<?php echo $assigntime_data['perc_a_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="a" id = "a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo(htmlspecialchars_decode($unit[0])) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> count <?php echo(@$wrongCount[0].' '); ?> 
 	 <?php 
     if ( (( $activity_data['wcount_bc_a']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[0]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_a']==1 ) && $corr['a']!="Correct")
      { echo('<span><input type="button" id="show_answer_button_a" class="btn-default" value="Show Answer"> </span>&nbsp;');}
@@ -537,22 +607,22 @@ session_start();
  
       ?>  
           <input type="hidden" id="ans_a" value="<?php echo ($soln[0])?>" >
-	
-    
-    
-    
     <!--
     <?php if (isset($_POST['pin']) and @$wrongCount[0]>$hintLimit and $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>$time_sleep1_trip and @$wrongCount[0]< $time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>=$time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	 -->
 
-     </p></div>
+     </div></div>
 	<?php } 
     
 
 	if ($partsFlag[1]){ ?> 
-	<p> b): <input [ type=number]{width: 5%;} id = "b" name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?> &nbsp - <b><?php echo ($corr['b']) ?> </b>  count <?php echo(@$wrongCount[1].' '); ?> 
+        <div id = "part-b-BC-container" class = "checker-parts-conatiner">
+    <div id = "part-b-BC-question" class = "parts-question"></div>
+    <div id = "part-b-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[1]; ?></div>
+	<div id = "part-b-BC" class = "problem-parts <?php echo $sequential_part_display_ar[1]; ?>"> b)(<?php echo $assigntime_data['perc_b_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="b" id = "b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo(htmlspecialchars_decode($unit[1])) ?> &nbsp - <b><?php echo ($corr['b']) ?> </b> count <?php echo(@$wrongCount[1].' '); ?> 
+
      <?php 
     if ( (( $activity_data['wcount_bc_b']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[1]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_b']==1 ) && $corr['b']!="Correct")
      { echo('<span><input type="button" id="show_answer_button_b" class="btn-default" value="Show Answer"> </span>&nbsp;');}
@@ -560,11 +630,15 @@ session_start();
     {echo '<span id = "show_ans_b" class = "show_ans"> - Computed value is: '.$soln[1].'</span>';} 
       ?>  
           <input type="hidden" id="ans_b" value="<?php echo ($soln[1])?>" >
-	</p>
+	</div></div>
 	<?php } 
   
 	if ($partsFlag[2]){ ?> 
-	<p> c): <input [ type=number]{width: 5%;} id="c" name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b>  count <?php echo(@$wrongCount[2].' '); ?> 
+    <div id = "part-c-BC-container" class = "checker-parts-conatiner">
+    <div id = "part-c-BC-question" class = "parts-question"></div>
+    <div id = "part-c-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[2]; ?></div>
+	<div id = "part-c-BC" class = "problem-parts <?php echo $sequential_part_display_ar[2]; ?>"> c)(<?php echo $assigntime_data['perc_c_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="c" id = "c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo(htmlspecialchars_decode($unit[2])) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b> count <?php echo(@$wrongCount[2].' '); ?> 
+
      <?php 
     if ( (( $activity_data['wcount_bc_c']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[2]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_c']==1 ) && $corr['c']!="Correct")
      { echo('<span><input type="button" id="show_answer_button_c" class="btn-default" value="Show Answer"> </span>&nbsp;');}
@@ -577,11 +651,15 @@ session_start();
     <?php if (isset($_POST['pin']) and @$wrongCount[2]>$hintLimit and $corr['c']=="Not Correct"&& $hintcPath != "uploads/default_hints.html" ){echo '<a href="'.$hintcPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[2] and @$wrongCount[2]>$time_sleep1_trip and @$wrongCount[2]< $time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[2] and @$wrongCount[2]>=$time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
-	</p>
+	</div></div>
 	<?php } 
 
 	if ($partsFlag[3]){ ?> 
-	<p> d): <input [ type=number]{width: 5%;} id = "d" name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b>  count <?php echo(@$wrongCount[3].' '); ?> 
+    <div id = "part-d-BC-container" class = "checker-parts-conatiner">
+    <div id = "part-d-BC-question" class = "parts-question"></div>
+    <div id = "part-d-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[3]; ?></div>
+	<div id = "part-d-BC" class = "problem-parts <?php echo $sequential_part_display_ar[3]; ?>"> d)(<?php echo $assigntime_data['perc_d_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="d" id = "d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo(htmlspecialchars_decode($unit[3])) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b> count <?php echo(@$wrongCount[3].' '); ?> 
+
     <?php 
     if ( (( $activity_data['wcount_bc_d']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[3]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_d']==1 ) && $corr['d']!="Correct")
      { echo('<span><input type="button" id="show_answer_button_d" class="btn-default" value="Show Answer"> </span>&nbsp;');}
@@ -592,11 +670,14 @@ session_start();
     <?php if (isset($_POST['pin']) and @$wrongCount[3]>$hintLimit and $corr['d']=="Not Correct"&& $hintdPath != "uploads/default_hints.html" ){echo '<a href="'.$hintdPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[3] and @$wrongCount[3]>$time_sleep1_trip and @$wrongCount[3]< $time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[3] and @$wrongCount[3]>=$time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
-	</p>
+	</div></div>
 	<?php } 
 
 	if ($partsFlag[4]){ ?> 
-	<p> e): <input [ type=number]{width: 5%;} id = "e" name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b>  count <?php echo(@$wrongCount[4].' '); ?> 
+    <div id = "part-e-BC-container" class = "checker-parts-conatiner">
+    <div id = "part-e-BC-question" class = "parts-question"></div>
+    <div id = "part-e-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[4]; ?></div>
+	<div id = "part-e-BC" class = "problem-parts <?php echo $sequential_part_display_ar[4]; ?>"> e)(<?php echo $assigntime_data['perc_e_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="e" id = "e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo(htmlspecialchars_decode($unit[4])) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b> count <?php echo(@$wrongCount[4].' '); ?> 
      <?php 
     if ( (( $activity_data['wcount_bc_e']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[4]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_e']==1 ) && $corr['e']!="Correct")
      { echo('<span><input type="button" id="show_answer_button_e" class="btn-default" value="Show Answer"> </span>&nbsp;');}
@@ -608,11 +689,14 @@ session_start();
     <?php if (isset($_POST['pin']) and @$wrongCount[4]>$hintLimit and $corr['e']=="Not Correct"&& $hintePath != "uploads/default_hints.html" ){echo '<a href="'.$hintePath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[4] and @$wrongCount[4]>$time_sleep1_trip and @$wrongCount[4]< $time_sleep1_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[4] and @$wrongCount[4]>=$time_sleep2_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
-	</p>
+	</div></div>
 	<?php } 
 
 	if ($partsFlag[5]){ ?> 
-	<p> f): <input [ type=number]{width: 5%;} id = "f" name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b>  count <?php echo(@$wrongCount[5].' '); ?> 
+    <div id = "part-f-BC-container" class = "checker-parts-conatiner">
+    <div id = "part-f-BC-question" class = "parts-question"></div>
+    <div id = "part-f-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[5]; ?></div>
+	<div id = "part-f-BC" class = "problem-parts <?php echo $sequential_part_display_ar[5]; ?>"> f)(<?php echo $assigntime_data['perc_f_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="f" id = "f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo(htmlspecialchars_decode($unit[5])) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b> count <?php echo(@$wrongCount[5].' '); ?> 
     <?php 
     if ( (( $activity_data['wcount_bc_f']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[5]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_f']==1 ) && $corr['f']!="Correct")
      { echo('<span><input type="button" id="show_answer_button_f" class="btn-default" value="Show Answer"> </span>&nbsp;');}
@@ -625,11 +709,14 @@ session_start();
           	<?php if (isset($_POST['pin']) and @$wrongCount[5]>$hintLimit and $corr['f']=="Not Correct"&& $hintfPath != "uploads/default_hints.html" ){echo '<a href="'.$hintfPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[5] and @$wrongCount[5]>$time_sleep1_trip and @$wrongCount[5]< $time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[5] and @$wrongCount[5]>=$time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
-	</p>
+	</div></div>
 	<?php } 
 
 	if ($partsFlag[6]){ ?> 
-	<p> g): <input [ type=number]{width: 5%;} id = "g" name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b>  count <?php echo(@$wrongCount[6].' '); ?> 
+    <div id = "part-g-BC-container" class = "checker-parts-conatiner">
+    <div id = "part-g-BC-question" class = "parts-question"></div>
+    <div id = "part-g-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[6]; ?></div>
+	<div id = "part-g-BC" class = "problem-parts <?php echo $sequential_part_display_ar[6]; ?>"> g)(<?php echo $assigntime_data['perc_g_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="g" id = "g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo(htmlspecialchars_decode($unit[6])) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b> count <?php echo(@$wrongCount[6].' '); ?> 
     <?php 
     if ( (( $activity_data['wcount_bc_g']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[6]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_g']==1 ) && $corr['g']!="Correct")
      { echo('<span><input type="button" id="show_answer_button_g" class="btn-default" value="Show Answer"> </span>&nbsp;');}
@@ -639,12 +726,14 @@ session_start();
           <input type="hidden" id="ans_g" value="<?php echo ($soln[6])?>" >		<?php if (isset($_POST['pin']) and @$wrongCount[6]>$hintLimit and $corr['g']=="Not Correct"&& $hintgPath != "uploads/default_hints.html" ){echo '<a href="'.$hintgPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[6] and @$wrongCount[6]>$time_sleep1_trip and @$wrongCount[6]< $time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[6] and @$wrongCount[6]>=$time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
-	</p>
+	</div></div>
 	<?php } 
 
 	if ($partsFlag[7]){ ?> 
-	<p> h): <input [ type=number]{width: 5%;} id = "h" name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > 
-    <?php echo($unit[7]) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b>  count <?php echo(@$wrongCount[7].' '); ?> 
+    <div id = "part-h-BC-container" class = "checker-parts-conatiner">
+    <div id = "part-h-BC-question" class = "parts-question"></div>
+    <div id = "part-h-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[7]; ?></div>
+	<div id = "part-h-BC" class = "problem-parts <?php echo $sequential_part_display_ar[7]; ?>"> h)(<?php echo $assigntime_data['perc_h_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="h" id = "h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo(htmlspecialchars_decode($unit[7])) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b> count <?php echo(@$wrongCount[7].' '); ?> 
     <?php 
     if ( (( $activity_data['wcount_bc_h']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[7]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_h']==1 ) && $corr['h']!="Correct")
      { echo('<span><input type="button" id="show_answer_button_h" class="btn-default" value="Show Answer"> </span>&nbsp;');}
@@ -655,11 +744,14 @@ session_start();
     <?php if (isset($_POST['pin']) and @$wrongCount[7]>$hintLimit and $corr['h']=="Not Correct"&& $hinthPath != "uploads/default_hints.html" ){echo '<a href="'.$hinthPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[7] and @$wrongCount[7]>$time_sleep1_trip and @$wrongCount[7]< $time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[7] and @$wrongCount[7]>=$time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
-	</p>
+	</div></div>
 	<?php } 
 
 	if ($partsFlag[8]){ ?> 
-	<p> i): <input [ type=number]{width: 5%;} id = "i" name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b>  count <?php echo(@$wrongCount[8].' '); ?> 
+    <div id = "part-i-BC-container" class = "checker-parts-conatiner">
+    <div id = "part-i-BC-question" class = "parts-question"></div>
+    <div id = "part-i-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[8]; ?></div>
+	<div id = "part-i-BC" class = "problem-parts <?php echo $sequential_part_display_ar[8]; ?>"> i)(<?php echo $assigntime_data['perc_i_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="i" id = "i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo(htmlspecialchars_decode($unit[8])) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b> count <?php echo(@$wrongCount[8].' '); ?> 
 <?php 
     if ( (( $activity_data['wcount_bc_i']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[8]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_i']==1 ) && $corr['i']!="Correct")
      { echo('<span><input type="button" id="show_answer_button_i" class="btn-default" value="Show Answer"> </span>&nbsp;');}
@@ -670,11 +762,14 @@ session_start();
     <?php if (isset($_POST['pin']) and @$wrongCount[8]>$hintLimit and $corr['i']=="Not Correct"&& $hintiPath != "uploads/default_hints.html" ){echo '<a href="'.$hintiPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[8] and @$wrongCount[8]>$time_sleep1_trip and @$wrongCount[8]< $time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[8] and @$wrongCount[8]>=$time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
-	</p>
+	</div></div>
 	<?php } 
 
 	if ($partsFlag[9]){ ?> 
-	<p> j): <input [ type=number]{width: 5%;} id = "j" name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b>  count <?php echo(@$wrongCount[9].' '); ?> 
+    <div id = "part-j-BC-container" class = "checker-parts-conatiner">
+    <div id = "part-j-BC-question" class = "parts-question"></div>
+    <div id = "part-j-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[5]; ?></div>
+	<div id = "part-j-BC" class = "problem-parts <?php echo $sequential_part_display_ar[9]; ?>"> j)(<?php echo $assigntime_data['perc_j_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="j" id = "j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo(htmlspecialchars_decode($unit[9])) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b> count <?php echo(@$wrongCount[9].' '); ?> 
    <?php 
     if ( (( $activity_data['wcount_bc_j']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[9]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_j']==1 ) && $corr['j']!="Correct")
      { echo('<span><input type="button" id="show_answer_button_j" class="btn-default" value="Show Answer"> </span>&nbsp;');}
@@ -685,7 +780,7 @@ session_start();
 
           <?php if (isset($_POST['pin']) and $changed[9] and @$wrongCount[9]>$time_sleep1_trip and @$wrongCount[9]< $time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[9] and @$wrongCount[9]>=$time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
-	</p>
+	</div></div>
 	<?php } 
     }
 

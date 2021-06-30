@@ -658,6 +658,18 @@ $pass = array(
       parts[8] = document.getElementById("parti");
       parts[9] = document.getElementById("partj");
 
+      var BC_parts = new Array(10);
+       BC_parts[0] = document.getElementById("BC_parta");
+       BC_parts[1] = document.getElementById("BC_partb");
+       BC_parts[2] = document.getElementById("BC_partc");
+      BC_parts[3] = document.getElementById("BC_partd");
+      BC_parts[4] = document.getElementById("BC_parte");
+      BC_parts[5] = document.getElementById("BC_partf");
+      BC_parts[6] = document.getElementById("BC_partg");
+      BC_parts[7] = document.getElementById("BC_parth");
+      BC_parts[8] = document.getElementById("BC_parti");
+      BC_parts[9] = document.getElementById("BC_partj");
+
       console.log("parts",parts);
 
 
@@ -705,6 +717,8 @@ $pass = array(
     
      var qr_code = false;
      var myFrame = document.getElementById('checker2').contentWindow
+
+
     
     $("#checker2").on("load", function () {
                //  var total_count = $("#checker2").contents().find("#total_count").html();
@@ -729,12 +743,119 @@ $pass = array(
             //    console.log('display_b',display_b);  
             for ( let k=0;k<9;k++){
               if (checker_display_parts[k]){if(checker_display_parts[k].innerText =="display_none"){parts[k].classList.add("display_none");} else {parts[k].classList.remove("display_none");}}
+              if (checker_display_parts[k]){if(checker_display_parts[k].innerText =="display_blur"){parts[k].classList.add("display_blur");} else {parts[k].classList.remove("display_blur");}}
 
 
             }
 
               //   if (display_b =="display_none"){parts[1].classList.add("display_none");} else {parts[1].classList.remove("display_none");}
               // if (display_j){if( display_j =="display_none"){parts[9].classList.add("display_none");} else {parts[9].classList.remove("display_none");}}
+           
+           
+              let parts_in_checker = true;
+            if (parts_in_checker){
+            var part_a_this = document.getElementById("parta"); // the section in the QRdisplayPblm document
+            if (part_a_this) {
+              let part_a_parent = part_a_this.cloneNode(true);
+              console.log("part_a_parent", part_a_parent);
+              var part_a = document.getElementById('checker2').contentWindow.document.getElementById("part-a-question"); // the section in this checker file
+              console.log("part_a", part_a);
+              if (part_a && part_a_parent) {
+                part_a.insertBefore(part_a_parent, part_a.childNodes[0]);
+              }
+            }
+
+
+            var part_b_this = document.getElementById("partb"); // the section in the QRdisplayPblm document
+            if (part_b_this) {
+              let part_b_parent = part_b_this.cloneNode(true);
+              var part_b = document.getElementById('checker2').contentWindow.document.getElementById("part-b-question"); // the section in this checker file
+              if (part_b && part_b_parent) {
+                part_b.insertBefore(part_b_parent, part_b.childNodes[0]);
+              }
+            }
+
+            let part_c_this = document.getElementById("partc");
+            if (part_c_this) {
+              let part_c_parent = part_c_this.cloneNode(true);
+              var part_c = document.getElementById('checker2').contentWindow.document.getElementById("part-c-question");
+              if (part_c && part_c_parent) {
+                part_c.insertBefore(part_c_parent, part_c.childNodes[0]);
+              }
+            }
+           
+           let part_d_this = document.getElementById("partd");
+           if (part_d_this) {
+               let part_d_parent = part_d_this.cloneNode(true);
+               let part_d = document.getElementById('checker2').contentWindow.document.getElementById("part-d-question");
+               if (part_d && part_d_parent) {
+                 part_d.insertBefore(part_d_parent, part_d.childNodes[0]);
+               }
+             }
+
+
+           var part_e_this = document.getElementById("parte");
+           if (part_e_this) {
+             let part_e_parent = part_e_this.cloneNode(true);
+             var part_e = document.getElementById('checker2').contentWindow.document.getElementById("part-e-question");
+             if (part_e && part_e_parent) {
+               part_e.insertBefore(part_e_parent, part_e.childNodes[0]);
+             }
+           }
+
+
+           var part_f_this = document.getElementById("partf");
+           if (part_f_this) {
+             let part_f_parent = part_f_this.cloneNode(true);
+             var part_f = document.getElementById('checker2').contentWindow.document.getElementById("part-f-question");
+             if (part_f && part_f_parent) {
+               part_f.insertBefore(part_f_parent, part_f.childNodes[0]);
+             }
+            }
+
+             var part_g_this = document.getElementById("partg");
+             if (part_g_this) {
+               let part_g_parent = part_g_this.cloneNode(true);
+               var part_g = document.getElementById('checker2').contentWindow.document.getElementById("part-g-question");
+               if (part_g && part_g_parent) {
+                 part_g.insertBefore(part_g_parent, part_g.childNodes[0]);
+               }
+             }
+
+
+             var part_h_this = document.getElementById("parth");
+             if (part_h_this) {
+               let part_h_parent = part_h_this.cloneNode(true);
+               var part_h = document.getElementById('checker2').contentWindow.document.getElementById("part-h-question");
+               if (part_h && part_h_parent) {
+                 part_h.insertBefore(part_h_parent, part_h.childNodes[0]);
+               }
+             }
+
+
+           var part_i_this = document.getElementById("parti");
+           if (part_i_this) {
+
+             let part_i_parent = part_i_this.cloneNode(true);
+             var part_i = document.getElementById('checker2').contentWindow.document.getElementById("part-i-question");
+             if (part_i && part_i_parent) {
+               part_i.insertBefore(part_i_parent, part_i.childNodes[0]);
+             }
+           }
+
+
+
+           var part_j_this = document.getElementById("partj");
+           if (part_j_this) {
+
+             let part_j_parent = part_j_this.cloneNode(true);
+             var part_j = document.getElementById('checker2').contentWindow.document.getElementById("part-j-question");
+             if (part_j && part_j_parent) {
+               part_j.insertBefore(part_j_parent, part_j.childNodes[0]);
+             }
+           }
+           }   
+
 
 
              
@@ -758,7 +879,35 @@ $pass = array(
                 }
         });
    
-    
+        $("#BC_checker2").on("load", function () {
+          let BC_checker_display_parts = new Array(10);
+                 BC_checker_display_parts[0] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-a-BC-display');
+                 BC_checker_display_parts[1] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-b-BC-display');
+                 BC_checker_display_parts[2] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-c-BC-display');
+                 BC_checker_display_parts[3] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-d-BC-display');
+                 BC_checker_display_parts[4] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-e-BC-display');
+                 BC_checker_display_parts[5] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-f-BC-display');
+                 BC_checker_display_parts[6] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-g-BC-display');
+                 BC_checker_display_parts[7] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-h-BC-display');
+                 BC_checker_display_parts[8] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-i-BC-display');
+                 BC_checker_display_parts[9] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-j-BC-display');
+                 console.log("BC_checker_display_parts",BC_checker_display_parts);
+
+          let BC_checker_container_parts = new Array(10);
+                 BC_checker_container_parts[0] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-a-BC-container');
+                 BC_checker_container_parts[1] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-b-BC-container');
+                 BC_checker_container_parts[2] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-c-BC-container');
+                 BC_checker_container_parts[3] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-d-BC-container');
+                 BC_checker_container_parts[4] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-e-BC-container');
+                 BC_checker_container_parts[5] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-f-BC-container');
+                 BC_checker_container_parts[6] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-g-BC-container');
+                 BC_checker_container_parts[7] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-h-BC-container');
+                 BC_checker_container_parts[8] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-i-BC-container');
+                 BC_checker_container_parts[9] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-j-BC-container');
+                 console.log("BC_checker_container_parts",BC_checker_container_parts);
+
+
+        });
      
     
     
