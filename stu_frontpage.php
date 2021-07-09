@@ -402,7 +402,12 @@ if (isset($_SESSION['error'])){
 <title>QRHomework</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
 <style>
 table.main_table{
   table-layout: fixed;
@@ -416,7 +421,7 @@ table.main_table{
 </style>
 </head>
 
-<body>
+<body class = "ms-5">
 <header>
 <h1>Welcome to Quick Response Homework </h1>
 </header>
@@ -438,17 +443,16 @@ table.main_table{
 
 <form id = "big_form" autocomplete="off" method="POST" >
 	  
-	<p><font color=#003399>Name: <?php echo($stu_name);?> </p>
+	<h5 >Name: <?php echo($stu_name);?></h5> 
 	<input autocomplete="false" name="hidden" type="text" style="display:none;">
 	
-				</br>
     <input type="hidden" id = "iid" name="iid" value="<?php echo ($iid);?>" > 
     <input type="hidden" id = "pin" name="pin" value="<?php echo ($pin);?>" >
     <input type="hidden" id = "cclass_id" name="cclass_id" value="<?php echo ($currentclass_id);?>" >
     <input type="hidden" id = "stu_name" name="stu_name" value="<?php echo ($stu_name);?>" >
 	<input type="hidden" id = "student_id" name="student_id" value="<?php echo ($student_id);?>" >
 <!--	<div id ="current_class_dd">	-->
-			<font color=#003399>Course: </font>
+			<!-- <font color=#003399>Course: </font> -->
 			
 			<?php
 				//	echo (' num_classes: '.$num_classes);
@@ -458,13 +462,14 @@ table.main_table{
                        // if (isset($currentclass_id)>0 ){
 						echo ('<input type = "hidden" name = "cclass_id" id = "have_cclass_id" value = "'.$currentclass_id.'"></input>'); 
 						echo ('<input type = "hidden" name = "cclass_name" id = "have_cclass_name" value = "'.$cclass_name.'"></input>'); 
-						echo $cclass_name;
+                        echo('<h6 class = "mb-4">Class Name: '.$cclass_name); 
 			} elseif($currentclass_id > 0){
                         
-                        echo($cclass_name); 
+                        echo('<h6 class = "mb-4">Class Name: '.$cclass_name); 
                         echo ('<input type = "hidden" name = "cclass_id" id = "have_cclass_id2" value = "'.$currentclass_id.'"></input>'); 
                         ?>
-                                &nbsp &nbsp &nbsp &nbsp <input type = "submit" value="change class" form = "change_the_class"  name = "change_class2"  size="1" style = "width: 10%; background-color: lightgrey; color: black"/> &nbsp &nbsp  
+                                <!-- <input type = "submit" value="change class" form = "change_the_class"  name = "change_class2"  size="1" style = "width: 10%; background-color: lightgrey; color: black"/> &nbsp &nbsp   -->
+                                <button type = "submit" value="change class" form = "change_the_class"  name = "change_class2" class  = "btn btn-secondary position-absolute start-50  " > Change the Class </button> </h6>
 
                         <?php
 
@@ -484,9 +489,7 @@ table.main_table{
 			}
 		
 		?>
-		</br>	
-		</br>
-		<font color=#003399>Assignment Number: </font>
+		<span class = "mx-5"  >Assignment Number: </font>
 			
               <input type="hidden" name = "assign_num" id = "have_assign_num"  value="<?php echo ($assign_num);?>" >
             <?php
@@ -494,20 +497,19 @@ table.main_table{
             echo(' &nbsp;<select name = "assign_num" id = "assign_num">');
 			echo('</select>');
 			?>
-		</br>	
 		<br>
 		
 		<div id = "alias_num_div">
 		
 		</div>
-			<br>	
           <br>
 		<div id = "files_section">
 		</div>  
             
             
 		
-	<p><input type = "submit" name = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>  
+	<!-- <p><input type = "submit" name = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>   -->
+	<p><button type = "submit" name = "submit"  id="submit_id" class = "btn btn-primary">Submit <i class="bi bi-box-arrow-in-right"></i></button> 
 	<!--  need to figure out which homeworks had reflections and are past the due date but before the date that they closes and needs rated -->
    
  
@@ -519,9 +521,10 @@ table.main_table{
     </form>
 	</br>
 	<form method = "POST">
-		<p><input type = "submit" value="Back to Login" name = "reset"  size="2" style = "width: 30%; background-color: #FAF1BC; color: black"/> &nbsp &nbsp </p>  
+		<!-- <p><input type = "submit" value="Back to Login" name = "reset"  size="2" style = "width: 30%; background-color: #FAF1BC; color: black"/> &nbsp &nbsp </p>   -->
+		<p><button type = "submit"  name = "reset" class = "btn btn-warning position-relative  bottom-0 start-0"  > <i class="bi bi-box-arrow-left"></i> Back to Login </button>
 	</form>
-    <br>
+  
   <!---->
   
  
@@ -537,9 +540,11 @@ table.main_table{
 
 	 </form>
     
-    </br>
+
     <form method = "POST">
-		<p><input type = "submit" value="Add Another Class" name = "add_class"  size="2" style = "width: 30%; background-color: darkgreen; color: white"/> &nbsp &nbsp </p>  
+   
+		<!-- <p><input type = "submit" value="Add Another Class" name = "add_class"  size="2" style = "width: 30%; background-color: darkgreen; color: white"/> &nbsp &nbsp </p>   -->
+		<p><button type = "submit" name = "add_class" class = "btn btn-secondary position-relative  bottom-0 start-0"> Add Another Class <i class="bi bi-clipboard-plus"></i></button>
 	</form>
 <script>
 $(document).ready( function () {
@@ -746,10 +751,10 @@ $(document).ready( function () {
     //                  console.log (activealias);    
 			 	      $('#alias_num_div').empty();
 					    n = activealias.length;
-						$('#alias_num_div').append(" <font color=#003399> Select Problem for this Assignment : </font></br> </br>&nbsp;&nbsp;&nbsp;&nbsp;") ;
+						$('#alias_num_div').append("<font color=#003399> Select Problem for this Assignment : </font> &nbsp;&nbsp;&nbsp;&nbsp;") ;
                        $('#alias_num_div').append('<div style = "overflow-x:auto;">');
 
-                       $('#alias_num_div').append('<table class = "main_table">');
+                       $('#alias_num_div').append('<table class = "main_table table-primary">');
 						$('#alias_num_div').append('<th  style="text-align:center" width="20%"> Select</th>') ;
                       
                          
@@ -944,7 +949,8 @@ $(document).ready( function () {
                                                                  if (row.reflect_text.length > 2){
                                                                      wrote = true;
                                                                      if (row.reflect_pts > 0 ) { var row_found = row; fbpts = true;}
-                                                                     if (row.fb_reflect.length > 1 ) { var row_found = row; fbtext = true;}
+                                                                     if (row.fb_reflect){
+                                                                     if (row.fb_reflect.length > 1 ) { var row_found = row; fbtext = true;}}
                                                                   }
                                                               }
                                                          }                                                       

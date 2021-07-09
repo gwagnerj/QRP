@@ -68,10 +68,15 @@ img {
 }
 
 .display_blur {
+   /*   display: none;
      text-shadow: 0px 0px 10px black ;
-    color:transparent;
-    /* background-color:lightblue;
-    opacity:0.4;
-    z-index: -5; */
+    color:transparent;  */
+    filter: blur(2.5px);
+    z-index: -1;
 }
-
+/* 
+    .btn-default{
+       border-radius: 20%;  
+       border: 2px solid darkblue; /* Green */
+    }
+ */

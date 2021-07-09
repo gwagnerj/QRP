@@ -528,6 +528,7 @@ session_start();
     }
 
   $sequential_part_display_ar = array();  // tells if I should display part or not
+  $sequential_part_display_question_ar = array();  // tells if I should display or blur the question in the checker   
   $first_one_index = 0;
   
   for( $j=9; $j>=0; $j--){
@@ -556,8 +557,6 @@ session_start();
         }
 
     }
-    
-
 }
 
 // var_dump($sequential_part_display_ar);
@@ -583,16 +582,18 @@ session_start();
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
         <link rel="stylesheet" href="displayProblem.css"> 
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
-		
 	</head>
 
 	<body>
 	<header>
-	<h3>Quick Response Checker</h3>
+	<h4>Quick Response Checker</h4>
 	</header>
 	<main>
-	<h4> Name: <?php echo($stu_name);?> &nbsp; Assign Num: <?php echo($assignment_num);?>&nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> </h4> <p> &nbsp; Time delay starts at <?php echo ($time_sleep1_trip);?> tries per part for <?php echo($time_sleep1);?> s then <?php echo($time_sleep2);?> s after <?php echo ($time_sleep2_trip); ?> tries </p>  
+	<h6  class = "container-float"> Name: <?php echo($stu_name);?> &nbsp; Assign Num: <?php echo($assignment_num);?>&nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> </h6> <p> &nbsp; Time delay starts at <?php echo ($time_sleep1_trip);?> tries per part for <?php echo($time_sleep1);?> s then <?php echo($time_sleep2);?> s after <?php echo ($time_sleep2_trip); ?> tries </p>  
     <!-- <h4> <?php echo ' time_sleep1 '. !is_null($assigntime_data['time_sleep1']); ?> </h4> -->
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
     <!--
@@ -742,7 +743,7 @@ session_start();
 
 	
 	?> 
-Provisional Score on Problem:  <?php echo (round($PScore)) ?> %&nbsp; 
+<span class="fw-bold" > Provisional Score on Problem:  <?php echo (round($PScore)) ?> %&nbsp; out of  <?php echo (round($num_score_possible)) ?> %&nbsp;   </span>
 <?php if($perc_late_p_prob != 0){if ($PScore >= $perc_late_p_prob){$pscore_less = round($PScore - $perc_late_p_prob); echo (' Less Late Penalty of '.$perc_late_p_prob.'% = '.$pscore_less.'%');} else { echo (' Less Late Penalty of '.$perc_late_p_prob.' % more than points earned'); $pscore_less = 0;}} else {$pscore_less = $PScore; } ?> &nbsp; &nbsp; 
  <br> note - Score only includes quatitative parts of the problem.  These points awarded when work is uploaded. <br>
  
@@ -757,14 +758,15 @@ Provisional Score on Problem:  <?php echo (round($PScore)) ?> %&nbsp;
   days_past_due: <?php echo (@$days_past_due) ?>   <br>
  
 Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
---> 
-<br> numerical score possible  <?php echo (round($num_score_possible)) ?> %&nbsp;  
 
+<br> numerical score possible  <?php echo (round($num_score_possible)) ?> %&nbsp;  
+--> 
 <?php if ( $pscore_less==$num_score_possible && $pscore_less !=0 && $pscore_less !='' ){$perf_num_score_flag =1;} else {$perf_num_score_flag =0;} ?>
 
 <?php if ( $pscore_less==$num_score_possible && $pscore_less !=0 && $pscore_less !='' && $now_int < $due_date_ec_int){$ec_elgible_flag =1;} else {$ec_elgible_flag =0;} ?>
          <span id ="t_delay_message"></span>
-	<p><input type = "submit" id = "check_submit" name = "check" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p><br>
+	<!-- <p><input type = "submit" id = "check_submit" name = "check" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p><br> -->
+	<p><button type = "submit" id = "check_submit" class = "btn btn-primary ms-2 mt-3 position-absolute bottom-0  start-10 " style="font-size: 1.5rem;" name = "check" > Check <i class="bi bi-card-checklist" ></i> </button>
              <input type="hidden" name="activity_id" value="<?php echo ($activity_id)?>" >
              <input type="hidden" id = "prob_parts" value="<?php echo ($probParts)?>" >
              <input type="hidden" id = "count_tot" value="<?php echo ($count_tot)?>" >
@@ -789,7 +791,8 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
 
 
 
-          <p><input type = "submit"  id = "finish_submit" name = "finish" value="Finish and Proceed to Survey" size="10" style = "width: 30%; background-color: red; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p>
+          <!-- <p><input type = "submit"  id = "finish_submit" name = "finish" value="Finish and Proceed to Survey" size="10" style = "width: 30%; background-color: red; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p> -->
+          <p><button type = "submit"  id = "finish_submit" name = "finish" class = "btn btn-danger position-absolute bottom-0 mt-3 end-0 ">Finish and Proceed to Survey <i class="bi bi-skip-end"></i></button>
 
     </form>
 

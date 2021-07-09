@@ -148,7 +148,7 @@ $sql = "SELECT * FROM Users WHERE users_id = :users_id";
           QRcode::png($qrchecker_text, $file, $ecc, $pixel_size, $frame_size); 
          
     
-      $qrcode = "<span id = 'qrcode_id'><right><img src='".$file."'><p> Problem Checker </p></right></span>"; 
+      $qrcode = "<span id = 'qrcode_id'><img src='".$file."'><p> Problem Checker </p></span>"; 
       
       // Make the QRcode for Base-case
         $qrchecker_text_bc =  'https://www.qrproblems.org/QRP/QR_BC_Checker2.php?activity_id='.$activity_id; 
@@ -165,7 +165,7 @@ $sql = "SELECT * FROM Users WHERE users_id = :users_id";
          // QRcode::png($text); 
         // Displaying the stored QR code from directory 
     
-      $qrcode_bc = "<span id = 'qrcode_id_bc'><right><img src='".$file_bc."'><p> Base_Case Checker </p></right></span>"; 
+      $qrcode_bc = "<span id = 'qrcode_id_bc'><img src='".$file_bc."'><p> Base_Case Checker </p></span>"; 
       
       
 
@@ -262,6 +262,11 @@ $pass = array(
 
 <script src="drawingtool/painterro-1.2.57.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+ 
+ <meta name="viewport" content="width=device-width, initial-scale=1">
  <link rel="stylesheet" href="displayProblem.css"> 
 
 
@@ -272,11 +277,11 @@ $pass = array(
 #base_case{
    background-color: #e6f7ff;  
 }
-#BC_checker{
+#BC_checker2{
    background-color: #e6f7ff;  
 }
 #qrcode_id_bc{
-   background-color: #e6f7ff;  
+   /* background-color: #e6f7ff;   */
 }
 /* 
 .hidden {
@@ -299,7 +304,7 @@ $pass = array(
 
 </head>
 
-<body>
+<body class = "ms-4">
 
 
 <?php  
@@ -357,10 +362,10 @@ $pass = array(
     }else {$connect = '';}
      */
     
-    if ($reflect_flag ==1){$reflect = $html->find('#reflect',0).'<div id = "reflect_confirm"> </div><form id = "reflect_text_form"><textarea id = "reflect_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["reflect_text"]).'</textarea><input type = "submit" id = "submit_reflect" value = "Save"></form>';}else {$reflect = '';}
-    if ($connect_flag ==1){$connect = $html->find('#connect',0).'<div id = "connect_confirm"> </div><form id = "connect_text_form"><textarea id = "connect_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["connect_text"]).'</textarea><input type = "submit" id = "submit_connect" value = "Save"></form>';}else {$connect = '';}
-    if ($explore_flag ==1){$explore = $html->find('#explore',0).'<div id = "explore_confirm"> </div><form id = "explore_text_form"><textarea id = "explore_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["explore_text"]).'</textarea><input type = "submit" id = "submit_explore" value = "Save"></form>';}else {$explore = '';}
-    if ($society_flag ==1){$society = $html->find('#society',0).'<div id = "society_confirm"> </div><form id = "society_text_form"><textarea id = "society_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["society_text"]).'</textarea><input type = "submit" id = "submit_society" value = "Save"></form>';}else {$society = '';}
+    if ($reflect_flag ==1){$reflect = $html->find('#reflect',0).'<div id = "reflect_confirm"> </div><form id = "reflect_text_form"><textarea id = "reflect_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["reflect_text"]).'</textarea><button type = "submit" id = "submit_reflect" class = "btn btn-secondary">Save <i class="bi bi-save"></i></button></form>';}else {$reflect = '';}
+    if ($connect_flag ==1){$connect = $html->find('#connect',0).'<div id = "connect_confirm"> </div><form id = "connect_text_form"><textarea id = "connect_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["connect_text"]).'</textarea><button type = "submit" id = "submit_connect" class = "btn btn-secondary">Save <i class="bi bi-save"></i></button></form>';}else {$connect = '';}
+    if ($explore_flag ==1){$explore = $html->find('#explore',0).'<div id = "explore_confirm"> </div><form id = "explore_text_form"><textarea id = "explore_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["explore_text"]).'</textarea><button type = "submit" id = "submit_explore" class = "btn btn-secondary">Save <i class="bi bi-save"></i></button></form>';}else {$explore = '';}
+    if ($society_flag ==1){$society = $html->find('#society',0).'<div id = "society_confirm"> </div><form id = "society_text_form"><textarea id = "society_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["society_text"]).'</textarea><button type = "submit" id = "submit_society" class = "btn btn-secondary">Save <i class="bi bi-save"></i></button></form>';}else {$society = '';}
      
              // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
 
@@ -505,7 +510,7 @@ $pass = array(
         }
          
     // only include the document above the checker
-       $this_html ='<hr>'.$qrcode.$qrcode_bc.$problem.'<hr> <div id = "base_case"><h2>Base_Case:</h2>'.$base_case.'</div>';
+       $this_html ='<hr>'.$qrcode.$qrcode_bc.$problem.'<hr> <div id = "base_case" class = "ms-5"><h2>Base_Case:</h2>'.$base_case.'</div>';
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
@@ -521,14 +526,14 @@ $pass = array(
   ?>
   <!--   -->
    <div id = 'checker'>
-   <iframe name = "checker2" id = "checker2" src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
+   <iframe name = "checker2" class = "border border-primary ms-5 px-2 py-2" id = "checker2" src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
+   <!-- <iframe name = "checker2" id = "checker2" src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" ></iframe></div> -->
       <div id = 'BC_checker'>
-   <iframe  name ="BC_checker2" id = "BC_checker2" src="QR_BC_Checker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
-
+   <iframe  name ="BC_checker2" id = "BC_checker2" class = "border border-primary ms-5 px-4 py-2"  src="QR_BC_Checker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%; "></iframe></div>
  <?php
  
  // the document below the checker
-  $this_html = '<hr><div id = "reflections">'.$reflect.$explore.$connect.$society.'</div>';
+  $this_html = '<hr><div id = "reflections" class = "ms-5">'.$reflect.$explore.$connect.$society.'</div>';
   // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
              if($row['v_'.($i+1)]!='Null' ){
@@ -610,10 +615,41 @@ $pass = array(
  
 <script>
 
+function resizeIFrameToFitContent( frame ) {
+    console.log("frame",frame);
+    let iframe_height = parseInt(frame.contentWindow.document.body.scrollHeight);
+   
+    iframe_height = Math.round(iframe_height **1.08) +10;
+    iframe_height = iframe_height.toString() + "px" ;
+            frame.style.height =  iframe_height
+            console.log ("frame.style.height",frame.style.height);
+           
+  
+         // set the width of the iframe as the 
+         // width of the iframe content
+        //  frame.style.width  = 
+     //     frame.contentWindow.document.body.scrollWidth+'px';
+        // iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
+        // iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
+        }
+    //     function resizeIFrameToFitContent_bc( frame ) {
+    // console.log("frame",frame);
+    // let iframe_height = parseInt(frame.contentWindow.document.body.scrollHeight);
+    // iframe_height = Math.round(iframe_height **1.08) +1000;
+    // iframe_height = iframe_height.toString() + "px" ;
+    //         frame.style.height =  iframe_height
+    //         console.log ("frame.style.height",frame.style.height);
+
+    //     }
+
  $(document).ready(function(){
    
 
+
+
   window.addEventListener('error', function(event) { window.location.reload(true); })
+
+
 
 
 //   if (typeof window.interactiveVideoJSloaded == 'undefined') {
@@ -695,7 +731,7 @@ $pass = array(
           $('#reflectionsbutton').hide();
           $('#qrcode_id').hide(); 
            $('#directions').hide();
-             $('#checkerbutton').prop('value','to QR code'); 
+             $('#checkerbutton').html('to QR code <i class="bi bi-upc-scan"></i>'); 
           var bc_display = true;
         } else {
             var bc_display = false;
@@ -704,8 +740,8 @@ $pass = array(
                 $('#base_case').hide();
                 $('#directions').hide();
                 $('#BC_checker').hide();
-               $('#basecasebutton').prop('value','to Base-case');
-                $('#checkerbutton').prop('value','to QR code'); 
+       //        $('#basecasebutton').text('to Base-case');
+                $('#checkerbutton').html('to QR Code <i class="bi bi-upc-scan"></i>'); 
         }
          //Turn this off for now - will release this feature later   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   
@@ -722,6 +758,10 @@ $pass = array(
     
     $("#checker2").on("load", function () {
                //  var total_count = $("#checker2").contents().find("#total_count").html();
+               let iframe = document.getElementById( "checker2");
+               console.log("iframe",iframe);
+               resizeIFrameToFitContent( iframe );
+
                 var total_count = $("#checker2").contents().find("#total_count").text();
                  var PScore = $("#checker2").contents().find("#PScore").val();
                  let checker_display_parts = new Array(10);
@@ -735,7 +775,7 @@ $pass = array(
                  checker_display_parts[7] =document.getElementById('checker2').contentWindow.document.getElementById('part-h-display');
                  checker_display_parts[8] =document.getElementById('checker2').contentWindow.document.getElementById('part-i-display');
                  checker_display_parts[9] =document.getElementById('checker2').contentWindow.document.getElementById('part-j-display');
-                 console.log("checker_display_parts",checker_display_parts);
+              //   console.log("checker_display_parts",checker_display_parts);
                 //  let display_b = $("#checker2").contents().find("#part-b-display").text();
                 //  let display_j = $("#checker2").contents().find("#part-j-display").text();
            //      let display_c = $("#checker2").contents().find("#part-c-display").text();
@@ -744,8 +784,6 @@ $pass = array(
             for ( let k=0;k<9;k++){
               if (checker_display_parts[k]){if(checker_display_parts[k].innerText =="display_none"){parts[k].classList.add("display_none");} else {parts[k].classList.remove("display_none");}}
               if (checker_display_parts[k]){if(checker_display_parts[k].innerText =="display_blur"){parts[k].classList.add("display_blur");} else {parts[k].classList.remove("display_blur");}}
-
-
             }
 
               //   if (display_b =="display_none"){parts[1].classList.add("display_none");} else {parts[1].classList.remove("display_none");}
@@ -757,9 +795,9 @@ $pass = array(
             var part_a_this = document.getElementById("parta"); // the section in the QRdisplayPblm document
             if (part_a_this) {
               let part_a_parent = part_a_this.cloneNode(true);
-              console.log("part_a_parent", part_a_parent);
+  //            console.log("part_a_parent", part_a_parent);
               var part_a = document.getElementById('checker2').contentWindow.document.getElementById("part-a-question"); // the section in this checker file
-              console.log("part_a", part_a);
+    //          console.log("part_a", part_a);
               if (part_a && part_a_parent) {
                 part_a.insertBefore(part_a_parent, part_a.childNodes[0]);
               }
@@ -874,12 +912,17 @@ $pass = array(
                       $('#qrcode_id_bc').hide();
                       $('#reflectionsbutton').hide();
                       $('#qrcode_id').hide();
-                      $('#checkerbutton').prop('value','to QR code'); 
+                      $('#checkerbutton').html('to QR code <i class="bi bi-upc-scan"></i>'); 
                       bc_display = true;
                 }
         });
    
         $("#BC_checker2").on("load", function () {
+              let bc_iframe = document.getElementById( "BC_checker2");
+               console.log("bc_iframe",bc_iframe);
+         //!     resizeIFrameToFitContent_bc( bc_iframe );
+
+
           let BC_checker_display_parts = new Array(10);
                  BC_checker_display_parts[0] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-a-BC-display');
                  BC_checker_display_parts[1] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-b-BC-display');
@@ -891,7 +934,7 @@ $pass = array(
                  BC_checker_display_parts[7] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-h-BC-display');
                  BC_checker_display_parts[8] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-i-BC-display');
                  BC_checker_display_parts[9] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-j-BC-display');
-                 console.log("BC_checker_display_parts",BC_checker_display_parts);
+ //                console.log("BC_checker_display_parts",BC_checker_display_parts);
 
           let BC_checker_container_parts = new Array(10);
                  BC_checker_container_parts[0] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-a-BC-container');
@@ -904,7 +947,138 @@ $pass = array(
                  BC_checker_container_parts[7] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-h-BC-container');
                  BC_checker_container_parts[8] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-i-BC-container');
                  BC_checker_container_parts[9] =document.getElementById('BC_checker2').contentWindow.document.getElementById('part-j-BC-container');
-                 console.log("BC_checker_container_parts",BC_checker_container_parts);
+     //            console.log("BC_checker_container_parts",BC_checker_container_parts);
+
+            for ( let k=0;k<9;k++){
+             
+              // if (checker_display_parts[k]){if(checker_display_parts[k].innerText =="display_none"){parts[k].classList.add("display_none");} else {parts[k].classList.remove("display_none");}}
+              if (BC_checker_display_parts[k]){ if(BC_checker_display_parts[k].innerText =="display_blur"){BC_parts[k].classList.add("display_blur");} else {BC_parts[k].classList.remove("display_blur");}}
+            }
+
+            let BC_parts_in_checker = true;
+            if (BC_parts_in_checker){
+            var BC_part_a_this = document.getElementById("BC_parta"); // the section in the QRdisplayPblm document
+ //           console.log("BC_part_a_this", BC_part_a_this);
+
+            if (BC_part_a_this) {
+              let BC_part_a_parent = BC_part_a_this.cloneNode(true);
+  //            console.log("BC_part_a_parent", BC_part_a_parent);
+              var BC_part_a = document.getElementById('BC_checker2').contentWindow.document.getElementById("part-a-BC-question"); // the section in this checker file
+  //            console.log("BC_part_a", BC_part_a);
+              if (BC_part_a && BC_part_a_parent) {
+                BC_part_a.insertBefore(BC_part_a_parent, BC_part_a.childNodes[0]);
+              }
+            }
+
+
+
+            var BC_part_b_this = document.getElementById("BC_partb"); // the section in the QRdisplayPblm document
+            if (BC_part_b_this) {
+              let BC_part_b_parent = BC_part_b_this.cloneNode(true);
+              var BC_part_b = document.getElementById('BC_checker2').contentWindow.document.getElementById("part-b-BC-question"); // the section in this checker file
+              if (BC_part_b && BC_part_b_parent) {
+                let partb_BC_input = document.getElementById('BC_checker2').contentWindow.document.getElementById("part-b-BC");
+                console.log ("BC_part_b",BC_part_b);
+          //       partb_BC_input.addEventListener("mouseenter",function(e){
+          //  //       console.log ("hover");
+          //         BC_part_b_parent.classList.remove("display_blur");
+          //         BC_part_b.classList.remove("display_blur");
+          //        })
+          //       partb_BC_input.addEventListener("mouseleave",function(e){
+          //         BC_part_b_parent.classList.add("display_blur");
+          //         BC_part_b.classList.add("display_blur");
+          //        })
+                BC_part_b.insertBefore(BC_part_b_parent, BC_part_b.childNodes[0]);
+              }
+            }
+
+
+
+            var BC_part_c_this = document.getElementById("BC_partc"); // the section in the QRdisplayPblm document
+            if (BC_part_c_this) {
+              let BC_part_c_parent = BC_part_c_this.cloneNode(true);
+              var BC_part_c = document.getElementById('BC_checker2').contentWindow.document.getElementById("part-c-BC-question"); // the section in this checker file
+              if (BC_part_c && BC_part_c_parent) {
+                BC_part_c.insertBefore(BC_part_c_parent, BC_part_c.childNodes[0]);
+              }
+            }
+
+
+            var BC_part_d_this = document.getElementById("BC_partd"); // the section in the QRdisplayPblm document
+            if (BC_part_d_this) {
+              let BC_part_d_parent = BC_part_d_this.cloneNode(true);
+              var BC_part_d = document.getElementById('BC_checker2').contentWindow.document.getElementById("part-d-BC-question"); // the section in this checker file
+              if (BC_part_d && BC_part_d_parent) {
+                BC_part_d.insertBefore(BC_part_d_parent, BC_part_d.childNodes[0]);
+              }
+            }
+
+
+            var BC_part_e_this = document.getElementById("BC_parte"); // the section in the QRdisplayPblm document
+            if (BC_part_e_this) {
+              let BC_part_e_parent = BC_part_e_this.cloneNode(true);
+              var BC_part_e = document.getElementById('BC_checker2').contentWindow.document.getElementById("part-e-BC-question"); // the section in this checker file
+              if (BC_part_e && BC_part_e_parent) {
+                BC_part_e.insertBefore(BC_part_e_parent, BC_part_e.childNodes[0]);
+              }
+            }
+
+
+            var BC_part_f_this = document.getElementById("BC_partf"); // the section in the QRdisplayPblm document
+            if (BC_part_f_this) {
+              let BC_part_f_parent = BC_part_f_this.cloneNode(true);
+              var BC_part_f = document.getElementById('BC_checker2').contentWindow.document.getElementById("part-f-BC-question"); // the section in this checker file
+              if (BC_part_f && BC_part_f_parent) {
+                BC_part_f.insertBefore(BC_part_f_parent, BC_part_f.childNodes[0]);
+              }
+            }
+
+
+            var BC_part_g_this = document.getElementById("BC_partg"); // the section in the QRdisplayPblm document
+            if (BC_part_g_this) {
+              let BC_part_g_parent = BC_part_g_this.cloneNode(true);
+              var BC_part_g = document.getElementById('BC_checker2').contentWindow.document.getElementById("part-g-BC-question"); // the section in this checker file
+              if (BC_part_g && BC_part_g_parent) {
+                BC_part_g.insertBefore(BC_part_g_parent, BC_part_g.childNodes[0]);
+              }
+            }
+
+
+            var BC_part_h_this = document.getElementById("BC_parth"); // the section in the QRdisplayPblm document
+            if (BC_part_h_this) {
+              let BC_part_h_parent = BC_part_h_this.cloneNode(true);
+              var BC_part_h = document.getElementById('BC_checker2').contentWindow.document.getElementById("part-h-BC-question"); // the section in this checker file
+              if (BC_part_h && BC_part_h_parent) {
+                BC_part_h.insertBefore(BC_part_h_parent, BC_part_h.childNodes[0]);
+              }
+            }
+
+            var BC_part_i_this = document.getElementById("BC_parti"); // the section in the QRdisplayPblm document
+            if (BC_part_i_this) {
+              let BC_part_i_parent = BC_part_i_this.cloneNode(true);
+              var BC_part_i = document.getElementById('BC_checker2').contentWindow.document.getElementById("part-i-BC-question"); // the section in this checker file
+              if (BC_part_i && BC_part_i_parent) {
+                BC_part_i.insertBefore(BC_part_i_parent, BC_part_i.childNodes[0]);
+              }
+            }
+
+
+            var BC_part_j_this = document.getElementById("BC_partj"); // the section in the QRdisplayPblm document
+            if (BC_part_j_this) {
+              let BC_part_j_parent = BC_part_j_this.cloneNode(true);
+              var BC_part_j = document.getElementById('BC_checker2').contentWindow.document.getElementById("part-j-BC-question"); // the section in this checker file
+              if (BC_part_j && BC_part_j_parent) {
+                BC_part_j.insertBefore(BC_part_j_parent, BC_part_j.childNodes[0]);
+              }
+            }
+
+
+
+
+
+
+          }
+
 
 
         });
@@ -918,6 +1092,7 @@ $pass = array(
     
     
   $('#basecasebutton').click(function(){
+
         if(bc_display == false){bc_display =true;}else{bc_display =false;}
       
             if(bc_display && qr_code){
@@ -929,7 +1104,7 @@ $pass = array(
                     $('#qrcode_id_bc').show();
                     $('#reflections').hide();
                     $('#reflectionsbutton').hide();
-                    $('#basecasebutton').prop('value','to Problem');
+                    $('#basecasebutton').html('to Problem <i class="bi bi-arrow-up-square"></i>');
                    // $("#btnAddProfile").prop('value', 'Save');
             } else if(!bc_display && qr_code){
                     $("#problem").show(); 
@@ -939,8 +1114,13 @@ $pass = array(
                     $('#qrcode_id').show();
                     $('#qrcode_id_bc').hide();
                       $('#reflections').show();
-                    $('#basecasebutton').prop('value','to Base-case');
+                    $('#basecasebutton').html('to Base-case  <i class="bi bi-arrow-down-square"></i>');
             }else if(bc_display && !qr_code){
+              // let bc_iframe = document.getElementById( "BC_checker2");
+              //  console.log("bc_iframe",bc_iframe);
+              // resizeIFrameToFitContent( bc_iframe );
+
+
                     $("#problem").hide(); 
                     $("#base_case").show();                        
                     $("#checker").hide();
@@ -949,7 +1129,7 @@ $pass = array(
                     $('#qrcode_id_bc').hide();
                      $('#reflections').hide();
                     $('#reflectionsbutton').hide();
-                     $('#basecasebutton').prop('value','to Problem');
+                     $('#basecasebutton').html('to Problem <i class="bi bi-arrow-up-square"></i>');
             } else {
                     $("#problem").show(); 
                     $("#base_case").hide();                        
@@ -958,7 +1138,7 @@ $pass = array(
                     $('#qrcode_id').hide();
                     $('#qrcode_id_bc').hide();
                     $('#reflections').show();
-                     $('#basecasebutton').prop('value','to Base-case');
+                     $('#basecasebutton').html('to Base-case <i class="bi bi-arrow-down-square"></i>');
             }
 
         
@@ -971,14 +1151,15 @@ $pass = array(
 
         if(bc_display && qr_code){
                     $("#problem").hide(); 
-                    $("#base_case").show();                        
+                    $("#base_case").show();         // should eramd tp [problems]               
                     $("#checker").hide();
                     $("#BC_checker").hide();
                     $('#qrcode_id').hide();
                     $('#qrcode_id_bc').show();
                      $('#reflections').hide();
                     $('#reflectionsbutton').hide();
-                      $('#checkerbutton').prop('value','to Checker'); 
+                      $('#checkerbutton').html('to Checker <i class="bi bi-ui-checks"></i>'); 
+                      $('#basecasebutton').html('to Problem <i class="bi bi-arrow-up-square"></i>'); 
             } else if(!bc_display && qr_code){
                     $("#problem").show(); 
                     $("#base_case").hide();                        
@@ -987,7 +1168,9 @@ $pass = array(
                     $('#qrcode_id').show();
                     $('#qrcode_id_bc').hide();
                      $('#reflections').show();
-                    $('#checkerbutton').prop('value','to Checker'); 
+                    $('#checkerbutton').html('to Checker <i class="bi bi-ui-checks"></i>'); 
+                    $('#basecasebutton').html('to Bace-Case <i class="bi bi-arrow-down-square"></i>'); 
+
             }else if(bc_display && !qr_code){
                     $("#problem").hide(); 
                     $("#base_case").show();                        
@@ -997,7 +1180,8 @@ $pass = array(
                     $('#qrcode_id_bc').hide();
                     $('#reflections').hide();
                     $('#reflectionsbutton').hide();
-                    $('#checkerbutton').prop('value','to QR code'); 
+                    $('#basecasebutton').html('to Problem <i class="bi bi-arrow-up-square"></i>'); 
+                    $('#checkerbutton').html('to QR code <i class="bi bi-upc-scan"></i>'); 
             } else {
                     $("#problem").show(); 
                     $("#base_case").hide();                        
@@ -1006,7 +1190,9 @@ $pass = array(
                     $('#qrcode_id').hide();
                     $('#qrcode_id_bc').hide();
                      $('#reflections').show();
-                    $('#checkerbutton').prop('value','to QR code'); 
+                    $('#checkerbutton').html('to QR code <i class="bi bi-upc-scan"></i>'); 
+                    $('#basecasebutton').html('to Bace-Case <i class="bi bi-arrow-down-square"></i>'); 
+
             }
 
     });
@@ -1037,14 +1223,14 @@ $pass = array(
      
      $('#questions').prepend('<p> Questions for '+stu_name+':</p>');
     // color the back botton a little different
-			$("#backbutton").css({"background-color":"lightyellow",
+	//		$("#backbutton").css({"background-color":"lightyellow",
            /*  
               "position": "relative",
               "left": "0px",
               "top": "0px",
             "z-index": "1"
              */
-            });
+         //   });
               
              // console.log('buttons');
 			// $("#backbut").css('z-index', '1')
@@ -1098,6 +1284,9 @@ change_count();
 
                 success: function(result) {
                   $("#reflect_confirm").html(result);
+                  let save_reflect_button = document.getElementById("submit_reflect");
+                  save_reflect_button.classList.remove("btn-danger");
+
                 }
             });
           return false;
@@ -1115,6 +1304,9 @@ change_count();
 
                 success: function(result) {
                   $("#connect_confirm").html(result);
+                  let save_connect_button = document.getElementById("submit_connect");
+                  save_connect_button.classList.remove("btn-danger");
+
                 }
             });
           return false;
@@ -1133,6 +1325,9 @@ change_count();
 
                 success: function(result) {
                   $("#explore_confirm").html(result);
+                  let save_explore_button = document.getElementById("submit_explore");
+                  save_explore_button.classList.remove("btn-danger");
+
                 }
             });
           return false;
@@ -1150,6 +1345,9 @@ change_count();
 
                 success: function(result) {
                   $("#society_confirm").html(result);
+                  let save_society_button = document.getElementById("submit_society");
+                   save_society_button.classList.remove("btn-danger");
+
                 }
             });
           return false;
@@ -1157,16 +1355,28 @@ change_count();
 
     $('#reflect_text').on('input',function(){
         $("#reflect_confirm").html('<div style = "color:red;"><b>changes not saved</b>');
+      let save_reflect_button = document.getElementById("submit_reflect");
+        save_reflect_button.classList.add("btn-danger");
+ //       $("#submit_reflect").html('<div style = "color:red;"><b>changes not saved</b>');
     });
     $('#connect_text').on('input',function(){
         $("#connect_confirm").html('<div style = "color:red;"><b>changes not saved</b>');
+        let save_connect_button = document.getElementById("submit_connect");
+        save_connect_button.classList.add("btn-danger");
+
     });
 
     $('#explore_text').on('input',function(){
         $("#explore_confirm").html('<div style = "color:red;"><b>changes not saved</b>');
+        let save_explore_button = document.getElementById("submit_explore");
+        save_explore_button.classList.add("btn-danger");
+
     });
     $('#society_text').on('input',function(){
         $("#society_confirm").html('<div style = "color:red;"><b>changes not saved</b>');
+        let save_society_button = document.getElementById("submit_society");
+        save_society_button.classList.add("btn-danger");
+
     });
 
 // put the points next to the reflections

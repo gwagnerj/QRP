@@ -441,10 +441,14 @@ session_start();
     }
   
     $sequential_part_display_ar = array();  // tells if I should display part or not
+    $sequential_part_display_question_ar = array();  // tells if I should display or blur the question in the checker 
+    $sequential_part_disable_input_ar = array();  // this should disable the input button on non active questions 
+    $sequential_part_disable_button_ar = array();  // this should disable the show answer  button on non active questions 
     $first_one_index = 0;
-    
     for( $j=9; $j>=0; $j--){
         if ($partsFlag[$j]){
+            $sequential_part_disable_input_ar[$j]="";
+            $sequential_part_disable_button_ar[$j]="";
             $first_one_index = $j;
         }
     }
@@ -460,8 +464,8 @@ session_start();
        $k++;
     }
 
-    echo ("current part ".$current_part);
-    echo '<br>';
+    // echo ("current part ".$current_part);
+    // echo '<br>';
     $next_one = true;
     for ($m=$current_part;$m<=8; $m++)  {
         if($partsFlag[$m+1] && $next_one){
@@ -469,14 +473,16 @@ session_start();
             $next_one = false;
         }
 }
-echo ("current part ".$current_part);
-echo '<br>';
+// echo ("current part ".$current_part);
+// echo '<br>';
    
     for( $j=$first_one_index+1; $j<=9; $j++){  // set them all to display or display none then correct them later
      if ($sequential == 0){ 
-      $sequential_part_display_ar[$j]= "display";
+      $sequential_part_display_question_ar[$j] = "display";
+//      $sequential_part_disable_input_ar[$j]= "";
      } else {
       $sequential_part_display_ar[$j]= "display_none";
+      $sequential_part_disable_input_ar[$j]= "disabled";
      } 
   }
           $next_one = false;
@@ -486,7 +492,9 @@ echo '<br>';
           $next_one = true;
           if ($partsFlag[$j+1] && $next_one ){  // only display the current part
               $next_one = false;
-              $sequential_part_display_ar[$j+1]= "display_blur";
+             $sequential_part_display_ar[$j+1]= "display";
+              $sequential_part_disable_input_ar[$j+1]= "";
+            
           }
 
   
@@ -495,15 +503,37 @@ echo '<br>';
 
   for ($j = $first_one_index;$j<=9; $j++){
     if ($j == $current_part){
-        $sequential_part_display_ar[$j]= "display";
+        $sequential_part_display_question_ar[$j]= "display";
+        $sequential_part_disable_button_ar[$j] = "";
       } else {
-        $sequential_part_display_ar[$j]= "display_blur"; 
+        $sequential_part_display_question_ar[$j]= "display_blur"; 
+        $sequential_part_disable_button_ar[$j] = "disabled";
       }
 
   }
+ // $sequential_part_disable_input_ar = sort($sequential_part_disable_input_ar, SORT_REGULAR);
 
+//   var_dump($sequential_part_display_ar);
+//   echo '<br>';
+//   echo '<br>';
+//   var_dump($activity_data);
+//   echo '<br>';
+//   echo '<br>';
+//   var_dump( $sequential_part_disable_input_ar);
+//   echo '<br>';
+//   echo '<br>';
+//   var_dump($sequential_part_disable_button_ar);
+//   echo '<br>';
+//   echo '<br>';
 
-  var_dump($sequential_part_display_ar);
+//   var_dump( $sequential_part_display_question_ar);
+// var_dump( $activity_data['wcount_bc_c']);
+//   echo '<br>';
+//   echo '<br>';
+//   var_dump( $diff_time_min[1]);
+//   echo '<br>';
+//   echo '<br>';
+//   var_dump( $assigntime_data['bc_ans_t']);
 
 		
 	?>
@@ -527,16 +557,18 @@ echo '<br>';
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
         <link rel="stylesheet" href="displayProblem.css"> 
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
 <style>
 
-    .btn-default{
-       border-radius: 20%;  
-       border: 2px solid darkblue; /* Green */
-    }
     #peer_help_button{
       opacity: 0.6;
       cursor: not-allowed;
+    }
+    body{ 
+        background-color:  #e6f7ff;
     }
     
 
@@ -545,7 +577,7 @@ echo '<br>';
 
 	<body>
 	<header>
-	<h3>Base-Case Checker &nbsp;&nbsp;&nbsp;
+	<h4>Base-Case Checker
              <!--     <span><input type="button" id="show_answer_button" class="btn-default" value="Show Answer"> </span>&nbsp;
         <input type="button" id="review_concepts_button" class="btn-default" value="Review Concepts">
             </span>&nbsp;
@@ -566,10 +598,10 @@ echo '<br>';
             </span>&nbsp;
             <span>
         -->    
-            </h3>
+            </h4>
 	</header>
 	<main>
-	<h4> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> &nbsp; &nbsp; Answer Thresholds: &nbsp; count = <?php echo($assigntime_data['bc_ans_n']);?>&nbsp; time = <?php echo($assigntime_data['bc_ans_t']);?>&nbsp; minutes&nbsp;  </h4>
+	<h6 class = "container-float"> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> &nbsp; &nbsp; Answer Thresholds: &nbsp; count = <?php echo($assigntime_data['bc_ans_n']);?>&nbsp; time = <?php echo($assigntime_data['bc_ans_t']);?>&nbsp; minutes&nbsp;  </h6>
    
  <!--
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
@@ -595,13 +627,13 @@ echo '<br>';
        
     if($attempt_type ==1 || ($attempt_type ==2 && $count_tot <= $num_attempts)){
 	if ($partsFlag[0]){ ?> 
-    <div id = "part-a-BC-container" class = "checker-parts-conatiner  <?php echo $sequential_part_display_ar[0]; ?> ">
-    <div id = "part-a-BC-question" class = "parts-question"></div>
-    <div id = "part-a-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[0]; ?></div>
-	<div id = "part-a-BC" class = "problem-parts <?php echo $sequential_part_display_ar[0]; ?>"> a)(<?php echo $assigntime_data['perc_a_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="a" id = "a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo(htmlspecialchars_decode($unit[0])) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> count <?php echo(@$wrongCount[0].' '); ?> 
+    <div id = "part-a-BC-container" class = "checker-parts-conatiner">
+    <div id = "part-a-BC-question" class = "parts-question  <?php echo $sequential_part_display_question_ar[0]; ?>"></div>
+    <div id = "part-a-BC-display" class = "display_none"><?php echo $sequential_part_display_question_ar[0]; ?></div>
+	<div id = "part-a-BC" class = "problem-parts"> a)(<?php echo $assigntime_data['perc_a_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="a" id = "a" size = 10% <?php echo ( $sequential_part_disable_input_ar[0] )?> value="<?php echo (htmlentities($resp['a']))?>" > <?php echo(htmlspecialchars_decode($unit[0])) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> count <?php echo(@$wrongCount[0].' '); ?> 
 	 <?php 
     if ( (( $activity_data['wcount_bc_a']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[0]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_a']==1 ) && $corr['a']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_a" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_a" class="btn-default" '.$sequential_part_disable_button_ar[0].' value="Show Answer"> </span>&nbsp;');}
      if ($corr['a']=="Correct")
     {echo '<span id = "show_ans_a" class = "show_ans"> - Computed value is: '.$soln[0].'</span>';} 
  
@@ -619,13 +651,13 @@ echo '<br>';
 
 	if ($partsFlag[1]){ ?> 
         <div id = "part-b-BC-container" class = "checker-parts-conatiner">
-    <div id = "part-b-BC-question" class = "parts-question"></div>
-    <div id = "part-b-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[1]; ?></div>
-	<div id = "part-b-BC" class = "problem-parts <?php echo $sequential_part_display_ar[1]; ?>"> b)(<?php echo $assigntime_data['perc_b_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="b" id = "b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo(htmlspecialchars_decode($unit[1])) ?> &nbsp - <b><?php echo ($corr['b']) ?> </b> count <?php echo(@$wrongCount[1].' '); ?> 
+    <div id = "part-b-BC-question" class = "parts-question <?php echo $sequential_part_display_question_ar[1]; ?>"></div>
+    <div id = "part-b-BC-display" class = "display_none"><?php echo $sequential_part_display_question_ar[1]; ?></div>
+	<div id = "part-b-BC" class = "problem-parts"> b)(<?php echo $assigntime_data['perc_b_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="b" id = "b" size = 10% <?php echo ( $sequential_part_disable_input_ar[1] )?> value="<?php echo (htmlentities($resp['b']))?>" > <?php echo(htmlspecialchars_decode($unit[1])) ?> &nbsp - <b><?php echo ($corr['b']) ?> </b> count <?php echo(@$wrongCount[1].' '); ?> 
 
      <?php 
     if ( (( $activity_data['wcount_bc_b']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[1]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_b']==1 ) && $corr['b']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_b" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_b" class="btn-default" '.$sequential_part_disable_button_ar[1].'  value="Show Answer"> </span>&nbsp;');}
      if ($corr['b']=="Correct")
     {echo '<span id = "show_ans_b" class = "show_ans"> - Computed value is: '.$soln[1].'</span>';} 
       ?>  
@@ -635,13 +667,13 @@ echo '<br>';
   
 	if ($partsFlag[2]){ ?> 
     <div id = "part-c-BC-container" class = "checker-parts-conatiner">
-    <div id = "part-c-BC-question" class = "parts-question"></div>
-    <div id = "part-c-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[2]; ?></div>
-	<div id = "part-c-BC" class = "problem-parts <?php echo $sequential_part_display_ar[2]; ?>"> c)(<?php echo $assigntime_data['perc_c_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="c" id = "c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo(htmlspecialchars_decode($unit[2])) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b> count <?php echo(@$wrongCount[2].' '); ?> 
+    <div id = "part-c-BC-question" class = "parts-question <?php echo $sequential_part_display_question_ar[2]; ?>"></div>
+    <div id = "part-c-BC-display" class = "display_none"><?php echo $sequential_part_display_question_ar[2]; ?></div>
+	<div id = "part-c-BC" class = "problem-parts"> c)(<?php echo $assigntime_data['perc_c_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="c" id = "c" size = 10% <?php echo ( $sequential_part_disable_input_ar[2])?> value="<?php echo (htmlentities($resp['c']))?>" > <?php echo(htmlspecialchars_decode($unit[2])) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b> count <?php echo(@$wrongCount[2].' '); ?> 
 
      <?php 
     if ( (( $activity_data['wcount_bc_c']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[2]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_c']==1 ) && $corr['c']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_c" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_c" class="btn-default" '.$sequential_part_disable_button_ar[2].'  value="Show Answer"> </span>&nbsp;');}
      if ($corr['c']=="Correct")
     {echo '<span id = "show_ans_c" class = "show_ans"> - Computed value is: '.$soln[2].'</span>';} 
       ?>  
@@ -656,13 +688,13 @@ echo '<br>';
 
 	if ($partsFlag[3]){ ?> 
     <div id = "part-d-BC-container" class = "checker-parts-conatiner">
-    <div id = "part-d-BC-question" class = "parts-question"></div>
-    <div id = "part-d-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[3]; ?></div>
-	<div id = "part-d-BC" class = "problem-parts <?php echo $sequential_part_display_ar[3]; ?>"> d)(<?php echo $assigntime_data['perc_d_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="d" id = "d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo(htmlspecialchars_decode($unit[3])) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b> count <?php echo(@$wrongCount[3].' '); ?> 
+    <div id = "part-d-BC-question" class = "parts-question <?php echo $sequential_part_display_question_ar[3]; ?>"></div>
+    <div id = "part-d-BC-display" class = "display_none"><?php echo $sequential_part_display_question_ar[3]; ?></div>
+	<div id = "part-d-BC" class = "problem-parts"> d)(<?php echo $assigntime_data['perc_d_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="d" id = "d" size = 10% <?php echo ( $sequential_part_disable_input_ar[3])?> value="<?php echo (htmlentities($resp['d']))?>" > <?php echo(htmlspecialchars_decode($unit[3])) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b> count <?php echo(@$wrongCount[3].' '); ?> 
 
     <?php 
     if ( (( $activity_data['wcount_bc_d']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[3]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_d']==1 ) && $corr['d']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_d" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_d" class="btn-default" '.$sequential_part_disable_button_ar[3].'  value="Show Answer"> </span>&nbsp;');}
      if ($corr['d']=="Correct")
     {echo '<span id = "show_ans_d" class = "show_ans"> - Computed value is: '.$soln[3].'</span>';} 
       ?>  
@@ -675,12 +707,12 @@ echo '<br>';
 
 	if ($partsFlag[4]){ ?> 
     <div id = "part-e-BC-container" class = "checker-parts-conatiner">
-    <div id = "part-e-BC-question" class = "parts-question"></div>
-    <div id = "part-e-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[4]; ?></div>
-	<div id = "part-e-BC" class = "problem-parts <?php echo $sequential_part_display_ar[4]; ?>"> e)(<?php echo $assigntime_data['perc_e_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="e" id = "e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo(htmlspecialchars_decode($unit[4])) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b> count <?php echo(@$wrongCount[4].' '); ?> 
+    <div id = "part-e-BC-question" class = "parts-question <?php echo $sequential_part_display_question_ar[4]; ?>"></div>
+    <div id = "part-e-BC-display" class = "display_none"><?php echo $sequential_part_display_question_ar[4]; ?></div>
+	<div id = "part-e-BC" class = "problem-parts"> e)(<?php echo $assigntime_data['perc_e_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="e" id = "e" size = 10% <?php echo ( $sequential_part_disable_input_ar[4])?> value="<?php echo (htmlentities($resp['e']))?>" > <?php echo(htmlspecialchars_decode($unit[4])) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b> count <?php echo(@$wrongCount[4].' '); ?> 
      <?php 
     if ( (( $activity_data['wcount_bc_e']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[4]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_e']==1 ) && $corr['e']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_e" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_e" class="btn-default" '.$sequential_part_disable_button_ar[4].'  value="Show Answer"> </span>&nbsp;');}
      if ($corr['e']=="Correct")
     {echo '<span id = "show_ans_e" class = "show_ans"> - Computed value is: '.$soln[4].'</span>';} 
       ?>  
@@ -694,12 +726,12 @@ echo '<br>';
 
 	if ($partsFlag[5]){ ?> 
     <div id = "part-f-BC-container" class = "checker-parts-conatiner">
-    <div id = "part-f-BC-question" class = "parts-question"></div>
-    <div id = "part-f-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[5]; ?></div>
-	<div id = "part-f-BC" class = "problem-parts <?php echo $sequential_part_display_ar[5]; ?>"> f)(<?php echo $assigntime_data['perc_f_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="f" id = "f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo(htmlspecialchars_decode($unit[5])) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b> count <?php echo(@$wrongCount[5].' '); ?> 
+    <div id = "part-f-BC-question" class = "parts-question <?php echo $sequential_part_display_question_ar[5]; ?>"></div>
+    <div id = "part-f-BC-display" class = "display_none"><?php echo $sequential_part_display_question_ar[5]; ?></div>
+	<div id = "part-f-BC" class = "problem-parts"> f)(<?php echo $assigntime_data['perc_f_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="f" id = "f" size = 10% <?php echo ( $sequential_part_disable_input_ar[5])?> value="<?php echo (htmlentities($resp['f']))?>" > <?php echo(htmlspecialchars_decode($unit[5])) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b> count <?php echo(@$wrongCount[5].' '); ?> 
     <?php 
     if ( (( $activity_data['wcount_bc_f']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[5]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_f']==1 ) && $corr['f']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_f" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_f" class="btn-default" '.$sequential_part_disable_button_ar[5].'  value="Show Answer"> </span>&nbsp;');}
      if ($corr['f']=="Correct")
     {echo '<span id = "show_ans_f" class = "show_ans"> - Computed value is: '.$soln[5].'</span>';} 
       ?>  
@@ -714,12 +746,12 @@ echo '<br>';
 
 	if ($partsFlag[6]){ ?> 
     <div id = "part-g-BC-container" class = "checker-parts-conatiner">
-    <div id = "part-g-BC-question" class = "parts-question"></div>
-    <div id = "part-g-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[6]; ?></div>
-	<div id = "part-g-BC" class = "problem-parts <?php echo $sequential_part_display_ar[6]; ?>"> g)(<?php echo $assigntime_data['perc_g_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="g" id = "g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo(htmlspecialchars_decode($unit[6])) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b> count <?php echo(@$wrongCount[6].' '); ?> 
+    <div id = "part-g-BC-question" class = "parts-question <?php echo $sequential_part_display_question_ar[6]; ?>"></div>
+    <div id = "part-g-BC-display" class = "display_none"><?php echo $sequential_part_display_question_ar[6]; ?></div>
+	<div id = "part-g-BC" class = "problem-parts"> g)(<?php echo $assigntime_data['perc_g_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="g" id = "g" size = 10% <?php echo ( $sequential_part_disable_input_ar[6])?> value="<?php echo (htmlentities($resp['g']))?>" > <?php echo(htmlspecialchars_decode($unit[6])) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b> count <?php echo(@$wrongCount[6].' '); ?> 
     <?php 
     if ( (( $activity_data['wcount_bc_g']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[6]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_g']==1 ) && $corr['g']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_g" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_g" class="btn-default" '.$sequential_part_disable_button_ar[6].'  value="Show Answer"> </span>&nbsp;');}
      if ($corr['g']=="Correct")
     {echo '<span id = "show_ans_g" class = "show_ans"> - Computed value is: '.$soln[6].'</span>';} 
       ?>  
@@ -731,12 +763,12 @@ echo '<br>';
 
 	if ($partsFlag[7]){ ?> 
     <div id = "part-h-BC-container" class = "checker-parts-conatiner">
-    <div id = "part-h-BC-question" class = "parts-question"></div>
-    <div id = "part-h-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[7]; ?></div>
-	<div id = "part-h-BC" class = "problem-parts <?php echo $sequential_part_display_ar[7]; ?>"> h)(<?php echo $assigntime_data['perc_h_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="h" id = "h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo(htmlspecialchars_decode($unit[7])) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b> count <?php echo(@$wrongCount[7].' '); ?> 
+    <div id = "part-h-BC-question" class = "parts-question <?php echo $sequential_part_display_question_ar[7]; ?>"></div>
+    <div id = "part-h-BC-display" class = "display_none"><?php echo $sequential_part_display_question_ar[7]; ?></div>
+	<div id = "part-h-BC" class = "problem-parts"> h)(<?php echo $assigntime_data['perc_h_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="h" id = "h" size = 10% <?php echo ( $sequential_part_disable_input_ar[7])?> value="<?php echo (htmlentities($resp['h']))?>" > <?php echo(htmlspecialchars_decode($unit[7])) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b> count <?php echo(@$wrongCount[7].' '); ?> 
     <?php 
     if ( (( $activity_data['wcount_bc_h']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[7]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_h']==1 ) && $corr['h']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_h" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_h" '.$sequential_part_disable_button_ar[7].'  class="btn-default" value="Show Answer"> </span>&nbsp;');}
      if ($corr['h']=="Correct")
     {echo '<span id = "show_ans_h" class = "show_ans"> - Computed value is: '.$soln[7].'</span>';} 
       ?>  
@@ -749,12 +781,12 @@ echo '<br>';
 
 	if ($partsFlag[8]){ ?> 
     <div id = "part-i-BC-container" class = "checker-parts-conatiner">
-    <div id = "part-i-BC-question" class = "parts-question"></div>
-    <div id = "part-i-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[8]; ?></div>
-	<div id = "part-i-BC" class = "problem-parts <?php echo $sequential_part_display_ar[8]; ?>"> i)(<?php echo $assigntime_data['perc_i_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="i" id = "i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo(htmlspecialchars_decode($unit[8])) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b> count <?php echo(@$wrongCount[8].' '); ?> 
+    <div id = "part-i-BC-question" class = "parts-question <?php echo $sequential_part_display_question_ar[8]; ?>"></div>
+    <div id = "part-i-BC-display" class = "display_none"><?php echo $sequential_part_display_question_ar[8]; ?></div>
+	<div id = "part-i-BC" class = "problem-parts"> i)(<?php echo $assigntime_data['perc_i_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="i" id = "i" size = 10% <?php echo ( $sequential_part_disable_input_ar[8])?> value="<?php echo (htmlentities($resp['i']))?>" > <?php echo(htmlspecialchars_decode($unit[8])) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b> count <?php echo(@$wrongCount[8].' '); ?> 
 <?php 
     if ( (( $activity_data['wcount_bc_i']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[8]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_i']==1 ) && $corr['i']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_i" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_i" class="btn-default" '.$sequential_part_disable_button_ar[8].'  value="Show Answer"> </span>&nbsp;');}
      if ($corr['i']=="Correct")
     {echo '<span id = "show_ans_i" class = "show_ans"> - Computed value is: '.$soln[8].'</span>';} 
       ?>  
@@ -767,12 +799,12 @@ echo '<br>';
 
 	if ($partsFlag[9]){ ?> 
     <div id = "part-j-BC-container" class = "checker-parts-conatiner">
-    <div id = "part-j-BC-question" class = "parts-question"></div>
-    <div id = "part-j-BC-display" class = "display_none"><?php echo $sequential_part_display_ar[5]; ?></div>
-	<div id = "part-j-BC" class = "problem-parts <?php echo $sequential_part_display_ar[9]; ?>"> j)(<?php echo $assigntime_data['perc_j_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="j" id = "j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo(htmlspecialchars_decode($unit[9])) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b> count <?php echo(@$wrongCount[9].' '); ?> 
+    <div id = "part-j-BC-question" class = "parts-question  <?php echo $sequential_part_display_question_ar[9]; ?>"></div>
+    <div id = "part-j-BC-display" class = "display_none"><?php echo $sequential_part_display_question_ar[9]; ?></div>
+	<div id = "part-j-BC" class = "problem-parts"> j)(<?php echo $assigntime_data['perc_j_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="j" id = "j" size = 10% <?php echo ( $sequential_part_disable_input_ar[9])?> value="<?php echo (htmlentities($resp['j']))?>" > <?php echo(htmlspecialchars_decode($unit[9])) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b> count <?php echo(@$wrongCount[9].' '); ?> 
    <?php 
     if ( (( $activity_data['wcount_bc_j']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[9]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_j']==1 ) && $corr['j']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_j" class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_j" class="btn-default" '.$sequential_part_disable_button_ar[9].' value="Show Answer"> </span>&nbsp;');}
      if ($corr['j']=="Correct")
     {echo '<span id = "show_ans_j" class = "show_ans"> - Computed value is: '.$soln[9].'</span>';} 
       ?>  
@@ -788,7 +820,9 @@ echo '<br>';
 	
 	?>
  Base-Case Count: <?php echo ($count_tot) ?>  <span id ="t_delay_message"></span>
-	<p><input type = "submit" id = "check_submit" name = "check" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p>
+	<!-- <p><input type = "submit" id = "check_submit" name = "check" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p> -->
+    <p><button type = "submit" id = "check_submit" class = "btn btn-primary mt-2" style="font-size: 1.5rem;" name = "check" > Check <i class="bi bi-card-checklist" ></i> </button>
+
              <input type="hidden" name="activity_id" value="<?php echo ($activity_id)?>" >
               <input type="hidden" id = "prob_parts" value="<?php echo ($probParts)?>" >
                <input type="hidden" id = "count_tot" value="<?php echo ($count_tot)?>" >

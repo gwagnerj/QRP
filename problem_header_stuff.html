@@ -1,31 +1,40 @@
 <html>
 <head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
 </head>
 <body>
+<nav id = "navigation-buttons" class = "nav-buttons ms-5">
+
 <span>
-<input type="button" id="backbutton" class="btn btn-default" value="Back" >
+
+<button type="submit" id="backbutton" class="btn btn-default fw-bold" style="font-size: 1.2rem; color: darkblue; background-color:yellow; border: 1px solid"  > <i class="bi bi-box-arrow-left"></i> Back </button>
 </span>
 &nbsp;&nbsp; show/hide: &nbsp;
 <span>
-<input type="button" id="basecasebutton" class="btn btn-default" value="Problem/Base-Case">
+<button type="submit" id="basecasebutton" class="btn btn-outline-primary " style = "font-size: 1.2rem;">to Base-Case <i class="bi bi-arrow-down-square" style = "font-size: 1.3rem;" ></i> </button>
 </span>&nbsp;
 
 <span>
-<input type="button" id="checkerbutton" class="btn btn-default" value="Checker/QRcode">
+<button type="submit" id="checkerbutton" class="btn btn-outline-primary" style = "font-size: 1.2rem;" > Checker/QRcode </button>
 </span>&nbsp;
 <span>
-<input type="button" id="reflectionsbutton" class="btn btn-default" value="Reflections">
+<button type="submit" id="reflectionsbutton" class="btn btn-outline-primary"  style = "font-size: 1.2rem;" >Reflections <i class="bi bi-symmetry-horizontal"></i></button>
 </span>&nbsp;
 <span>
-<input type="button" id="directionsbutton" class="btn btn-default" value="Directions">
+<button type="submit" id="directionsbutton" class="btn btn-outline-primary" style = "font-size: 1.2rem;"  >Directions <i class="bi bi-signpost"></i> </button>
 </span>&nbsp;
-<div id = "header_stuff">
+
+</nav>
+<div id = "header_stuff" class = "ms-3 container-lg">
 <hr>
-<h3>&nbsp; &nbsp;&nbsp; Name: <span id = "stu_name"> </span> &nbsp; &nbsp;&nbsp;&nbsp; Course: <span id = "course"> </span> &nbsp;&nbsp;&nbsp;&nbsp; 
-Assignment Number: <span id = "assignment_num"> </span>&nbsp;&nbsp;&nbsp;&nbsp; 
-Problem Number: <span id = "problem_num"> </span>&nbsp;&nbsp;&nbsp;&nbsp; 
-Portion of Assignment: <span id = "perc_of_assign"></span>&nbsp;&nbsp;&nbsp;&nbsp; 
-Due: <span id = "due_date"></span>&nbsp;&nbsp;&nbsp;&nbsp; 
+<h6 > Name: <span id = "stu_name"> </span> &nbsp; &nbsp Course: <span id = "course"> </span> &nbsp;&nbsp;
+Assignment Number: <span id = "assignment_num"> </span>&nbsp;&nbsp;&nbsp;
+Problem Number: <span id = "problem_num"> </span>&nbsp;&nbsp;&nbsp; 
+Portion of Assignment: <span id = "perc_of_assign"></span>&nbsp;&nbsp;&nbsp; 
+Due: <span id = "due_date"></span>&nbsp;&nbsp;&nbsp;
 EC Due: <span id = "due_date_ec"></span>
 <!--
 Now: <span id = "now"></span>&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -35,13 +44,13 @@ Window_Closes: <span id = "window_closes"></span>&nbsp;&nbsp;&nbsp;&nbsp;
  -->
  <span id = "late_penalty"></span>&nbsp;&nbsp;&nbsp;&nbsp;
 
-</h3>
-<p> &nbsp;&nbsp;&nbsp;&nbsp; Originally Contributed by: <span id = "contributor_name"></span> from <span id="university"></span><span id="nm_author"></span><span id="specif_ref"></span>
+</h6>
+<small> Originally Contributed by: <span id = "contributor_name"></span> from <span id="university"></span><span id="nm_author"></span><span id="specif_ref"></span></small>
 <hr>
 </div>
-<div id = "directions"><hr><p> Toggle the "Checker/QRcode" button if you would like to print off the problem (ctrl P) and use your phone to check your responses. In this case, scan the QRcode on the hard copy with your phone to display the checker. 
+<div id = "directions" class = "ms-4"><hr><p> Toggle the "Checker/QRcode" button if you would like to print off the problem (ctrl P) and use your phone to check your responses. In this case, scan the QRcode on the hard copy with your phone to display the checker. 
  If you get stuck solving the problem, toggle to the "Problem/Basecase" button and work the base-case. Assistance in various forms is available for the base-case problem. If reflections are assigned with 
- this problem, the "Reflections" button will be present to display or hide these questions. Press "Back" to select another problem in the assignment.</p></div>
+ this problem, the "Reflections" button will be present to display or hide these questions. Press "Back" to select another problem in the assignment.</h6></div>
 </body>
 
 </html>
