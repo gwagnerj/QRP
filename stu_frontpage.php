@@ -462,10 +462,10 @@ table.main_table{
                        // if (isset($currentclass_id)>0 ){
 						echo ('<input type = "hidden" name = "cclass_id" id = "have_cclass_id" value = "'.$currentclass_id.'"></input>'); 
 						echo ('<input type = "hidden" name = "cclass_name" id = "have_cclass_name" value = "'.$cclass_name.'"></input>'); 
-                        echo('<h6 class = "mb-4">Class Name: '.$cclass_name); 
+                        echo('<h6 class = "mb-2 " >Class Name: '.$cclass_name); 
 			} elseif($currentclass_id > 0){
                         
-                        echo('<h6 class = "mb-4">Class Name: '.$cclass_name); 
+                        echo('<h6 class = "mb-2">Class Name: '.$cclass_name); 
                         echo ('<input type = "hidden" name = "cclass_id" id = "have_cclass_id2" value = "'.$currentclass_id.'"></input>'); 
                         ?>
                                 <!-- <input type = "submit" value="change class" form = "change_the_class"  name = "change_class2"  size="1" style = "width: 10%; background-color: lightgrey; color: black"/> &nbsp &nbsp   -->
@@ -489,7 +489,7 @@ table.main_table{
 			}
 		
 		?>
-		<span class = "mx-5"  >Assignment Number: </font>
+		<span class = "mx-5 "> Assignment Number: 
 			
               <input type="hidden" name = "assign_num" id = "have_assign_num"  value="<?php echo ($assign_num);?>" >
             <?php
@@ -497,19 +497,22 @@ table.main_table{
             echo(' &nbsp;<select name = "assign_num" id = "assign_num">');
 			echo('</select>');
 			?>
-		<br>
-		
-		<div id = "alias_num_div">
-		
+		</h6>
+		<div class = 'mb-4 text-primary'>  Select Problem for this Assignment : 
+            <!-- <button type = "submit" name = "submit"  id="submit_id" class = "btn btn-primary my-4 ms-5">Submit <i class="bi bi-box-arrow-in-right"></i></button>  -->
+
+        </div>
+       
+		<div id = "alias_num_div" >
+        
 		</div>
           <br>
 		<div id = "files_section">
 		</div>  
-            
+      
             
 		
 	<!-- <p><input type = "submit" name = "submit" value="Submit" id="submit_id" size="2" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp </p>   -->
-	<p><button type = "submit" name = "submit"  id="submit_id" class = "btn btn-primary">Submit <i class="bi bi-box-arrow-in-right"></i></button> 
 	<!--  need to figure out which homeworks had reflections and are past the due date but before the date that they closes and needs rated -->
    
  
@@ -612,7 +615,7 @@ $(document).ready( function () {
 					 	 $('#alias_num_div').empty();
                          
 					n = activealias.length;
-						$('#alias_num_div').append(" <font color=#003399> Select Problem for this Assignment : </font></br> </br>&nbsp;&nbsp;&nbsp;&nbsp;") ;
+	//					$('#alias_num_div').append("<span class = 'my-3 text-primary'>  Select Problem for this Assignment : </span>") ;
 						for (i=0;i<n;i++){
 							$('#alias_num_div').append('<input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'&nbsp; &nbsp; &nbsp;') ;
                             alias_nums[i] = activealias[i];
@@ -751,22 +754,24 @@ $(document).ready( function () {
     //                  console.log (activealias);    
 			 	      $('#alias_num_div').empty();
 					    n = activealias.length;
-						$('#alias_num_div').append("<font color=#003399> Select Problem for this Assignment : </font> &nbsp;&nbsp;&nbsp;&nbsp;") ;
+		//				$('#alias_num_div').append("<span class = 'my-3 text-primary'>  Select Problem for this Assignment : </span>") ;
                        $('#alias_num_div').append('<div style = "overflow-x:auto;">');
 
-                       $('#alias_num_div').append('<table class = "main_table table-primary">');
-						$('#alias_num_div').append('<th  style="text-align:center" width="20%"> Select</th>') ;
+    //?                   $('#alias_num_div').append('<table class = "main_table table-primary">');
+						$('#alias_num_div').append('<th  style="text-align:center" width="20%"> Problem: </th>') ;
                       
                          
                         for (i=0;i<n;i++){
 							//could put in code to get from the activity table which problems have been attempted and which are complete and color the radio buttons different
-                        
+         //! this is where we could put BS table classes               
                                $('#alias_num_div').append('<th  style="text-align:center" width="10%" ><input  name="alias_num"  type="radio"  value="'+activealias[i]+'"/> '+activealias[i]+'</th>') ;
                         
                                 alias_nums[i] = activealias[i];
                         
  
                            }
+                           $('#alias_num_div').append(' <th><button type = "submit" name = "submit"  id="submit_id" class = "btn btn-primary ms-5 mt-1">Submit <i class="bi bi-box-arrow-in-right"></i></button></th> ') ;
+
    //                        console.log('alias_nums 846 two ' + alias_nums); 
                              // console.log(' assign_num: '+assign_num);
                              // console.log(' currentclass_id: '+currentclass_id);
@@ -1205,7 +1210,7 @@ $(document).ready( function () {
 // should put in stuff from the assignscore for the points for the overall assignment and the weights for each part from assigntime table
 
                                                     
-                                                    $('#alias_num_div').append('</table>') ;
+     //?                                               $('#alias_num_div').append('</table>') ;
                                                     $('#alias_num_div').append('</div>') ;
                                              }
                                         
