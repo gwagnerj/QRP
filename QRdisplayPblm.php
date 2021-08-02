@@ -165,7 +165,7 @@ $sql = "SELECT * FROM Users WHERE users_id = :users_id";
          // QRcode::png($text); 
         // Displaying the stored QR code from directory 
     
-      $qrcode_bc = "<span id = 'qrcode_id_bc'><img src='".$file_bc."'><p> Base_Case Checker </p></span>"; 
+      $qrcode_bc = "<span id = 'qrcode_id_bc'><img src='".$file_bc."'><p> Base-Case Checker </p></span>"; 
       
       
 
@@ -279,9 +279,6 @@ $pass = array(
 }
 #BC_checker2{
    background-color: #e6f7ff;  
-}
-#qrcode_id_bc{
-   /* background-color: #e6f7ff;   */
 }
 /* 
 .hidden {
@@ -510,7 +507,7 @@ $pass = array(
         }
          
     // only include the document above the checker
-       $this_html ='<hr>'.$qrcode.$qrcode_bc.$problem.'<hr> <div id = "base_case" class = "ms-5"><h2>Base_Case:</h2>'.$base_case.'</div>';
+       $this_html ='<hr>'.$qrcode.$qrcode_bc.$problem.'<hr> <div id = "base_case" class = "ms-5"><h2>Base-Case:</h2>'.$base_case.'</div>';
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
        for( $i=0;$i<$nv;$i++){
@@ -525,6 +522,13 @@ $pass = array(
   
   ?>
   <!--   -->
+  <form>
+  <input type="hidden" name="stu_name" id ="stu_name" value ="homer"> </input>
+    <input type="hidden" name="activity_id" id ="activity_id" value = <?php echo($activity_id);?> ></input>
+    <input type="hidden" name="problem_id" id ="problem_id" value = "<?php echo($problem_id);?>"></input>
+    <!-- <input type="text" name="stu_name" id ="stu_name" value ="<?php echo(str_replace(' ','_',$stu_name));?>"> </input> -->
+    
+  </form>
    <div id = 'checker'>
    <iframe name = "checker2" class = "border border-primary ms-5 px-2 py-2" id = "checker2" src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" style = "width:90%; height:50%;"></iframe></div>
    <!-- <iframe name = "checker2" id = "checker2" src="QRChecker2.php?activity_id=<?php echo($activity_id);?>" ></iframe></div> -->

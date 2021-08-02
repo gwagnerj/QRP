@@ -778,6 +778,7 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
 	        
 
             <input type="hidden" id = "activity_id" name="activity_id" value="<?php echo ($activity_id)?>" >
+            <input type="hidden" id = "stu_name" name="stu_name" value="<?php echo(str_replace(' ','_',$stu_name));?>" >
             <input type="hidden" name="problem_id" value="<?php echo ($problem_id)?>" >
             <input type="hidden" id = "changed_flag" name="changed_flag" value="<?php echo ($changed_flag)?>" >
             <input type="hidden" id = "count_from_check" name="count" value="<?php echo ($count_tot)?>" >

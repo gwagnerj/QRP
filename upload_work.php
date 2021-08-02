@@ -82,7 +82,7 @@ if(isset($_POST['submit_button'])){
    
        for( $i=0 ; $i < $total ; $i++ ) {
 
-            $file_name = $_FILES['files']['name'][$i];;
+            $file_name = $_FILES['files']['name'][$i];
             $file_type = $_FILES['files']['type'][$i];
             $file_tmp_name = $_FILES['files']['tmp_name'][$i];
             $file_error = $_FILES['files']['error'][$i];
@@ -103,20 +103,13 @@ if(isset($_POST['submit_button'])){
                             if (file_exists($file_destination)){
                                 $_SESSION['error'] = 'File by the name, '.$file_name.', was already in system and  was overwritten';  
                             }  
-                            
                             move_uploaded_file($file_tmp_name,$file_destination);
-                           
-                        
-                         
-                            
                         }else {
                              $_SESSION['error'] = 'Error - File size is too large max file size is 20Mb'; 
                         }
                     } else {
                              $_SESSION['error'] = 'Error - File size is less that 2 bites'; 
                     }                        
-                        
-                        
                 } else {
                         $_SESSION['error'] = ' Error in file of type'.$file_error; 
                 }

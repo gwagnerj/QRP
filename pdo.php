@@ -1,6 +1,6 @@
 <?php
 require_once('../password.php');
-
+// echo $system_password;
 
 try {
     $pdo=new PDO ('mysql:host=localhost;port=3306;dbname=wagnerj_QRP','wagnerj_wagnerj',$system_password);

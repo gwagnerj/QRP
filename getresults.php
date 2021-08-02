@@ -14,6 +14,7 @@ session_start();
       $student_id = 1;
         $assign_num = 1;
        $currentclass_id = 29;
+      
     
        
        
@@ -23,6 +24,8 @@ session_start();
         
         $sql = 'SELECT * FROM Activity 
          INNER JOIN Assign ON Assign.assign_id = Activity.assign_id 
+         INNER JOIN Problem ON Problem.problem_id = Assign.prob_num
+         INNER JOIN Assigntime ON (Assigntime.assign_num = Assign.assign_num AND Assigntime.currentclass_id = Assign.currentclass_id)
         WHERE Activity.student_id = :student_id AND Assign.currentclass_id = :currentclass_id AND Assign.assign_num = :assign_num 
         ORDER BY Activity.alias_num ASC';
       

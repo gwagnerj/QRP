@@ -1,12 +1,74 @@
  
-let drawing_tool_background_src = localStorage.getItem('drawing_tool_background_src');
+var drawing_tool_background_src = localStorage.getItem('drawing_tool_background_src');
 drawing_tool_background_src = drawing_tool_background_src.replace("%20"," ");
-//drawing_tool_background_src = drawing_tool_background_src.replace("20"," ");
-drawing_tool_background_src = "uploads/"+drawing_tool_background_src;
-console.log("drawing_tool_background_src: " + drawing_tool_background_src);
+console.log ("location",location);
+drawing_tool_background_src = location.origin+"/QRP/uploads/"+drawing_tool_background_src;
+// drawing_tool_background_src = location.origin+"uploads/"+drawing_tool_background_src;
+console.log("drawing_tool_background_src",drawing_tool_background_src);
+
+var activity_id = document.getElementById("activity_id").value;
+var problem_id = document.getElementById("problem_id").value;
+
+
+console.log ("activity_id: " + activity_id);
+console.log ("problem_id: " + problem_id);
+
+//? get the saved image from the students previous session if there is anything
+
+
+let filename = location.origin+'/QRP/drawing_tool_images/'+activity_id+'-drawing-1-problem-'+ problem_id+'.png'; 
+// var previous_background_4 = "lala";
+
+
+
+// var previous_background2 = LoadImg(filename);
+// console.log ("previous_background2",previous_background2);
+
+// function LoadImg(filename) {
+//   var xmlhttp;
+//       xmlhttp = new XMLHttpRequest();
+ 
+//   xmlhttp.onreadystatechange = function() {
+//       if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {  
+//           console.log ("previous_background_4-1",previous_background_4);
+//         previous_background_4 = "data:image/png;base64," + xmlhttp.responseText;
+//           console.log ("previous_background_4-2",previous_background_4);
+//       //  return previous_background2;
+//       }
+       
+//   };   
+ 
+//   xmlhttp.open("GET", 'get_saved_drawing.php?LoadImg='+filename );
+//   xmlhttp.send(null);
+//   // return previous_background3;
+// }
+
+
+
+
+
+// $.ajax({
+//   url: "get_saved_drawing.php",
+//   type: "POST",
+//   data: {
+
+
+//   },
+//   processData: false,
+//   contentType: false,
+//   success: function(data){
+//     done(false);
+//       console.log(data);
+//   }
+// });
+
+
+
+// look for previous drawing if they have saved it
+// console.log("drawing_tool_background_src: " + drawing_tool_background_src);
   let drawing_tool = document.querySelector(".drawing_container");
-  if(drawing_tool){
-  Painterro({
+
+ var ptro = Painterro({
       activeColor: '#00ff00', // default brush color is green
       id: "drawing_container1",
       defaultFontSize: 20,
@@ -16,24 +78,57 @@ console.log("drawing_tool_background_src: " + drawing_tool_background_src);
       availableFontSizes: [4, 8, 12, 16, 20, 24, 36],
       defaultLineWidth: 6,
       defaultTool: 'rect',
+      saveHandler: function (image, done) {
+            // of course, instead of raw XHR you can use fetch, jQuery, etc
+            var formData = new FormData();
+            formData.append('activity_id',activity_id);
+            formData.append('problem_id',problem_id);
+            formData.append('image', image.asBlob('image/png'));
+          
+            $.ajax({
+              url: "upload_painterro_image.php",
+              type: "POST",
+              data: formData,
+              processData: false,
+              contentType: false,
+              success: function(data){
+                done(false);
+                  console.log(data);
+              }
+            });
+
+          
+          //  console.log("save was clicked")
+          },
+          activeColor: '#00b400'  // change active color to green
 
       //   availableEraserWidths: [4,8,12,20,30,50,100],
       //   initTextStyle:"16px 'Open Sans', sans-serif"
       //   hiddenTools: ['crop', 'line', 'arrow', 'rect', 'ellipse', 'brush', 'text', 'rotate', 'resize', 'save', 'open', 'close', 'undo', 'redo', 'zoomin', 'zoomout'],
-      hiddenTools: ['save', 'close'],
       //     defaultFontSize:16,
       //     defaultEraserWidth: 10,
- //?   }).show();
- //?   }).show('uploads/p454_0_QRPropylene Control valve and dynamics_files/image001.png');
-   }).show(drawing_tool_background_src);
- 
+   });
+   
+  //  console.log ("previous_background_4-3",previous_background_4);
+
+  function ImageExist(url) {
+    if (url) {
+      var req = new XMLHttpRequest();
+      req.open('HEAD', url, false); // this false (synchrounous has been depreciated so I may need to change it to true but then it is asynchrounous and may need promise..)
+      req.send();
+      return req.status == 200;
+    } else {
+      return false;
+    }
+  }
+
+console.log("imageexists background",ImageExist(drawing_tool_background_src))
+if(ImageExist(filename)){ptro.show(filename);} else if (ImageExist(drawing_tool_background_src)){ptro.show(drawing_tool_background_src);} else {ptro.show();}
 
 
-
-  // var drawing_bar = document.getElementById('drawing_container1-bar');
-  // var drawing_btn_open = drawing_bar.querySelector(".ptro-icon-open");
-  // console.log ("drawing_btn_open", drawing_btn_open);
-
+  if(ptro.show(filename) !=false){ptro.show(filename)} else {ptro.show(drawing_tool_background_src)};
+  //  ptro.show(drawing_tool_background_src);
+  //  ptro.show(filename);
   //drawing_btn_open.click();
 
   var drawing_btn_close1 = document.getElementById('drawing-btn-close1');
@@ -52,4 +147,6 @@ console.log("drawing_tool_background_src: " + drawing_tool_background_src);
       drawing_container1.classList.remove("display_none");
 
   })
-}
+//}
+
+
