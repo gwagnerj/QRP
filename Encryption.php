@@ -1,4 +1,3 @@
-
 <?php
 
 
@@ -110,3 +109,4 @@ class Encryption
 
 }
 
+?>

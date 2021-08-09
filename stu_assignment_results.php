@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
     if (isset($_POST['iid'])) {
 	$iid = $_POST['iid'];
     
-    if (isset($_POST['load_images'])){
+    if (isset($_POST['load_images'])){  //? this is just to check if the instructor wants to load the images
         
         $load_images = true;
        // echo 'checked';
@@ -190,7 +190,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
           // get all the students in the class
           // first try a Joint search
           
-             $sql = "SELECT * FROM `Student` INNER JOIN `StudentCurrentClassConnect` ON Student.student_id = StudentCurrentClassConnect.student_id WHERE StudentCurrentClassConnect.currentclass_id = :currentclass_id ORDER BY Student.last_name ASC";
+             $sql = "SELECT * FROM `Student` 
+             INNER JOIN `StudentCurrentClassConnect` ON Student.student_id = StudentCurrentClassConnect.student_id
+              WHERE StudentCurrentClassConnect.currentclass_id = :currentclass_id
+              GROUP BY Student.student_id
+               ORDER BY Student.last_name ASC";
+
+               //? tried to put in GROUP BY Student.student_id but did not really help 
                $stmt = $pdo->prepare($sql);
                $stmt -> execute(array(
                  ':currentclass_id' => $currentclass_id,
@@ -289,6 +295,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                  
                                       
                                 echo('<td style="vertical-align: top;">');
+                                if ($stu_activity != false){
                                 if ($stu_activity['activity_id']>0){
                                     $p_num_score_net = 0;
                                      if($stu_activity['p_num_score_net']>0 || $stu_activity['fb_p_num_score_net']>0){  // put stuff in here if you don't want it to show up if there is no net score
@@ -319,19 +326,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                                    if($extension == "pdf"){
                                                        echo(' <embed src="'.$image.'" style = "width:150px;" type="application/pdf">');
                                                    } else {  
-                                                        echo ('<img src="'.$image.'" alt = "no image found" style = "width:100px;image-resolution:200dpi;">');
+                                                        echo ('<img src="'.$image.'" alt = "no image found for work" style = "width:100px;image-resolution:200dpi;">');
                                                    }
                                             }
+
                                        
                                         echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge"></form>');
                                         
                                      } else {
                                         echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Show Work"></form>');
                                      }
-                                        
+                                      //? this next part is to display the drawing images
+                                      $all_files = array();
+                                      $dir =  'drawing_tool_images/';
+                                      $prefix = $dir.$activity_id.'-*';
+                                      
+                                      foreach (glob($prefix, GLOB_NOCHECK) as $image) {
+          //                                  echo (' image '.$image);
+                                                 $tmp = explode('.', $image);
+                                              $extension = end($tmp);
+          //                                    echo (' extension '.$extension);
+                                             
+                                                  echo ('<img src="'.$image.'" alt = "no drawing" style = "width:100px;image-resolution:200dpi;">');
+
+                                                  echo('<form action = "get_drawing_tool_images.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge"></form>');
+
+                                             
+                                      }
+
                                         
                                        echo('<br>');
-                                   }      
+                                   } 
+                                  }     
                                         $i=$i+1;
                                   //     echo('<form action = "QRproblem_preview.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "hidden" name = "problem_id" value = "'.$assign_datum['prob_num'].'"><input type = "hidden" name = "dex" value = "'.$dex.'"><input type = "submit" value ="Help Student"></form>');
                               

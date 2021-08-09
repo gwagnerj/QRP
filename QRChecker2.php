@@ -390,6 +390,7 @@ session_start();
 
                $changed[$i]=true;
                 $changed_flag = true;
+               if (($tol_type[$v]==0 && $resp[$v] !=0) || $tol_type[$v] ==1){    //? this condition was put in as a hack to make sure we are not recording so many 0s in the resp data
                 $sql = 'INSERT INTO Resp (activity_id, resp_value,part_name) VALUES (:activity_id, :resp_value, :part_name)';
                 $stmt = $pdo->prepare($sql);
                 $stmt ->execute(array(
@@ -421,7 +422,9 @@ session_start();
                 {$diff_time_min = round(($last_date - $first_date)/60);} else {$diff_time_min=0;}
                  
                    if($work_flow == 'bc_if' && $count_data >= $p_bc_n && $diff_time_min > $p_bc_t && $activity_data["bc_correct_".$v] != 1)
-                   {$go_to_bc[$i] = 1; $switch_to_bc = 1;} else {$go_to_bc[$i] = 0;}   
+                   {$go_to_bc[$i] = 1; $switch_to_bc = 1;} else {$go_to_bc[$i] = 0;} 
+                }
+              
             }
          
         }
@@ -455,7 +458,7 @@ session_start();
                 } else {
                     $sol=$soln[$j];
                 }	
-                
+    //? tol_type = 0 indicates relative tolerance            
                 if($tol_type[$tol_type_key[$j]]==0 && $resp[$resp_key[$j]] != '' &&	(abs(($soln[$j]-(float)$resp[$resp_key[$j]])/$sol)<= $tol[$tol_key[$j]])) {   // first condition makes sure we have a relative error
                     $corr_num[$corr_key[$j]]=1;
                     $corr[$corr_key[$j]]='Correct';

@@ -325,6 +325,8 @@ session_start();
             } else { 
                 $changed[$i]=true;
                 $changed_flag = true;
+                if (($tol_type[$v]==0 && $resp[$v] !=0) || $tol_type[$v] ==1){    //? this condition was put in as a hack to make sure we are not recording so many 0s in the resp data
+
                 $sql = 'INSERT INTO Bc_resp (activity_id, resp_value,part_name) VALUES (:activity_id, :resp_value, :part_name)';
                 $stmt = $pdo->prepare($sql);
                 $stmt ->execute(array(
@@ -360,6 +362,7 @@ session_start();
                 {$diff_time_min[$i] = round(($last_date - $first_date)/60);} else {$diff_time_min[$i]=0;}
                  
             }
+        }
         
         }
         $i++;  

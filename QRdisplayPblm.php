@@ -333,7 +333,11 @@ $pass = array(
       // echo "<script>document.write(localStorage.setItem('drawing_tool_background_src', '". $drawing_tool_background_src."'))</script>";
       echo "<script>window.localStorage.setItem('drawing_tool_background_src', '" . $drawing_tool_background_src . "');</script>";
 
+      } else 
+      {
+        echo "<script>window.localStorage.removeItem('drawing_tool_background_src');</script>";
       }
+
       
       if ($perc_late_p_prob !=0){
          $header_stuff ->find('#late_penalty',0)->innertext = 'Late Penalty on Problem: '.$perc_late_p_prob.'%';
@@ -389,6 +393,16 @@ $pass = array(
          $base_case = preg_replace('/!!stu_first!!/',$stu_first,$base_case);
          $base_case = preg_replace('/!!stu_city!!/',$stu_city,$base_case);
          $base_case = preg_replace('/!!stu_state!!/',$stu_state,$base_case);
+
+        //? if there are drawings replace all of the id's on the drawings with bc ids...
+
+         $base_case = str_replace("drawing_container1","drawing_BC_container1",$base_case);
+         $base_case = str_replace("drawing-open1","drawing-BC-open1",$base_case);
+         $base_case = str_replace("drawing-btn-close1","drawing-BC-btn-close1",$base_case);
+         $base_case = str_replace("drawing-btn-open1","drawing-BC-btn-open1",$base_case);
+         $base_case = str_replace("gray-out","",$base_case);
+
+
          
         
      // add some markup to specific to the basecase since I just created it from the problem   

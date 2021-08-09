@@ -55,7 +55,6 @@
 	}
 	#iframe1 {
 		position:absolute;
-		align:bottom;
 		left: 0px;
 		width: 100%;
 		top: 0px;
@@ -820,8 +819,6 @@
 	<p></p>
 
 
-	<!-- <object data=<?php// echo('"'.$preveiw.'"'); ?> 
-	type= "application/pdf" width="100%" Height="50%"> -->
 
 	<?php 
 

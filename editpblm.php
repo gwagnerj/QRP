@@ -14,6 +14,11 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	} else {
 		 $_SESSION['error'] = 'Session was lost -  please log in again';
 		header('Location: QRPRepo.php');
+
+
+
+	
+		
 		die();
 	}
 // get the users_id
@@ -512,39 +517,39 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 		}	
 
 
-		 if($_FILES['video3']['name']) {
-			$filename=explode(".",$_FILES['video3']['name']); // divides the file into its name and extension puts it into an array
-			$video3=addslashes($_FILES['video3']['tmp_name']);
-			$videonm3=addslashes($_FILES['video3']['name']);
-			$video3=file_get_contents($video3);
-			$videonm3 = $_FILES['video3']['name'];
-			$tmp_video3file =  $_FILES['video3']['tmp_name'];
-			$location = "Video/"; // This is the local file directory name where the files get saved
+		//  if($_FILES['video3']['name']) {
+		// 	$filename=explode(".",$_FILES['video3']['name']); // divides the file into its name and extension puts it into an array
+		// 	$video3=addslashes($_FILES['video3']['tmp_name']);
+		// 	$videonm3=addslashes($_FILES['video3']['name']);
+		// 	$video3=file_get_contents($video3);
+		// 	$videonm3 = $_FILES['video3']['name'];
+		// 	$tmp_video3file =  $_FILES['video3']['tmp_name'];
+		// 	$location = "Video/"; // This is the local file directory name where the files get saved
 			
-			$sql = "UPDATE Problem SET  videonm3 = :videonm3 	
-						WHERE problem_id=:problem_id";
-			$stmt = $pdo->prepare($sql);
-			$stmt->execute(array(':videonm3'=> $videonm3,	':problem_id' => $_POST['problem_id']));
+		// 	$sql = "UPDATE Problem SET  videonm3 = :videonm3 	
+		// 				WHERE problem_id=:problem_id";
+		// 	$stmt = $pdo->prepare($sql);
+		// 	$stmt->execute(array(':videonm3'=> $videonm3,	':problem_id' => $_POST['problem_id']));
 			
-			if (fnmatch("p*_v3_*",$videonm3,FNM_CASEFOLD ) ){ // ignore the case when matching
-			$newvid3Nm = $videonm3;
-			}
-			else if($videonm3 !== ""){
-				$newvid3Nm = "p".$problem_id."_v3_".$videonm3;
-			} else {
-				$newvid3Nm = "p".$problem_id."_v3_video3.mp4";
-			}
+		// 	if (fnmatch("p*_v3_*",$videonm3,FNM_CASEFOLD ) ){ // ignore the case when matching
+		// 	$newvid3Nm = $videonm3;
+		// 	}
+		// 	else if($videonm3 !== ""){
+		// 		$newvid3Nm = "p".$problem_id."_v3_".$videonm3;
+		// 	} else {
+		// 		$newvid3Nm = "p".$problem_id."_v3_video3.mp4";
+		// 	}
 			
-			$sql = "UPDATE Problem SET videonm3 = :videonm3 	
-						WHERE problem_id=:problem_id";
-			$stmt = $pdo->prepare($sql);
-			$stmt->execute(array(':videonm3'=> $newvid3Nm,	':problem_id' => $_POST['problem_id']));
+		// 	$sql = "UPDATE Problem SET videonm3 = :videonm3 	
+		// 				WHERE problem_id=:problem_id";
+		// 	$stmt = $pdo->prepare($sql);
+		// 	$stmt->execute(array(':videonm3'=> $newvid3Nm,	':problem_id' => $_POST['problem_id']));
 			
-			$pathName = 'Video/'.$newvid3Nm;
-			if (move_uploaded_file($_FILES['video3']['tmp_name'], $pathName)){
-				$_SESSION['success'] = $_SESSION['success'].'Video 3 mp4 file upload successful';
-			}
-		}		
+		// 	$pathName = 'Video/'.$newvid3Nm;
+		// 	if (move_uploaded_file($_FILES['video3']['tmp_name'], $pathName)){
+		// 		$_SESSION['success'] = $_SESSION['success'].'Video 3 mp4 file upload successful';
+		// 	}
+		// }		
 		// problem types
 			if($_POST['problem_type']==1)	{
 				$sql = "UPDATE Problem SET problem_type = :problem_type WHERE problem_id = :pblm_num";
@@ -1340,11 +1345,11 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 
 							$html = str_replace(
 								$drawing_first_part_of_tag,
-								'<div id = "drawing-open1" class = "drawing-open" >
-									<button id = "drawing-btn-close1" class = "drawing-btn-close butn fa fa-window-close ">Close Drawing Tool</button>
-									<button id = "drawing-btn-open1" class = "drawing-btn-open butn fas fa-expand display_none">Open Drawing Tool</button>
+								'<div id="drawing-open1" class = "drawing-open" >
+									<button id="drawing-btn-close1" class = "drawing-btn-close butn fa fa-window-close ">Close Drawing Tool</button>
+									<button id="drawing-btn-open1" class = "drawing-btn-open butn fas fa-expand display_none">Open Drawing Tool</button>
 								  </div>
-								  <div id = "drawing_container1" class = "drawing_container" style = "width:'.$width.'; height:'.$height.' " ><div class = "drawing-tool-background display_none">',
+								  <div id="drawing_container1" class = "drawing_container" style = "width:'.$width.'; height:'.$height.' " ><div class = "drawing-tool-background display_none">',
 								$html
 							);
 							$drawing_last_part_of_tag = substr($tag->outertext,strripos($tag->outertext,"drawing"));
@@ -1362,10 +1367,10 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 						$html = str_replace(
 							$tag->outertext,
 							'<div id = "drawing-open1" class = "drawing-open" >
-								<button id = "drawing-btn-close1" class = "drawing-btn-close butn fa fa-window-close ">Close Drawing Tool</button>
-								<button id = "drawing-btn-open1" class = "drawing-btn-open butn fas fa-expand display_none">Open Drawing Tool</button>
+								<button id="drawing-btn-close1" class = "drawing-btn-close butn fa fa-window-close ">Close Drawing Tool</button>
+								<button id="drawing-btn-open1" class = "drawing-btn-open butn fas fa-expand display_none">Open Drawing Tool</button>
 							  </div>
-							  <div id = "drawing_container1" class = "drawing_container" style = "width:'.$width.'; height:'.$height.' " ></div>',
+							  <div id="drawing_container1" class = "drawing_container" style = "width:'.$width.'; height:'.$height.' " ></div>',
 							$html
 						);
 					}
@@ -1403,13 +1408,13 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                                 strpos(trim($tag->plaintext), $pattern1) !== false
                             ) {
                                 $question_old_text = trim($tag->innertext);
-                                $question_old_text_array = explode(',', $question_old_text);
+                                $question_old_text_array = explode(',', $question_old_text); //! this is probably our problem with using commas as a delimiter - need to find another character - commas can be found in the question text and that would make all of this not work
 
                                 $q_o_t_a_length =  count($question_old_text_array) - 1; //question old text array length
 								$Encryption = new Encryption();
 
 								$target_array_length = count($question_old_text_array)/2;
-								//! can do encryption here
+	// can do encryption here
 								$time_show =  $Encryption -> encrypt($question_old_text_array[1],$vid_enc_key);
 
 								$text_show = $Encryption -> encrypt ($question_old_text_array[3],$vid_enc_key);
@@ -1434,7 +1439,6 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 								for ($i = 2; $i < $target_array_length-1; $i++) {
 									$string = $question_old_text_array[2*$i+1];
 				
-									//! can encrypt here
 									$j = $i-1;
 									$target_array[$i] = htmlspecialchars('<div class = "option option-'.$j.' display_none " >'.$string.'</div>');
 								}
@@ -1661,40 +1665,40 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 
 
 
-			if ($pblm_data['videonm3']!==false){
-				$path3 = "Video/".$pblm_data['videonm3'];
-			if (strpos(trim($tag->plaintext),'++vid3')!== false)
-			{
-						$html = str_replace($tag->outertext,'<div id = "video3"><video id="vid3" class = "video-js" 
-						playsinline preload = "auto" data-setup="{}"  width="640"   height="264" liveui="false"  controls = "controls" >
-						<source src = "'.$path3.'"   type="video/mp4" > '. $tag->outertext,$html);
+// 			if ($pblm_data['videonm3']!==false){
+// 				$path3 = "Video/".$pblm_data['videonm3'];
+// 			if (strpos(trim($tag->plaintext),'++vid3')!== false)
+// 			{
+// 						$html = str_replace($tag->outertext,'<div id = "video3"><video id="vid3" class = "video-js" 
+// 						playsinline preload = "auto" data-setup="{}"  width="640"   height="264" liveui="false"  controls = "controls" >
+// 						<source src = "'.$path3.'"   type="video/mp4" > '. $tag->outertext,$html);
 
-			}
+// 			}
 
-						$num_Q=1;
-						$nmax = 20;
-						$Q_found = true;
-						while ($num_Q<$nmax){  // put the video number and problem number also in the questions id
-							$pattern1 = "::Q-3-".$num_Q;
-							$pattern2 = "Q-3-".$num_Q."::";
-							// $regex_pattern = $pattern1."(.*?)".$pattern2;
-							// $tag_text = trim($tag->plaintext);
-							// $position1 =  strpos($tag_text,$pattern1)+5;
-							// $position2 = strpos($tag_text,$pattern2)-1;
-							// $length = $position2 - $position1;
-							// $full_question= substr($tag_text,$position1,$length);
-							// list($k, $v) = explode(',', $full_question);	
-							// $full_question_arr[ $k ] = $v;
+// 						$num_Q=1;
+// 						$nmax = 20;
+// 						$Q_found = true;
+// 						while ($num_Q<$nmax){  // put the video number and problem number also in the questions id
+// 							$pattern1 = "::Q-3-".$num_Q;
+// 							$pattern2 = "Q-3-".$num_Q."::";
+// 							// $regex_pattern = $pattern1."(.*?)".$pattern2;
+// 							// $tag_text = trim($tag->plaintext);
+// 							// $position1 =  strpos($tag_text,$pattern1)+5;
+// 							// $position2 = strpos($tag_text,$pattern2)-1;
+// 							// $length = $position2 - $position1;
+// 							// $full_question= substr($tag_text,$position1,$length);
+// 							// list($k, $v) = explode(',', $full_question);	
+// 							// $full_question_arr[ $k ] = $v;
 						
-// these will go in the Questions data table  the time can stay here but 
+// // these will go in the Questions data table  the time can stay here but 
 							
-							if( strpos(trim($tag->plaintext),$pattern1)!== false) {$html = str_replace($tag->outertext,'<div id="Q-3-'.$num_Q.'-'.$problem_id.'" class = "vid-question">' . $tag->outertext,$html);} else {$Q_found = false;}
-							if (strpos(trim($tag->plaintext),$pattern2)!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
-							$num_Q++;
-						}
+// 							if( strpos(trim($tag->plaintext),$pattern1)!== false) {$html = str_replace($tag->outertext,'<div id="Q-3-'.$num_Q.'-'.$problem_id.'" class = "vid-question">' . $tag->outertext,$html);} else {$Q_found = false;}
+// 							if (strpos(trim($tag->plaintext),$pattern2)!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+// 							$num_Q++;
+// 						}
 			
-			if (strpos(trim($tag->plaintext),'vid3++')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</video></div>",$html);}
-		}
+// 			if (strpos(trim($tag->plaintext),'vid3++')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</video></div>",$html);}
+// 		}
 
 
                     
@@ -1754,12 +1758,13 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                         if (strpos(trim($tag->plaintext),'==t')!== false) {$html = str_replace($tag->innertext,$tag->innertext.'</div>',$html);}
                     
                     foreach(range('a','j') as $v){
-                        if (strpos(trim($tag->plaintext),'p=='.$v.'==p')!== false) { $html = str_replace($tag->outertext,'<div id="part'.$v.'">' . $tag->outertext.'</div>',$html);}
+                        if (strpos(trim($tag->plaintext),'p=='.$v.'==p')!== false) {$html = str_replace($tag->outertext,'<div id="part'.$v.'">' . $tag->outertext.'</div>',$html);}
                     }
                 }
 //				die;
 
 			$Encryption = new Encryption();		
+			if(isset($answer_values)){
 			for ($k=0; $k<= 10; $k++){
 				$answers[$k] = array_column($answer_values,$k);
 				$answer[$k] = implode(',',$answers[$k]);
@@ -1784,7 +1789,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 			for ($k=1; $k<= 13; $k++){
 				$pattern[$k] = '/##' . $var_names[$k] . ',.+?##/';
 			}
-
+		}
 			
 			// var_dump($input);
 			// echo '<br><br>';
@@ -1821,19 +1826,21 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
                 $html = str_replace('==x','',$html);
                 $html = str_replace('v==','',$html);
                 $html = str_replace('==v','',$html);
+		if(isset($answer)){
 			$k = 1;
              foreach(range('a','j') as $v){
 				$html = str_replace('p=='.$v,'<span id = "part_'.$v.'" data-key = " '. $answer[$k].'" >'.$v.')',$html);   // put the answers in the data-ans then encrypt it
 				$k++;
 				$html = str_replace('==p','</span>',$html); 
              }
-
+		}
+			if(isset($input)) {
 			 for ($k=1; $k<= 13; $k++){
 	//			$html = str_replace($pattern[$k],'<span id = "'.$pattern[$k].'" data-input = " '. $input[$k].'" >.'$pattern[$k]'.</span>)',$html);   // put the answers in the data-ans then encrypt it
 				$html = preg_replace($pattern[$k],'<span class="input" data-input = "'.$input[$k].'">'.str_replace('/','',$pattern[$k]).'</span>' ,$html);   // put the answers in the data-ans then encrypt it
 
 			}
-
+		}
              
                // put a div around all of the captions
                 $html = str_get_html($html);
@@ -1908,7 +1915,8 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 		
 		// If all fields have values we should set the status to new file
 		
-		header( 'Location: QRPRepo.php' ) ;
+		header('Location:QRPRepo.php') ;
+
 		die();
 	}
 
@@ -1916,6 +1924,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	if ( ! isset($_GET['problem_id']) ) {
 	  $_SESSION['error'] = "Missing problem_id";
 	  header('Location: QRPRepo.php');
+
 	 die();
 	}
 
@@ -1926,6 +1935,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 	if ( $row === false ) {
 		$_SESSION['error'] = 'Bad value for problem_id';
 		header( 'Location: QRPRepo.php' ) ;
+
 		die();
 	}
 
@@ -1960,7 +1970,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 		$file_pathin='uploads/'.$in;
 		$file_pathvid1 ='Video/'.$vid1;
 		$file_pathvid2 ='Video/'.$vid2;
-		$file_pathvid3 ='Video/'.$vid3;
+//		$file_pathvid3 ='Video/'.$vid3;
        
 	// now strip out the extra charcters that were added by the system so the download file has the same name as the original uploaded file	
 	
@@ -2073,18 +2083,18 @@ if(strlen($vid3)>2) {
 
 
 	</p>
-	<p>Answers File - csv: <input type='file' accept='.csv' name='Qa'/></p>
+	<p>Answers File - csv:<span style = "color:red; vertical-align:super">*</span> <input type='file' accept='.csv' name='Qa'/></p>
 
 	<?php if(!$gf){ // only have this input if it is not a game problem
 		?>  
-	<p><font color="black">Input File - csv: </font><input type='file' accept='.csv'  name='inputdata'/></p>
+	<p><font color="black">Input File - csv: <span style = "color:red; vertical-align:super">*</span> </font><input type='file' accept='.csv'  name='inputdata'/></p>
 	<?php } 
 	?>
 
 
 	<?php if(!$gf){ // only have this input if it is not a game problem
 		?>  
-	<p>Html Problem Statement File: <input type='file' accept='.htm' name='htmlfile'/></p>
+	<p>Html Problem Statement File: <span style = "color:red; vertical-align:super">*</span> <input type='file' accept='.htm' name='htmlfile'/></p>
 	<p> Html Problem Associated Directory Containing Pictures (only if figures are used): <input type="file" name="picfiles[]" id="HTMLPics" multiple="" directory="" webkitdirectory="" mozdirectory="">
 	<?php } 
 	?>
@@ -2104,7 +2114,7 @@ if(strlen($vid3)>2) {
 	<div id = "interactive_video">
 		<p>Interactive Video 1 <input type='file' accept='.mp4' name='video1'/></p>
 		<p>Interactive Video 2 <input type='file' accept='.mp4' name='video2'/></p>
-		<p>Interactive Video 3 <input type='file' accept='.mp4' name='video3'/></p>
+		<!-- <p>Interactive Video 3 <input type='file' accept='.mp4' name='video3'/></p> -->
 	</div>
 
 	<div id = "video_assets"> 
@@ -2249,6 +2259,8 @@ if(strlen($vid3)>2) {
 	<style>#Update_btn{background-color: lightyellow }</style>
 	</form>
 		<form action = "editMeta.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "<?php echo($problem_id)?>"><input type = "submit" value ="Edit Meta Data"></form>
+
+		<div><span style = "color:red; vertical-align:super">*</span> - if you update the html you will need to select both the answer and input files to display properly</div>
 
 	<form action="" method="post" enctype="multipart/form-data">
 	<p><hr></p>

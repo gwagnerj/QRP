@@ -3,7 +3,7 @@
 	session_start();
 	 //unset($_POST['change_class']);
     $currentclass_id = '';
-      if (isset($_POST['stu_name'])){$student_id = $_POST['student_id'];}
+      if (isset($_POST['student_id'])){$student_id = $_POST['student_id'];}
        if (isset($_POST['stu_name'])){$stu_name = $_POST['stu_name'];}
       if (isset($_POST['iid'])){$iid = $_POST['iid'];}
 	  if (isset($_POST['pin'])){$pin = $_POST['pin'];}
@@ -67,28 +67,6 @@
             
         } else {
    
-   // use a join here 
-     /*           
-
-             $sql = 'SELECT * FROM `StudentCurrentClassConnect` INNER JOIN `CurrentClass` ON  StudentCurrentClassConnect.student_id = CurrentClass.student_id WHERE student_id = :student_id';
-            $stmt = $pdo->prepare($sql);
-             $stmt->execute(array(':student_id' => $student_id));
-             $class_data = $stmt -> fetch();
-             $pin = $class_data['pin'];   
-            // $currentclass_id = $class_data['currentclass_id'];
-             
-          
-            SELECT 
-    productCode, 
-    productName, 
-    textDescription
-FROM
-    products t1
-INNER JOIN productlines t2 
-    ON t1.productline = t2.productline;
-   
-    */
-   
         //   echo (' student_id '.$student_id);
         //  echo (' currentclass_id '.$currentclass_id);
         // die(); //  echo (' student_id '.$student_id);
@@ -126,7 +104,7 @@ INNER JOIN productlines t2
     }
 
     
-    // this is the normal place to start for students checking their homework and goes the the QRcontroller.  Can also come from the rtnCode.php or the back button on QRdisplay.php  This will
+    // this is the normal place to start for students checking their homework and goes the the QRcontroller.  Can also come from the rtnCode.php or the back button on QRdisplay.php  
      
  
 	// first time thru set scriptflag to zero - this will turn to 1 if the script ran
@@ -185,6 +163,8 @@ INNER JOIN productlines t2
 	if(isset($_POST['stu_name'])){
 		$stu_name = htmlentities($_POST['stu_name']);
 	} 
+
+  // echo ("cclass_id ".$cclass_id );
     if ($cclass_id>0){
         $current_class_id = $cclass_id;
        $sql = 'SELECT * FROM CurrentClass WHERE currentclass_id = :currentclass_id';
@@ -195,11 +175,12 @@ INNER JOIN productlines t2
          $cclass_name = $class_data['name'];
          $iid = $class_data['iid'];  
     }
-    // echo ('alias_num '.$alias_num);
+ //    echo ('alias_num '.$alias_num);
     // die;
     
 // Go get the problem id from the Assignment table
-	if(isset($_POST['submit'])&& isset($_POST['assign_num'])&& isset($alias_num)&& isset($_POST['iid']) && isset($_POST['cclass_id']) && isset($_POST['pin'])) {
+	if(isset($_POST['assign_num'])&& isset($alias_num)&& isset($_POST['iid']) && isset($_POST['cclass_id']) && isset($_POST['pin'])) {
+//	 if(isset($_POST['submit'])&& isset($_POST['assign_num'])&& isset($alias_num)&& isset($_POST['iid']) && isset($_POST['cclass_id']) && isset($_POST['pin'])) {
         $assign_num = htmlentities($_POST['assign_num']);
 	//	$alias_num = htmlentities($_POST['alias_num']);
 		$cclass_id = htmlentities($_POST['cclass_id']);
@@ -229,9 +210,9 @@ INNER JOIN productlines t2
          ));
          $activity_data = $stmt -> fetch();
          $activity_id = $activity_data['activity_id'];
-         
-         if(strlen($activity_id)< 1){
-           
+// echo ("activity_id".$activity_id); 
+        if(strlen($activity_id)< 1){
+        //  echo ("am I here");  
            // make a new entry in the activity table 
            
            if (!is_numeric($pin) || $pin>10000 || $pin<=0){
@@ -784,7 +765,7 @@ $(document).ready( function () {
 						// $('#alias_num_div').append('<th  style="text-align:center" width="20%"> Problem: </th>') ;
                       
                         let student_id = document.getElementById('student_id').value;
-
+console.log ("n",n);
                         for (i=0;i<n;i++){  //! n here is the number of problems so in the card system this would be the number of cards
 							//could put in code to get from the activity table which problems have been attempted and which are complete and color the radio buttons different
          //! this is where we could put BS table classes               
@@ -824,6 +805,10 @@ $(document).ready( function () {
                         console.log ("card_bodies "+card_bodies)
                         }
 
+                        console.log("assign_num:",assign_num);
+                        console.log("currentclass_id:",currentclass_id);
+                        console.log(" student_id:", student_id);
+
                             $.ajax({
                                           url: 'getresults.php',
                                           method: 'post',
@@ -837,12 +822,12 @@ $(document).ready( function () {
 
 
                                                   //                                   console.log('alias_nums 861 three ' + alias_nums); 
-                             //!                     console.log("get results really " +results);
+                                                  console.log("get results really " +results);
 
                                                   results = JSON.parse(results);
                                                   n2 = results.length;
                                                                                     //          console.log(' alias_nums three '+alias_nums);   
-                                                                                          console.log('  n2 '+n2);
+                                                                                          console.log('  n2yaw '+n2);
                                                                                     //  console.log('  n '+n);
                                                     //                                    console.log("get results really " +results[0]["activity_id"]);
                                                   //                                          
@@ -1140,7 +1125,7 @@ $(document).ready( function () {
 
                                                               console.log ("j",j);
                                                           console.log ("alias_nums",alias_num);
-                                                          console.log ("wtFFFFFFFFFFFFFFFFFFFFFF");
+                                           //               console.log ("wtFFFFFFFFFFFFFFFFFFFFFF");
 
                                                               let files_uploaded = document.createElement('div')
                                                                 num_files = JSON.parse(num_files);
