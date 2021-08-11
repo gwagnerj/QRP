@@ -82,6 +82,8 @@ for (let i = 0; i < 3; i++) {
             }
             pause_vid_ar[i] = p_time;
 
+            console.log ("pause_vid_ar", pause_vid_ar);
+
 
 
             console.log("the quiz_items are ", quiz_items_ar[i]);
@@ -192,11 +194,23 @@ function runTillPause(video, video_index, upcoming_q_index, start_time) { //? Pl
     //     location.reload(true);
     // }
 
-    pause_time = pause_vid_ar[video_index][upcoming_q_index];
+    let pause_time = 1;
 
+    if (pause_vid_ar){
+        console.log ("pause_vid_ar", pause_vid_ar);
+        console.log ("pause_vid_ar",{pause_vid_ar});
+        if(pause_vid_ar.length>0){
+                pause_time = pause_vid_ar[video_index][upcoming_q_index];
+        }
+    }
 
-    let upcoming_question = quiz_items_ar[video_index][upcoming_q_index];
+    let upcoming_question = "";
+    if (quiz_items_ar){
+        if(quiz_items_ar.length>0){
+     upcoming_question = quiz_items_ar[video_index][upcoming_q_index];
     console.log("upcoming_question ", upcoming_question);
+    }
+}
 
     // let video = e.currentTarget;
     console.log(" video ", {

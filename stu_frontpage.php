@@ -214,9 +214,9 @@
         if(strlen($activity_id)< 1){
         //  echo ("am I here");  
            // make a new entry in the activity table 
-           
+   //? I don't think we use the pin for anything anymore        
            if (!is_numeric($pin) || $pin>10000 || $pin<=0){
-                 $_SESSION['error']='Your PIN is nonnumeric less than 1 or out of range 1st.';	
+       //          $_SESSION['error']='Your PIN is nonnumeric less than 1 or out of range 1st.';	
             } else {
                 $dex = ($pin-1) % 199 + 2; // % is PHP mudulus function - changing the PIN to an index between 2 and 200
             }
@@ -808,6 +808,7 @@ console.log ("n",n);
                         console.log("assign_num:",assign_num);
                         console.log("currentclass_id:",currentclass_id);
                         console.log(" student_id:", student_id);
+                        console.log(" nnnnnnnnn:", n);
 
                             $.ajax({
                                           url: 'getresults.php',
@@ -815,7 +816,8 @@ console.log ("n",n);
                                           data: {
                                               assign_num: assign_num,
                                               currentclass_id: currentclass_id,
-                                              student_id: student_id
+                                              student_id: student_id,
+                                              n:n
                                           },
                                           success: function (results, status, xhr) {
                                                   //  console.log ('Im on 842');
@@ -856,7 +858,13 @@ console.log ("n",n);
 
 
                                             for(var j = 0;j < n2; j++)   {
-                                              let alias_num = results[j]["alias_num"];
+
+                                          //   let alias_num = i;
+                                               let alias_num = results[j]["alias_num"];
+                                              console.log("the results at j are ",results[j]);
+
+
+                                              console.log(` the alias number is ${alias_num}`);
 
                             let button = document.createElement('button');
   //                          button.id = "problem-btn_"+activealias[i];
@@ -1125,12 +1133,16 @@ console.log ("n",n);
 
                                                               console.log ("j",j);
                                                           console.log ("alias_nums",alias_num);
-                                           //               console.log ("wtFFFFFFFFFFFFFFFFFFFFFF");
-
+                                                        console.log ("num_files_type",num_files.type);
+                                                        console.log ("num_files_length",num_files.length);
+                                                        console.log ("num_files",num_files);
+                                                        console.log ("num_files",{num_files});
+                                                              
                                                               let files_uploaded = document.createElement('div')
-                                                                num_files = JSON.parse(num_files);
+                                                                if(num_files.type){num_files = JSON.parse(num_files);} else {num_files =0;}
+                                                                
                                                                 let text_color = "text-primary";
-                                                             if (num_files == 0){text_color = "text-danger fw-bold"}
+                                                             if (num_files == 0){text_color = "text-warning fw-bold"}
   
                                                               files_uploaded.innerHTML = '<div id = "num-work-files-'+alias_num+'" class="text-primary text-start my-2 ms-2">Work Files Uploaded: &nbsp; <span class = "'+text_color+'" > '+num_files+'</span></div>';
                                                               let card_body = [];

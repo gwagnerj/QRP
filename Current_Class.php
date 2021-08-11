@@ -97,7 +97,7 @@ if (isset($_SESSION['iid'])) {
 </header>	
 	 <div class="wrapper">
        
-        <form  method="post">
+        <!-- <form  method="post"> -->
 			<table id="table_format" class = "a" border="1" >
 			<thead>
 			</td>
@@ -111,7 +111,8 @@ if (isset($_SESSION['iid'])) {
 			<th> Sect 5 name </th>
 			<th> Sect 6 name </th> -->
 			<th> Expires </th>
-			<th> Function </th>
+			<th> Delete Class </th>
+			<th> Relaunch Class </th>
 			<tr>
 			</thead> <tbody>
 			<?php
@@ -146,8 +147,13 @@ if (isset($_SESSION['iid'])) {
 				
 			
 					echo('<a href="deletecourse.php?currentclass_id='.$row['currentclass_id'].'"><b> Delete </b> Class and  Remove all </br> Activity and Assignments</br> <font color = "red"> No Confirmation, No Undo </font></a>');
+				echo "</td><td>";
+			
+				
+			
+			//		echo('<a href="relaunchcourse.php?currentclass_id='.$row['currentclass_id'].'"><b> Remove Students </b><br> and all their activity <br> <font color = "red"> No Confirmation, No Undo </font></a>  <input type="date" name="new_exp_date" value = "2019-05-13"  min="2019-05-13" max="2100-01-10" id="exp_date" >');
 
-			//echo('<form action = "deletecourse.php" method = "POST"> <input type = "hidden" name = "currentclass_id" value = "'.$row['currentclass_id'].'"><input type = "submit" value ="Delete"></form>');
+			echo('<span title = "This will remove all of the students and their activity from the class and re-set the expiration date"> <form id = "relaunch-'.$row['currentclass_id'].'" action = "relaunch_class.php" method = "post"> <input type = "hidden" name = "currentclass_id" value = "'.$row['currentclass_id'].'"> <input class = "new_exp_date" type="date" name="new_exp_date" value = "2021-12-13"  min="2019-05-13" max="2100-01-10" id="exp_date" ><input type = "submit" value ="ReLaunch"><br> <font color = "red"> No Confirmation, No Undo </font></form></span>');
 				echo "</td><tr>";
 			}
 		
@@ -160,7 +166,7 @@ if (isset($_SESSION['iid'])) {
 	<h2>Add A Course: </h2>			
 			<form method = "POST">				
 			Course Name (e.g. Fluid Mechanics I) <br> <input type= "text" Name="name" >  </br> 
-			<p>When Should This Activation Expire - A few days after the end of the semester is fine (max 1 yr from now)</br> <input type="date" name="exp_date" value = "2019-05-13"  min="2019-05-13" max='2000-01-10' id="exp_date" ></p></br>
+			<p>When Should This Activation Expire - A few days after the end of the semester is fine (max 1 yr from now)</br> <input type="date" name="exp_date" value = "2019-05-13"  min="2019-05-13" max='2100-01-10' id="exp_date" ></p></br>
 
 			
 		<!--	<h3><font color = "Blue"  > Only Add Sections if you are Teaching Multiple Sections of the Same Course </font> </h3>
@@ -227,6 +233,11 @@ if (isset($_SESSION['iid'])) {
 		d.setFullYear(yr, m, 25);  // change d to the end of the semester
 		var expDate = d.toISOString(true).slice(0,10);
 		document.getElementById("exp_date").value = expDate;
+		let new_exp_dates = document.getElementsByClassName("new_exp_date");
+		for (i=0; i<new_exp_dates.length; i++){
+			new_exp_dates[i].value = expDate;
+		}
+
 	
 	} );
 	

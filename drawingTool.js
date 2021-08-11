@@ -78,7 +78,7 @@ let filename = location.origin + '/QRP/drawing_tool_images/' + activity_id + '-d
 
 //?  let drawing_tool = document.querySelector(".drawing_container");
 let drawing_tool = document.getElementById("drawing_container1");
-let BC_drawing_tool = document.querySelector(".drawing_container");
+let BC_drawing_tool = document.getElementById("drawing_BC_container1");
 
 var ptro = Painterro({
   activeColor: '#00ff00', // default brush color is green
@@ -108,7 +108,7 @@ var ptro = Painterro({
         console.log(data);
       }
     });
-
+  
 
     //  console.log("save was clicked")
   },
@@ -121,9 +121,10 @@ var ptro = Painterro({
   //     defaultEraserWidth: 10,
 });
 
+
 var BC_ptro = Painterro({
   activeColor: '#00ff00', // default brush color is green
-  id: "BC_drawing_container1",
+  id: "drawing_BC_container1",
   defaultFontSize: 20,
   shadowScale: 0,
   defaultArrowLength: 50,
@@ -167,7 +168,7 @@ var BC_ptro = Painterro({
 
 //  console.log ("previous_background_4-3",previous_background_4);
 
-function ImageExist(url) {
+function ImageExist(url) {  
   if (url) {
     var req = new XMLHttpRequest();
     req.open('HEAD', url, false); // this false (synchrounous has been depreciated so I may need to change it to true but then it is asynchrounous and may need promise..)

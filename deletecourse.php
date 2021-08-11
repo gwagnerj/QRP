@@ -7,6 +7,10 @@ session_start();
 if(isset($_GET['currentclass_id'])){
 // no need to confirm just delete it
 	$currentclass_id = $_GET['currentclass_id'];
+	$sql = "DELETE FROM StudentCurrentClassConnect WHERE currentclass_id = :currentclass_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(':currentclass_id' => $currentclass_id));
+
 	$sql = "DELETE FROM CurrentClass WHERE currentclass_id = :currentclass_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':currentclass_id' => $currentclass_id));
@@ -42,4 +46,4 @@ if(isset($_GET['currentclass_id'])){
 	
 }
 
-
+?>

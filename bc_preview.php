@@ -103,8 +103,12 @@ $html->load_file($htmlfilenm);
    if ($drawing_tool_background){
    $drawing_tool_background_arr = $drawing_tool_background[0];
    $drawing_tool_background_src = $drawing_tool_background_arr->children(0)->getAttribute("src");
-   }
-   
+//    echo "<script>window.localStorage.setItem('drawing_tool_background_src', '" . $drawing_tool_background_src . "');</script>";
+
+} else 
+{
+//   echo "<script>window.localStorage.removeItem('drawing_tool_background_src');</script>";
+}
 
 $base_case = $html->find('#problem', 0);
 //? echo ('$base_case '.$base_case);
@@ -141,6 +145,7 @@ foreach (range('a', 'j') as $m) {
         '<div id="BC_' . $let_pattern . '">',
         $base_case
     );
+    
 }
 // echo $base_case;
 
@@ -150,6 +155,14 @@ for ($i = 0; $i < $nv; $i++) {
         $base_case = preg_replace($pattern[$i], $vari[$i], $base_case);
     }
 }
+
+// $base_case = str_replace("drawing_container1","drawing_BC_container1",$base_case);
+// $base_case = str_replace("drawing-open1","drawing-BC-open1",$base_case);
+// $base_case = str_replace("drawing-btn-close1","drawing-BC-btn-close1",$base_case);
+// $base_case = str_replace("drawing-btn-open1","drawing-BC-btn-open1",$base_case);
+// $base_case = str_replace("gray-out","",$base_case);
+
+
 
 $dom = new DOMDocument();
 libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
@@ -253,6 +266,12 @@ echo "<script>document.write(localStorage.setItem('drawing_tool_background_src',
 
 <script src="interactiveVideos.js"></script>
 <script src = "drawingTool.js"> </script>
+<script>
+
+// let drawing_tool_background = document.getElementsByClassName("drawing-tool-background");
+// drawing_tool_background.classList.remove("display_none");
+
+</script>
  
 
 

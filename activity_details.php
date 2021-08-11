@@ -148,6 +148,11 @@ echo ('<hr><h2>'.$activity_data["stu_name"].'\'s Problem Statement</h2>');
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 <script type="text/javascript" charset="utf-8" src="qrcode.js"></script>
+<style>
+.display_none{ display: none;}
+
+
+</style>
 
 </head>
 
@@ -383,6 +388,20 @@ foreach(range('a','j') as $v){
             }
              $keep = 0;
         } 
+
+                //? if there are drawings replace all of the id's on the drawings with bc ids...
+
+                $base_case = str_replace("drawing_container1","drawing_BC_container1",$base_case);
+                $base_case = str_replace("drawing-open1","drawing-BC-open1",$base_case);
+                $base_case = str_replace("drawing-btn-close1","drawing-BC-btn-close1",$base_case);
+                $base_case = str_replace("drawing-btn-open1","drawing-BC-btn-open1",$base_case);
+                $base_case = str_replace("vid1_container","vid_BC_1_container",$base_case);
+                $base_case = str_replace("vid2_container","vid_BC_2_container",$base_case);
+                $base_case = str_replace("vid1","vid_BC_1",$base_case);
+                $base_case = str_replace("vid1-controls","vid1-BC-controls",$base_case);
+                $base_case = str_replace("vid1_question_container","vid1_question_BC_container",$base_case);
+   //             $base_case = str_replace("gray-out","",$base_case);
+       
          
          
     // only include the document above the checker
@@ -409,6 +428,26 @@ foreach(range('a','j') as $v){
 
 ?>
 
+<script>
+let vid1_container = document.getElementById("vid1_container");
+let vid2_container = document.getElementById("vid2_container");
+let vid1_BC_container = document.getElementById("vid_BC_1_container");
+let vid2_BC_container = document.getElementById("vid_BC_2_container");
+let drawing_container1 = document.getElementById("drawing_container1");
+let drawing_BC_container1 = document.getElementById("drawing_BC_container1");
+let drawing_open1 = document.getElementById("drawing-open1");
+if (vid1_container){vid1_container.classList.add("display_none");}
+if (vid2_container){vid2_container.classList.add("display_none");}
+if (drawing_container1) {drawing_container1.classList.add("display_none");}
+if (drawing_open1) {drawing_open1.classList.add("display_none");}
+if (vid1_BC_container) {vid1_BC_container.classList.add("display_none");}
+if (vid2_BC_container) {vid2_BC_container.classList.add("display_none");}
+if (drawing_BC_container1) {drawing_BC_container1.classList.add("display_none");}
+
+
+
+
+</script>
 
 
 

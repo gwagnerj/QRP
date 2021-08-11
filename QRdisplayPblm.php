@@ -665,7 +665,7 @@ function resizeIFrameToFitContent( frame ) {
 
 
 
-  window.addEventListener('error', function(event) { window.location.reload(true); })
+ //? window.addEventListener('error', function(event) { window.location.reload(true); })
 
 
 
@@ -1453,11 +1453,33 @@ change_count();
   //     }
   });
 
+  let head = document.getElementsByTagName('head')[0];
+let drawing_tool_script = document.createElement("script");
+drawing_tool_script.type = "text/javascript";
+
+// let drawing_tool_background_source = localStorage.getItem('drawing_tool_background_src');
+
+// if (drawing_tool_background_source)
+// {
+//   drawing_tool_script.src = "drawingTool.js";
+//   head.appendChild(drawing_tool_script);
+// }
+
+let interactive_video_script = document.createElement("script");
+interactive_video_script.type = "text/javascript";
+
+let vid_1 = document.getElementById("vid1");
+if (vid_1){
+  interactive_video_script.src = "interactiveVideos.js";
+  head.appendChild(interactive_video_script);
+}
+
 
 
 </script>
 
-<script src="interactiveVideos.js"></script> 
+<!-- <script src="interactiveVideos.js"></script>  -->
+
 
 <script src = "drawingTool.js"> </script>
 
