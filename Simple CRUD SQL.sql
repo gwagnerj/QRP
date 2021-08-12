@@ -1304,7 +1304,7 @@ WHERE
         `part_name` VARCHAR(2),
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		PRIMARY KEY (`bc_resp_id`),
-        CONSTRAINT FOREIGN KEY (`activity_id`) REFERENCES `Activity` (`activity_id`))
+        CONSTRAINT FOREIGN KEY (`activity_id`) REFERENCES `Activity` (`activity_id`) )
         ENGINE=InnoDB DEFAULT CHARSET=utf8;   
         
         ALTER TABLE Activity 

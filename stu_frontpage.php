@@ -79,7 +79,7 @@
              ':currentclass_id' => $currentclass_id
              ));
              $class_data = $stmt -> fetch();
-             $pin = $class_data['pin'];   
+             if($class_data){$pin = $class_data['pin']; } else {$pin = '';}  
             // $currentclass_id = $class_data['currentclass_id'];
              
               $sql = 'SELECT * FROM `CurrentClass` WHERE `currentclass_id` = :currentclass_id';
@@ -87,9 +87,9 @@
              $stmt->execute(array(':currentclass_id' => $currentclass_id));
              $cclass_data = $stmt -> fetch();
              
+             if ($cclass_data){$iid = $cclass_data['iid']; } else {$iid ='';}
+             if ($cclass_data){ $cclass_name = $cclass_data['name']; } else { $cclass_name = '';}
              
-             $iid = $cclass_data['iid'];   
-             $cclass_name = $cclass_data['name']; 
              // echo('$iid: '.$iid);
              $cclass_id = $currentclass_id; 
              // put a while $class data not false and create the drop down list or do it with JS
@@ -123,6 +123,7 @@
         $stmt = $pdo->prepare($sql);
          $stmt->execute(array(':activity_id' => $activity_id));
          $activity_data = $stmt -> fetch();
+         if ($activity_data){
          $iid = $activity_data['iid'];   
          $pin = $activity_data['pin'];   
          $stu_name = $activity_data['stu_name'];   
@@ -133,6 +134,11 @@
   //!       $alias_num = $activity_data['alias_num'];  
          $assign_id = $activity_data['assign_id'];  
          $progess = $activity_data['progress'];  
+         } else {
+           $assign_id =0;
+           $iid = 0;
+           $cclass_id = 0;
+         }
 
      $sql = 'SELECT COUNT(`currentclass_id`) FROM `StudentCurrentClassConnect` WHERE `student_id` = :student_id';
       $stmt = $pdo->prepare($sql);
@@ -145,9 +151,10 @@
          $stmt = $pdo->prepare($sql);
          $stmt->execute(array(':currentclass_id' => $currentclass_id));
          $class_data = $stmt -> fetch();
-         $class_name = $class_data['name'];
-         $cclass_name = $class_data['name'];
-         
+         if($class_data){
+          $class_name = $class_data['name'];
+          $cclass_name = $class_data['name'];
+         }
         $sql = 'SELECT `assign_num` FROM Assign WHERE assign_id = :assign_id AND iid = :iid AND currentclass_id = :currentclass_id';
          $stmt = $pdo->prepare($sql);
          $stmt->execute(array(':assign_id' => $assign_id,
@@ -155,7 +162,9 @@
                      ':currentclass_id' => $cclass_id,
          ));
          $assign_data = $stmt -> fetch();
+         if ($assign_data){
          $assign_num = $assign_data['assign_num'];
+         }
       } 
         // this is the first time through if we do not have an activity_id - The activity is unique for a particular student for a particular problem
         $activity_id = '';
@@ -249,6 +258,9 @@
                         ));        
                      $assigntime_data = $stmt -> fetch();
                      $assigntime_id = $assigntime_data['assigntime_id'];
+
+
+
                     
 
                         // go the controller
@@ -372,7 +384,56 @@
             header("Location: stu_getclass.php?student_id=".$student_id);
 			return; 
 		}
-        
+  
+
+//? get the assignment scores if they file_exists
+
+// echo $cclass_id;
+// echo $iid;
+// echo $assign_num;
+
+if (isset($cclass_id) && isset($iid) && isset($assign_num)){
+
+  $sql = "SELECT assigntime_id FROM `Assigntime` WHERE currentclass_id = :currentclass_id AND iid = :iid AND assign_num = :assign_num";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(array(
+      ':currentclass_id' => $cclass_id,
+      ':iid' => $iid,
+      ':assign_num' => $assign_num,
+      ));        
+   $assigntime_data = $stmt -> fetch();
+}
+
+if($assigntime_data){
+  $assigntime_id = $assigntime_data['assigntime_id'];
+}
+
+//var_dump ($assigntime_data);
+
+if ($student_id && isset($assigntime_id)){
+
+  $sql = "SELECT * FROM `Assignscore` WHERE assigntime_id = :assigntime_id AND student_id = :student_id";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(array(
+      ':assigntime_id' => $assigntime_id,
+      ':student_id' => $student_id,
+      ));        
+   $assignscore_data = $stmt -> fetch();
+}
+
+if (isset($assignscore_data)){
+  $qr_tot = $assignscore_data['qr_tot'];
+  $other_pblm = $assignscore_data['other_pblm'];
+  $assign_ec = $assignscore_data['assign_ec'];
+  $assign_tot = $assignscore_data['assign_tot'];
+
+} else {
+  $qr_tot = $other_pblm = $assign_ec = $assign_tot = 0;
+}
+
+
+
+
         
 if (isset($_SESSION['error'])){
 	echo $_SESSION['error']	;
@@ -412,7 +473,8 @@ table.main_table{
 <nav class="navbar sticky-top  navbar-light bg-light">
 
 <form method = "POST" class="container-fluid ">
-		<p><button type = "submit"  name = "reset" class = "btn btn-warning position-relative  bottom-0 start-0 justify-content-start"  > <i class="bi bi-box-arrow-left"></i> Back to Login </button>
+		<p><button type = "submit"  name = "reset" class = "btn btn-warning  btn-outline-primary position-relative  bottom-0 start-0 justify-content-start"  > <i class="bi bi-box-arrow-left"></i> Back to Login </button>
+		<!-- <p><button type = "submit"  name = "reset" class = "btn btn-warning position-relative  bottom-0 start-0 justify-content-start"  > <i class="bi bi-box-arrow-left"></i> Back to Login </button> -->
 	<!-- </form>
   <form method = "POST"  class="container-fluid justify-content-end"> -->
    
@@ -498,7 +560,14 @@ table.main_table{
 			echo('</select>');
 			?>
 		</h6>
-    <div id ="due-info" class = "text-primary fs-5 fw-bold mb-2" ></div>
+    <div id ="due-info" class = "text fs-5 fw-bold mb-2" ></div>
+    <div id = "assignment-scores-container"> 
+      <div class = "text-secondary fs-6 fw-bold ms-4"><?php if ($qr_tot !=0 && $qr_tot != $assign_tot ){ echo('Final Score on QR Problems: '. $qr_tot);}?> </div> 
+      <div class = "text-secondary fs-6 fw-bold ms-4"><?php if ($assign_ec !=0 ){ echo('Extra Points on Assignment: '. $assign_ec);}?> </div> 
+      <div class = "text-secondary fs-6 fw-bold ms-4"><?php if ($other_pblm !=0 ){ echo('Other Problems: '. $other_pblm);}?> </div> 
+      <div class = "text-primary fs-5 fw-bold my-2 ms_2"><?php if ($assign_tot !=0 ){ echo('Total Score on Assignment: '. $assign_tot);}?> </div> 
+  
+  </div>
 
        <section id="problem-cards" class="mt-1">
            <div id ="card-container" class = "feedback-container container-lg ms-2" >
@@ -861,15 +930,16 @@ console.log ("n",n);
 
                                           //   let alias_num = i;
                                                let alias_num = results[j]["alias_num"];
-                                              console.log("the results at j are ",results[j]);
+      //!                                        console.log("the results at j are ",results[j]);
 
 
-                                              console.log(` the alias number is ${alias_num}`);
+      //                                        console.log(` the alias number is ${alias_num}`);
 
                             let button = document.createElement('button');
   //                          button.id = "problem-btn_"+activealias[i];
                             button.id = "problem-btn_"+alias_num;
-                            button.className =  "btn btn-primary mb-0 d-flex justify-content-between align-items-start mt-1";
+                            button.className =  "btn btn-primary  btn-outline-white mb-0 d-flex justify-content-between align-items-start mt-1";
+                            // button.className =  "btn btn-warning mb-0 d-flex justify-content-between align-items-start mt-1";
                             button.type = "submit";
                             button.name = "submit";
                             button.value = alias_num;
@@ -879,7 +949,7 @@ console.log ("n",n);
                            percent_of_assignment.className = "text-secondary text-end ms-5 lh-1";
                            percent_of_assignment.style = "font-size:0.75rem; text-align: right; display: inline;"
                            let percent_of_assignment_text = "perc_"+alias_num;
-                           console.log("percent_of_assignment_text",percent_of_assignment_text);
+  //                         console.log("percent_of_assignment_text",percent_of_assignment_text);
                              percent_of_assignment.innerHTML = results[j][percent_of_assignment_text]+'% of Assignment';
          
 
@@ -959,7 +1029,7 @@ console.log ("n",n);
                                                 let problem_fb = '';
                                                   if (results[j]["fb_problem"]){
                                                     fb_problem = results[j]["fb_problem"]; problem_fb_button = '<button class="btn btn-outline-primary p-0 m-0" title = "Grader Feedback is available" style = "line-height: 0.9;" type="button" data-bs-toggle="offcanvas" data-bs-target="#problem-off-canvas'+j+'"> problem </button>'; 
-                                                     problem_fb = '<div class="offcanvas offcanvas-start" tabindex="-1" id="problem-off-canvas'+j+'">   <div class="offcanvas-header" > <h5 class="offcanvas-title" id="offcanvasExampleLabel">Grader Feedback </h5> <button type="button" class="btn-close text-reset btn-outline-primary"  data-bs-dismiss="offcanvas" aria-label="Close"></button> </div> <div class="offcanvas-body"> </p><p class = "text-success"> Graders Response:</p> <p class = "text-success"> '+results[j]["fb_problem"]+'</p> </div> </div> </div>';
+                                                     problem_fb = '<div class="offcanvas offcanvas-start" tabindex="-1" id="problem-off-canvas'+j+'">   <div class="offcanvas-header" > <h5 class="offcanvas-title" id="offcanvasExampleLabel">Grader Feedback </h5> <button type="button" class="btn-close text-reset btn-outline-primary"  data-bs-dismiss="offcanvas" aria-label="Close"></button> </div> <div class="offcanvas-body"> </p><p class = "text-success"> Graders Response:</p> <p class = "text-success"> '+results[j]["fb_problem"].replace(/_/g," ")+'</p> </div> </div> </div>';
                                                     }
 
 
@@ -993,35 +1063,35 @@ console.log ("n",n);
                                                   let valid_reflect_any3_key = 'perc_any3_ref_'+alias_num;
                                                   let fb_reflect = fb_explore = fb_connect = fb_society = '';
 
-                                                  console.log('results[j]["fb_reflect"]',results[j]["fb_reflect"]);
+//                                                  console.log('results[j]["fb_reflect"]',results[j]["fb_reflect"]);
 // could turn the feedback buttons red danger for peer feedback when I get that developed
 
                                                   let reflect_fb_button = "Reflect";
                                                   let reflect_fb = '';
                                                   if (results[j]["fb_reflect"]){
                                                     fb_reflect = results[j]["fb_reflect"]; reflect_fb_button = '<button class="btn btn-outline-primary p-0 m-0" title = "Grader Feedback is available" style = "line-height: 0.9;" type="button" data-bs-toggle="offcanvas" data-bs-target="#reflect-off-canvas'+j+'"> Reflect </button>'; 
-                                                     reflect_fb = '<div class="offcanvas offcanvas-start" tabindex="-1" id="reflect-off-canvas'+j+'">   <div class="offcanvas-header" > <h5 class="offcanvas-title" id="offcanvasExampleLabel"> Feedback </h5> <button type="button" class="btn-close text-reset btn-outline-primary"  data-bs-dismiss="offcanvas" aria-label="Close"></button> </div> <div class="offcanvas-body"> <div> <p> Question: '+ results[j]["reflect"]+'</p> <p  class = "text-primary"> Your Response: </p> <p class = "text-primary"> '+ results[j]["reflect_text"]+'</p><p class = "text-success"> Graders Response:</p> <p class = "text-success"> '+results[j]["fb_reflect"]+'</p> </div> </div> </div>';
+                                                     reflect_fb = '<div class="offcanvas offcanvas-start" tabindex="-1" id="reflect-off-canvas'+j+'">   <div class="offcanvas-header" > <h5 class="offcanvas-title" id="offcanvasExampleLabel"> Feedback </h5> <button type="button" class="btn-close text-reset btn-outline-primary"  data-bs-dismiss="offcanvas" aria-label="Close"></button> </div> <div class="offcanvas-body"> <div> <p> Question: '+ results[j]["reflect"]+'</p> <p  class = "text-primary"> Your Response: </p> <p class = "text-primary"> '+ results[j]["reflect_text"].replace(/_/g," ")+'</p><p class = "text-success"> Graders Response:</p> <p class = "text-success"> '+results[j]["fb_reflect"].replace(/_/g," ")+'</p> </div> </div> </div>';
                                                     }
 
                                                   let explore_fb_button = "Explore";
                                                   let explore_fb = '';
                                                   if (results[j]["fb_explore"]){
                                                     fb_explore = results[j]["fb_explore"]; explore_fb_button = '<button class="btn btn-outline-primary p-0 m-0" title = "Grader Feedback is available" style = "line-height: 0.9;" type="button" data-bs-toggle="offcanvas" data-bs-target="#explore-off-canvas'+j+'"> Explore </button>'; 
-                                                     explore_fb = '<div class="offcanvas offcanvas-start" tabindex="-1" id="explore-off-canvas'+j+'">   <div class="offcanvas-header" > <h5 class="offcanvas-title" id="offcanvasExampleLabel"> Feedback </h5> <button type="button" class="btn-close text-reset btn-outline-primary"  data-bs-dismiss="offcanvas" aria-label="Close"></button> </div> <div class="offcanvas-body"> <div> <p> Question: '+ results[j]["explore"]+'</p> <p  class = "text-primary"> Your Response: </p> <p class = "text-primary"> '+ results[j]["explore_text"]+'</p><p class = "text-success"> Graders Response:</p> <p class = "text-success"> '+results[j]["fb_explore"]+'</p> </div> </div> </div>';
+                                                     explore_fb = '<div class="offcanvas offcanvas-start" tabindex="-1" id="explore-off-canvas'+j+'">   <div class="offcanvas-header" > <h5 class="offcanvas-title" id="offcanvasExampleLabel"> Feedback </h5> <button type="button" class="btn-close text-reset btn-outline-primary"  data-bs-dismiss="offcanvas" aria-label="Close"></button> </div> <div class="offcanvas-body"> <div> <p> Question: '+ results[j]["explore"]+'</p> <p  class = "text-primary"> Your Response: </p> <p class = "text-primary"> '+ results[j]["explore_text"].replace(/_/g," ")+'</p><p class = "text-success"> Graders Response:</p> <p class = "text-success"> '+results[j]["fb_explore"].replace(/_/g," ")+'</p> </div> </div> </div>';
                                                     }
 
                                                   let connect_fb_button = "connect";
                                                   let connect_fb = '';
                                                   if (results[j]["fb_connect"]){
                                                     fb_connect = results[j]["fb_connect"]; connect_fb_button = '<button class="btn btn-outline-primary p-0 m-0" title = "Grader Feedback is available" style = "line-height: 0.9;" type="button" data-bs-toggle="offcanvas" data-bs-target="#connect-off-canvas'+j+'"> Connect </button>'; 
-                                                     connect_fb = '<div class="offcanvas offcanvas-start" tabindex="-1" id="connect-off-canvas'+j+'">   <div class="offcanvas-header" > <h5 class="offcanvas-title" id="offcanvasExampleLabel"> Feedback </h5> <button type="button" class="btn-close text-reset btn-outline-primary"  data-bs-dismiss="offcanvas" aria-label="Close"></button> </div> <div class="offcanvas-body"> <div> <p> Question: '+ results[j]["connec_t"]+'</p> <p  class = "text-primary"> Your Response: </p> <p class = "text-primary"> '+ results[j]["connect_text"]+'</p><p class = "text-success"> Graders Response:</p> <p class = "text-success"> '+results[j]["fb_connect"]+'</p> </div> </div> </div>';
+                                                     connect_fb = '<div class="offcanvas offcanvas-start" tabindex="-1" id="connect-off-canvas'+j+'">   <div class="offcanvas-header" > <h5 class="offcanvas-title" id="offcanvasExampleLabel"> Feedback </h5> <button type="button" class="btn-close text-reset btn-outline-primary"  data-bs-dismiss="offcanvas" aria-label="Close"></button> </div> <div class="offcanvas-body"> <div> <p> Question: '+ results[j]["connec_t"]+'</p> <p  class = "text-primary"> Your Response: </p> <p class = "text-primary"> '+ results[j]["connect_text"].replace(/_/g," ")+'</p><p class = "text-success"> Graders Response:</p> <p class = "text-success"> '+results[j]["fb_connect"].replace(/_/g," ")+'</p> </div> </div> </div>';
                                                     }
 
                                                   let society_fb_button = "society";
                                                   let society_fb = '';
                                                   if (results[j]["fb_society"]){
                                                     fb_society = results[j]["fb_society"]; society_fb_button = '<button class="btn btn-outline-primary p-0 m-0" title = "Grader Feedback is available" style = "line-height: 0.9;" type="button" data-bs-toggle="offcanvas" data-bs-target="#society-off-canvas'+j+'"> Society </button>'; 
-                                                     society_fb = '<div class="offcanvas offcanvas-start" tabindex="-1" id="society-off-canvas'+j+'">   <div class="offcanvas-header" > <h5 class="offcanvas-title" id="offcanvasExampleLabel"> Feedback </h5> <button type="button" class="btn-close text-reset btn-outline-primary"  data-bs-dismiss="offcanvas" aria-label="Close"></button> </div> <div class="offcanvas-body"> <div> <p> Question: '+ results[j]["society"]+'</p> <p  class = "text-primary"> Your Response: </p> <p class = "text-primary"> '+ results[j]["society_text"]+'</p><p class = "text-success"> Graders Response:</p> <p class = "text-success"> '+results[j]["fb_society"]+'</p> </div> </div> </div>';
+                                                     society_fb = '<div class="offcanvas offcanvas-start" tabindex="-1" id="society-off-canvas'+j+'">   <div class="offcanvas-header" > <h5 class="offcanvas-title" id="offcanvasExampleLabel"> Feedback </h5> <button type="button" class="btn-close text-reset btn-outline-primary"  data-bs-dismiss="offcanvas" aria-label="Close"></button> </div> <div class="offcanvas-body"> <div> <p> Question: '+ results[j]["society"]+'</p> <p  class = "text-primary"> Your Response: </p> <p class = "text-primary"> '+ results[j]["society_text"].replace(/_/g," ")+'</p><p class = "text-success"> Graders Response:</p> <p class = "text-success"> '+results[j]["fb_society"].replace(/_/g," ")+'</p> </div> </div> </div>';
                                                     }
 
                                                     // console.log('results[j]["reflect"]',results[j]["reflect"]);  
@@ -1076,13 +1146,17 @@ console.log ("n",n);
                                                 let explore_pts = 0; if (results[j]["explore_pts"]){explore_pts = results[j]["explore_pts"];}
                                                 let connect_pts = 0; if (results[j]["connect_pts"]){connect_pts = results[j]["connect_pts"];}
                                                 let society_pts = 0; if (results[j]["society_pts"]){society_pts = results[j]["society_pts"];}
-                                            
+  //!                                              let total_pts = 0; if (results[j]["society_pts"]){society_pts = results[j]["society_pts"];}
+                                            let fb_p_num_score_net = 0; if (results[j]["fb_p_num_score_net"]){fb_p_num_score_net = results[j]["fb_p_num_score_net"]}
+                                            let fb_probtot_pts = 0; if (results[j]["fb_probtot_pts"]){fb_probtot_pts = results[j]["fb_probtot_pts"]}
 
 
 
 
 
                                                 let provisional_points_text = results[j]["p_num_score_net"];  if (!provisional_points_text){provisional_points_text=0;}
+                                                let fb_p_num_score_net_html = '<div class = "row text-start text-primary"  style = "font-size:0.9rem;"  title = "Actual Points are awarded from Grader on numerical part of problem" ><div class = "col ps-3 pe-0"> Actual: &nbsp;'+fb_p_num_score_net+' of '+ num_score_possible+'</div></div>';
+                                                let fb_probtot_pts_html =''; if(fb_probtot_pts != 0) {fb_probtot_pts_html = '<div class = "row text-start text-primary"  style = "font-size:1.0rem;"  title = "Total points on Problem from Grader" ><div class = "col ps-3 pe-0"> Total for Problem: &nbsp;'+fb_probtot_pts+'</div>';} else {fb_probtot_pts_html = '<div class = "row text-start"  style = "font-size:0.7rem;"  title = "Total points on Problem from Grader" ><div class = "col ps-3 pe-0"> Total for Problem: &nbsp;'+fb_probtot_pts+'</div>';}
                                                 let provisional_points_html = '<div class = "row text-start"  style = "font-size:0.9rem;" title = "Provisional Points are awarded when problem is Finished and Survey is completed"><div class = "col ps-3 pe-0"> Provisional: &nbsp;'+provisional_points_text+' of '+ num_score_possible+'</div>';
                                                   if (perc_ref[j] !=0 || any_bol){provisional_points_html += '<div class = "col px-1 me-0"> Reflect: &nbsp;'+reflect_pts+' of '+ perc_ref[j] +'</div></div>';} else {provisional_points_html += '</div>';}
                                                 let extra_credit_points_text = results[j]["ec_pts"];  if (!extra_credit_points_text){extra_credit_points_text=0;}
@@ -1102,7 +1176,7 @@ console.log ("n",n);
                                                let survey_points_html = '<div class = "row text-start"  style = "font-size:0.9rem;"><div class = "col ps-3 pe-0">Survey: &nbsp;'+survey_points_text+' of '+survey_points_possible+'</div>';
                                                if (perc_soc[j] !=0 || any_bol){survey_points_html += '<div class = "col px-1"> Society: &nbsp;'+society_pts+' of '+ perc_soc[j] +'</div></div>';} else {survey_points_html += '</div>';}
 
-                                                points.innerHTML += '<div class="d-flex justify-content-between align-items-center ps-2 mt-3 text-primary" >Points</div> <div id = "points-box_'+alias_num+'" class = "border border-primary p-2"> '+provisional_points_html+extra_credit_points_html+late_penalty_points_html+survey_points_html+'</div>';
+                                                points.innerHTML += '<div class="d-flex justify-content-between align-items-center ps-2 mt-3 text-primary" >Points</div> <div id = "points-box_'+alias_num+'" class = "border border-primary p-2"> '+provisional_points_html+fb_p_num_score_net_html+extra_credit_points_html+late_penalty_points_html+survey_points_html+fb_probtot_pts_html+'</div>';
                                               var card_body = [];
                                                card_body[j] = document.getElementById("card-body_"+alias_num);
 
@@ -1123,28 +1197,28 @@ console.log ("n",n);
 //                                                card_body.appendChild(progress_status);
 //                                                card_body.appendChild(points);
 
-
+                                                console.log(`the activity id for j = ${j} and activity_id  is ${results[j]['activity_id']}`);
                                                     $.ajax({
                                                         url: 'getfilenumber.php',
                                                         method: 'post',
                                                         data: {activity_id:results[j]['activity_id']},
                                                         
-                                                            success: function(num_files,status,xhr){
+                                                            success: function(num_files,status){
 
                                                               console.log ("j",j);
                                                           console.log ("alias_nums",alias_num);
-                                                        console.log ("num_files_type",num_files.type);
+                                                        console.log ("num_files_type",typeof num_files);
                                                         console.log ("num_files_length",num_files.length);
                                                         console.log ("num_files",num_files);
                                                         console.log ("num_files",{num_files});
                                                               
                                                               let files_uploaded = document.createElement('div')
-                                                                if(num_files.type){num_files = JSON.parse(num_files);} else {num_files =0;}
+                                                                if(num_files){num_files = num_files;} else {num_files =0;}
                                                                 
                                                                 let text_color = "text-primary";
                                                              if (num_files == 0){text_color = "text-warning fw-bold"}
   
-                                                              files_uploaded.innerHTML = '<div id = "num-work-files-'+alias_num+'" class="text-primary text-start my-2 ms-2">Work Files Uploaded: &nbsp; <span class = "'+text_color+'" > '+num_files+'</span></div>';
+                                                              files_uploaded.innerHTML = '<div id = "num-work-files-'+alias_num+'" class=" text-start my-2 ms-2">Work Files Uploaded: &nbsp; <span class = "'+text_color+'" > '+num_files+'</span></div>';
                                                               let card_body = [];
                                                               card_body[j] = document.getElementById("card-body_"+alias_num);
                                                               console.log ("card_body[j]",card_body[j]);

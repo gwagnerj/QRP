@@ -231,14 +231,14 @@ drawing_btn_open1.addEventListener('click', function () {
 BC_drawing_btn_close1.addEventListener('click', function () {
   BC_drawing_btn_open1.classList.remove("display_none");
   BC_drawing_btn_close1.classList.add("display_none");
-  BC_drawing_container1.classList.add("display_none");
+  drawing_BC_container1.classList.add("display_none");
 
 })
 
 BC_drawing_btn_open1.addEventListener('click', function () {
   BC_drawing_btn_open1.classList.add("display_none");
   BC_drawing_btn_close1.classList.remove("display_none");
-  BC_drawing_container1.classList.remove("display_none");
+  drawing_BC_container1.classList.remove("display_none");
 
 })
 //}

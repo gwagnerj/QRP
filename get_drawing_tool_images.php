@@ -100,11 +100,11 @@ foreach($all_files as $all_file){
      if ($extension == 'jpg' || $extension == 'jpeg' || $extension == 'png' ){
   
             echo'<br>';
-            echo '<img src="drawing_tool_images/'.$all_file.'"   width="80%" height="100%">';
+            echo '<img src="drawing_tool_images/'.$all_file.'"   width="60%" height="100%">';
      } elseif($extension == 'pdf'){
        // echo(' all_file  '.$all_file); 
         echo(' <iframe frameborder="0" scrolling="no"');
-         echo('width="80%" height="100%"');
+         echo('width="100%" height="100%"');
          echo('src="drawing_tool_images/'.$all_file.'">');
          
      echo '</iframe>';
