@@ -2992,3 +2992,9 @@ ENGINE=InnoDB CHARACTER SET = utf8;
 	ADD `sequential` int(2) DEFAULT 1 AFTER `society`, 
   ADD `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER `sequential` ,
   ADD `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER `created_at`
+
+
+    ALTER TABLE `Assigntime` 
+	ADD `help_n_hint` int(4) AFTER `help_t_instruct`, 
+	ADD `help_t_hint` int(4) AFTER `help_n_hint`
+

@@ -392,44 +392,44 @@
 // echo $iid;
 // echo $assign_num;
 
-if (isset($cclass_id) && isset($iid) && isset($assign_num)){
+// if (isset($cclass_id) && isset($iid) && isset($assign_num)){
 
-  $sql = "SELECT assigntime_id FROM `Assigntime` WHERE currentclass_id = :currentclass_id AND iid = :iid AND assign_num = :assign_num";
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute(array(
-      ':currentclass_id' => $cclass_id,
-      ':iid' => $iid,
-      ':assign_num' => $assign_num,
-      ));        
-   $assigntime_data = $stmt -> fetch();
-}
+//   $sql = "SELECT assigntime_id FROM `Assigntime` WHERE currentclass_id = :currentclass_id AND iid = :iid AND assign_num = :assign_num";
+//   $stmt = $pdo->prepare($sql);
+//   $stmt->execute(array(
+//       ':currentclass_id' => $cclass_id,
+//       ':iid' => $iid,
+//       ':assign_num' => $assign_num,
+//       ));        
+//    $assigntime_data = $stmt -> fetch();
+// }
 
-if($assigntime_data){
-  $assigntime_id = $assigntime_data['assigntime_id'];
-}
+// if($assigntime_data){
+//   $assigntime_id = $assigntime_data['assigntime_id'];
+// }
 
-//var_dump ($assigntime_data);
+// //var_dump ($assigntime_data);
 
-if ($student_id && isset($assigntime_id)){
+// if ($student_id && isset($assigntime_id)){
 
-  $sql = "SELECT * FROM `Assignscore` WHERE assigntime_id = :assigntime_id AND student_id = :student_id";
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute(array(
-      ':assigntime_id' => $assigntime_id,
-      ':student_id' => $student_id,
-      ));        
-   $assignscore_data = $stmt -> fetch();
-}
+//   $sql = "SELECT * FROM `Assignscore` WHERE assigntime_id = :assigntime_id AND student_id = :student_id";
+//   $stmt = $pdo->prepare($sql);
+//   $stmt->execute(array(
+//       ':assigntime_id' => $assigntime_id,
+//       ':student_id' => $student_id,
+//       ));        
+//    $assignscore_data = $stmt -> fetch();
+// }
 
-if (isset($assignscore_data)){
-  $qr_tot = $assignscore_data['qr_tot'];
-  $other_pblm = $assignscore_data['other_pblm'];
-  $assign_ec = $assignscore_data['assign_ec'];
-  $assign_tot = $assignscore_data['assign_tot'];
+// if (isset($assignscore_data)){
+//   $qr_tot = $assignscore_data['qr_tot'];
+//   $other_pblm = $assignscore_data['other_pblm'];
+//   $assign_ec = $assignscore_data['assign_ec'];
+//   $assign_tot = $assignscore_data['assign_tot'];
 
-} else {
-  $qr_tot = $other_pblm = $assign_ec = $assign_tot = 0;
-}
+// } else {
+//   $qr_tot = $other_pblm = $assign_ec = $assign_tot = 0;
+// }
 
 
 
@@ -562,10 +562,10 @@ table.main_table{
 		</h6>
     <div id ="due-info" class = "text fs-5 fw-bold mb-2" ></div>
     <div id = "assignment-scores-container"> 
-      <div class = "text-secondary fs-6 fw-bold ms-4"><?php if ($qr_tot !=0 && $qr_tot != $assign_tot ){ echo('Final Score on QR Problems: '. $qr_tot);}?> </div> 
-      <div class = "text-secondary fs-6 fw-bold ms-4"><?php if ($assign_ec !=0 ){ echo('Extra Points on Assignment: '. $assign_ec);}?> </div> 
-      <div class = "text-secondary fs-6 fw-bold ms-4"><?php if ($other_pblm !=0 ){ echo('Other Problems: '. $other_pblm);}?> </div> 
-      <div class = "text-primary fs-5 fw-bold my-2 ms_2"><?php if ($assign_tot !=0 ){ echo('Total Score on Assignment: '. $assign_tot);}?> </div> 
+      <div id = "qr-tot" class = "text-secondary fs-6 fw-bold ms-4"> </div> 
+      <div id = "assign-ec" class = "text-secondary fs-6 fw-bold ms-4"></div> 
+      <div id = "other-pblm" class = "text-secondary fs-6 fw-bold ms-4" ></div> 
+      <div id = "assign-tot" class = "text-primary fs-5 fw-bold my-2 ms_2"> </div> 
   
   </div>
 
@@ -630,6 +630,7 @@ $(document).ready( function () {
 				
 		    }).done(function(assignids){
 					var assign_ids = JSON.parse(assignids);
+
                    var n = assign_ids.length;
                     for (i=0;i<n;i++){
                        var assign_id = JSON.parse(assign_ids[i]);
@@ -668,6 +669,14 @@ $(document).ready( function () {
 //			console.log("iid: "+iid);
 //			console.log("cclass_id: "+cclass_id);
 //			console.log("cclass_name: "+cclass_name);
+
+
+
+
+
+
+
+
 			
 			$.ajax({
 					url: 'getactivealias.php',
@@ -809,6 +818,9 @@ $(document).ready( function () {
            
 
 
+                 
+
+
 
 	         $.ajax({
 					url: 'getactivealias.php',
@@ -818,7 +830,7 @@ $(document).ready( function () {
                     success: function(activealias,status,xhr){
                         console.log('here we go again');
 
-                     console.log ('Im on 768 really'); 
+                     console.log ('Im on 830 really'); 
   //                    console.log (activealias);
                       activealias = JSON.parse(activealias);
 
@@ -890,6 +902,7 @@ console.log ("n",n);
                                           },
                                           success: function (results, status, xhr) {
                                                   //  console.log ('Im on 842');
+         
 
 
                                                   //                                   console.log('alias_nums 861 three ' + alias_nums); 
@@ -906,14 +919,43 @@ console.log ("n",n);
 
                                                   let due_info = document.getElementById('due-info');
                                                   let due_date = new Date();
-                                                  if(results.length>0){ due_date = new Date(results[0]["due_date"]);
+                                                  if(results.length>0){ 
+                                                    due_date = new Date(results[0]["due_date"]);
                                                  const formatted_date = due_date.toDateString();
-       //                                          dateWithouthSecond.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                                          //       const formatted_time = due_date.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'});	
                                                  const formatted_time = due_date.toLocaleTimeString('en-US');	
                                        
                                                   due_info.innerText =' Due: '+formatted_date + ' at '+formatted_time;
-                                                 // console.log("due_info",due_info);
+
+                                                    const assigntime_id = results[0]["assigntime_id"]
+
+                                                    console.log("assigntime_id",assigntime_id);
+                                                    console.log ("student_id",student_id);
+
+                                                    $.ajax({
+                                                            url: 'get_assignscore_data.php',
+                                                            method: 'post',
+                                                            data: {assigntime_id:assigntime_id,student_id:student_id},
+                                                    
+                                                    success: function(assignscore){
+                                                      console.log("assignscore",assignscore);                                                   
+                                                      assignscore = JSON.parse(assignscore);
+                                                           const qr_tot = assignscore['qr_tot'];
+                                                           const other_pblm = assignscore['other_pblm'];
+                                                           const assign_ec = assignscore['assign_ec'];
+                                                           const assign_tot = assignscore['assign_tot'];
+                                                           if(qr_tot && qr_tot !=0){document.getElementById("qr-tot").innerText = "Total on QR Problems: "+ qr_tot;}
+                                                           if(other_pblm && other_pblm !=0){document.getElementById("other-pblm").innerText = "Total on Other Problems: "+other_pblm;}
+                                                           if(assign_ec && assign_ec !=0){document.getElementById("assign-ec").innerText = "Assignment Extra Credit: "+ assign_ec;}
+                                                           if(assign_tot){document.getElementById("assign-tot").innerText = "Total Score On Assignment:"+ assign_tot;}
+
+                                                          console.log("qr_tot",qr_tot, other_pblm, assign_ec, assign_tot);
+
+
+                                                    }
+
+                                                            }); 
+
+
                                                   }
 
                                                   let perc_ref = new Array();
@@ -983,7 +1025,7 @@ console.log ("n",n);
                                                   let wcount_key = 'wcount_'+v;
                                                   let correct_key ='correct_'+v;
                                                   let wcount_bc_key = 'wcount_bc_'+v;
-                                                  let bc_correct_key ='bc_correct_a'+v;
+                                                  let bc_correct_key ='bc_correct_'+v;
                                                   let valid_part_key = 'perc_'+v+'_'+alias_num;
 
   //                                                console.log("valid_part_key",valid_part_key);

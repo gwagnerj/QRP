@@ -1,11 +1,50 @@
 <?php
- //header( "content-type: application/xml; charset=ISO-utf-8" );
- // Set the content type to be XML, so that the browser will   recognise it as XML.
-
 require_once "pdo.php";
 require_once "simple_html_dom.php";
 session_start();
 
+
+//   $entityBody = file_get_contents('php://input');  //? getting the input sent to the file - I hope
+
+//   var_dump ($entityBody);
+ $i = 0;
+ 
+foreach (range('a','j') as $m){
+    $perc_text = "percentage-part_".$m;
+    if(isset($_POST[$perc_text])){$percentage_part[$i] = $_POST[$perc_text];}  //? $percentage_part is the array we will use
+    $i++;
+}
+
+ //  var_dump ($percentage_part);
+ $max_hints = 10;
+
+
+ for ($i = 0; $i < $max_hints;$i++){
+    $j = $i+1;
+    $hint_order_key = "hint_".$j;
+    $hint_text_key = "hint-text_".$j;
+    if(isset($_POST[$hint_order_key]) && strlen($_POST[$hint_order_key]) > 0) {
+        // echo 'hint_order key  '.$_POST[$hint_order_key];
+        // echo '<br>';
+        $hint_array_index = $_POST[$hint_order_key]-1;
+        $hints[ $hint_array_index]=$_POST[$hint_text_key];  //? $hints is the array we will use
+    }
+ }
+  ksort($hints);
+
+//  $num_hints = count($hints);
+//  echo '$num_hints '.$num_hints;
+
+// foreach($hints as  $hint){
+//     echo'<br>';
+//     echo 'hint '.$hint;
+// }
+// for ($i = 0; $i < $num_hints; $i++){
+// echo'<br>';
+// echo 'hint '.$hints[$i];
+// }
+
+  // die();
 
 echo ('	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>');
 
@@ -177,7 +216,7 @@ if(isset($_POST['iid'])){
               $MOE[$i]= $tol[$i]/1000 * $ans[$i];
 
            }
-            $ans_pattern[$i] = "{1:NUMERICAL:=".$ans[$i].":".$MOE[$i]."}";
+            $ans_pattern[$i] = "{".$percentage_part[$i].":NUMERICAL:=".$ans[$i].":".$MOE[$i]."}";
         }
      $i++;
     }
@@ -216,7 +255,7 @@ if(isset($_POST['iid'])){
                 if($ans[$i]<1.2e43){
                        $part_name = '#part'.$m;
                        $part[$i] = $html_file->find($part_name,0);
-                       $part[$i] = $part[$i].'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$ans_pattern[$i].'<br><br>';
+                       $part[$i] = '('.$percentage_part[$i].' pts)'.$part[$i].'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$ans_pattern[$i].'<br><br>';
                        $html_file->find($part_name,0)->innertext=$part[$i];
                        // print($part[$i]);
                 }
@@ -293,32 +332,50 @@ if(isset($_POST['iid'])){
         $xml_question1->appendChild( $xml_hidden );
         $xml_idnumber = $xml->createElement( "idnumber" );
         $xml_question1->appendChild( $xml_idnumber );
+                $num_hints = count($hints);
+                $i = 0;
+                foreach ($hints as $hint){
+                 
+                    $xml_hint = $xml->createElement( "hint" );
+                    $xml_hint ->setAttribute( "format", "html" );
+                    $xml_text = $xml->createElement( "text" );
+                     $xml_text ->appendChild( $xml->createCDATASection("<p> ".$hint." </p>"));   
+                     $xml_hint->appendChild( $xml_text);
+                     $xml_question1->appendChild( $xml_hint );
 
-        $xml_hint = $xml->createElement( "hint" );
-        $xml_hint ->setAttribute( "format", "html" );
-        $xml_text2 = $xml->createElement( "text" );
-         $xml_text2 ->appendChild( $xml->createCDATASection("<p> The most common errors in solving engineering problems have to do with units. Have you checked to make sure your intermediate units cancel and the resulting units are consitent with the question asked? </p>"));   
-         $xml_hint->appendChild( $xml_text2);
+                     $i++;
+
+                }
+
+
+
+
+
+        // $xml_hint = $xml->createElement( "hint" );
+        // $xml_hint ->setAttribute( "format", "html" );
+        // $xml_text2 = $xml->createElement( "text" );
+        //  $xml_text2 ->appendChild( $xml->createCDATASection("<p> The most common errors in solving engineering problems have to do with units. Have you checked to make sure your intermediate units cancel and the resulting units are consitent with the question asked? </p>"));   
+        //  $xml_hint->appendChild( $xml_text2);
         
-         $xml_hint3 = $xml->createElement( "hint" );
-         $xml_hint3 ->setAttribute( "format", "html" );
-         $xml_text3 = $xml->createElement( "text" );
-         $xml_text3 ->appendChild( $xml->createCDATASection("<p> Common errors have to do with not answering the question that was asked, not reading the problem statement carefully or misinterpreting a statement in the problem.  Have you double checked the problem statement and made sure that the you are solving the question that was asked? </p>"));   
-         $xml_hint3->appendChild( $xml_text3);
+        //  $xml_hint3 = $xml->createElement( "hint" );
+        //  $xml_hint3 ->setAttribute( "format", "html" );
+        //  $xml_text3 = $xml->createElement( "text" );
+        //  $xml_text3 ->appendChild( $xml->createCDATASection("<p> Common errors have to do with not answering the question that was asked, not reading the problem statement carefully or misinterpreting a statement in the problem.  Have you double checked the problem statement and made sure that the you are solving the question that was asked? </p>"));   
+        //  $xml_hint3->appendChild( $xml_text3);
 
-         $xml_hint4 = $xml->createElement( "hint" );
-         $xml_hint4 ->setAttribute( "format", "html" );
-         $xml_text4 = $xml->createElement( "text" );
-         $xml_text4 ->appendChild( $xml->createCDATASection("<p> Common errors have to do with copying numbers down incorrectly, miscalculating or algebraic mistakes.  Have you double checked your numbers, calculations and algebra? </p>"));   
-         $xml_hint4->appendChild( $xml_text4);
+        //  $xml_hint4 = $xml->createElement( "hint" );
+        //  $xml_hint4 ->setAttribute( "format", "html" );
+        //  $xml_text4 = $xml->createElement( "text" );
+        //  $xml_text4 ->appendChild( $xml->createCDATASection("<p> Common errors have to do with copying numbers down incorrectly, miscalculating or algebraic mistakes.  Have you double checked your numbers, calculations and algebra? </p>"));   
+        //  $xml_hint4->appendChild( $xml_text4);
          
          
 
  //       $xml_hint ->appendChild( $xml->createCDATASection("<p>units?</p>"));
  //       $xml_question1->appendChild( $xml_hint );
-    $xml_question1->appendChild( $xml_hint );
-    $xml_question1->appendChild( $xml_hint3 );
-    $xml_question1->appendChild( $xml_hint4 );
+    // $xml_question1->appendChild( $xml_hint );
+    // $xml_question1->appendChild( $xml_hint3 );
+    // $xml_question1->appendChild( $xml_hint4 );
 
     $xml_quiz->appendChild( $xml_question1 );
         $xml->appendChild( $xml_quiz );

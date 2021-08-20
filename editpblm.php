@@ -4,6 +4,7 @@
     require_once "simple_html_dom.php";
     require_once 'Encryption.php';
     require_once '../encryption_base.php';
+	$_SESSION['success'] = '';
 
 	$problem_type ='0';
 	$sequential = '1';
@@ -703,9 +704,11 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 					':allow_edit' => 2,
 					':pblm_num' => $_POST['problem_id']));	
 				}
+
 			 
 	// hint_a file
 			if($_FILES['hint_aFile']['name']) {
+				
 				$filename=explode(".",$_FILES['hint_aFile']['name']); // divides the file into its name and extension puts it into an array
 				
 				$hint_aFile=addslashes($_FILES['hint_aFile']['tmp_name']);
@@ -738,6 +741,7 @@ $_SESSION['checker']=2;  // tells where the getiid where to come to
 				if (move_uploaded_file($_FILES['hint_aFile']['tmp_name'], $pathName)){
 					$_SESSION['success'] = $_SESSION['success'].'Hint_aFile upload successful';
 				}
+				
 			}
 
 		// hint_b file
@@ -2257,12 +2261,6 @@ if(strlen($vid3)>2) {
 	<p><input type="submit" value="Update" id="Update_btn"/>
 	<a href="QRPRepo.php">Cancel</a></p>
 	<style>#Update_btn{background-color: lightyellow }</style>
-	</form>
-		<form action = "editMeta.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "<?php echo($problem_id)?>"><input type = "submit" value ="Edit Meta Data"></form>
-
-		<div><span style = "color:red; vertical-align:super">*</span> - if you update the html you will need to select both the answer and input files to display properly</div>
-
-	<form action="" method="post" enctype="multipart/form-data">
 	<p><hr></p>
 	<p>hint_a file: <input type='file' accept='.html' name='hint_aFile'/></p>
 	<p>hint_b file: <input type='file' accept='.html' name='hint_bFile'/></p>
@@ -2275,7 +2273,14 @@ if(strlen($vid3)>2) {
 	<p>hint_i file: <input type='file' accept='.html' name='hint_iFile'/></p>
 	<p>hint_j file: <input type='file' accept='.html' name='hint_jFile'/></p>
 	<p><hr></p>
+
 	</form>
+		<form action = "editMeta.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "<?php echo($problem_id)?>"><input type = "submit" value ="Edit Meta Data"></form>
+
+		<div><span style = "color:red; vertical-align:super">*</span> - if you update the html you will need to select both the answer and input files to display properly</div>
+
+	<!-- <form action="" method="post" enctype="multipart/form-data"> -->
+	<!-- </form> -->
 <script>
 
 document.getElementById("allow_edit1").addEventListener('change', function(){

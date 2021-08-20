@@ -56,11 +56,13 @@
     $help_n_stu = 99;
     $help_n_ta = 99;
     $help_n_instruct = 99;
+    $help_n_hint = 2;
     
     
     $help_t_stu = 2;
     $help_t_ta = 5;
     $help_t_instruct = 10;
+    $help_t_hint = 1;
     $time_sleep1_trip = 5;
     $time_sleep1 = 30;
     $time_sleep2_trip = 10;
@@ -105,9 +107,11 @@ if($new_flag == 0){
           $p_bc_n = $assigntime_data['p_bc_n'];
           $p_bc_t = $assigntime_data['p_bc_t'];
           $help_n_instruct = $assigntime_data['help_n_instruct'];
+          $help_n_hint = $assigntime_data['help_n_hint'];
           $help_n_ta = $assigntime_data['help_n_ta'];
           $help_n_stu = $assigntime_data['help_n_stu'];
           $help_t_instruct = $assigntime_data['help_t_instruct'];
+          $help_t_hint = $assigntime_data['help_t_hint'];
           $help_t_ta = $assigntime_data['help_t_ta'];
           $help_t_stu = $assigntime_data['help_t_stu'];
           $work_time_per_problem = $assigntime_data['work_time_per_problem'];
@@ -147,7 +151,9 @@ if($new_flag == 0){
             $current_class_exp_date = $stmt->fetch();   
             $current_class_exp_date = $current_class_exp_date['exp_date'];
              $current_class_exp_date = strtotime($current_class_exp_date);
-   //         echo('$current_class_exp_date '.$current_class_exp_date);
+          //?  echo('$current_class_exp_date '.$current_class_exp_date);
+          //?  $date = date('Y-m-d\TH:i',$current_class_exp_date);  echo($date);
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
     
@@ -173,6 +179,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
              help_t_ta=:help_t_ta, 
              help_n_instruct=:help_n_instruct, 
              help_t_instruct=:help_t_instruct, 
+             help_n_hint=:help_n_hint, 
+             help_t_hint=:help_t_hint, 
              work_time_per_problem=:work_time_per_problem, 
              max_attempts_per_problem=:max_attempts_per_problem, 
              window_opens=:window_opens, 
@@ -212,6 +220,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
               ':help_t_stu' => $_POST['help_t_stu'],
               ':help_n_instruct' => $_POST['help_n_instruct'],
               ':help_t_instruct' => $_POST['help_t_instruct'],
+              ':help_n_hint' => $_POST['help_n_hint'],
+              ':help_t_hint' => $_POST['help_t_hint'],
               ':help_n_ta' => $_POST['help_n_ta'],
               ':help_t_ta' => $_POST['help_t_ta'],
               ':work_time_per_problem' => $_POST['work_time_per_problem'],
@@ -242,8 +252,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
    
    // input the values from the form into the Assigntime table - get the assigntime_id and then move onto page two to get points values for each part
    
-       $sql = 'INSERT INTO `Assigntime` (assign_num, iid, currentclass_id, work_flow, time_sleep1_trip, time_sleep1,time_sleep2_trip, time_sleep2, bc_ans_n,bc_ans_t, p_bc_n, p_bc_t, help_n_stu, help_t_stu, help_n_ta, help_t_ta, help_n_instruct, help_t_instruct, work_time_per_problem, max_attempts_per_problem, window_opens, window_closes, perc_ec_max_p_assign, perc_ec_max_p_pblm, perc_ec_max_person_to_person, ec_daysb4due_elgible,perc_ec_base_video, perc_ec_base_audio, perc_ec_base_written, peer_refl_t, peer_refl_n, due_date,credit, late_points, fixed_percent_decline)	
-                                    VALUES (:assign_num, :iid, :currentclass_id, :work_flow, :time_sleep1_trip, :time_sleep1, :time_sleep2_trip, :time_sleep2,:bc_ans_n,:bc_ans_t, :p_bc_n, :p_bc_t, :help_n_stu, :help_t_stu, :help_n_ta, :help_t_ta, :help_n_instruct, :help_t_instruct, :work_time_per_problem, :max_attempts_per_problem, :window_opens, :window_closes, :perc_ec_max_p_assign, :perc_ec_max_p_pblm, :perc_ec_max_person_to_person, :ec_daysb4due_elgible, :perc_ec_base_video, :perc_ec_base_audio, :perc_ec_base_written,:peer_refl_t,:peer_refl_n, :due_date, :credit, :late_points, :fixed_percent_decline)';
+       $sql = 'INSERT INTO `Assigntime` (assign_num, iid, currentclass_id, work_flow, time_sleep1_trip, time_sleep1,time_sleep2_trip, time_sleep2, bc_ans_n,bc_ans_t, p_bc_n, p_bc_t, help_n_stu, help_t_stu, help_n_ta, help_t_ta, help_n_instruct, help_t_instruct,help_n_hint, help_t_hint, work_time_per_problem, max_attempts_per_problem, window_opens, window_closes, perc_ec_max_p_assign, perc_ec_max_p_pblm, perc_ec_max_person_to_person, ec_daysb4due_elgible,perc_ec_base_video, perc_ec_base_audio, perc_ec_base_written, peer_refl_t, peer_refl_n, due_date,credit, late_points, fixed_percent_decline)	
+                                    VALUES (:assign_num, :iid, :currentclass_id, :work_flow, :time_sleep1_trip, :time_sleep1, :time_sleep2_trip, :time_sleep2,:bc_ans_n,:bc_ans_t, :p_bc_n, :p_bc_t, :help_n_stu, :help_t_stu, :help_n_ta, :help_t_ta, :help_n_instruct, :help_t_instruct, :help_n_hint, :help_t_hint,:work_time_per_problem, :max_attempts_per_problem, :window_opens, :window_closes, :perc_ec_max_p_assign, :perc_ec_max_p_pblm, :perc_ec_max_person_to_person, :ec_daysb4due_elgible, :perc_ec_base_video, :perc_ec_base_audio, :perc_ec_base_written,:peer_refl_t,:peer_refl_n, :due_date, :credit, :late_points, :fixed_percent_decline)';
                 $stmt = $pdo->prepare($sql);
                 $stmt -> execute(array(
                   ':assign_num' => $_POST['assign_num'],
@@ -262,6 +272,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
                   ':help_t_stu' => $_POST['help_t_stu'],
                   ':help_n_instruct' => $_POST['help_n_instruct'],
                   ':help_t_instruct' => $_POST['help_t_instruct'],
+                  ':help_n_hint' => $_POST['help_n_hint'],
+                  ':help_t_hint' => $_POST['help_t_hint'],
                   ':help_n_ta' => $_POST['help_n_ta'],
                   ':help_t_ta' => $_POST['help_t_ta'],
                   ':work_time_per_problem' => $_POST['work_time_per_problem'],
@@ -404,6 +416,9 @@ $_SESSION['counter']=0;  // this is for the score board
                       &nbsp;&nbsp; Instructors:<br>
                        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Time(minutes): <input type = "number" min = "0" max = "20" id="help_t_instruct" name = "help_t_instruct" required value = <?php echo $help_t_instruct; ?> > </input><br>
                       &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "100" id="help_n_instruct" name = "help_n_instruct" required value = <?php echo $help_n_instruct; ?>> </input><br>
+                      &nbsp;&nbsp; Hints:<br>
+                       &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Time(minutes): <input type = "number" min = "0" max = "20" id="help_t_hint" name = "help_t_hint" required value = <?php echo $help_t_hint; ?> > </input><br>
+                      &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "100" id="help_n_hint" name = "help_n_hint" required value = <?php echo $help_n_hint; ?>> </input><br>
                         
               <br>
               <br>

@@ -290,7 +290,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                     )); 
                     
                                 $stu_activity = $stmt->fetch();
-                                $activity_id = $stu_activity['activity_id'];
+                             if($stu_activity) {  $activity_id = $stu_activity['activity_id'];}
                                 
                                  
                                       
@@ -331,7 +331,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                             }
 
                                        
-                                        echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge"></form>');
+                                        echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge Work"></form>');
                                         
                                      } else {
                                         echo('<form action = "get_pdf.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Show Work"></form>');
@@ -349,7 +349,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                              
                                                   echo ('<img src="'.$image.'" alt = "no drawing" style = "width:100px;image-resolution:200dpi;">');
 
-                                                  echo('<form action = "get_drawing_tool_images.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge"></form>');
+                                                  echo('<form action = "get_drawing_tool_images.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Enlarge Drawing"></form>');
 
                                              
                                       }
@@ -366,7 +366,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 
 
                                 echo('</td>');
-                                            if ($stu_activity['survey_pts']!=null){
+                                            if ($stu_activity && $stu_activity['survey_pts']!=null){
                                                  echo('<td style="vertical-align: top;">');
                                               // echo'<br>&nbsp;&nbsp;&nbsp;/<br>';
                                                echo('<input type = "number" min = "-100" max = "200"  class = "goestodb_'.$student_id.'"  id = "ecPts_'.$student_id.'_'.$activity_id.'" name = "ecPts_'.$student_id.'_'.$activity_id.'" placeholder = "E.C." value = '.$stu_activity["ec_pts"].'></input>');
@@ -374,7 +374,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 
                                                 echo('</td>');
                                     }else {echo'<td></td>';}
-                                $prob_default_tot = $stu_activity['p_num_score_net']+$stu_activity['survey_pts'];
+                              if($stu_activity) { $prob_default_tot = $stu_activity['p_num_score_net']+$stu_activity['survey_pts'];} else {$prob_default_tot =0;}
                                 $text_for_field = 'perc_'.$alias_num;
                                 $default_assn_tot = $default_assn_tot + $prob_default_tot*$assigntime_data[$text_for_field]/100;
                                  
@@ -393,7 +393,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                   }
                                
                                if($assign_datum['explore_flag']==1){ 
-                                     if($stu_activity['activity_id']>0){
+                                     if($stu_activity && $stu_activity['activity_id']>0){
                                         $text_for_field = 'perc_exp_'.$alias_num;
                                         $max_points = $assigntime_data[$text_for_field];
                                         echo('<td style="width:200px; vertical-align: top;"> <input type = "number" min = "0" max = "'.$max_points.'"   class = "goestodb_'.$student_id.'" id="explore_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="explore_'.$student_id.'_'.$stu_activity['activity_id'].'" placeholder = "Score" value = '.$stu_activity["explore_pts"].'  > </input>');
@@ -407,7 +407,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                       }else {echo'<td></td>';}
                                     }
                                  if($assign_datum['connect_flag']==1){
-                                           if($stu_activity['activity_id']>0){
+                                           if($stu_activity && $stu_activity['activity_id']>0){
                                                  $text_for_field = 'perc_con_'.$alias_num;
                                                   $max_points = $assigntime_data[$text_for_field];
                                                 echo('<td style="width:200px; vertical-align: top;"> <input type = "number" min = "0" max = "'.$max_points.'"   class = "goestodb_'.$student_id.'" id="connect_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="connect_'.$student_id.'_'.$stu_activity['activity_id'].'" placeholder = "Score" value = '.$stu_activity["connect_pts"].'   > </input>');
@@ -420,13 +420,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                             }else {echo'<td></td>';}
                                      }
                                  if($assign_datum['society_flag']==1){
-                                        if($stu_activity['activity_id']>0){
+                                        if($stu_activity && $stu_activity['activity_id']>0){
                                          $text_for_field = 'perc_soc_'.$alias_num;
                                           $max_points = $assigntime_data[$text_for_field];
                                         echo('<td style="width:200px; vertical-align: top;"> <input type = "number" min = "0" max = "'.$max_points.'"  class = "goestodb_'.$student_id.'" id="society_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="society_'.$student_id.'_'.$stu_activity['activity_id'].'" placeholder = "Score" value = '.$stu_activity["society_pts"].' > </input>');
                                         echo'<br>';
                                         echo('<br><input type = "text"  class = "goestodb_'.$student_id.'"  id="fb_society_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="fb_society_'.$student_id.'_'.$stu_activity['activity_id'].'" placeholder = "__Feedback to Students__" value = '.$stu_activity["fb_society"].'  > </input>');
-                                        if($stu_activity['society_text']!=null){   
+                                        if($stu_activity && $stu_activity['society_text']!=null){   
                                         echo('<span class = "reflections">'.$stu_activity['society_text'].'</span>');
                                         }
                                           echo ('</td>');
@@ -441,9 +441,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                            //  echo('<td>link to work</td>');
                                 //echo('<td>prob_t input</td>');
                                 
-                           if ($stu_activity['fb_probtot_pts']>0){$prob_tot_pts = $stu_activity['fb_probtot_pts'];} else {$prob_tot_pts = $prob_default_tot;}
+                           if ($stu_activity && $stu_activity['fb_probtot_pts']>0){$prob_tot_pts = $stu_activity['fb_probtot_pts'];} else {$prob_tot_pts = $prob_default_tot;}
                                   echo('<td style="vertical-align: top; border-right-color:#B22222; border-right:solid 3px red; ">');
-                                echo('<input class = "probtot_'.$student_id.' goestodb_'.$student_id.'"  type = "number" min = "0" max = "100"   id="probtot_'.$student_id.'_'.$stu_activity['activity_id'].'" name = "probtot_'.$stu_activity['activity_id'].'" readonly value = '.$prob_tot_pts.' > </input>');
+                               if($stu_activity){ echo('<input class = "probtot_'.$student_id.' goestodb_'.$student_id.'"  type = "number" min = "0" max = "100"   id="probtot_'.$student_id.'_'.$stu_activity['activity_id'].'" name = "probtot_'.$stu_activity['activity_id'].'" readonly value = '.$prob_tot_pts.' > </input>');}
                                   echo('</td>');
                         
                         }
@@ -462,7 +462,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                               echo('</td>');
                             echo('<td style="vertical-align: top;">');
                              if ($assign_tot == 0) {$assign_tot = $default_assn_tot;}
-                            echo('<input type = "number" min = "0" max = "100"  class = "assignment_tot"  id="assign_tot_'.$student_id.'" name = "assign_tot_'.$stu_activity['activity_id'].'" readonly value = '.$assign_tot.' > </input>');
+                           echo('<input type = "number" min = "0" max = "100"  class = "assignment_tot"  id="assign_tot_'.$student_id.'" name = "assign_tot_'.@$stu_activity['activity_id'].'" readonly value = '.$assign_tot.' > </input>');
                               echo('</td>');
                               echo('<td style="vertical-align: top;">');
                               

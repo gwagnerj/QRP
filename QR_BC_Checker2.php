@@ -70,7 +70,7 @@ session_start();
      $alias_num = $assign_data['alias_num'];    
      $sequential = $assign_data['sequential'];  
 
-       $sql = 'SELECT * FROM Assigntime WHERE assign_num = :assign_num AND currentclass_id = :currentclass_id'; // may not want everything here
+       $sql = 'SELECT * FROM Assigntime WHERE assign_num = :assign_num AND currentclass_id = :currentclass_id ORDER BY assigntime_id DESC' ; // may not want everything here
      $stmt = $pdo->prepare($sql);
      $stmt->execute(array(':assign_num' => $assignment_num,
                           ':currentclass_id' => $currentclass_id));
@@ -79,6 +79,14 @@ session_start();
      $work_flow =  $assigntime_data['work_flow'];
      $bc_ans_t = $assigntime_data['bc_ans_t'];  // how long before we can show the answers
       $bc_ans_n = $assigntime_data['bc_ans_n'];
+     $help_n_stu = $assigntime_data['help_n_stu'];  // how many tries before you can get help from fellow students
+     $help_t_stu = $assigntime_data['help_t_stu'];  
+     $help_n_ta = $assigntime_data['help_n_ta'];  
+     $help_t_ta = $assigntime_data['help_t_ta'];  
+     $help_n_instruct = $assigntime_data['help_n_instruct'];  
+     $help_t_instruct = $assigntime_data['help_t_instruct'];  
+     $help_n_hint = $assigntime_data['help_n_hint'];  
+     $help_t_hint = $assigntime_data['help_t_hint'];  
      
      $perc_of_assign = $assigntime_data['perc_'.$alias_num];
      $due_date = new DateTime($assigntime_data['due_date']);
@@ -220,6 +228,7 @@ session_start();
                         $tol[$v] = $probData['tol_'.$v]*0.001;	
                     }
                  }
+        //         echo "hint_a".$probData['hint_a'];
 		
 			if (strlen($probData['hint_a'])>1){$hinta = $probData['hint_a'];$hintaPath="uploads/".$hinta;} else {$hintaPath ="uploads/default_hints.html";	}
 			if (strlen($probData['hint_b'])>1){$hintb = $probData['hint_b'];$hintbPath="uploads/".$hintb;} else {$hintbPath ="uploads/default_hints.html";	}
@@ -325,7 +334,9 @@ session_start();
             } else { 
                 $changed[$i]=true;
                 $changed_flag = true;
-                if (($tol_type[$v]==0 && $resp[$v] !=0) || $tol_type[$v] ==1){    //? this condition was put in as a hack to make sure we are not recording so many 0s in the resp data
+//                var_dump($tol_type);
+ //               echo(" resp ".$resp[$v]);
+                if (($resp[$v] && $tol_type[$v]==0 && $resp[$v] !=0) || ($resp[$v] && $tol_type[$v] ==1)){    //? this condition was put in as a hack to make sure we are not recording so many 0s in the resp data
 
                 $sql = 'INSERT INTO Bc_resp (activity_id, resp_value,part_name) VALUES (:activity_id, :resp_value, :part_name)';
                 $stmt = $pdo->prepare($sql);
@@ -533,7 +544,8 @@ session_start();
 // var_dump( $activity_data['wcount_bc_c']);
 //   echo '<br>';
 //   echo '<br>';
-//   var_dump( $diff_time_min[1]);
+ //  var_dump( $diff_time_min);
+ //  echo($diff_time_min[3]);
 //   echo '<br>';
 //   echo '<br>';
 //   var_dump( $assigntime_data['bc_ans_t']);
@@ -604,7 +616,7 @@ session_start();
             </h4>
 	</header>
 	<main>
-	<h6 class = "container-float"> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> &nbsp; &nbsp; Answer Thresholds: &nbsp; count = <?php echo($assigntime_data['bc_ans_n']);?>&nbsp; time = <?php echo($assigntime_data['bc_ans_t']);?>&nbsp; minutes&nbsp;  </h6>
+	<h6 class = "container-float" style = "font-size: 0.8rem;"> Name: <?php echo($stu_name);?> &nbsp; &nbsp; Assignment Number: <?php echo($assignment_num);?>&nbsp; &nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> &nbsp; &nbsp; Answer Thresholds:  count = <?php echo($assigntime_data['bc_ans_n']);?>&nbsp; time = <?php echo($assigntime_data['bc_ans_t']);?>,&nbsp; min&nbsp; &nbsp; Hint Thresholds:  count = <?php echo $help_n_hint ?>,&nbsp; time = <?php echo $help_t_hint?> min </h6>
    
  <!--
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
@@ -636,16 +648,16 @@ session_start();
 	<div id = "part-a-BC" class = "problem-parts"> a)(<?php echo $assigntime_data['perc_a_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="a" id = "a" size = 10% <?php echo ( $sequential_part_disable_input_ar[0] )?> value="<?php echo (htmlentities($resp['a']))?>" > <?php echo(htmlspecialchars_decode($unit[0])) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> count <?php echo(@$wrongCount[0].' '); ?> 
 	 <?php 
     if ( (( $activity_data['wcount_bc_a']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[0]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_a']==1 ) && $corr['a']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_a" class="btn-default" '.$sequential_part_disable_button_ar[0].' value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_a" class= "btn  btn-outline-primary" '.$sequential_part_disable_button_ar[0].'  value="Show Answer"> </span>&nbsp;');}
+    if ( (( $activity_data['wcount_bc_a']>= $help_n_hint && @$diff_time_min[0]>= $help_t_hint && $hintaPath != "uploads/default_hints.html") ) )
+    {echo '<a href="'.$hintaPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
+  //   { echo('<span><input type="button" id="show_hint_button_a" class="btn-default" '.$sequential_part_disable_button_ar[0].' value="'.$hintaPath.'"> </span>&nbsp;');}
      if ($corr['a']=="Correct")
     {echo '<span id = "show_ans_a" class = "show_ans"> - Computed value is: '.$soln[0].'</span>';} 
  
       ?>  
           <input type="hidden" id="ans_a" value="<?php echo ($soln[0])?>" >
     <!--
-    <?php if (isset($_POST['pin']) and @$wrongCount[0]>$hintLimit and $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>$time_sleep1_trip and @$wrongCount[0]< $time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if (isset($_POST['pin']) and $changed[0] and @$wrongCount[0]>=$time_sleep2_trip and $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	 -->
 
      </div></div>
@@ -660,7 +672,10 @@ session_start();
 
      <?php 
     if ( (( $activity_data['wcount_bc_b']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[1]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_b']==1 ) && $corr['b']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_b" class="btn-default" '.$sequential_part_disable_button_ar[1].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_b" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[1].'  value="Show Answer"> </span>&nbsp;');}
+     if ( (( $activity_data['wcount_bc_b']>= $help_n_hint && @$diff_time_min[1]>= $help_t_hint && $hintbPath != "uploads/default_hints.html") ) )
+     {echo '<a href="'.$hintbPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
+ 
      if ($corr['b']=="Correct")
     {echo '<span id = "show_ans_b" class = "show_ans"> - Computed value is: '.$soln[1].'</span>';} 
       ?>  
@@ -676,16 +691,16 @@ session_start();
 
      <?php 
     if ( (( $activity_data['wcount_bc_c']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[2]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_c']==1 ) && $corr['c']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_c" class="btn-default" '.$sequential_part_disable_button_ar[2].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_c" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[2].'  value="Show Answer"> </span>&nbsp;');}
+     if ( (( $activity_data['wcount_bc_c']>= $help_n_hint && @$diff_time_min[2]>= $help_t_hint && $hintcPath != "uploads/default_hints.html") ) )
+     {echo '<a href="'.$hintcPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
+
      if ($corr['c']=="Correct")
     {echo '<span id = "show_ans_c" class = "show_ans"> - Computed value is: '.$soln[2].'</span>';} 
       ?>  
           <input type="hidden" id="ans_c" value="<?php echo ($soln[2])?>" >	
     
     
-    <?php if (isset($_POST['pin']) and @$wrongCount[2]>$hintLimit and $corr['c']=="Not Correct"&& $hintcPath != "uploads/default_hints.html" ){echo '<a href="'.$hintcPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if (isset($_POST['pin']) and $changed[2] and @$wrongCount[2]>$time_sleep1_trip and @$wrongCount[2]< $time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if (isset($_POST['pin']) and $changed[2] and @$wrongCount[2]>=$time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</div></div>
 	<?php } 
 
@@ -697,14 +712,14 @@ session_start();
 
     <?php 
     if ( (( $activity_data['wcount_bc_d']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[3]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_d']==1 ) && $corr['d']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_d" class="btn-default" '.$sequential_part_disable_button_ar[3].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_d" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[3].'  value="Show Answer"> </span>&nbsp;');}
+     if ( (( $activity_data['wcount_bc_d']>= $help_n_hint && @$diff_time_min[3]>= $help_t_hint && $hintdPath != "uploads/default_hints.html") ) )
+     {echo '<a href="'.$hintdPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
+
      if ($corr['d']=="Correct")
     {echo '<span id = "show_ans_d" class = "show_ans"> - Computed value is: '.$soln[3].'</span>';} 
       ?>  
           <input type="hidden" id="ans_d" value="<?php echo ($soln[3])?>" >		
-    <?php if (isset($_POST['pin']) and @$wrongCount[3]>$hintLimit and $corr['d']=="Not Correct"&& $hintdPath != "uploads/default_hints.html" ){echo '<a href="'.$hintdPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if (isset($_POST['pin']) and $changed[3] and @$wrongCount[3]>$time_sleep1_trip and @$wrongCount[3]< $time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if (isset($_POST['pin']) and $changed[3] and @$wrongCount[3]>=$time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</div></div>
 	<?php } 
 
@@ -715,15 +730,15 @@ session_start();
 	<div id = "part-e-BC" class = "problem-parts"> e)(<?php echo $assigntime_data['perc_e_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="e" id = "e" size = 10% <?php echo ( $sequential_part_disable_input_ar[4])?> value="<?php echo (htmlentities($resp['e']))?>" > <?php echo(htmlspecialchars_decode($unit[4])) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b> count <?php echo(@$wrongCount[4].' '); ?> 
      <?php 
     if ( (( $activity_data['wcount_bc_e']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[4]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_e']==1 ) && $corr['e']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_e" class="btn-default" '.$sequential_part_disable_button_ar[4].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_e" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[4].'  value="Show Answer"> </span>&nbsp;');}
+     if ( (( $activity_data['wcount_bc_e']>= $help_n_hint && @$diff_time_min[4]>= $help_t_hint && $hintePath != "uploads/default_hints.html") ) )
+     {echo '<a href="'.$hintePath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
+
      if ($corr['e']=="Correct")
     {echo '<span id = "show_ans_e" class = "show_ans"> - Computed value is: '.$soln[4].'</span>';} 
       ?>  
           <input type="hidden" id="ans_e" value="<?php echo ($soln[4])?>" >	
           
-    <?php if (isset($_POST['pin']) and @$wrongCount[4]>$hintLimit and $corr['e']=="Not Correct"&& $hintePath != "uploads/default_hints.html" ){echo '<a href="'.$hintePath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if (isset($_POST['pin']) and $changed[4] and @$wrongCount[4]>$time_sleep1_trip and @$wrongCount[4]< $time_sleep1_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if (isset($_POST['pin']) and $changed[4] and @$wrongCount[4]>=$time_sleep2_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</div></div>
 	<?php } 
 
@@ -734,16 +749,16 @@ session_start();
 	<div id = "part-f-BC" class = "problem-parts"> f)(<?php echo $assigntime_data['perc_f_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="f" id = "f" size = 10% <?php echo ( $sequential_part_disable_input_ar[5])?> value="<?php echo (htmlentities($resp['f']))?>" > <?php echo(htmlspecialchars_decode($unit[5])) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b> count <?php echo(@$wrongCount[5].' '); ?> 
     <?php 
     if ( (( $activity_data['wcount_bc_f']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[5]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_f']==1 ) && $corr['f']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_f" class="btn-default" '.$sequential_part_disable_button_ar[5].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_f" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[5].'  value="Show Answer"> </span>&nbsp;');}
+     if ( (( $activity_data['wcount_bc_f']>= $help_n_hint && @$diff_time_min[5]>= $help_t_hint && $hintfPath != "uploads/default_hints.html") ) )
+     {echo '<a href="'.$hintfPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
+
      if ($corr['f']=="Correct")
     {echo '<span id = "show_ans_f" class = "show_ans"> - Computed value is: '.$soln[5].'</span>';} 
       ?>  
           <input type="hidden" id="ans_f" value="<?php echo ($soln[5])?>" >	
           
           
-          	<?php if (isset($_POST['pin']) and @$wrongCount[5]>$hintLimit and $corr['f']=="Not Correct"&& $hintfPath != "uploads/default_hints.html" ){echo '<a href="'.$hintfPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if (isset($_POST['pin']) and $changed[5] and @$wrongCount[5]>$time_sleep1_trip and @$wrongCount[5]< $time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if (isset($_POST['pin']) and $changed[5] and @$wrongCount[5]>=$time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</div></div>
 	<?php } 
 
@@ -754,13 +769,14 @@ session_start();
 	<div id = "part-g-BC" class = "problem-parts"> g)(<?php echo $assigntime_data['perc_g_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="g" id = "g" size = 10% <?php echo ( $sequential_part_disable_input_ar[6])?> value="<?php echo (htmlentities($resp['g']))?>" > <?php echo(htmlspecialchars_decode($unit[6])) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b> count <?php echo(@$wrongCount[6].' '); ?> 
     <?php 
     if ( (( $activity_data['wcount_bc_g']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[6]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_g']==1 ) && $corr['g']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_g" class="btn-default" '.$sequential_part_disable_button_ar[6].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_g" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[6].'  value="Show Answer"> </span>&nbsp;');}
+     if ( (( $activity_data['wcount_bc_g']>= $help_n_hint && @$diff_time_min[6]>= $help_t_hint && $hintgPath != "uploads/default_hints.html") ) )
+     {echo '<a href="'.$hintgPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
+
      if ($corr['g']=="Correct")
     {echo '<span id = "show_ans_g" class = "show_ans"> - Computed value is: '.$soln[6].'</span>';} 
       ?>  
-          <input type="hidden" id="ans_g" value="<?php echo ($soln[6])?>" >		<?php if (isset($_POST['pin']) and @$wrongCount[6]>$hintLimit and $corr['g']=="Not Correct"&& $hintgPath != "uploads/default_hints.html" ){echo '<a href="'.$hintgPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if (isset($_POST['pin']) and $changed[6] and @$wrongCount[6]>$time_sleep1_trip and @$wrongCount[6]< $time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if (isset($_POST['pin']) and $changed[6] and @$wrongCount[6]>=$time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+          <input type="hidden" id="ans_g" value="<?php echo ($soln[6])?>" >	
 	</div></div>
 	<?php } 
 
@@ -771,14 +787,14 @@ session_start();
 	<div id = "part-h-BC" class = "problem-parts"> h)(<?php echo $assigntime_data['perc_h_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="h" id = "h" size = 10% <?php echo ( $sequential_part_disable_input_ar[7])?> value="<?php echo (htmlentities($resp['h']))?>" > <?php echo(htmlspecialchars_decode($unit[7])) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b> count <?php echo(@$wrongCount[7].' '); ?> 
     <?php 
     if ( (( $activity_data['wcount_bc_h']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[7]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_h']==1 ) && $corr['h']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_h" '.$sequential_part_disable_button_ar[7].'  class="btn-default" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_h" '.$sequential_part_disable_button_ar[7].'  class="btn  btn-outline-primary" value="Show Answer"> </span>&nbsp;');}
+     if ( (( $activity_data['wcount_bc_h']>= $help_n_hint && @$diff_time_min[7]>= $help_t_hint && $hinthPath != "uploads/default_hints.html") ) )
+     {echo '<a href="'.$hinthPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
+
      if ($corr['h']=="Correct")
     {echo '<span id = "show_ans_h" class = "show_ans"> - Computed value is: '.$soln[7].'</span>';} 
       ?>  
           <input type="hidden" id="ans_h" value="<?php echo ($soln[7])?>" >	
-    <?php if (isset($_POST['pin']) and @$wrongCount[7]>$hintLimit and $corr['h']=="Not Correct"&& $hinthPath != "uploads/default_hints.html" ){echo '<a href="'.$hinthPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if (isset($_POST['pin']) and $changed[7] and @$wrongCount[7]>$time_sleep1_trip and @$wrongCount[7]< $time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if (isset($_POST['pin']) and $changed[7] and @$wrongCount[7]>=$time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</div></div>
 	<?php } 
 
@@ -789,14 +805,14 @@ session_start();
 	<div id = "part-i-BC" class = "problem-parts"> i)(<?php echo $assigntime_data['perc_i_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="i" id = "i" size = 10% <?php echo ( $sequential_part_disable_input_ar[8])?> value="<?php echo (htmlentities($resp['i']))?>" > <?php echo(htmlspecialchars_decode($unit[8])) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b> count <?php echo(@$wrongCount[8].' '); ?> 
 <?php 
     if ( (( $activity_data['wcount_bc_i']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[8]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_i']==1 ) && $corr['i']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_i" class="btn-default" '.$sequential_part_disable_button_ar[8].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_i" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[8].'  value="Show Answer"> </span>&nbsp;');}
+     if ( (( $activity_data['wcount_bc_i']>= $help_n_hint && @$diff_time_min[8]>= $help_t_hint && $hintiPath != "uploads/default_hints.html") ) )
+     {echo '<a href="'.$hintiPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
+
      if ($corr['i']=="Correct")
     {echo '<span id = "show_ans_i" class = "show_ans"> - Computed value is: '.$soln[8].'</span>';} 
       ?>  
           <input type="hidden" id="ans_i" value="<?php echo ($soln[8])?>" >	
-    <?php if (isset($_POST['pin']) and @$wrongCount[8]>$hintLimit and $corr['i']=="Not Correct"&& $hintiPath != "uploads/default_hints.html" ){echo '<a href="'.$hintiPath.'"target = "_blank"> hints for this part </a>';} ?>  
-	<?php if (isset($_POST['pin']) and $changed[8] and @$wrongCount[8]>$time_sleep1_trip and @$wrongCount[8]< $time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if (isset($_POST['pin']) and $changed[8] and @$wrongCount[8]>=$time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</div></div>
 	<?php } 
 
@@ -807,14 +823,15 @@ session_start();
 	<div id = "part-j-BC" class = "problem-parts"> j)(<?php echo $assigntime_data['perc_j_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="j" id = "j" size = 10% <?php echo ( $sequential_part_disable_input_ar[9])?> value="<?php echo (htmlentities($resp['j']))?>" > <?php echo(htmlspecialchars_decode($unit[9])) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b> count <?php echo(@$wrongCount[9].' '); ?> 
    <?php 
     if ( (( $activity_data['wcount_bc_j']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[9]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_j']==1 ) && $corr['j']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_j" class="btn-default" '.$sequential_part_disable_button_ar[9].' value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_j" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[9].' value="Show Answer"> </span>&nbsp;');}
+     if ( (( $activity_data['wcount_bc_j']>= $help_n_hint && @$diff_time_min[9]>= $help_t_hint && $hintjPath != "uploads/default_hints.html") ) )
+     {echo '<a href="'.$hintjPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
+
      if ($corr['j']=="Correct")
     {echo '<span id = "show_ans_j" class = "show_ans"> - Computed value is: '.$soln[9].'</span>';} 
       ?>  
           <input type="hidden" id="ans_j" value="<?php echo ($soln[9])?>" >	
 
-          <?php if (isset($_POST['pin']) and $changed[9] and @$wrongCount[9]>$time_sleep1_trip and @$wrongCount[9]< $time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
-	<?php if (isset($_POST['pin']) and $changed[9] and @$wrongCount[9]>=$time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</div></div>
 	<?php } 
     }

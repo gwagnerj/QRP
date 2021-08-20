@@ -67,7 +67,7 @@ session_start();
       $sequential = $assign_data['sequential'];  
          
     //--------------------------------------------------------------------------------------------------------------------- also in QR_BC_Checker2 and QRChecker2
-     $sql = 'SELECT * FROM Assigntime WHERE assign_num = :assign_num AND currentclass_id = :currentclass_id'; // may not want everything here
+     $sql = 'SELECT * FROM Assigntime WHERE assign_num = :assign_num AND currentclass_id = :currentclass_id ORDER BY assigntime_id DESC'; // may not want everything here
      $stmt = $pdo->prepare($sql);
      $stmt->execute(array(':assign_num' => $assignment_num,
                           ':currentclass_id' => $currentclass_id));
@@ -390,7 +390,7 @@ session_start();
 
                $changed[$i]=true;
                 $changed_flag = true;
-               if (($tol_type[$v]==0 && $resp[$v] !=0) || $tol_type[$v] ==1){    //? this condition was put in as a hack to make sure we are not recording so many 0s in the resp data
+               if (($resp[$v] && $tol_type[$v]==0 && $resp[$v] !=0) || ($resp[$v] && $tol_type[$v] ==1)){    //? this condition was put in as a hack to make sure we are not recording so many 0s in the resp data
                 $sql = 'INSERT INTO Resp (activity_id, resp_value,part_name) VALUES (:activity_id, :resp_value, :part_name)';
                 $stmt = $pdo->prepare($sql);
                 $stmt ->execute(array(
@@ -628,7 +628,7 @@ session_start();
 	<div id = "part-a" class = "problem-parts <?php echo $sequential_part_display_ar[0]; ?>"> a)(<?php echo $assigntime_data['perc_a_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo(htmlspecialchars_decode($unit[0])) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> count <?php echo(@$wrongCount[0].' '); ?> 
 	 
     <?php if ( $corr['a']=="Correct" ){echo '- Computed value is: '.$soln[0];} ?>  
-	<?php if ( @$wrongCount[0]>$hintLimit && $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$wrongCount[0]>$hintLimit && $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<span class ="text-primary fs-6 ms-3">Specific hints for this part are avialable in basecase after sufficient time and tries </span>';} ?>  
 	<?php if ( @$changed[0] && @$wrongCount[0]>$time_sleep1_trip && @$wrongCount[0]< $time_sleep2_trip && $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if ( @$changed[0] && @$wrongCount[0]>=$time_sleep2_trip && $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	  </div></div>
@@ -641,7 +641,7 @@ session_start();
 	<div id = "part-b-display" class = "display_none"><?php echo $sequential_part_display_ar[1]; ?></div>
     <div id = "part-b" class = "problem-parts <?php echo $sequential_part_display_ar[1]; ?>"><p> b)(<?php echo $assigntime_data['perc_b_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo(htmlspecialchars_decode($unit[1])) ?> &nbsp - <b><?php echo ($corr['b']) ?> </b> count <?php echo(@$wrongCount[1].' '); ?> 
 	<?php if ( $corr['b']=="Correct" ){echo '- Computed value is: '.$soln[1];} ?>  
-	<?php if ( @$wrongCount[1]>$hintLimit && $corr['b']=="Not Correct" && $hintbPath != "uploads/default_hints.html" ){echo '<a href="'.$hintbPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$wrongCount[1]>$hintLimit && $corr['b']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<span class ="text-primary fs-6 ms-3">Specific hints for this part are avialable in basecase after sufficient time and tries </span>';} ?>  
 	<?php if ( @$changed[1] && @$wrongCount[1]>$time_sleep1_trip && @$wrongCount[1]< $time_sleep2_trip && $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if ( @$changed[1] && @$wrongCount[1]>=$time_sleep2_trip && $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p></div></div>
@@ -653,7 +653,7 @@ session_start();
     <div id = "part-c-display" class = "display_none"><?php echo $sequential_part_display_ar[2]; ?></div>
 	<div id = "part-c" class = "problem-parts <?php echo $sequential_part_display_ar[2]; ?>"><p> c)(<?php echo $assigntime_data['perc_c_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo(htmlspecialchars_decode($unit[2])) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b> count <?php echo(@$wrongCount[2].' '); ?>
 	<?php if ( $corr['c']=="Correct" ){echo '- Computed value is: '.$soln[2];} ?>  
-	<?php if ( @$wrongCount[2]>$hintLimit && $corr['c']=="Not Correct"&& $hintcPath != "uploads/default_hints.html" ){echo '<a href="'.$hintcPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$wrongCount[2]>$hintLimit && $corr['c']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<span class ="text-primary fs-6 ms-3">Specific hints for this part are avialable in basecase after sufficient time and tries </span>';} ?>  
 	<?php if ( @$changed[2] && @$wrongCount[2]>$time_sleep1_trip && @$wrongCount[2]< $time_sleep2_trip && $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if ( @$changed[2] && @$wrongCount[2]>=$time_sleep2_trip && $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p></div></div>
@@ -665,7 +665,7 @@ session_start();
     <div id = "part-d-display" class = "display_none"><?php echo $sequential_part_display_ar[3]; ?></div>
 	<div id = "part-d" class = "problem-parts <?php echo $sequential_part_display_ar[3]; ?>"><p> d)(<?php echo $assigntime_data['perc_d_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo(htmlspecialchars_decode($unit[3])) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b> count <?php echo(@$wrongCount[3].' '); ?>
 	<?php if ( $corr['d']=="Correct" ){echo '- Computed value is: '.$soln[3];} ?>  
-	<?php if ( @$wrongCount[3]>$hintLimit && $corr['d']=="Not Correct"&& $hintdPath != "uploads/default_hints.html" ){echo '<a href="'.$hintdPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$wrongCount[3]>$hintLimit && $corr['d']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<span class ="text-primary fs-6 ms-3">Specific hints for this part are avialable in basecase after sufficient time and tries </span>';} ?>  
 	<?php if ( @$changed[3] && @$wrongCount[3]>$time_sleep1_trip && @$wrongCount[3]< $time_sleep2_trip && $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if ( @$changed[3] && @$wrongCount[3]>=$time_sleep2_trip && $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p></div></div>
@@ -677,7 +677,7 @@ session_start();
     <div id = "part-e-display" class = "display_none"><?php echo $sequential_part_display_ar[4]; ?></div>
 	<div id = "part-e" class = "problem-parts <?php echo $sequential_part_display_ar[4]; ?>"><p> e)(<?php echo $assigntime_data['perc_e_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo(htmlspecialchars_decode($unit[4])) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b> count <?php echo(@$wrongCount[4].' '); ?>
 	<?php if ( $corr['e']=="Correct" ){echo '- Computed value is: '.$soln[4];} ?>  
-	<?php if ( @$wrongCount[4]>$hintLimit && $corr['e']=="Not Correct"&& $hintePath != "uploads/default_hints.html" ){echo '<a href="'.$hintePath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$wrongCount[4]>$hintLimit && $corr['e']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<span class ="text-primary fs-6 ms-3">Specific hints for this part are avialable in basecase after sufficient time and tries </span>';} ?>  
 	<?php if ( @$changed[4] && @$wrongCount[4]>$time_sleep1_trip && @$wrongCount[4]< $time_sleep1_trip && $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if ( @$changed[4] && @$wrongCount[4]>=$time_sleep2_trip && $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p></div></div>
@@ -689,7 +689,7 @@ session_start();
     <div id = "part-f-display" class = "display_none"><?php echo $sequential_part_display_ar[5]; ?></div>
 	<div id = "part-f" class = "problem-parts <?php echo $sequential_part_display_ar[5]; ?>"><p> f)(<?php echo $assigntime_data['perc_f_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo(htmlspecialchars_decode($unit[5])) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b> count <?php echo(@$wrongCount[5].' '); ?>
 	<?php if ( $corr['f']=="Correct" ){echo '- Computed value is: '.$soln[5];} ?>  
-	<?php if ( @$wrongCount[5]>$hintLimit && $corr['f']=="Not Correct"&& $hintfPath != "uploads/default_hints.html" ){echo '<a href="'.$hintfPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$wrongCount[5]>$hintLimit && $corr['f']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<span class ="text-primary fs-6 ms-3">Specific hints for this part are avialable in basecase after sufficient time and tries </span>';} ?>  
 	<?php if ( @$changed[5] && @$wrongCount[5]>$time_sleep1_trip && @$wrongCount[5]< $time_sleep2_trip && $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if ( @$changed[5] && @$wrongCount[5]>=$time_sleep2_trip && $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p></div></div>
@@ -701,7 +701,7 @@ session_start();
     <div id = "part-g-display" class = "display_none"><?php echo $sequential_part_display_ar[6]; ?></div>
 	<div id = "part-g" class = "problem-parts <?php echo $sequential_part_display_ar[6]; ?>"><p> g)(<?php echo $assigntime_data['perc_g_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo(htmlspecialchars_decode($unit[6])) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b> count <?php echo(@$wrongCount[6].' '); ?>
 	<?php if ( $corr['g']=="Correct" ){echo '- Computed value is: '.$soln[6];} ?>  
-	<?php if ( @$wrongCount[6]>$hintLimit && $corr['g']=="Not Correct"&& $hintgPath != "uploads/default_hints.html" ){echo '<a href="'.$hintgPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$wrongCount[6]>$hintLimit && $corr['g']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<span class ="text-primary fs-6 ms-3">Specific hints for this part are avialable in basecase after sufficient time and tries </span>';} ?>  
 	<?php if ( @$changed[6] && @$wrongCount[6]>$time_sleep1_trip && @$wrongCount[6]< $time_sleep2_trip && $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if ( @$changed[6] && @$wrongCount[6]>=$time_sleep2_trip && $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p></div></div>
@@ -713,7 +713,7 @@ session_start();
     <div id = "part-h-display" class = "display_none"><?php echo $sequential_part_display_ar[7]; ?></div>
 	<div id = "part-h" class = "problem-parts <?php echo $sequential_part_display_ar[7]; ?>"><p> h)(<?php echo $assigntime_data['perc_h_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo(htmlspecialchars_decode($unit[7])) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b> count <?php echo(@$wrongCount[7].' '); ?>
 	<?php if ( $corr['h']=="Correct" ){echo '- Computed value is: '.$soln[7];} ?>  
-	<?php if ( @$wrongCount[7]>$hintLimit && $corr['h']=="Not Correct"&& $hinthPath != "uploads/default_hints.html" ){echo '<a href="'.$hinthPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$wrongCount[7]>$hintLimit && $corr['h']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<span class ="text-primary fs-6 ms-3">Specific hints for this part are avialable in basecase after sufficient time and tries </span>';} ?>  
 	<?php if ( @$changed[7] && @$wrongCount[7]>$time_sleep1_trip && @$wrongCount[7]< $time_sleep2_trip && $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if ( @$changed[7] && @$wrongCount[7]>=$time_sleep2_trip && $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p></div></div>
@@ -725,7 +725,7 @@ session_start();
     <div id = "part-i-display" class = "display_none"><?php echo $sequential_part_display_ar[8]; ?></div>
 	<div id = "part-i" class = "problem-parts <?php echo $sequential_part_display_ar[8]; ?>"><p> i)(<?php echo $assigntime_data['perc_i_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo(htmlspecialchars_decode($unit[8])) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b> count <?php echo(@$wrongCount[8].' '); ?>
 	<?php if ( $corr['i']=="Correct" ){echo '- Computed value is: '.$soln[8];} ?>  
-	<?php if ( @$wrongCount[8]>$hintLimit && $corr['i']=="Not Correct"&& $hintiPath != "uploads/default_hints.html" ){echo '<a href="'.$hintiPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$wrongCount[8]>$hintLimit && $corr['i']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<span class ="text-primary fs-6 ms-3">Specific hints for this part are avialable in basecase after sufficient time and tries </span>';} ?>  
 	<?php if ( @$changed[8] && @$wrongCount[8]>$time_sleep1_trip && @$wrongCount[8]< $time_sleep2_trip && $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if ( @$changed[8] && @$wrongCount[8]>=$time_sleep2_trip && $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p></div></div>
@@ -736,7 +736,7 @@ session_start();
     <div id = "part-j-question" class = "parts-question"></div>
     <div id = "part-j-display" class = "display_none"><?php echo $sequential_part_display_ar[9]; ?></div>
 	<div id = "part-j" class = "problem-parts <?php echo $sequential_part_display_ar[9]; ?>"><p> j)(<?php echo $assigntime_data['perc_j_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo(htmlspecialchars_decode($unit[9])) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b> count <?php echo(@$wrongCount[9].' '); ?>
-	<?php if ( @$wrongCount[9]>$hintLimit && $corr['j']=="Not Correct"&& $hintjPath != "uploads/default_hints.html" ){echo '<a href="'.$hintjPath.'"target = "_blank"> hints for this part </a>';} ?>  
+	<?php if ( @$wrongCount[9]>$hintLimit && $corr['j']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<span class ="text-primary fs-6 ms-3">Specific hints for this part are avialable in basecase after sufficient time and tries </span>';} ?>  
 	<?php if ( @$changed[9] && @$wrongCount[9]>$time_sleep1_trip && @$wrongCount[9]< $time_sleep2_trip && $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if ( @$changed[9] && @$wrongCount[9]>=$time_sleep2_trip && $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
 	</p></div> </div>

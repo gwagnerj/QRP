@@ -1187,7 +1187,7 @@ function resizeIFrameToFitContent( frame ) {
                     $('#qrcode_id_bc').hide();
                      $('#reflections').show();
                     $('#checkerbutton').html('to Checker <i class="bi bi-ui-checks"></i>'); 
-                    $('#basecasebutton').html('to Bace-Case <i class="bi bi-arrow-down-square"></i>'); 
+                    $('#basecasebutton').html('to Base-Case <i class="bi bi-arrow-down-square"></i>'); 
 
             }else if(bc_display && !qr_code){
                     $("#problem").hide(); 
@@ -1209,7 +1209,7 @@ function resizeIFrameToFitContent( frame ) {
                     $('#qrcode_id_bc').hide();
                      $('#reflections').show();
                     $('#checkerbutton').html('to QR code <i class="bi bi-upc-scan"></i>'); 
-                    $('#basecasebutton').html('to Bace-Case <i class="bi bi-arrow-down-square"></i>'); 
+                    $('#basecasebutton').html('to Base-Case <i class="bi bi-arrow-down-square"></i>'); 
 
             }
 
