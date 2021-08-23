@@ -161,9 +161,15 @@ if (isset($_SESSION['success'])) {
             <p><input type="submit" formaction="remove_assignment.php" value="Deactivate Assignment"></p><br>
              <p><input type="submit" formaction="stu_assignment_results.php" value="Student Results">  &nbsp;&nbsp; Load Student Work Images (slow) <input type="checkbox" name="load_images" id = "load_images" checked ></p><br>
             <p><input type="submit" formaction="stu_login_info.php" value="See Student Login Information"></p>
+            <!-- <p><input type="submit" formaction="see_all_assignments.php" target = "_blank" value="See all Assignments for your Classes"></p> -->
+            <!-- <a href ="see_all_assignments.php?iid=<?php echo $iid?>"target="_blank"><button>See All your Assignments In New </button></a> -->
 
 	
 	</form>
+
+    <p style="font-size:100px;"></p>   
+            <a href ="see_all_assignments.php?iid=<?php echo $iid?>"target="_blank"><button>See All Your Assignments in New Tab</button></a>
+
   <p style="font-size:100px;"></p>   
     
 	<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
