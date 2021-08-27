@@ -108,6 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
    // start the table
    
    echo('<h2>Student Assignment Results in '.$currentclass_data['name'].' for Assignment '.$assign_num.'</h2>');
+   echo('<input type = "hidden"   id = "current-class"   value = '.$currentclass_data['name'].' > </input>');
+   echo('<input type = "hidden"   id = "assignment-num"   value = '.$assign_num.' > </input>');
 
    echo ('<table id="table" class = "a" border="2" >'."\n");
         echo("<thead>");
@@ -206,9 +208,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
           
            // var_dump($class_student_data);
           
-          foreach($class_student_data as $class_student_datum){
+          foreach($class_student_data as $class_student_datum){  //? Big Loop over all of the students
         
                $student_id = $class_student_datum['student_id'];
+               $student_school_id = $class_student_datum['password'];  //! change this when we put in the school_id field in the studetn table////////////////////////////////
               
                    // get any previous data for the assignment 
           
@@ -265,12 +268,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                        foreach ($activity_data as $activity_datum){
              */                 
                            
-                           echo('<td style="vertical-align: top;">');
+                           echo('<td style="vertical-align: top;" class = "first-name">');
                              echo($class_student_datum['first_name']);
                                 echo('</td><td style="vertical-align: top;">');
                            //  echo($class_student_datum['last_name']);
                             //    echo('</td><td style="vertical-align: top;">');
-                                 echo('<a href ="mailto: '.$class_student_datum['school_email'].'">'.$class_student_datum['last_name'].'</a>');
+                                 echo('<a  href ="mailto: '.$class_student_datum['school_email'].'"><span class ="last-name">'.$class_student_datum['last_name'].'</span><input type = "hidden" class ="school-email" value = '.$class_student_datum['school_email'].'></input></a>');
                                 echo('</td><td style="vertical-align: top; border-right-color:#B22222; border-right:solid 2px red; ">');
                              /*   echo($student_id);
                                 echo('</td><td>'); */
@@ -463,6 +466,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                             echo('<td style="vertical-align: top;">');
                              if ($assign_tot == 0) {$assign_tot = $default_assn_tot;}
                            echo('<input type = "number" min = "0" max = "100"  class = "assignment_tot"  id="assign_tot_'.$student_id.'" name = "assign_tot_'.@$stu_activity['activity_id'].'" readonly value = '.$assign_tot.' > </input>');
+                           echo('<input type = "hidden"   class = "student-school-id"   value = '.$student_school_id.' > </input>');
                               echo('</td>');
                               echo('<td style="vertical-align: top;">');
                               
@@ -533,13 +537,71 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 ?>
 
 
-    <br><br>
-	<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
+    <br>
+
+<div>
+  <a id = "grades-to-moodle-csv-anchor"></a>
+<button id="grades-to-moodle-csv" class = "export-grades btn btn-primary">
+  Create Moodle CSV File
+
+</button>  
+  
+</div>
+<br>
+	<a href="QRPRepo.php">Finished - Go back to Repository</a>
 	<br>
 
 <script>
 
 $(document).ready( function () {
+
+
+//? generate the moodle csv file
+let make_moodle_csv = document.getElementById("grades-to-moodle-csv")
+let make_moodle_csv_anchor = document.getElementById("grades-to-moodle-csv-anchor")
+make_moodle_csv.addEventListener("click", function (e) {
+  let first_names = document.getElementsByClassName("first-name");
+  let last_names = document.getElementsByClassName("last-name");
+  let school_email = document.getElementsByClassName("school-email");
+  let student_school_id = document.getElementsByClassName("student-school-id");
+  let assignment_tot = document.getElementsByClassName("assignment_tot");
+
+
+  let current_class = document.getElementById("current-class").value;
+
+  let assignment_num = document.getElementById("assignment-num").value;
+  let doc_name = current_class+" Assignment"+assignment_num+".csv";
+  
+//  console.log(first_names,last_names,school_email,student_school_id);
+ let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += '"First name","Last name","ID number",Institution,Department,"Email address","assignment1"\r\n';
+ let n = first_names.length;
+ 
+
+for (let i = 0; i < n; i++) {
+  let student_id = student_school_id[i].value;
+  let student_school_email = school_email[i].value;
+  let assignment_total = assignment_tot[i].value;
+
+ csvContent += first_names[i].innerText+","+last_names[i].innerHTML+","+student_id+",,,"+student_school_email+","+assignment_total+"\r\n";
+
+  
+}
+
+// console.log(csvContent)
+ var encodedUri = encodeURI(csvContent);
+ make_moodle_csv_anchor.setAttribute("href", encodedUri);
+ make_moodle_csv_anchor.setAttribute("download", doc_name);
+  make_moodle_csv_anchor.click();
+
+
+})
+
+
+
+
+
+
     // get the weights for each part of the assignemnt
 $('#table input').on('change',function(e){	
     var row = $(this).closest('tr');
