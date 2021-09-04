@@ -40,7 +40,7 @@ if (isset($_POST['cclass_id'])) {
         ':currentclass_id' => $currentclass_id,
         ':student_id' => $student_id,
         ':pin' => $pin,
-    ]);
+    ]);  //! getting error:  a foreign key constraint fails (`wagnerj_QRP`.`StudentCurrentClassConnect`, CONSTRAINT `StudentCurrentClassConnect_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `Student` (`student_id`) ON DELETE CASCADE ON UPDATE CASCADE) in /home3/wagnerj/QRProblems.org/QRP/stu_getclass.php:42
 
     $_SESSION['success'] =
         'signup for class successful - you may now access assignments for this class';

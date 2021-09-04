@@ -11,7 +11,7 @@ if (isset($_SESSION['error'])){
 	echo $_SESSION['error'];
 	unset($_SESSION['error']);
 }
-
+$got_to_stu_frontpage = $student_id = 0;
 //session_unset();
  
  // see if they entered a username or an email address
@@ -61,7 +61,32 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             save the username to the session */
                             session_start();
                             $_SESSION['username'] = $username;      
-                            header("location: stu_frontpage.php?student_id=".$row['student_id']);
+
+
+//? from https://stackoverflow.com/questions/5647461/how-do-i-send-a-post-request-with-php
+
+
+                            //   $url = 'stu_frontpage.php';
+                            //     $data = array('student_id=' => $row['student_id']);
+
+                            //     // use key 'http' even if you send the request to https://...
+                            //     $options = array(
+                            //         'http' => array(
+                            //             'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                            //             'method'  => 'POST',
+                            //             'content' => http_build_query($data)
+                            //         )
+                            //     );
+                            //     $context  = stream_context_create($options);
+                            //     $result = file_get_contents($url, false, $context);
+                            //     if ($result === FALSE) { /* Handle error */ }
+
+                            //     echo ($result);
+
+                                //? this is the end of the insert from stack overflow
+                            $got_to_stu_frontpage = 1;
+                            $student_id = $row['student_id'];
+                      //      header("location: stu_frontpage.php?student_id=".$row['student_id']);
                         } else{
                             // Display an error message if password is not valid
                             $password_err = 'The password you entered was not valid.';
@@ -103,7 +128,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <div class="wrapper">
 	
         <h2>Welcome to Quick Response Homework Student Login</h2>
-        <p>Please fill in your credentials to login.</p>
+        <p>Please fill in your credentials to login</p>
 		
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
@@ -120,6 +145,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <input type="submit" class="btn btn-primary" value="Login">
             </div>
 		</form>
+
+        <form name = "go-on-get" action="stu_frontpage.php" method = "post" id="go-on-get">
+            <input type = "hidden" name = "student_id" value = "<?php echo ( $student_id)?>" >
+            <input type = "hidden" id = "go-to-stu-frontpage" name = "go-to-stu-frontpage" value = "<?php echo ( $got_to_stu_frontpage)?>" >
+        </form>
 		
 		 </p> </br>
 			<p>Forgot your Password or Usename? <a href="stu_pswdRecovForm.php">Click Here</a>.</p> </br>
@@ -129,5 +159,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		  
        
     </div>
+    <script>
+        let go_to_stu_frontpage = document.getElementById('go-to-stu-frontpage').value;
+        console.log(go_to_stu_frontpage);
+        let go_on_get = document.getElementById('go-on-get');
+
+        if (go_to_stu_frontpage ==1){
+
+            console.log ("go-on-get",go_on_get);
+
+            go_on_get.submit();
+        }
+    </script>
+
 </body>
 </html>

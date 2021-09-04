@@ -15,6 +15,10 @@
 	<head>
 	<link rel="icon" type="image/png" href="McKetta.png" />  
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
 	<meta Charset = "utf-8">
 	<title>QRP Repo</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
@@ -36,7 +40,6 @@
 
 	#request_prob{
 		text-align: right;
-		 color: blue;
 		width: 100%;
 		height: 100%;
 		border: none;
@@ -217,7 +220,7 @@
 		}
 		if ($security =='admin' || $security =='contrib' || $security =='instruct'){
 			
-			echo '<a href="Current_Class.php">Add / Delete Current Classes </b></a>';
+			echo '<a href="Current_Class.php"><button class = "btn btn-secondary">Add / Delete Current Classes </button></a>';
 			echo '&nbsp; &nbsp;&nbsp;';
 			echo '<a href="QRhomeworkBypass.php" target = "_blank">Look at Active Problem </a>';
 			echo '&nbsp; &nbsp;&nbsp;';
@@ -234,7 +237,7 @@
          
             echo ('<style> form {display:inline}</style>');
          //   echo('<form action = "QRExamPrint0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Print Exam"></form> &nbsp;');
-            echo('<form action = "QRExamMgmt.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Exam Management"></form> &nbsp;');
+            echo('<form action = "QRExamMgmt.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Exam Management"></form> &nbsp;');
  //           echo('<form action = "QRExamStart.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Start Exam"></form> &nbsp;');
  //           echo('<form action = "QRExamRetrieve.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Retrieve Exam Results"></form> &nbsp;');
             echo('<form action = "QRAssignmentStart0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Hmwk Management"></form> &nbsp;');
@@ -251,13 +254,16 @@
 					));
 		if ($row = $stmt->fetch(PDO::FETCH_ASSOC)!= false) {
 		
-		echo '<a href="suspend_user.php">Suspend / unsuspend one of users you sponsored</b></a>';
+		echo '<a href="suspend_user.php">Suspend / unsuspend one of users you sponsored </a> &nbsp';
+		echo '<button id = "spark-line-button" class = "btn btn-outline-secondary bs-3 px-1">Show Sparkines</button>&nbsp';
+		// echo '<button id = "filter-button" class = "btn btn-outline-danger bs-5 px-1">Show Search and Filters</button>';
+
 			echo '<br>';
 		}
 		if (($security == 'admin' || $security == 'contrib' || $security == 'stu_contrib') && $threat_level <= 3){
 		echo '<div id = "request_prob">';
-		echo '<b>Contributing a New Problem? </br>';
-		echo '<a href="requestPblmNum.php">Request Problem Number</b></a>';
+		echo '<span class = "fw-bold fs-6">Contributing a New Problem? </span><br>';
+		echo '<a href="requestPblmNum.php" style = "color:blue;"><button class = "btn btn-outline-primary" style = "color:white;"><i class="bi bi-list-ol"></i> Request Problem Number</buttton></a>';
 		echo '</div>';
 		
 	}
@@ -273,7 +279,7 @@
 	}
 
 
-	echo ('<table id="table_format" class = "a" border="1" >'."\n");
+	echo ('<table id="table_format" class = " table table-striped a" border="1" >'."\n");
 		
 		 echo("<thead>");
 
@@ -730,7 +736,7 @@
 			
 			echo("</td><td>"); 
 			if($row['username']==$username || $security=='admin' || ($security == 'contrib' && $row['allow_edit'] == 2) || (($security == 'contrib') && ($users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3']))){
-				echo('<form action = "editpblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="Edit"></form>');
+				echo('<form action = "editpblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input class = "btn btn-secondary" type = "submit" value ="Edit"></form>');
 			}
 			if($row['username']==$username || $security=='admin'){
 				echo("<p class='half-line'>");
@@ -755,8 +761,8 @@
 			if($row['status']!='num issued') {
 				echo('<form action = "bc_preview.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="Base-case"></form>');
 				echo("&nbsp; ");
-				echo('<form action = "getGame.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Game"></form>');
-				echo("&nbsp; ");
+				// echo('<form action = "getGame.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Game"></form>');
+				// echo("&nbsp; ");
 				echo('<form action = "stageExam.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Stage->Exam"></form>');
 				echo("&nbsp; ");
 				echo('<form action = "getInputMoodleXML.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="MoodleXML"></form>');
@@ -790,20 +796,32 @@
 ?>
 
 	<script>
-		
+		let show_sparklines = document.getElementById('spark-line-button');
+		show_sparklines.addEventListener("click", function(e) {
+			// console.log("click");
+
 		$(".inlinebar1").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
 		$(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
+
+
+
+		})
+
+
+		
+		
 		
 		localStorage.setItem('MC_flag','false');  // initialize multiple choice flag to false
 		
 		
 		
 		$(document).ready( function () {
-		$('#table_format').DataTable({"sDom": 'W<"clear">lfrtip',
-			"order": [[ 0, 'dsc' ] ],
-			 "lengthMenu": [ 50, 100, 200 ],
-			"oColumnFilterWidgets": {
-			"aiExclude": [ 0,1,2,3,6,11,17,18] }});
+				
+			$('#table_format').DataTable({"sDom": 'W<"clear">lfrtip',
+				"order": [[ 0, 'dsc' ] ],
+				"lengthMenu": [ 50, 100, 200 ],
+				"oColumnFilterWidgets": {
+				"aiExclude": [ 0,1,2,3,6,11,17,18] }});
 		
 
 		// jQuery('#table_format').ddTableFilter();

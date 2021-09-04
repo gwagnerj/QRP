@@ -3,7 +3,7 @@
 	session_start();
 	 //unset($_POST['change_class']);
     $currentclass_id = '';
-      if (isset($_POST['student_id'])){$student_id = $_POST['student_id'];}
+      
        if (isset($_POST['stu_name'])){$stu_name = $_POST['stu_name'];}
       if (isset($_POST['iid'])){$iid = $_POST['iid'];}
 	  if (isset($_POST['pin'])){$pin = $_POST['pin'];}
@@ -19,9 +19,37 @@
 	$index='';
      // if (isset($_POST['stu_name'])){$stu_name = $_POST['stu_name']}
       
-      
-    if (isset($_GET['student_id'])){ 
-      $student_id =   $_GET['student_id'];
+     if (isset($_POST['student_id'])){$student_id = $_POST['student_id'];}
+     else if (isset($_GET['student_id'])){ 
+        $student_id =   $_GET['student_id'];
+    } else if (isset($_SESSION['student_id'])) {
+
+      $student_id = $_SESSION['student_id'];
+    } else if (isset($_GET["activity_id"])){
+        $activity_id = $_GET["activity_id"];
+        $sql = 'SELECT student_id FROM `Activity` WHERE `activity_id` = :activity_id';
+        $stmt = $pdo->prepare($sql);
+         $stmt->execute(array(':activity_id' => $activity_id));
+         $activity_data = $stmt -> fetch();
+         $student_id = $activity_data['student_id'];
+
+
+    } else if (isset($_POST['activity_id'])) {
+        $activity_id = $_POST['activity_id'];
+        $sql = 'SELECT student_id FROM `Activity` WHERE `activity_id` = :activity_id';
+        $stmt = $pdo->prepare($sql);
+         $stmt->execute(array(':activity_id' => $activity_id));
+         $activity_data = $stmt -> fetch();
+         $student_id = $activity_data['student_id'];
+
+    } 
+    else{
+      echo "error student_id not set in stu_frontpage";
+       $_SESSION['error'] = 'student_id not set in stu_frontpage';
+       die();
+	
+    }
+
       
        $sql = 'SELECT * FROM Student WHERE `student_id` = :student_id';
         $stmt = $pdo->prepare($sql);
@@ -98,10 +126,6 @@
             
         }
     
-     } else {
-      // $_SESSION['error'] = 'student_id not set in stu_frontpage';
-	
-    }
 
     
     // this is the normal place to start for students checking their homework and goes the the QRcontroller.  Can also come from the rtnCode.php or the back button on QRdisplay.php  

@@ -12,7 +12,10 @@ session_start();
 
 //  Set the varaibles to the Get Parameters or if they do not exist try the session variables if those don't exist error back to QRhomework
 
-	if(isset($_GET['activity_id'])) {
+	if(isset($_POST['activity_id'])) {
+			$activity_id = $_POST['activity_id'];
+            
+		} else if(isset($_GET['activity_id'])) {
 			$activity_id = $_GET['activity_id'];
             
 		} else {
@@ -249,11 +252,11 @@ $pass = array(
 
 <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
 
-<!--
+
 <title>QRHomework</title> 
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 
--->
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
@@ -266,7 +269,7 @@ $pass = array(
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
  
- <meta name="viewport" content="width=device-width, initial-scale=1">
+ <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
  <link rel="stylesheet" href="displayProblem.css"> 
 
 
@@ -280,21 +283,6 @@ $pass = array(
 #BC_checker2{
    background-color: #e6f7ff;  
 }
-/* 
-.hidden {
-    visibility: hidden;
-}
-.display_none { display: none;
-}
-.gray-out { background-color:black;
-            padding: 0 3px 0 3px;
-           
-}
-.gray-out:after{
-   color:white;
-    content:'watch video';
-}
- */
 
 </style>
 
@@ -728,16 +716,16 @@ function resizeIFrameToFitContent( frame ) {
 
 
 
-      if (sequential ==1){ 
-    //    let checker_part_b = document.getElementById('checker2').contentWindow.document.getElementById('part-b-display').innerText;
-    //    let checker_part_c = document.getElementById('checker2').contentWindow.document.getElementById('part-c-display').innerText;
-    //    // let checker_part_d = document.getElementById('checker2').contentWindow.document.getElementById('part-d-display').innerText;
-    //    console.log ("checker_part_b",checker_part_b);
-    //    if (checker_part_b=="display_none"){ part_b.classList.add('display_none'); }
-    //    if (checker_part_c=="display_none"){ part_c.classList.add('display_none'); }
-    //  //  if (checker_part_d=="display_none"){ part_d.classList.add('display_none'); }
+    //   if (sequential ==1){ 
+    // //    let checker_part_b = document.getElementById('checker2').contentWindow.document.getElementById('part-b-display').innerText;
+    // //    let checker_part_c = document.getElementById('checker2').contentWindow.document.getElementById('part-c-display').innerText;
+    // //    // let checker_part_d = document.getElementById('checker2').contentWindow.document.getElementById('part-d-display').innerText;
+    // //    console.log ("checker_part_b",checker_part_b);
+    // //    if (checker_part_b=="display_none"){ part_b.classList.add('display_none'); }
+    // //    if (checker_part_c=="display_none"){ part_c.classList.add('display_none'); }
+    // //  //  if (checker_part_d=="display_none"){ part_d.classList.add('display_none'); }
 
-      }
+    //   }
        if (switch_to_bc == 1){
          $('#base_case').show();
          $('#BC_checker').show();
@@ -1456,6 +1444,10 @@ change_count();
   let head = document.getElementsByTagName('head')[0];
 let drawing_tool_script = document.createElement("script");
 drawing_tool_script.type = "text/javascript";
+// let have_drawing = document.getElementsByClassName("drawing_container");
+// if (have_drawing){
+//   head.src = "drawingtool/painterro-1.2.57.min.js"
+// }
 
 // let drawing_tool_background_source = localStorage.getItem('drawing_tool_background_src');
 

@@ -1,4 +1,3 @@
- 
 var drawing_tool_background_src = localStorage.getItem('drawing_tool_background_src');
 if (drawing_tool_background_src) {
   drawing_tool_background_src = drawing_tool_background_src.replace("%20", " ");
