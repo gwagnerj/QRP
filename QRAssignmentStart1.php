@@ -496,7 +496,6 @@ $_SESSION['counter']=0;  // this is for the score board
                     value="latetoall"> Entire Assignment &nbsp;&nbsp;&nbsp;&nbsp;
               -->      
            &nbsp;&nbsp; <input type="radio" name="credit" id = "credit" value = "latetoproblems" checked> Each Problem
-                    <?php// if (isset($credit) && $credit=="latetoproblems"  ) echo "checked";?>
                     
             <!--
            &nbsp;&nbsp; <input type="radio" name="credit" id = "credit"

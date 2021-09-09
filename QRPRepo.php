@@ -255,11 +255,13 @@
 		if ($row = $stmt->fetch(PDO::FETCH_ASSOC)!= false) {
 		
 		echo '<a href="suspend_user.php">Suspend / unsuspend one of users you sponsored </a> &nbsp';
-		echo '<button id = "spark-line-button" class = "btn btn-outline-secondary bs-3 px-1">Show Sparkines</button>&nbsp';
 		// echo '<button id = "filter-button" class = "btn btn-outline-danger bs-5 px-1">Show Search and Filters</button>';
 
-			echo '<br>';
+		//	echo '<br>';
 		}
+
+		echo '<button id = "spark-line-button" class = "btn btn-outline-secondary bs-3 px-1">Show Sparkines</button>&nbsp';
+
 		if (($security == 'admin' || $security == 'contrib' || $security == 'stu_contrib') && $threat_level <= 3){
 		echo '<div id = "request_prob">';
 		echo '<span class = "fw-bold fs-6">Contributing a New Problem? </span><br>';

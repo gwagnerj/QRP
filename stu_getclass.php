@@ -2,7 +2,7 @@
 require_once 'pdo.php';
 session_start();
 
-if (isset($_POST['cclass_id'])) {
+if (isset($_POST['cclass_id'])) {  // coming from this form and has selected the class
     $student_id = $_POST['student_id'];
 
     $currentclass_id = $_POST['cclass_id'];
@@ -17,9 +17,9 @@ if (isset($_POST['cclass_id'])) {
     $count_data = $stmt->fetch();
     $count_pin = $count_data['counts'];
     if ($count_pin != 0) {
-        $_SESSION['error'] =
-            'student already has an entry for this class in stu_getclass';
-        header('Location: stu_getclass.php?student_id=' . $student_id);
+        $_SESSION['error'] = 'student already has an entry for this class in stu_getclass';
+        $_SESSION['student_id'] = $student_id;
+        header('Location: stu_frontpage.php');
         return;
     }
 
@@ -42,14 +42,13 @@ if (isset($_POST['cclass_id'])) {
         ':pin' => $pin,
     ]);  //! getting error:  a foreign key constraint fails (`wagnerj_QRP`.`StudentCurrentClassConnect`, CONSTRAINT `StudentCurrentClassConnect_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `Student` (`student_id`) ON DELETE CASCADE ON UPDATE CASCADE) in /home3/wagnerj/QRProblems.org/QRP/stu_getclass.php:42
 
-    $_SESSION['success'] =
-        'signup for class successful - you may now access assignments for this class';
-    header('Location: stu_frontpage.php?student_id=' . $student_id);
-    return;
-}
+    $_SESSION['success'] = 'signup for class successful - you may now access assignments for this class';
 
-if (isset($_GET['student_id'])) {
-    $student_id = $_GET['student_id'];
+    $_SESSION['student_id'] = $student_id;
+        header('Location: stu_frontpage.php');
+        return;
+} else if (isset($_POST['student_id'])) {  //coming in from stu_frontpage
+    $student_id = $_POST['student_id'];
 
     $sql = 'SELECT * FROM Student WHERE `student_id` = :student_id';
     $stmt = $pdo->prepare($sql);

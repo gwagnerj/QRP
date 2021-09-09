@@ -50,7 +50,7 @@
 	
     }
 
-      
+    //  echo ("student_id ".$student_id) ;
        $sql = 'SELECT * FROM Student WHERE `student_id` = :student_id';
         $stmt = $pdo->prepare($sql);
          $stmt->execute(array(':student_id' => $student_id));
@@ -71,7 +71,8 @@
             // echo('$num_classes: '.$num_classes);
         if($num_classes ==0){
             // need to go to the select class
-              header("Location: stu_getclass.php?student_id=".$student_id);
+  //          echo("Location: stu_getclass.php?student_id=".$student_id);
+             header("Location: stu_getclass.php?student_id=".$student_id);
               return; 
         } elseif ($num_classes == 1){
             
@@ -405,8 +406,9 @@
 			
 		}
         if (isset($_POST['add_class']))	{
-            header("Location: stu_getclass.php?student_id=".$student_id);
-			return; 
+   //       echo ("Location: stu_getclass.php?student_id=".$student_id);
+            // header("Location: stu_getclass.php?student_id=".$student_id);
+			// return; 
 		}
   
 
@@ -499,11 +501,13 @@ table.main_table{
 <form method = "POST" class="container-fluid ">
 		<p><button type = "submit"  name = "reset" class = "btn btn-warning  btn-outline-primary position-relative  bottom-0 start-0 justify-content-start"  > <i class="bi bi-box-arrow-left"></i> Back to Login </button>
 		<!-- <p><button type = "submit"  name = "reset" class = "btn btn-warning position-relative  bottom-0 start-0 justify-content-start"  > <i class="bi bi-box-arrow-left"></i> Back to Login </button> -->
-	<!-- </form>
-  <form method = "POST"  class="container-fluid justify-content-end"> -->
-   
-   <p><button type = "submit" name = "add_class" class = "btn btn-sm btn-outline-secondary position-relative  bottom-0 start-0"> Add Another Class <i class="bi bi-clipboard-plus"></i></button>
- </form>
+ 
+  <!-- <form method = "POST"  class="container-fluid justify-content-end"> --> 
+  </form>  
+  <div class="position-relative">
+   <p><button name = "add_class" id="add-class" class = "btn btn-sm btn-outline-secondary position-absolute top-100 end-0 translate-middle"> Add Another Class <i class="bi bi-clipboard-plus"></i></button>
+ <!-- </form> -->
+</div>
 
 </nav>
 
@@ -526,6 +530,11 @@ table.main_table{
 	}
  
 ?>
+
+<form name = "go-on-get" action="stu_getclass.php" method = "post" id="go-on-get">
+            <input type = "hidden" name = "student_id" value = "<?php echo ( $student_id)?>" >
+        </form>
+
 
 <form id = "big_form" autocomplete="off" method="POST" >
 	  
@@ -637,8 +646,21 @@ table.main_table{
     
 
 <script>
+
+
+
 $(document).ready( function () {
     console.log('here we go');
+
+    let add_class = document.getElementById('add-class');
+    let go_on_get = document.getElementById('go-on-get');
+    add_class.addEventListener('click', function (e) {
+      console.log(go_on_get);
+       go_on_get.submit();
+    })
+
+
+
    var p_num_score_net =  [];
    var p_num_score_raw = [];
    var survey_pts = [];

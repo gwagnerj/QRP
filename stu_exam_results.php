@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
            ':iid' => $iid,
            )); 
           $eexam_data = $stmt -> fetchALL();
-         // var_dump($eexam_data);
+    //      var_dump($eexam_data);
              $prob_weight = array();  // this is so the max on the imput field is the max numerical points for that problem
              $i = 0;
              foreach ($eexam_data as $eexam_datum){
@@ -244,21 +244,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                     
                 }
                 
-                
+                //? get the dex class
+                $sql = "SELECT `dex` FROM Eactivity
+                LEFT JOIN Eregistration ON Eactivity.eregistration_id = Eregistration.eregistration_id
+                WHERE eactivity_id = :eactivity_id";
+               $stmt = $pdo->prepare($sql);
+               $stmt->execute(array(':eactivity_id' => $eactivity_id));
+             $eactivity_data = $stmt -> fetch();
+               
+               $dex = $eactivity_data["dex"];
+           
+
               
               // get their pin and dex 
-              $sql = "SELECT `pin`  FROM `StudentCurrentClassConnect` WHERE  currentclass_id = :currentclass_id AND student_id = :student_id";
-               $stmt = $pdo->prepare($sql);
-               $stmt -> execute(array(
-                 ':currentclass_id' => $currentclass_id,
-      //            ':assign_id' => $assign_id,
-                  ':student_id' => $student_id,
-                    )); 
+      //         $sql = "SELECT `pin`  FROM `StudentCurrentClassConnect` WHERE  currentclass_id = :currentclass_id AND student_id = :student_id";
+      //          $stmt = $pdo->prepare($sql);
+      //          $stmt -> execute(array(
+      //            ':currentclass_id' => $currentclass_id,
+      // //            ':assign_id' => $assign_id,
+      //             ':student_id' => $student_id,
+      //               )); 
 
-                $pins = $stmt->fetch();
-                $pin = $pins['pin'];
+      //           $pins = $stmt->fetch();
+      //           $pin = $pins['pin'];
                 
-                $dex = ($pin-1) % 199 + 2;
+      //           $dex = ($pin-1) % 199 + 2;
                 
              //  foreach ($activity_data as $activity_datum){
                      
@@ -284,9 +294,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                 echo('</td><td style="vertical-align: top; border-right-color:#B22222; border-right:solid 2px red; ">');
                              /*   echo($student_id);
                                 echo('</td><td>'); */
+
+
+
+
                                echo('&nbsp;'.$dex);
                                 echo('</td>');
-                                 $default_assn_tot = 0;
+                              //    $default_assn_tot = 0;
                                  $i = 0;
                            foreach ($eexam_data as $eexam_datum){
                                $eexam_id = $eexam_datum['eexam_id'];
@@ -302,7 +316,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                     
                                 $eactivity_datum = $stmt->fetch();
                                 $eactivity_id = $eactivity_datum['eactivity_id'];
-                                
+                                // echo('&nbsp;'.$eactivity_datum['dex']);
+                                // echo('</td>');
+
                                  
                                       
                                 echo('<td style="vertical-align: top;">');

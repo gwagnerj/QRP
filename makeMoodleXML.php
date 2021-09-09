@@ -238,7 +238,10 @@ if(isset($_POST['iid'])){
          $xml_question1->appendChild( $xml_comment );
          $xml_questiontext = $xml->createElement( "questiontext" );
          $xml_questiontext->setAttribute( "format", "html" );
-    
+
+
+         if (!isset($html_file)){ $html_file = new stdClass();}  // creates and object if it does not exist
+   
          $html_file = file_get_html($htmlfilenm);  // reads file into a simple html object
       $html_file = $html_file->find('#problem',0);  // get rid of everything but the problem statement and questions
       

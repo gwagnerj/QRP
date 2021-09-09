@@ -196,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
              INNER JOIN `StudentCurrentClassConnect` ON Student.student_id = StudentCurrentClassConnect.student_id
               WHERE StudentCurrentClassConnect.currentclass_id = :currentclass_id
               GROUP BY Student.student_id
-               ORDER BY Student.last_name ASC";
+               ORDER BY Student.last_name ASC,Student.first_name ASC";
 
                //? tried to put in GROUP BY Student.student_id but did not really help 
                $stmt = $pdo->prepare($sql);
