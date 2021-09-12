@@ -197,7 +197,36 @@ session_start();
 			$tol=array('a'=>0.02,'b'=>0.02,'c'=>0.02,'d'=>0.02,'e'=>0.02,'f'=>0.02,'g'=>0.02,'h'=>0.02,'i'=>0.02,'j'=>0.02);
 			$tol_type=array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
 			$ansFormat=array('ans_a' =>"",'ans_b' =>"",	'ans_c' =>"",'ans_d' =>"",'ans_e' =>"",'ans_f' =>"",	'ans_g' =>"",'ans_h' =>"",'ans_i' =>"",'ans_j'=>"");
-			
+			$days_past_due_ar = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
+			$late_penalty_ar = array('a'=>0,'b'=>0,'c'=>0,'d'=>0,'e'=>0,'f'=>0,'g'=>0,'h'=>0,'i'=>0,'j'=>0);
+            $p_num_score_raw = $p_num_score_net = $pscore_less = 0;
+
+            $activity_correct = array( 
+                'a' => $activity_data["correct_a"],
+                'b' => $activity_data["correct_b"],
+                'c' => $activity_data["correct_c"],
+                'd' => $activity_data["correct_d"],
+                'e' => $activity_data["correct_e"],
+                'f' => $activity_data["correct_f"],
+                'g' => $activity_data["correct_g"],
+                'h' => $activity_data["correct_h"],
+                'i' => $activity_data["correct_i"],
+                'j' => $activity_data["correct_j"]
+            );
+
+            $activity_correct_time = array(
+                'a' => $activity_data["time_a_correct"],
+                'b' => $activity_data["time_b_correct"],
+                'c' => $activity_data["time_c_correct"],
+                'd' => $activity_data["time_d_correct"],
+                'e' => $activity_data["time_e_correct"],
+                'f' => $activity_data["time_f_correct"],
+                'g' => $activity_data["time_g_correct"],
+                'h' => $activity_data["time_h_correct"],
+                'i' => $activity_data["time_i_correct"],
+                'j' => $activity_data["time_j_correct"]
+            );
+
 			
 			$hintLimit = 3;
 			$dispBase = 1;
@@ -516,6 +545,80 @@ session_start();
                 ':correct_j' => $corr_num['j'],
                 ':switch_to_bc' => $switch_to_bc,
                  ));
+                
+                 $score_change = false;
+                 foreach(range('a','j') as $x){ 
+                    //  echo ($x.' what '.is_null($activity_correct[$x]).' the '.is_null($activity_correct_time[$x]).' F'.$corr_num[$x]);
+                    if((is_null($activity_correct[$x]) || $activity_correct[$x] == 0 ) && is_null($activity_correct_time[$x]) && $corr_num[$x]==1 ){
+                        $score_change = true;
+                                                                                                         //? should the first time they get it correct
+                      $sql =  'UPDATE `Activity` SET time_'.$x.'_correct = CURRENT_TIMESTAMP()
+                              WHERE activity_id = :activity_id';
+                        $stmt = $pdo -> prepare($sql);
+                        $stmt -> execute(array(
+                            ':activity_id' => $activity_id,
+                        ));
+
+                    }
+                 }
+
+                 if ($score_change && $credit == 'latetoparts'){
+                     // update Activity so it reflects the was late penalty and p_num_score_raw, late_penalty and p_num_score_net
+                    // compute if anything is late penalty and
+                    
+                    if($now_int > $due_date_int ) {  // figure out the late penalty for each part
+                     $p_num_score_raw = $p_num_score_net = $late_penalty = 0;
+                        $sql = 'SELECT * FROM Activity WHERE activity_id = :activity_id';
+                        $stmt = $pdo->prepare($sql);
+                        $stmt->execute(array(':activity_id' => $activity_id));
+                        $activity_data = $stmt -> fetch();
+                        foreach(range('a','j') as $x){   //? modify the Pscore
+                            $correct_time = $activity_data['time_'.$x.'_correct'];
+                            if (!is_null($correct_time)){
+                                $correct_time_x = new DateTime($correct_time);
+                                $correct_time_x =$correct_time_x->format(' D, M d,  g:i A');
+                                $correct_time_int = strtotime($correct_time_x);
+                                $days_past_due_ar[$x] = ceil(($correct_time_int - $due_date_int)/(60*60*24));
+                                echo (' days past due: ' . $days_past_due_ar[$x]);
+                                $late_penalty_ar[$x] = $days_past_due_ar[$x]*$fixed_percent_decline;
+                                echo(' late penalty: ' . $late_penalty_ar[$x]);
+                                $p_num_score_raw += intval($activity_data['correct_'.$x]*$assigntime_data['perc_'.$x.'_'.$alias_num]);
+                                echo(' score: ' . $p_num_score_raw);
+                                $p_num_score_net += intval($activity_data['correct_'.$x]*$assigntime_data['perc_'.$x.'_'.$alias_num]*min(100,$late_penalty_ar[$x]))/100.0;
+                                echo( ' p_num_score_net '.$p_num_score_net);
+                            }
+
+
+                        }
+                        $p_num_score_net = round($p_num_score_net);
+                        $PScore = $p_num_score_net;
+                        $late_penalty =  $p_num_score_raw - $p_num_score_net;
+                        $perc_late_p_prob = $late_penalty;
+                            
+                        } else {
+                            $p_num_score_raw = $p_num_score_net = $PScore;
+                            $late_penalty = 0;
+                        }
+                        
+                        
+                        
+                        
+                        
+                        // the PScore should be OK I think to imput in the 
+                        $sql ='UPDATE `Activity` SET `p_num_score_raw` = :p_num_score_raw, `late_penalty` = :late_penalty, `p_num_score_net` = :p_num_score_net
+                        WHERE activity_id = :activity_id';
+                         $stmt = $pdo -> prepare($sql);
+                         $stmt -> execute(array(
+                             ':p_num_score_raw' => $p_num_score_raw,
+                             ':late_penalty' => $late_penalty,
+                             ':p_num_score_net' => $p_num_score_net,
+                             ':activity_id' => $activity_id
+                              ));
+
+                    }
+                 
+
+
     
     
 		$_SESSION['points']=$score; // this will cause problems if running multiple browser windows on the same machine - testing on localhost
@@ -599,6 +702,8 @@ session_start();
 	<h6  class = "container-float"> Name: <?php echo($stu_name);?> &nbsp; Assign Num: <?php echo($assignment_num);?>&nbsp;  Problem: <?php echo($alias_num);?> &nbsp; &nbsp;   Max Attempts: <?php if ($attempt_type==1){echo('infinite');}else{echo($num_attempts);} ?> </h6> <p> &nbsp; Time delay starts at <?php echo ($time_sleep1_trip);?> tries per part for <?php echo($time_sleep1);?> s then <?php echo($time_sleep2);?> s after <?php echo ($time_sleep2_trip); ?> tries </p>  
     <!-- <h4> <?php echo ' time_sleep1 '. !is_null($assigntime_data['time_sleep1']); ?> </h4> -->
 	<font size = "1"> Problem Number: <?php echo ($problem_id) ?> -  <?php echo ($dex) ?> </font>
+    <!-- <?php var_dump($activity_correct);
+    var_dump($activity_correct_time); ?> -->
     <!--
 	<font size = "1"> PIN: <?php echo ($pin) ?>
 	<font size = "1"> progress: <?php echo ($progress) ?>
@@ -746,8 +851,11 @@ session_start();
 
 	
 	?> 
-<span class="fw-bold" > Provisional Score on Problem:  <?php echo (round($PScore)) ?> %&nbsp; out of  <?php echo (round($num_score_possible)) ?> %&nbsp;   </span>
-<?php if($perc_late_p_prob != 0){if ($PScore >= $perc_late_p_prob){$pscore_less = round($PScore - $perc_late_p_prob); echo (' Less Late Penalty of '.$perc_late_p_prob.'% = '.$pscore_less.'%');} else { echo (' Less Late Penalty of '.$perc_late_p_prob.' % more than points earned'); $pscore_less = 0;}} else {$pscore_less = $PScore; } ?> &nbsp; &nbsp; 
+   <?php if ($credit == "latetoproblems") {?>
+<span class="fw-bold" > Provisional Score on Problem:  <?php echo (round($PScore)) ?> %&nbsp; out of  <?php echo (round($num_score_possible)) ?> %&nbsp;   </span><?php } else { ?>
+<span class="fw-bold" > Provisional Score on Problem:  <?php echo (round($activity_data['p_num_score_net'])); if ($num_score_possible) { echo (' out of '.$num_score_possible);} ?> %&nbsp;   </span> <?php }?>
+<?php if ($credit == "latetoproblems") { if($perc_late_p_prob != 0){if ($PScore >= $perc_late_p_prob){$pscore_less = round($PScore - $perc_late_p_prob); echo (' Less Late Penalty of '.$perc_late_p_prob.'% = '.$pscore_less.'%');} else { echo (' Less Late Penalty of '.$perc_late_p_prob.' % more than points earned'); $pscore_less = 0;}} else {$pscore_less = $PScore; } } else { ?> &nbsp; &nbsp; 
+<?php if($activity_data['late_penalty'] != 0){echo (' Late Penalty: '.$activity_data['late_penalty']);}}?>
  <br> note - Score only includes quatitative parts of the problem.  These points awarded when work is uploaded. <br>
  
  Total Count:<span id = "total_count" > <?php echo (@$count_tot) ?> </span> <br>
@@ -781,6 +889,7 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
 	        
 
             <input type="hidden" id = "activity_id" name="activity_id" value="<?php echo ($activity_id)?>" >
+            <input type="hidden" id = "credit" name="credit" value="<?php echo ($credit)?>" >
             <input type="hidden" id = "stu_name" name="stu_name" value="<?php echo(str_replace(' ','_',$stu_name));?>" >
             <input type="hidden" name="problem_id" value="<?php echo ($problem_id)?>" >
             <input type="hidden" id = "changed_flag" name="changed_flag" value="<?php echo ($changed_flag)?>" >

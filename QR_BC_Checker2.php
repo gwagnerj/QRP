@@ -495,8 +495,9 @@ session_start();
       $sequential_part_display_question_ar[$j] = "display";
 //      $sequential_part_disable_input_ar[$j]= "";
      } else {
-      $sequential_part_display_ar[$j]= "display_none";
-      $sequential_part_disable_input_ar[$j]= "disabled";
+//!      $sequential_part_display_ar[$j]= "display_none";
+ //!     $sequential_part_disable_input_ar[$j]= "disabled";
+ //! temp removed so hints show up for all parts if avaialbe
      } 
   }
           $next_one = false;

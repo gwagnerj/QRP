@@ -2,12 +2,14 @@
  session_start();
   Require_once "pdo.php";
 	 // values from QRChecker2 that need put in the activity table
-	 if (isset($_POST['PScore'])&& isset($_POST['activity_id']) && isset($_POST['perc_late_p_prob'])&& isset($_POST['pscore_less'])&& isset($_POST['ec_elgible_flag'])&& isset($_POST['num_score_possible'])){
+	 if (isset($_POST['PScore'])&& isset($_POST['activity_id']) && isset($_POST['perc_late_p_prob'])&& isset($_POST['pscore_less'])&& isset($_POST['ec_elgible_flag'])&& isset($_POST['num_score_possible'])&& isset($_POST['credit'])){
 		// put these in the activity table and from the previous page 
        $activity_id = $_POST['activity_id'];
         $ec_elgible_flag =$_POST['ec_elgible_flag'];
         $p_num_score_net = $_POST['pscore_less'];
-        
+		$credit = $_POST['credit'];
+		
+        if($credit == 'latetoproblems'){
         
            $sql ='UPDATE `Activity` SET `p_num_score_raw` = :p_num_score_raw, `late_penalty` = :late_penalty, `p_num_score_net` = :p_num_score_net, `ec_elgible_flag` = :ec_elgible_flag 
            WHERE activity_id = :activity_id';
@@ -19,7 +21,7 @@
                 ':ec_elgible_flag' => $ec_elgible_flag,
                 ':activity_id' => $activity_id
                  ));
-    
+			}
 
     } 
     /* 

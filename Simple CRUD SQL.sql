@@ -2998,3 +2998,39 @@ ENGINE=InnoDB CHARACTER SET = utf8;
 	ADD `help_n_hint` int(4) AFTER `help_t_instruct`, 
 	ADD `help_t_hint` int(4) AFTER `help_n_hint`
 
+    ALTER TABLE `Assigntime` 
+	ADD `ec_open_daysb4due_elgible` int(4) AFTER `ec_daysb4due_elgible` 
+
+
+
+ALTER TABLE `Activity`
+ CHANGE `time_pp1` `time_pp1` TIMESTAMP NULL DEFAULT NULL, 
+CHANGE `time_pp2` `time_pp2` TIMESTAMP NULL DEFAULT NULL, 
+CHANGE `time_pp3` `time_pp3` TIMESTAMP NULL DEFAULT NULL, 
+CHANGE `time_pp4` `time_pp4` TIMESTAMP NULL DEFAULT NULL, 
+CHANGE `time_post_pblm1` `time_post_pblm1`  TIMESTAMP NULL DEFAULT NULL, 
+CHANGE `time_post_pblm2` `time_post_pblm2`  TIMESTAMP NULL DEFAULT NULL, 
+CHANGE `time_post_pblm3` `time_post_pblm3`  TIMESTAMP NULL DEFAULT NULL, 
+CHANGE `time_complete` `time_complete`  TIMESTAMP NULL DEFAULT NULL
+
+
+
+
+
+
+
+    ALTER TABLE `Activity` 
+  ADD `time_a_correct` TIMESTAMP NULL DEFAULT NULL AFTER `correct_a`, 
+  ADD `time_b_correct` TIMESTAMP NULL DEFAULT NULL AFTER `correct_b`, 
+  ADD `time_c_correct` TIMESTAMP NULL DEFAULT NULL AFTER `correct_c`, 
+  ADD `time_d_correct` TIMESTAMP NULL DEFAULT NULL AFTER `correct_d`, 
+  ADD `time_e_correct` TIMESTAMP NULL DEFAULT NULL AFTER `correct_e`, 
+  ADD `time_f_correct` TIMESTAMP NULL DEFAULT NULL AFTER `correct_f`, 
+  ADD `time_g_correct` TIMESTAMP NULL DEFAULT NULL AFTER `correct_g`, 
+  ADD `time_h_correct` TIMESTAMP NULL DEFAULT NULL AFTER `correct_h`, 
+  ADD `time_i_correct` TIMESTAMP NULL DEFAULT NULL AFTER `correct_i`, 
+  ADD `time_j_correct` TIMESTAMP NULL DEFAULT NULL AFTER `correct_j`
+
+
+
+

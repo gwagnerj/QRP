@@ -73,9 +73,10 @@
     $perc_ec_max_p_assign = 20;
     $perc_ec_max_p_pblm = 20;
     $perc_ec_max_person_to_person = 5;
-    $fixed_percent_decline = 30;
+    $fixed_percent_decline = 34;
     
     $ec_daysb4due_elgible = 10;
+    $ec_open_daysb4due_elgible = 2;
     
     $perc_ec_base_video = 3;
     $perc_ec_base_audio = 2;
@@ -122,6 +123,7 @@ if($new_flag == 0){
          // $perc_ec_max_decrease = $assigntime_data['perc_ec_max_decrease'];
           
           $ec_daysb4due_elgible = $assigntime_data['ec_daysb4due_elgible'];
+          $ec_open_daysb4due_elgible = $assigntime_data['ec_open_daysb4due_elgible'];
           $perc_ec_base_video = $assigntime_data['perc_ec_base_video'];
           $perc_ec_base_audio = $assigntime_data['perc_ec_base_audio'];
           $perc_ec_base_written = $assigntime_data['perc_ec_base_written'];
@@ -151,8 +153,8 @@ if($new_flag == 0){
             $current_class_exp_date = $stmt->fetch();   
             $current_class_exp_date = $current_class_exp_date['exp_date'];
              $current_class_exp_date = strtotime($current_class_exp_date);
-          //?  echo('$current_class_exp_date '.$current_class_exp_date);
-          //?  $date = date('Y-m-d\TH:i',$current_class_exp_date);  echo($date);
+          //  echo('$current_class_exp_date '.$current_class_exp_date);
+          //   $date = date('Y-m-d\TH:i',$current_class_exp_date);  echo($date);
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
@@ -193,6 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
              
              
              ec_daysb4due_elgible=:ec_daysb4due_elgible,
+             ec_open_daysb4due_elgible=:ec_open_daysb4due_elgible,
              perc_ec_base_video=:perc_ec_base_video,
              perc_ec_base_audio=:perc_ec_base_audio,
              perc_ec_base_written=:perc_ec_base_written,
@@ -233,6 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
               ':perc_ec_max_person_to_person' => $_POST['perc_ec_max_person_to_person'],
 
               ':ec_daysb4due_elgible' => $_POST['ec_daysb4due_elgible'],
+              ':ec_open_daysb4due_elgible' => $_POST['ec_open_daysb4due_elgible'],
               ':perc_ec_base_video' => $_POST['perc_ec_base_video'],
               ':perc_ec_base_audio' => $_POST['perc_ec_base_audio'],
               ':perc_ec_base_written' => $_POST['perc_ec_base_written'],
@@ -252,8 +256,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
    
    // input the values from the form into the Assigntime table - get the assigntime_id and then move onto page two to get points values for each part
    
-       $sql = 'INSERT INTO `Assigntime` (assign_num, iid, currentclass_id, work_flow, time_sleep1_trip, time_sleep1,time_sleep2_trip, time_sleep2, bc_ans_n,bc_ans_t, p_bc_n, p_bc_t, help_n_stu, help_t_stu, help_n_ta, help_t_ta, help_n_instruct, help_t_instruct,help_n_hint, help_t_hint, work_time_per_problem, max_attempts_per_problem, window_opens, window_closes, perc_ec_max_p_assign, perc_ec_max_p_pblm, perc_ec_max_person_to_person, ec_daysb4due_elgible,perc_ec_base_video, perc_ec_base_audio, perc_ec_base_written, peer_refl_t, peer_refl_n, due_date,credit, late_points, fixed_percent_decline)	
-                                    VALUES (:assign_num, :iid, :currentclass_id, :work_flow, :time_sleep1_trip, :time_sleep1, :time_sleep2_trip, :time_sleep2,:bc_ans_n,:bc_ans_t, :p_bc_n, :p_bc_t, :help_n_stu, :help_t_stu, :help_n_ta, :help_t_ta, :help_n_instruct, :help_t_instruct, :help_n_hint, :help_t_hint,:work_time_per_problem, :max_attempts_per_problem, :window_opens, :window_closes, :perc_ec_max_p_assign, :perc_ec_max_p_pblm, :perc_ec_max_person_to_person, :ec_daysb4due_elgible, :perc_ec_base_video, :perc_ec_base_audio, :perc_ec_base_written,:peer_refl_t,:peer_refl_n, :due_date, :credit, :late_points, :fixed_percent_decline)';
+       $sql = 'INSERT INTO `Assigntime` (assign_num, iid, currentclass_id, work_flow, time_sleep1_trip, time_sleep1,time_sleep2_trip, time_sleep2, bc_ans_n,bc_ans_t, p_bc_n, p_bc_t, help_n_stu, help_t_stu, help_n_ta, help_t_ta, help_n_instruct, help_t_instruct,help_n_hint, help_t_hint, work_time_per_problem, max_attempts_per_problem, window_opens, window_closes, perc_ec_max_p_assign, perc_ec_max_p_pblm, perc_ec_max_person_to_person, ec_daysb4due_elgible,ec_open_daysb4due_elgible,perc_ec_base_video, perc_ec_base_audio, perc_ec_base_written, peer_refl_t, peer_refl_n, due_date,credit, late_points, fixed_percent_decline)	
+                                    VALUES (:assign_num, :iid, :currentclass_id, :work_flow, :time_sleep1_trip, :time_sleep1, :time_sleep2_trip, :time_sleep2,:bc_ans_n,:bc_ans_t, :p_bc_n, :p_bc_t, :help_n_stu, :help_t_stu, :help_n_ta, :help_t_ta, :help_n_instruct, :help_t_instruct, :help_n_hint, :help_t_hint,:work_time_per_problem, :max_attempts_per_problem, :window_opens, :window_closes, :perc_ec_max_p_assign, :perc_ec_max_p_pblm, :perc_ec_max_person_to_person, :ec_daysb4due_elgible, :ec_open_daysb4due_elgible,:perc_ec_base_video, :perc_ec_base_audio, :perc_ec_base_written,:peer_refl_t,:peer_refl_n, :due_date, :credit, :late_points, :fixed_percent_decline)';
                 $stmt = $pdo->prepare($sql);
                 $stmt -> execute(array(
                   ':assign_num' => $_POST['assign_num'],
@@ -284,6 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
                   ':perc_ec_max_p_pblm' => $_POST['perc_ec_max_p_pblm'],
                   ':perc_ec_max_person_to_person' => $_POST['perc_ec_max_person_to_person'],
                   ':ec_daysb4due_elgible' => $_POST['ec_daysb4due_elgible'],
+                  ':ec_open_daysb4due_elgible' => $_POST['ec_open_daysb4due_elgible'],
                   ':perc_ec_base_video' => $_POST['perc_ec_base_video'],
                   ':perc_ec_base_audio' => $_POST['perc_ec_base_audio'],
                   ':perc_ec_base_written' => $_POST['perc_ec_base_written'],
@@ -437,6 +442,7 @@ $_SESSION['counter']=0;  // this is for the score board
             
                    <br> <font color=#003399>Extra Credit: &nbsp; </font><br>
                   &nbsp;&nbsp;&nbsp;&nbsp; Number of days before the due date that problem and base-case is completed and any material is uploaded to be elgible for extra credit : <input type = "number" min = "0" max = "20" id="ec_daysb4due_elgible" name = "ec_daysb4due_elgible" value = <?php echo $ec_daysb4due_elgible; ?>  > </input><br>
+                  &nbsp;&nbsp;&nbsp;&nbsp; Number of days before the due date that problem must be opened to be elgible for extra credit : <input type = "number" min = "0" max = "20" id="ec_open_daysb4due_elgible" name = "ec_open_daysb4due_elgible" value = <?php echo $ec_open_daysb4due_elgible; ?>  > </input><br>
                 <br> &nbsp;&nbsp;Peer Instruction:<br>
                  &nbsp;&nbsp;&nbsp;&nbsp; Max percent Extra Credit per assignment for one student for peer assistance: <input type = "number" min = "0" max = "100" id="perc_ec_max_p_assign" name = "perc_ec_max_p_assign" value = <?php echo $perc_ec_max_p_assign; ?>  > </input><br>
                  &nbsp;&nbsp;&nbsp;&nbsp; Max percent Extra Credit per individual problem for one student for peer assistance: <input type = "number" min = "0" max = "50" id="perc_ec_max_p_pblm" name = "perc_ec_max_p_pblm" value = <?php echo $perc_ec_max_p_pblm; ?>  > </input><br>
@@ -478,10 +484,10 @@ $_SESSION['counter']=0;  // this is for the score board
             $date->setTimezone($timezone); $interval = new DateInterval('P7D');   $date->add($interval); echo($date->format('Y-m-d\TH:i'));}
             ?>"> </input><br><br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Closes - No Access After <input type="datetime-local" id="window_closes" name = "window_closes" required value="<?php
-            if($window_closes!='')
-            {echo $window_closes->format('Y-m-d\TH:i');}
-            else { 
-            $date = date('Y-m-d\TH:i',$current_class_exp_date);  echo($date);}
+            // if($window_closes!='')
+            // {echo $window_closes->format('Y-m-d\TH:i');}
+            // else { 
+            $date = date('Y-m-d\TH:i',$current_class_exp_date);  echo($date);
             ?>"> </input><br><br>
             
               <font color=#003399> Peer Rating of Reflections: &nbsp; </font><br>
@@ -497,11 +503,11 @@ $_SESSION['counter']=0;  // this is for the score board
               -->      
            &nbsp;&nbsp; <input type="radio" name="credit" id = "credit" value = "latetoproblems" checked> Each Problem
                     
-            <!--
+            
            &nbsp;&nbsp; <input type="radio" name="credit" id = "credit"
                     <?php if ((isset($credit) && $credit=="latetoparts")||!isset($credit)) echo "checked";?>
                     value="latetoparts"> Parts of the Problem that are Late &nbsp;&nbsp;&nbsp;&nbsp;
-              -->      
+                   
                     
             <br><font color=#003399> Late Policy &nbsp; </font><br>
         

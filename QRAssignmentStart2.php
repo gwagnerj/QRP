@@ -143,6 +143,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
        			header( 'Location: QRPRepo.php' ) ;
 				die();
 }
+        // first get how many problems that the assignment has and how many parts to each problem
+        $sql = "SELECT * FROM `Assigntime` WHERE assigntime_id = :assigntime_id";
+        $stmt = $pdo->prepare($sql);
+        $stmt -> execute(array(
+            ':assigntime_id' => $assigntime_id,
+            )); 
+        $assigntime_data = $stmt->fetch();
+        $assign_num = $assigntime_data['assign_num'];
+        $iid = $assigntime_data['iid'];
+        $currentclass_id = $assigntime_data['currentclass_id'];
+        // echo ('currentclass_id: '.$currentclass_id);
+
+        // do some error checking on the input data from QRAssignmentSart1 and send it back there if it does not check out
+
+        if ($assigntime_data['due_date'] < $assigntime_data['window_opens'] || $assigntime_data['due_date']> $assigntime_data['window_closes']){
+
+        $_SESSION['error'] = 'date error - due date must be between the window opening date and closing date';
+        header( 'Location: QRAssignmentStart1.php?currentclass_id='.$currentclass_id.'&assign_num='.$assign_num.'&iid='.$iid.'&new_flag=0');
+        die();
+        }
 
 
 
@@ -197,6 +217,8 @@ echo ('<form method = "POST">');
          echo("</th><th>");
           echo('Survey');
          echo("</th><th>");
+        //   echo('EC open early');
+        //  echo("</th><th>");
          echo('Sum for pblm');
          echo("</th><th>");
          echo('Edit');
@@ -206,26 +228,6 @@ echo ('<form method = "POST">');
 		 
 		  echo("<tbody><tr></tr><tr>");
 
-// first get how many problems that the assignment has and how many parts to each problem
- $sql = "SELECT * FROM `Assigntime` WHERE assigntime_id = :assigntime_id";
-           $stmt = $pdo->prepare($sql);
-           $stmt -> execute(array(
-				':assigntime_id' => $assigntime_id,
-				)); 
-            $assigntime_data = $stmt->fetch();
-        $assign_num = $assigntime_data['assign_num'];
-        $iid = $assigntime_data['iid'];
-        $currentclass_id = $assigntime_data['currentclass_id'];
-       // echo ('currentclass_id: '.$currentclass_id);
-       
-     // do some error checking on the input data from QRAssignmentSart1 and send it back there if it does not check out
-       
-       if ($assigntime_data['due_date'] < $assigntime_data['window_opens'] || $assigntime_data['due_date']> $assigntime_data['window_closes']){
-           
-       $_SESSION['error'] = 'date error - due date must be between the window opening date and closing date';
-            header( 'Location: QRAssignmentStart1.php?currentclass_id='.$currentclass_id.'&assign_num='.$assign_num.'&iid='.$iid.'&new_flag=0');
-            die();
-       }
        
        
        
@@ -316,6 +318,7 @@ echo ('<form method = "POST">');
                 if ($assign_data['ref_choice']==1){$n_ref_pp_parts++;} 
                 $points_ref_pp_default = 10; 
                 $points_survey_default = 5;               
+                $points_open_early_default = 3;               
             $perc_tot_ref_pp_suvey = $points_survey_default+$points_ref_pp_default*$n_ref_pp_parts;  // default 5 percent for survey and 10 pts for the reflections
              $perc_per_part_default =  round((100-$perc_tot_ref_pp_suvey)/$n_parts);  
               $perc_per_part_last =  (100-$perc_tot_ref_pp_suvey )- $perc_per_part_default*($n_parts-1);  
@@ -403,6 +406,10 @@ echo ('<form method = "POST">');
 
                    echo('<input type = "number" min = "0" max = "100" id="survey_'.$i.'" name = "survey_'.$i.'" required  value = '.$points_sur.' > </input>');
                   echo("</td>");
+                //     if ($assigntime_data['survey_'.$i] != null){$points_sur = $assigntime_data['survey_'.$i];} else {$points_sur = $points_survey_default;}
+
+                //    echo('<input type = "number" min = "0" max = "100" id="survey_'.$i.'" name = "survey_'.$i.'" required  value = '.$points_sur.' > </input>');
+                //   echo("</td>");
             
             echo("<td>");	
             echo('<span id = "sum_pblm_'.$i.'"></span>');

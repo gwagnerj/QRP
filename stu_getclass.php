@@ -40,7 +40,7 @@ if (isset($_POST['cclass_id'])) {  // coming from this form and has selected the
         ':currentclass_id' => $currentclass_id,
         ':student_id' => $student_id,
         ':pin' => $pin,
-    ]);  //! getting error:  a foreign key constraint fails (`wagnerj_QRP`.`StudentCurrentClassConnect`, CONSTRAINT `StudentCurrentClassConnect_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `Student` (`student_id`) ON DELETE CASCADE ON UPDATE CASCADE) in /home3/wagnerj/QRProblems.org/QRP/stu_getclass.php:42
+    ]);  //! getting error: PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`wagnerj_QRP`.`StudentCurrentClassConnect`, CONSTRAINT `StudentCurrentClassConnect_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `Student` (`student_id`) ON DELETE CASCADE ON UPDATE NO ACTION) in /home3/wagnerj/QRProblems.org/QRP/stu_getclass.php:42
 
     $_SESSION['success'] = 'signup for class successful - you may now access assignments for this class';
 
@@ -49,6 +49,16 @@ if (isset($_POST['cclass_id'])) {  // coming from this form and has selected the
         return;
 } else if (isset($_POST['student_id'])) {  //coming in from stu_frontpage
     $student_id = $_POST['student_id'];
+
+    $sql = 'SELECT * FROM Student WHERE `student_id` = :student_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':student_id' => $student_id]);
+    $student_data = $stmt->fetch();
+    $first_name = $student_data['first_name'];
+    $last_name = $student_data['last_name'];
+    $university = $student_data['university'];
+} else if (isset($_GET['student_id'])) {  //coming in on a get
+    $student_id = $_GET['student_id'];
 
     $sql = 'SELECT * FROM Student WHERE `student_id` = :student_id';
     $stmt = $pdo->prepare($sql);
