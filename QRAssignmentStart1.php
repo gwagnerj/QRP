@@ -37,7 +37,7 @@
       header( 'Location: QRAssignmentStart0.php' ) ;
 	 die();
 }
- if (isset($_GET['new_flag'])) {
+if (isset($_GET['new_flag'])) {
 	$new_flag = $_GET['new_flag'];
 } else {
 	 $_SESSION['error'] = 'invalid new_flag in QRAssignmentStart11.php ';

@@ -128,7 +128,7 @@ $_SESSION['counter']=0;  // this is for the score board
 				<p><input type="submit" formaction="QRExamRetrieve.php" value="Student Exam Results">  &nbsp;&nbsp; Load Student Work Images (slow) <input type="checkbox" name="load_images" id = "load_images" checked ></p><br>
 
 			<div id = "button_group">	
-				<p><input class = "exam_buttons" type="submit" formaction="remove_exam.php" value="Remove Exam and All Its Data"></p><br>
+				<p><input class = "exam_buttons" type="submit" formaction="remove_exam_0.php" value="Remove Exam and All Its Data"></p><br>
 				
 				&nbsp;&nbsp;&nbsp; <input class = "exam_buttons" checked type="radio"  name="groups" id="no_groups" value = "no">  Individual &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;</input> 
 				 <input class = "exam_buttons"  type="radio" name="groups" id="groups" value = "yes"> Group </input>
@@ -231,7 +231,7 @@ $_SESSION['counter']=0;  // this is for the score board
 
 								
 							
-								if (eexamtime_id >0 && game_flag==null){
+								if (eexamtime_id >0 && ( game_flag==null || game_flag==0)){
 									$('#button_group').show();
 									$('#game_button').hide();	
 									$('.exam_buttons').show();	

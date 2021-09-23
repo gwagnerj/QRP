@@ -6,13 +6,13 @@
 	if (isset($_POST['eexamtime_id'])) {
 		$eexamtime_id = htmlentities($_POST['eexamtime_id']);
 	  } else {
-		   $_SESSION['error'] = 'invalid eexamtime_id in  QREStart.php ';
+		   $_SESSION['error'] = 'invalid eexamtime_id in  QREPrint0.php ';
 		   header( 'Location: QRPRepo.php' ) ;
 			die();
 	  }
 	
 // get the current class name and the course name
-$sql = 'SELECT currentclass_id, exam_num,iid FROM Eexamtime  WHERE eexamtime_id = :eexamtime_id';
+$sql = 'SELECT currentclass_id, exam_num,iid,game_flag FROM Eexamtime  WHERE eexamtime_id = :eexamtime_id';
 	$stmt = $pdo->prepare($sql);
 	$stmt -> execute(array (
 	':eexamtime_id' => $eexamtime_id,
@@ -21,6 +21,7 @@ $sql = 'SELECT currentclass_id, exam_num,iid FROM Eexamtime  WHERE eexamtime_id 
 	$currentclass_id = $examtime_data['currentclass_id'];
 	$exam_num = $examtime_data['exam_num'];
 	$iid = $examtime_data['iid'];
+	$game_flag = $examtime_data['game_flag'];
 
 	$sql = 'SELECT `name` FROM CurrentClass  WHERE currentclass_id = :currentclass_id';
 	$stmt = $pdo->prepare($sql);
@@ -123,6 +124,9 @@ $sql = 'SELECT currentclass_id, exam_num,iid FROM Eexamtime  WHERE eexamtime_id 
                             </div>
 							<br>
 							<input type = "checkbox" name = "print_blanks" id = "print_blanks"> Print Variables as Blanks</input>
+							<br>
+							<br>
+							<input type = "checkbox" name = "game_flag" id = "game_flag" <?php if ($game_flag == "1") echo'checked';?>> This is a Game (effects QR Code)</input>
                             
                        </div>
                    </div>

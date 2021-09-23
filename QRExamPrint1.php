@@ -64,6 +64,12 @@ session_start();
   } else {
         $print_blanks=false;
       }
+      if( isset($_POST['game_flag'])){
+    //    echo "game_flag ".$_POST['game_flag'];
+        $game_flag = 1;
+    } else {
+       $game_flag = 0;
+   }
    
  // echo "print_blanks ".$print_blanks."<br>";
 
@@ -398,7 +404,12 @@ line-height: 3;
 
                         // Make the QRcode 
 
+      //                      var_dump($game_flag);
                             $qrcode_text =  'https://www.qrproblems.org/QRP/QRExamRegistration.php?dex_code='.$dex_code; 
+
+                            if ($game_flag == "1"){  //! change it if its a game
+                              $qrcode_text =  'https://www.qrproblems.org/QRP/index.php?dex_code='.$dex_code; 
+                            }
                                             
                             $file = 'uploads/temp_exam'.$dex_code.' png';   // where the qrimage is going to be stored in uploads directory
                               
