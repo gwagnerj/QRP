@@ -3032,5 +3032,6 @@ CHANGE `time_complete` `time_complete`  TIMESTAMP NULL DEFAULT NULL
   ADD `time_j_correct` TIMESTAMP NULL DEFAULT NULL AFTER `correct_j`
 
 
-
+Alter TABLE `Assigntime`
+ADD UNIQUE `unique_index`(`iid`,`currentclass_id`,`assign_num`)
 

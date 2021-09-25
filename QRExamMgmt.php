@@ -128,7 +128,7 @@ $_SESSION['counter']=0;  // this is for the score board
 				<p><input type="submit" formaction="QRExamRetrieve.php" value="Student Exam Results">  &nbsp;&nbsp; Load Student Work Images (slow) <input type="checkbox" name="load_images" id = "load_images" checked ></p><br>
 
 			<div id = "button_group">	
-				<p><input class = "exam_buttons" type="submit" formaction="remove_exam_0.php" value="Remove Exam and All Its Data"></p><br>
+				<p><input class = "exam_buttons" type="submit" formaction="remove_exam_0.php" value="ReStart or Remove Exam or Game"></p><br>
 				
 				&nbsp;&nbsp;&nbsp; <input class = "exam_buttons" checked type="radio"  name="groups" id="no_groups" value = "no">  Individual &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;</input> 
 				 <input class = "exam_buttons"  type="radio" name="groups" id="groups" value = "yes"> Group </input>
@@ -140,10 +140,9 @@ $_SESSION['counter']=0;  // this is for the score board
 				<p><input class = "exam_buttons" type="submit" formaction="QREStart.php" value="Start Examination"></p><br> <!--This button should only be present if the selected Exam has already setup-->
 				
   
-             </p><br>
+             </p>
 
 				<p><input class = "exam_buttons" type="submit" formaction="QRExamPrint0.php" value="Print Examination"></p><br> <!--This button should only be present if the selected Exam has already setup-->
-				<p><input id = "game_button" type="submit" formaction="QRGStart.php" value="Start Game"></p><br> <!--This button should only be present if the selected Game has already setup-->
 			</div>	
              <p><input id = "get_student_login_data" type="submit" formaction="stu_login_info.php"   value="See Student Login Information"></p>
           

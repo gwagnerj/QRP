@@ -264,7 +264,7 @@ if (!$big_data) {
         echo'<th> Problem number </th>';
         foreach ($eexam_data as $eexam_datum){
             echo'<td>';
-            if ($i ==1){ echo '<input  name="alias_num" type="radio"  value= '.$eexam_datum["problem_id"].'></input>';} else {
+            if ($i ==1){ echo '<input  name="alias_num" type="radio" checked value= '.$eexam_datum["problem_id"].'></input>';} else {
             echo '<input  name="alias_num"  required type="radio"  value= '.$eexam_datum["problem_id"].'></input>';
             }
         echo'</td>';

@@ -81,7 +81,7 @@ $class_name = $row['name'];
 <body>
     <h1><?php echo ($class_name)?></h1>
 
-    <form id = "the_form"  method = "POST" action = "remove_exam_1.php" >
+    <form id = "the_form"  method = "POST" >
 	
     
                    
@@ -97,7 +97,7 @@ $class_name = $row['name'];
                 <font color=#003399>Time that the Exam / Quiz was given (latest on top of list): &nbsp; </font>
                     
                     <select id="eexamnow_id" name = "eexamnow_id" required >
-                       <option value="0">- Select Date Last Update -</option>
+                       <option value="">- Select Date Last Update -</option>
 
 					   <?php
 /* 
@@ -131,7 +131,9 @@ $class_name = $row['name'];
 				<p><input type="hidden" name="currentclass_id" id="currentclass_id" value=<?php echo($currentclass_id);?> ></p>
 				<p><input type="hidden" name="eexamtime_id" id="eexamtime_id" value=<?php echo($eexamtime_id);?> ></p>
 				<p><input type="hidden" name="exam_num" id="exam_num" value=<?php echo($exam_num);?> ></p>
-			<p><input type = "submit" id = "submit_id"></p>
+			<p><input type = "submit" id = "remove_exam" formaction = "remove_exam_1.php" Value = "Remove Exam or Game Data"></p>
+            <br>
+			<p><input type = "submit" id = "restart_exam" formaction = "restart_exam.php" Value = "ReSet Progress for Exam or Game"></p>
    
 	
 	</form>

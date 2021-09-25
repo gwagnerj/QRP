@@ -5,7 +5,23 @@ session_start();
 // This file is entered from QRExamMgmt.  The purpose of this file is to keep the timing of an exam.  It does this by creating an entry in the eexamnow table
 // The table keeps references the information in the eexamtime table through a one to many relationship.  can have many instances of a eexamnow from a single eexamtime.
 
+
+if(isset($_GET["eexamnow_id"]))  // we are coming in from the restart_exam.php and have the eexamnow_id as a get parameter
+{
+        $eexamnow_id = $_GET["eexamnow_id"];
+        // echo "wohoo";
+        // $sql = "SELECT * FROM Eexamnow WHERE eexamnow_id = :eexamnow_id";
+        $_SESSION["success"] ="Exam or game was restarted";
+
+}
+
+
+
+
 // FIrst take in the values from the QRExammgmt post so we can identify insert an entry into the table
+
+
+
 if (isset($_POST['from_QRExamMgmt'])) {
     // get all of the post information from that file and create an entry in the eexamnow table
     if (isset($_POST['eexamtime_id'])) {
@@ -66,7 +82,8 @@ if (isset($_POST['from_QRExamMgmt'])) {
                 ':game_flag' => $_POST['game_flag'],
             ]);
         }
-    } else {
+    }
+     else {
         // we are coming in from the QRExamMgmt but have an existing running exam going (disconnected or whatever)/ get the information from the table
         $eexamnow_id = $row['eexamnow_id'];
         $globephase = $row['globephase'];
