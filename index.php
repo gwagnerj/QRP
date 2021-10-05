@@ -166,14 +166,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $globephase = $eexamnow_data['globephase'];
             $eexamtime_id = $eexamnow_data['eexamtime_id'];
+
+        
+   //? check to see if the team number is valid for the number of teams that the gamemaster set up
+                $sql = 'SELECT `number_teams` FROM Eexamtime WHERE eexamtime_id = :eexamtime_id';
+                $stmt = $pdo->prepare($sql);
+                    $stmt->execute([
+                        'eexamtime_id' => $eexamtime_id,
+                    ]);
+                    $number_allowed_teams = $stmt->fetch();
+                    if ($number_allowed_teams['number_teams'] < $team_num){
+                        $_SESSION['error'] =  ' The team number is higher than that set up by the game master.  Please confirm you team number';
+                        $team_num_err = 'The team number is higher than that set up by the game master.  Please confirm you team number';          
+                        
+                        // header('Location: '.$_SERVER['PHP_SELF']);
+                        //              die();
+
+                    }
+         }
+
             $updated_at = $eexamnow_data['updated_at'];
-        }
+        
         if ($globephase > 1) {
             $_SESSION['error'] =
                 $_SESSION['error'] .
-                '<br>  game is no longer active ' .
-                $game_code .
-                ' am I here ';
+                '<br>  game'.$game_code.' is no longer active ';
             // header('Location: '.$_SERVER['PHP_SELF']);
             // die();
         }
@@ -325,6 +342,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         ':team_name' => $team_name,
                     ]);
                 }
+                
 
                 $_SESSION['success'] = ' Registered for the exam';
                 header(
@@ -442,7 +460,7 @@ if (isset($_SESSION['error'])) {
 
 <link rel="icon" type="image/png" href="McKetta.png" />  
     <meta charset="UTF-8">
-<title>QRP Student Exam Login</title>
+<title>QRP Student Game Login</title>
  
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
     <style type="text/css">
@@ -480,6 +498,8 @@ if (isset($_SESSION['error'])) {
                 ? 'has-error'
                 : ''; ?>">
                 <label>Team Number </label>
+
+
                 <input type="number" min="1" max="99" name="team_num" class="form-control" value="<?php echo $team_num; ?>">
                 <span class="help-block"><?php echo $team_num_err; ?></span>
             </div>   

@@ -158,6 +158,9 @@ if (isset($_POST['submit_team'])) {
                   echo '  team_id '.$team_id;
                   echo '  team_num '.$team_num;
   */
+  //Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`wagnerj_QRP`.`TeamStudentConnect`, CONSTRAINT `TeamStudentConnect_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `Team` (`team_id`) ON DELETE CASCADE ON UPDATE CASCADE) in /home3/wagnerj/QRProblems.org/QRP/QRExamBackStage.php:169
+// I think this occured because the no one picked team 1 then I tried to put them in team 1 and it did not exits in the Team table so It could not pleace them into it.
+// Either have the game master able to create and/or delete a team and then put studetns into it or could use the student team numbers instead of the 1 - n team numbers 
                 $sql =
                     'UPDATE `TeamStudentConnect` SET team_id = :team_id, team_num=:team_num, dex = :dex, team_cap = 0 WHERE  student_id = :student_id AND eexamnow_id = :eexamnow_id';
                 $stmt = $pdo->prepare($sql);

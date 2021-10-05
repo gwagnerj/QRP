@@ -127,6 +127,13 @@ session_start();
     $specif_ref = $pblm_data['specif_ref'];
     $htmlfilenm = $pblm_data['htmlfilenm'];
    // echo('htmlfilenm: '.$htmlfilenm);
+$hint_text = '';
+   if ($pblm_data['hint_a']!=NULL || $pblm_data['hint_b']!=NULL ||$pblm_data['hint_c']!=NULL ||$pblm_data['hint_d']!=NULL ||$pblm_data['hint_e']!=NULL ||$pblm_data['hint_f']!=NULL ||$pblm_data['hint_g']!=NULL ||$pblm_data['hint_h']!=NULL ||$pblm_data['hint_i']!=NULL ||$pblm_data['hint_j']!=NULL) {
+    $hint_text = ' - some hints available on base case';
+  }
+
+
+
     
 $sql = "SELECT * FROM Users WHERE users_id = :users_id";
     $stmt = $pdo->prepare($sql);
@@ -337,6 +344,7 @@ $pass = array(
        $header_stuff ->find('#university',0)->innertext = $contrib_univ;
       if (strlen($nm_author)>1){$header_stuff ->find('#nm_author',0)->innertext = ' based on a problem by: '.$nm_author;}
       if (strlen($specif_ref)>1){$header_stuff ->find('#specif_ref',0)->innertext = ' reference: '.$specif_ref;}
+     $header_stuff ->find('#specif_ref',0)->innertext = $header_stuff ->find('#specif_ref',0)->innertext.$hint_text;
 // could also store custom directions look fof them in the assignment table and substitute them in - maybe later
       echo ($header_stuff);
       

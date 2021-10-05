@@ -314,7 +314,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                            echo'<br>';
      
                                             echo('<form action = "activity_details.php" method = "GET" target = "_blank"> <input type = "hidden" name = "activity_id" value = "'.$activity_id.'"><input type = "submit" value ="Details"></form>');
-                                            
+                          //? DIsplay the totals for each of the parts as in the backstage of an example  next code stollen from backstage that I am going to try to adapt tot he current situation
+                        // echo "<br>";
+                          foreach (range('a', 'j') as $v) {
+                            if ($stu_activity['correct_' . $v] == 1) {
+                                echo '<span class = "correct">' .
+                                    $v .
+                                    ')' .
+                                   $stu_activity['wcount_' . $v].
+                                    ' </span>';
+                            } elseif (is_null($stu_activity['correct_' . $v])) {
+                                echo '__';
+                            } elseif ($stu_activity['correct_' . $v] == 0 && $stu_activity['wcount_' . $v] >0) {
+                                echo '<span class = "not_correct">' .
+                                    $v .
+                                    ')' .
+                                    $stu_activity['wcount_' . $v] .
+                                    ' </span>';
+                            } 
+                            // else {
+                            //     echo '<span class = "correct">' .
+                            //         $v .
+                            //         ')' .
+                            //         $stu_activity['wcount_' . $v] .
+                            //         '</span>';
+                            // }
+                        }                                        
+
+                        echo "<br>";
+
+
                                            // display the thumbnail of the student work 
                                      if($load_images){
                                             $all_files = array();
@@ -509,7 +538,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
   margin-left: 50px;
  
 } 
+.not_correct { 
+    color:red;
+    font-size: 0.7em;
+  }
+  .correct { 
+    color:green;
+    font-size: 0.7em;
 
+  }
 
 </style>
 

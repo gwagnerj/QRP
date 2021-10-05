@@ -322,7 +322,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                  
                                       
                                 echo('<td style="vertical-align: top;">');
-                                if ($eactivity_datum['eactivity_id']>0){
+                                if ((int)$eactivity_datum['eactivity_id']>0){
                                     $p_num_score_net = 0;
                                      if($eactivity_datum['P_num_score_net']>0 || $eactivity_datum['fb_p_num_score_net']>0){  // put stuff in here if you don't want it to show up if there is no net score
                                             

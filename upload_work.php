@@ -83,6 +83,8 @@ if(isset($_POST['submit_button'])){
        for( $i=0 ; $i < $total ; $i++ ) {
 
             $file_name = $_FILES['files']['name'][$i];
+            $file_name = preg_replace("/[^\w\-\.]/",'',$file_name);  // put this in to take care of students putting # sign in file name
+   
             $file_type = $_FILES['files']['type'][$i];
             $file_tmp_name = $_FILES['files']['tmp_name'][$i];
             $file_error = $_FILES['files']['error'][$i];
