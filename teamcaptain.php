@@ -28,7 +28,7 @@ session_start();
 
 				}  else {
 					$_SESSION['error'] = "could not find the student and eexamnow in student team connection table";
-					echo 'teamstudentconnect was false';
+	//				echo 'teamstudentconnect was false';
 					header("Location: stu_exam_frontpage.php?eregistration_id=".$eregistration_id );
 					die();     
 

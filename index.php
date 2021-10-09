@@ -9,7 +9,7 @@ $game_code = $first_name = $last_name = $game_name = $vers_code = $qrcode = $tea
     '';
 $team_cap = 0;
 $game_points = '0';
-$checker_only = '1';
+$checker_only = '0';
 $checker = 'not set';
 $dex_print = '140'; //default value for dex_print
 unset($_SESSION['error']);
@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $vers_code_err = 'Please put in the version code.';
         // $qrcode = trim($_POST["qrcode"]);
     } elseif (trim($_POST['qrcode']) == 'yes') {
-        $checker_only = 0;
+        $checker_only = 1;
         $vers_code = trim($_POST['vers_code']);
         // echo ('vers_code is '.$vers_code);
 

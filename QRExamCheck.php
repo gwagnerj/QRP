@@ -302,6 +302,7 @@ session_start();
 
 
             $work_flow = $eexamtime_data['work_flow'];
+            $game_flag = $eexamtime_data['game_flag'];
             $attempt_type = $eexamtime_data['attempt_type'];
              $num_attempts = $eexamtime_data['num_attempts'];
             $ans_n = $eexamtime_data['ans_n'];
@@ -1129,7 +1130,7 @@ if ($dex == 1) {
     <hr>
 
     <?php
-      if ($dex !=1){
+      if ($dex !=1 && $game_flag !=1){
         echo('<p><b><font Color="red">Finished:</font></b></p>');
         echo('<b><input type="submit" value="Finished / Upload Work" name="score" style = "width: 30%; background-color:yellow "></b>');
         echo' <p><br> </p>
