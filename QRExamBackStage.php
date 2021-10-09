@@ -236,7 +236,7 @@ $sql = 'SELECT gameboard_id, game_board_title,board_catagory FROM GameBoard';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $gameboard_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
-$options = '';
+$options = 'QRPropylene';                           //! default just so I do not forget to do this
 
 foreach ($gameboard_data as $gameboard_datum) {
     // $options = $options.'<option value ='. $gameboard_datum["gameboard_id"].'>'.$gameboard_datum["game_board_title"].'</option>';
@@ -258,7 +258,7 @@ foreach ($gameboard_data as $gameboard_datum) {
             '</option>';
     }
 }
-
+// var_dump($options);
 if (isset($_SESSION['error'])) {
     echo '<p style="color:red">' . $_SESSION['error'] . "</p>\n";
     unset($_SESSION['error']);
@@ -474,7 +474,7 @@ foreach ($student_data as $student_datum) {
     echo $student_datum['first_name'] .
         ' ' .
         $student_datum['last_name'] .
-        '&nbsp; <input type = "button" style = "background-color:lightpink;" class = "remove"  id = "remove_student_' .
+        '&nbsp; <input type = "button" title = "If you remove a student they will have to close browser or delete history to rejoin game" style = "background-color:lightpink;" class = "remove"  id = "remove_student_' .
         $eregistration_id .
         '"  name = "remove_student_' .
         $eregistration_id .
@@ -740,6 +740,9 @@ echo '</th>';
 echo '<th>';
 echo 'Team Score';
 echo '</th>';
+echo '<th>';
+echo 'Action';
+echo '</th>';
 echo "</tr>\n";
 echo '</thead>';
 
@@ -925,6 +928,14 @@ for ($i = 1; $i <= $number_teams; $i++) {
                 echo $team_data['team_current_avg'] / 10;
                 echo '</td>';
             }
+
+            if ($j == 1) {
+                echo '<td  rowspan =' . $num_rows . '>';
+                echo'<button class = "delete_team" id ="delete_team_'. $team_id[$i].'" title = "Delete team and all its members" style = "background-color:lightpink;" >Del</button>';
+                // echo'<button class = "force_submit" id ="force_submit_'. $team_id[$i].'" title = "Force team to submit their cards and move to final round" >Force</button>';
+                echo '</td>';
+            }
+
             echo '<tr>';
             // if($j!=1){
             //   echo('<td>');
@@ -993,17 +1004,11 @@ if (isset($_SESSION['success'])) {
       <p><input type="hidden" name="eexamtime_id" id="eexamtime_id" value=<?php echo $eexamtime_id; ?> ></p>
       <p><input type="hidden" name="eexamnow_id" id="eexamnow_id" value=<?php echo $eexamnow_id; ?> ></p>
       <p><input type="hidden" name="number_teams" id="number_teams" value=<?php echo $number_teams; ?> ></p>
-      <p><input type="hidden" name="studentonteam_data" id="studentonteam_data" value=<?php echo implode(
-          ',',
-          $studentonteam_data
-      ); ?> ></p>
-      <p><input type="hidden" name="individual_score" id="individual_score" value=<?php echo implode(
-          ',',
-          $individual_score
-      ); ?> ></p>
-      <p><input type="hidden" name="team_cap" id="team_cap" value=<?php echo json_encode(
-          $team_cap
-      ); ?> ></p>
+     
+      <!-- <p><input type="hidden" name="studentonteam_data" id="studentonteam_data" value=<?php echo implode(',',$studentonteam_data); // was getting an array error on this one ?> ></p> -->
+      <p><input type="hidden" name="studentonteam_data" id="studentonteam_data" value=<?php echo json_encode($studentonteam_data); ?> ></p>
+      <p><input type="hidden" name="individual_score" id="individual_score" value=<?php echo implode(',', $individual_score); ?> ></p>
+      <p><input type="hidden" name="team_cap" id="team_cap" value=<?php echo json_encode($team_cap); ?> ></p>
       <p><input type = "submit" name = "scoreboard_submit" value="Show Score Board" id="scoreboard_submit" size="2" style = "width: 30%; background-color: green; color: white"/>  </p>  
   
   </form>
@@ -1358,7 +1363,7 @@ if (isset($_SESSION['success'])) {
        });
 
        
-       $('.remove').on('click',function(event){  // this should remove the studetn from the game/exam through the stu
+       $('.remove').on('click',function(event){  // this should remove the student from the game/exam through the stu
 
         const  stu_reg_id = $(this).attr('id');
           console.log('stu_reg_id: '+stu_reg_id);
@@ -1374,6 +1379,30 @@ if (isset($_SESSION['success'])) {
                   method: 'post',
           
                 data: {eregistration_id:reg_id}
+                }).done(function(){
+                });
+                window.location.reload(1);
+        });
+
+
+
+
+       $('.delete_team').on('click',function(event){  // this should delete a team from the game/exam through the stu
+
+        const  team_id = $(this).attr('id');
+          console.log('team_id: '+team_id);
+      //  extract the team id from the button 
+
+        const team_id_arr= team_id.split('_');
+        const teams_id = team_id_arr[2];
+        console.log('teams_id: '+teams_id);
+
+     //   now delete the team from the data tables
+        $.ajax({   // this removes the row from the eregistration table
+                  url: 'delete_team.php',
+                  method: 'post',
+          
+                data: {teams_id:teams_id}
                 }).done(function(){
                 });
                 window.location.reload(1);
