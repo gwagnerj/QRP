@@ -10,6 +10,7 @@ session_start();
 
 
 // check input and send them back if not proper
+
     if( isset($_POST['currentclass_id'])){
          $currentclass_id = $_POST['currentclass_id'];
     }else {
@@ -70,6 +71,12 @@ session_start();
     } else {
        $game_flag = 0;
    }
+      if( isset($_POST['student_version_code'])){
+        echo "student_version_code ".$_POST['student_version_code'];
+        $student_version_code = 1;
+    } else {
+       $student_version_code = 0;
+   }
    
  // echo "print_blanks ".$print_blanks."<br>";
 
@@ -103,7 +110,7 @@ session_start();
                        $_SESSION['error'] = 'Currentclass table could not read - Class Not Valid';
                        
                     }   
-            if ($exam_version == 1){
+            if ($exam_version == 1){  //  printout for every student in the class
             // get all of the students in the class - name of student, dex of student
              $sql = " SELECT * FROM `Student` INNER JOIN StudentCurrentClassConnect ON Student.student_id = StudentCurrentClassConnect.student_id  WHERE StudentCurrentClassConnect.currentclass_id = :currentclass_id ORDER BY last_name ASC" ;
                     $stmt = $pdo->prepare($sql);
@@ -213,8 +220,25 @@ line-height: 3;
 
         foreach($student_data as $student_datum){
             $pin = $student_datum['pin'];
-              $dex = ($pin-1) % 199 + 2;
-              //echo(' dex '.$dex);
+              $dex = ($pin-1) % 199 + 2;  //? this may be a little suspect but think it will still be OK
+             
+              $key = rand(1,9);
+              $last_dig = rand(0,9);
+              
+               If ($dex <10){
+                   $mid_three = $dex +300+$last_dig;
+               } elseif($dex < 100){
+                   $mid_three = $dex +600+$last_dig;
+               } else {
+                   
+                   $mid_three = $dex +$key+$last_dig;
+                  
+               }
+           $dex_code = $key.$mid_three.$last_dig;
+              //  echo ' version code '.$dex_code;
+              //  echo ' student_id '.$student_datum['student_id'];
+             
+              // echo(' dex '.$dex);
             
           //  echo $student_datum['first_name']  ;
           // for each problem on the exam
@@ -268,8 +292,48 @@ line-height: 3;
       $header_stuff -> load_file('exam_problem_print_header_stuff.html');
             // subbing in the header
        $header_stuff ->find('#stu_name',0)->innertext = $stu_name;
+
+                if($student_version_code == "1" ){
+                  $header_stuff ->find('#version_code',0)->innertext = 'Version Code: '.$dex_code;
+                }
+
+
       $header_stuff ->find('#course',0)->innertext = $cclass_name;
        $header_stuff ->find('#exam_num',0)->innertext = $exam_num;
+//! copied from below to put the QR code in e3ven if it for individulas
+       $qrcode_text =  'https://www.qrproblems.org/QRP/QRExamRegistration.php?dex_code='.$dex_code; 
+
+       if ($game_flag == "1"){  //! change it if its a game
+         $qrcode_text =  'https://www.qrproblems.org/QRP/index.php?dex_code='.$dex_code; 
+       }
+                       
+       $file = 'uploads/temp_exam'.$dex_code.' png';   // where the qrimage is going to be stored in uploads directory
+         
+       // $ecc stores error correction capability('L') 
+       $ecc = 'M'; 
+       $pixel_size = 2; 
+       $frame_size = 1; 
+         
+       // Generates QR Code and Stores it in directory given 
+         QRcode::png($qrcode_text, $file, $ecc, $pixel_size, $frame_size); 
+        // QRcode::png($text); 
+       // Displaying the stored QR code from directory 
+   
+     $qrcode = "<span ><img src='".$file."'> </span>"; 
+       $header_stuff ->find('#qr_code_id',0)->innertext = $qrcode;
+    //    echo($header_stuff);
+    //   echo ('<hr>');
+
+
+
+
+
+
+
+
+
+
+
  //      $header_stuff ->find('#problem_num',0)->innertext = $alias_num;
 //var_dump($html);
   $problem = $html->find('#problem',0);
@@ -375,7 +439,7 @@ line-height: 3;
                       
                       
                       
-                        $dex = $index_start + $ver;
+                        $dex = $index_start + $ver;  
                         
                         
                         
@@ -392,12 +456,6 @@ line-height: 3;
                                 $mid_three = $dex +$key+$last_dig;
                                
                             }
-
-                           
-                           
-                           
-                                  
-                        
                         $dex_code = $key.$mid_three.$last_dig;
                         
                        // echo(' dex_code:  '.$dex_code);

@@ -56,6 +56,14 @@ $sql = 'SELECT currentclass_id, exam_num,iid,game_flag FROM Eexamtime  WHERE eex
  
 } 
 
+.show {
+ font-size:1em;
+ display: inline;
+}
+.hide { 
+	display:none;
+}
+
 
 </style>
 
@@ -109,12 +117,13 @@ $sql = 'SELECT currentclass_id, exam_num,iid,game_flag FROM Eexamtime  WHERE eex
                      <div  class = "inner" >
                  
                              <div>
-                               <input type = "radio" name ="exam_version" id = "exam_version" value = "1" checked > </input>
+                               <input type = "radio" name ="exam_version" id = "exam_version1" value = "1" checked > </input>
                                    <label for "exam_version"> Different for Every Examinee (name printed on exam) </label>
+								 <span id = "student_version_code_container" class = "show"> <input type = "checkbox" class = "btn btn-primary" name = "student_version_code" id = "student_version_code" > Version Code from student Index</checkbox></span>
                              </div>
                                </br>
                              <div  >
-                                <input type = "radio" name ="exam_version" id = "exam_version" value = "2" > </input>
+                                <input type = "radio" name ="exam_version" id = "exam_version2" value = "2" > </input>
                                    <label for "exam_version">   
                                    Number of versions: <input    type = "number" name ="num_versions" id = "num_versions" min = "1", max = "9" value = "3" required  > </input>
                                    &nbsp;&nbsp;&nbsp;&nbsp; Number of print copies for each version (only version code changes) <input type = "number" name ="sets" id = "sets" min = "1", max = "99" value = "1" required  > </input>
@@ -147,7 +156,24 @@ $sql = 'SELECT currentclass_id, exam_num,iid,game_flag FROM Eexamtime  WHERE eex
 	
 	<script>
 	
+const student_version_code_container = document.getElementById('student_version_code_container');
+const student_version_code = document.getElementById('student_version_code');
+const exam_version1 = document.getElementById('exam_version1');
+const exam_version2 = document.getElementById('exam_version2');
+// console.log(exam_version1.value);
+exam_version1.addEventListener('change',function(ev){
+		student_version_code_container.classList.remove('hide');
+		student_version_code_container.classList.add('show');
+});
 
+exam_version2.addEventListener('change',function(ev){
+		student_version_code_container.classList.remove('show');
+		student_version_code_container.classList.add('hide');
+		student_version_code.checked = false;
+});
+
+// console.log(student_version_code_container);
+//  console.log(exam_version1);
 	
 </script>	
 
