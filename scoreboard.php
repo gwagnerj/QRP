@@ -5,7 +5,8 @@
   $range_limit = 25;  //Goes to scoreing team cohesivity
   $stdev_limit = 10;
   $pre_qr_weight = 25;  // percent of the score made up by the QRgame
-
+  $differences_in_correct_AH = 2;
+  $differences_in_correct_AHH = 3;
 //  unset ($_SESSION['rando']);
 
 // this is the value that will be used to pick the political environment
@@ -96,7 +97,7 @@
       }
    
       /* #table_team_results_after tr  {
-        /* width: 110%; */
+        /* width: 110%; 
         height: 300%;
       } */
       /* 
@@ -107,9 +108,16 @@
         font-size:2rem;
         font-weight:bold;
         color:red;
-
-
       }
+    .individual_score{ 
+      font: 1em sans-serif;
+      color:blue;
+      
+    }
+
+   .display-none{
+     display:none;
+   }   
 
 
   </style>
@@ -193,7 +201,8 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
      
       echo '<form method = "POST" >';
-      echo '<h3>  Pre QR Weight: <input type = "number" min = 0 max = 100 id = "pre_qr_weight" name = "pre_qr_weight" value ="'.$pre_qr_weight.'"></input>&nbsp;<input type = "submit" value = "Submit"> </input></h3>';
+      echo '<h3>  Pre QR Weight: <input type = "number" min = 0 max = 100 id = "pre_qr_weight" name = "pre_qr_weight" value ="'.$pre_qr_weight.'"></input>&nbsp;<input type = "submit" value = "Submit"> </input> 
+      &nbsp;&nbsp;&nbsp; <button type = "button" id = "show_hide_individual" class = "btn btn-outline-primary btn-sm" value = "show">Individual Scores</button></h3>';
       echo ('<table id="table_team_scores" cellpadding ="0" style = "text-align:center"  border="1" >'."\n");	
           echo("<thead>");
 
@@ -206,21 +215,16 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                 echo("<th>");
                 echo('Member');
                 echo ('</th>');
-                echo("<th>");
-                echo('Pre_QR');
-                echo ('</th>');
-                // echo ('<th>');
-                // echo ('dex'); 
-              //  echo ('</th>');
-                 echo ('<th>');
-                // echo ('Team Captain');
-                // echo ('</th>');
-                // echo ('<th>');
-                echo ('Individual Score');
-                echo ('</th>');
+                echo ('<span >');
+                echo('<th class = "individual_score display-none"  > Pre_QR </th>');
+                 echo ('<th class = "individual_score display-none"  > Individual Score </th>');
                 echo ('<th>');
                 echo ('Team pre_QR');
                 echo ('</th>');
+                echo ('<th>');
+                echo ('Diff in Team');
+                echo ('</th>');
+
                 echo ('<th>');
                 echo ('Current Cohesivity');
                 echo ('</th>');
@@ -324,7 +328,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
           //    var_dump($student_data);
                     $student_assignment_total = 0;
-             
+                    $m = 0;
                  foreach ($problem_ids as $problem_id){ 
                           $sql = 'SELECT  *   FROM Eactivity  WHERE eexamnow_id = :eexamnow_id AND student_id = :student_id  AND problem_id = :problem_id ORDER BY eactivity_id DESC LIMIT 1 ';
                           $stmt = $pdo->prepare($sql);         
@@ -334,25 +338,43 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                           $eactivity_data  = $stmt->fetchALL(PDO::FETCH_ASSOC);   
                   //  var_dump($eactivity_data);
         
-            
+               
                           foreach ($eactivity_data as $eactivity_datum){
+                            $eactivity_id = $eactivity_datum['eactivity_id'];
                               $problem_total = 0;
                               foreach(range('a','j') as $v){
                               
                                   if($eactivity_datum['correct_'.$v] ==1){
                                       $problem_total = $problem_total+ $eexamtime_data['perc_'.$v.'_'.$eactivity_datum['alias_num']];
+
+                                      //! try to get the studetns data into an array so we can check the cohesivity
+                        //             $invividual_correct_array[$student_id][$eactivity_id][$i][$v] = 1;
+                                     $invividual_correct_array[$student_id][$m] = 1;
+                                    
+                                     
                                   }
                                   elseif($eactivity_datum['display_ans_'.$v] == 1) {
+                         //           $invividual_correct_array[$student_id][$eactivity_id][$i][$v] = -1;
+                                    $invividual_correct_array[$student_id][$m] = -1;
+
                                   } 
                                   elseif(is_null($eactivity_datum['correct_'.$v] )) {
+                       //             $invividual_correct_array[$student_id][$eactivity_id][$i][$v] = null;
+                                    $invividual_correct_array[$student_id][$m] = null;
+
                                    // echo '__';
                                   } 
                                   elseif($eactivity_datum['correct_'.$v] == 0) {
+                          //          $invividual_correct_array[$student_id][$eactivity_id][$i][$v] = 0;
+                                    $invividual_correct_array[$student_id][$m] = 0;
+
                                   } 
                                   else {echo'<span class = "correct">'. $v .')'.$eactivity_datum["wcount_".$v].'</span>';}
+                                  $sum_invividual_correct_array[$i][$m]=0;
+                                  $m++;
                               }
                           }
-
+//var_dump( $invividual_correct_array);
                           $student_assignment_total = $student_assignment_total + $problem_total*$eexamtime_data['perc_'.$eactivity_datum['alias_num']]/100;
                           $individual_score[$student_id] = round($student_assignment_total*10)/10;
 
@@ -370,27 +392,64 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                       $team_kahoot[$i] =$team_kahoot_cumm[$i]/ count($studentonteam_data);
 
                 }
+
+            //    var_dump( $invividual_correct_array2);
                  // var_dump($min_ind_score);
                 // Compute the instantaneous team_cohesivity on the team
                 $num_stu_on_team[$i] = 0;
+         //       $sum_invividual_correct_array[$i] = array();
             foreach($studentonteam_data as $studentonteam_datum){
+              //! this is where I would like to recompute the cohesivity score by the number of parts to all questions that the team does not agree
+             
+
               $student_id = $studentonteam_datum['student_id'];
+         //     print_r( $invividual_correct_array[$student_id]);
+           //   $sum_invividual_correct_array[$i] = array_sum() $invividual_correct_array[$student_id];
+              $sum_invividual_correct_array[$i] = array_map(function () {
+                return array_sum(func_get_args());
+            }, $sum_invividual_correct_array[$i], $invividual_correct_array[$student_id]);
+
+      
+            //  print_r( $invividual_correct_array);
+
               $dev = $team_weighted_ave[$i]-($individual_score[$student_id]);
                   $cumm[$i] = $cumm[$i]+$dev*$dev;
                   $num_stu_on_team[$i]++;
                 }
+
+      //          print_r($sum_invividual_correct_array[$i]);
+                $differences_in_correct[$i] = 0;
+                foreach ($sum_invividual_correct_array[$i] as $team_sum[$i] ){
+                   
+                  $team_ave[$i] = $team_sum[$i] / count($sum_invividual_correct_array[$i]);
+                  if(!is_int($team_ave[$i])){ $differences_in_correct[$i] += 1;}
+           //       echo ($team_ave[$i]);
+                    
+                }
+         //       echo ('differences '. $differences_in_correct[$i]);
                // echo $cumm[$i];
+
+
+
+//!  Old cohesivity calculations new one is just the number of questions that are different with show answer counting the same as correct as for cohesivity calc
                $range[$i]= $max_ind_score[$i]-$min_ind_score[$i];
                $sdev[$i] = pow($cumm[$i]/$num_stu_on_team[$i],0.5);
                
-                  if($range[$i]>=$range_limit){
-                    $team_cohesivity[$i] =  $team_cohesivity[$i]-500;
+              //     if($range[$i]>=$range_limit){
+              //       $team_cohesivity[$i] =  $team_cohesivity[$i]-500;
+              //     }
+              //     if($sdev[$i]>=$stdev_limit){
+              //       $team_cohesivity[$i] =  $team_cohesivity[$i]-500;
+              //     }
+
+      //! new cohesivity calculations
+                  if($differences_in_correct[$i]>=$differences_in_correct_AH){
+                    $team_cohesivity[$i] =  $team_cohesivity[$i]-250;
                   }
-                  if($sdev[$i]>=$stdev_limit){
-                    $team_cohesivity[$i] =  $team_cohesivity[$i]-500;
+                  if($differences_in_correct[$i]>=$differences_in_correct_AHH){
+                    $team_cohesivity[$i] =  $team_cohesivity[$i]-750;
                   }
-                  // echo '<br>';
-                  // echo ($team_cohesivity[$i]+0)/10;
+
 
 
                   $sql = 'SELECT *, TIMESTAMPDIFF(SECOND,created_at,updated_at) AS diff_in_secs 
@@ -452,18 +511,23 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 
                     echo $game_name;
                     echo('</td>');
-                    echo('<td>');
+                    echo('<td class = "individual_score display-none" >');
 
                     echo (round($kahoot_points/$max_kahoot_score*1000)/10);
                     echo('</td>');
                     echo('</td>');
-                    echo('<td>');
+                    echo('<td class = "individual_score display-none" >');
                     echo ($individual_score[$student_id]);
                     
                     echo('</td>');
                     if ($j==1){
                       echo('<td  rowspan ='. $num_rows.'>');
                       echo (round($team_kahoot[$i]*10)/10);
+                      echo('</td>');
+                   }
+                    if ($j==1){
+                      echo('<td  rowspan ='. $num_rows.'>');
+                      echo ($differences_in_correct[$i]);
                       echo('</td>');
                    }
                    if ($j==1){
@@ -975,7 +1039,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
 <script>
       // console.log('window.location.reload');
 
-    var update_time = 5000;
+    var update_time = 10000;
     var cycle = 1;
   
     const number_teams = document.getElementById("number_teams").innerText;
@@ -985,6 +1049,22 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
     document.getElementById("after_hits").style.display="none";
     document.getElementById("political_environment").style.display="none";
     document.getElementById("final_results").style.display="none";
+    let individual_sections = document.getElementsByClassName("individual_score");
+   
+
+
+    document.getElementById("show_hide_individual").addEventListener("click", () => {
+     
+          for(j=0;j<individual_sections.length; j++){
+
+            if(individual_sections[j].classList.contains("display-none")){
+              individual_sections[j].classList.remove("display-none")
+            }else{
+              individual_sections[j].classList.add("display-none")
+            };
+           }
+
+    })
 
          document.getElementById("show_results_button").addEventListener("click", () => {
           showFirstSection(show_results);

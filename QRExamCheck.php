@@ -303,6 +303,8 @@ session_start();
 
             $work_flow = $eexamtime_data['work_flow'];
             $game_flag = $eexamtime_data['game_flag'];
+            $hide_show_answer = '';
+ //!           if ($game_flag ==1){$hide_show_answer = "hidden";} else{$hide_show_answer = "hidden";}
             $attempt_type = $eexamtime_data['attempt_type'];
              $num_attempts = $eexamtime_data['num_attempts'];
             $ans_n = $eexamtime_data['ans_n'];
@@ -879,7 +881,7 @@ if( $get_flag ==0){ // if we are comming in from this file on a post
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
-		
+		<link rel="stylesheet" href="displayProblem.css"> 
 	</head>
 <style>
 .btn-default {
@@ -935,8 +937,8 @@ if ($dex == 1) {
      	 <input type="hidden" id="display_ans_a" value="<?php echo ($display_ans[0])?>" >
        
 	<?php 
-    if ( $ans_n!="" && $ans_n!=""&& $corr['a']!="Correct" )
-     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_a" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_a" disabled value="Show Answer"></input> </span>&nbsp;');}
+    if ( $ans_n!="" && $wrongCount[0] >= $ans_n && $corr['a']!="Correct" )
+     { echo('<span class="btn-default show-answer '.$hide_show_answer.'">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_a" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_a" disabled value="Show Answer"></input> </span>&nbsp;');}
      if ($corr['a']=="Correct")
     {echo '<span id = "show_ans_a" class = "show_ans"> - Computed value is: '.$soln[0].'</span>';} 
     } 
@@ -953,8 +955,8 @@ if ($dex == 1) {
      	 <input type="hidden" id="display_ans_b" value="<?php echo ($display_ans[1])?>" >
         
 	<?php 
-    if ( $ans_n!="" && $ans_n!=""&& $corr['b']!="Correct" )
-     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_b" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_b" disabled value="Show Answer"></input> </span>&nbsp;');}
+    if ( $ans_n!="" &&$wrongCount[1] >= $ans_n&& $corr['b']!="Correct" )
+     { echo('<span class="btn-default show-answer '.$hide_show_answer.'">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_b" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_b" disabled value="Show Answer"></input> </span>&nbsp;');}
      if ($corr['b']=="Correct")
     {echo '<span id = "show_ans_b" class = "show_ans"> - Computed value is: '.$soln[1].'</span>';} 
     } 
@@ -969,8 +971,8 @@ if ($dex == 1) {
      	 <input type="hidden" id="display_ans_c" value="<?php echo ($display_ans[2])?>" >
         
 	<?php 
-    if ( $ans_n!="" && $ans_n!=""&& $corr['c']!="Correct" )
-     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_c" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_c"  disabled value="Show Answer"> </span>&nbsp;');}
+    if ( $ans_n!="" && $wrongCount[2] >= $ans_n && $corr['c']!="Correct" )
+     { echo('<span class="btn-default show-answer '.$hide_show_answer.'">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_c" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_c"  disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['c']=="Correct")
     {echo '<span id = "show_ans_c" class = "show_ans"> - Computed value is: '.$soln[2].'</span>';} 
     } 
@@ -985,8 +987,8 @@ if ($dex == 1) {
      	 <input type="hidden" id="display_ans_d" value="<?php echo ($display_ans[3])?>" >
         
 	<?php 
-    if ( $ans_n!="" && $ans_n!=""&& $corr['d']!="Correct" )
-     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_d" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_d" disabled value="Show Answer"> </span>&nbsp;');}
+    if ( $ans_n!="" && $wrongCount[3] >= $ans_n && $corr['d']!="Correct" )
+     { echo('<span class="btn-default show-answer '.$hide_show_answer.'">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_d" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_d" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['d']=="Correct")
     {echo '<span id = "show_ans_d" class = "show_ans"> - Computed value is: '.$soln[3].'</span>';} 
     } 
@@ -1001,8 +1003,8 @@ if ($dex == 1) {
      	 <input type="hidden" id="display_ans_e" value="<?php echo ($display_ans[4])?>" >
         
 	<?php 
-    if ( $ans_n!="" && $ans_n!=""&& $corr['e']!="Correct" )
-     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_e" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_e" disabled value="Show Answer"> </span>&nbsp;');}
+    if ( $ans_n!="" &&$wrongCount[4] >= $ans_n && $corr['e']!="Correct" )
+     { echo('<span class="btn-default show-answer '.$hide_show_answer.'">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_e" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_e" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['e']=="Correct")
     {echo '<span id = "show_ans_e" class = "show_ans"> - Computed value is: '.$soln[4].'</span>';} 
     } 
@@ -1017,8 +1019,8 @@ if ($dex == 1) {
      	 <input type="hidden" id="display_ans_f" value="<?php echo ($display_ans[5])?>" >
         
 	<?php 
-    if ( $ans_n!="" && $ans_n!=""&& $corr['f']!="Correct" )
-     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_f" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_f" disabled value="Show Answer"> </span>&nbsp;');}
+    if ( $ans_n!="" && $wrongCount[5] >= $ans_n && $corr['f']!="Correct" )
+     { echo('<span class="btn-default show-answer '.$hide_show_answer.'">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_f" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_f" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['f']=="Correct")
     {echo '<span id = "show_ans_f" class = "show_ans"> - Computed value is: '.$soln[5].'</span>';} 
     } 
@@ -1033,8 +1035,8 @@ if ($dex == 1) {
      	 <input type="hidden" id="display_ans_g" value="<?php echo ($display_ans[6])?>" >
         
 	<?php 
-    if ( $ans_n!="" && $ans_n!=""&& $corr['g']!="Correct" )
-     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_g" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_g" disabled value="Show Answer"> </span>&nbsp;');}
+    if ( $ans_n!="" && $wrongCount[6] >= $ans_n && $corr['g']!="Correct" )
+     { echo('<span class="btn-default show-answer '.$hide_show_answer.'">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_g" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_g" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['g']=="Correct")
     {echo '<span id = "show_ans_g" class = "show_ans"> - Computed value is: '.$soln[6].'</span>';} 
     } 
@@ -1050,8 +1052,8 @@ if ($dex == 1) {
      	 <input type="hidden" id="display_ans_h" value="<?php echo ($display_ans[7])?>" >
         
 	<?php 
-    if ( $ans_n!="" && $ans_n!=""&& $corr['h']!="Correct" )
-     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_h" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_h" disabled value="Show Answer"> </span>&nbsp;');}
+    if ( $ans_n!="" && $wrongCount[7] >= $ans_n&& $corr['h']!="Correct" )
+     { echo('<span class="btn-default show-answer '.$hide_show_answer.' ">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_h" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_h" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['h']=="Correct")
     {echo '<span id = "show_ans_h" class = "show_ans"> - Computed value is: '.$soln[7].'</span>';} 
     } 
@@ -1067,8 +1069,8 @@ if ($dex == 1) {
      	 <input type="hidden" id="display_ans_i" value="<?php echo ($display_ans[8])?>" >
         
 	<?php 
-    if ( $ans_n!="" && $ans_n!=""&& $corr['i']!="Correct" )
-     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_i" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_i" disabled value="Show Answer"> </span>&nbsp;');}
+    if ( $ans_n!="" && $wrongCount[8] >= $ans_n && $corr['i']!="Correct" )
+     { echo('<span class="btn-default show-answer '.$hide_show_answer.'">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_i" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_i" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['i']=="Correct")
     {echo '<span id = "show_ans_i" class = "show_ans"> - Computed value is: '.$soln[8].'</span>';} 
     } 
@@ -1084,8 +1086,8 @@ if ($dex == 1) {
      	 <input type="hidden" id="display_ans_j" value="<?php echo ($display_ans[9])?>" >
         
 	<?php 
-    if ( $ans_n!="" && $ans_n!=""&& $corr['j']!="Correct" )
-     { echo('<span class="btn-default">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_b" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_j" disabled value="Show Answer"> </span>&nbsp;');}
+    if ( $ans_n!="" && $wrongCount[9] >= $ans_n && $corr['j']!="Correct" )
+     { echo('<span class="btn-default show-answer '.$hide_show_answer.'">&nbsp;&nbsp;&nbsp;<input type = "checkbox" id = "show_answer_check_b" class = "show_answer_check" >&nbsp;&nbsp;&nbsp;</input><input type="button" id="show_answer_button_j" disabled value="Show Answer"> </span>&nbsp;');}
      if ($corr['j']=="Correct")
     {echo '<span id = "show_ans_j" class = "show_ans"> - Computed value is: '.$soln[9].'</span>';} 
     } 

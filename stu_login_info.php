@@ -14,20 +14,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 }
 
 
-   if ($_POST['where_from'] != 'QRExamMgmt') {
-        if (($_POST['currentclass_id']==0 || $_POST['currentclass_id']=='' || $_POST['iid']==0 || $_POST['iid']=='' )){
-            $_SESSION['error'] = 'Class must be Selected';
-           header( 'Location: QRAssignmentStart0.php?iid='.$iid ) ;
-           die();
-        }
-      } else {
-        if (($_POST['currentclass_id']==0 || $_POST['currentclass_id']=='' || $_POST['iid']==0 || $_POST['iid']=='' )){
-          $_SESSION['error'] = 'Class must be Selected';
-         header( 'Location: QRExamMgmt.php?iid='.$iid ) ;
-         die();
-        }
+  //  if ($_POST['where_from'] != 'QRExamMgmt') {
+  //       if (($_POST['currentclass_id']==0 || $_POST['currentclass_id']=='' || $_POST['iid']==0 || $_POST['iid']=='' )){
+  //           $_SESSION['error'] = 'Class must be Selected';
+  //          header( 'Location: QRAssignmentStart0.php?iid='.$iid ) ;
+  //          die();
+  //       }
+  //     } else {
+  //       if (($_POST['currentclass_id']==0 || $_POST['currentclass_id']=='' || $_POST['iid']==0 || $_POST['iid']=='' )){
+  //         $_SESSION['error'] = 'Class must be Selected';
+  //        header( 'Location: QRExamMgmt.php?iid='.$iid ) ;
+  //        die();
+  //       }
 
-      }
+  //     }
    //   $assign_num = $_POST['active_assign'];
     $currentclass_id = $_POST['currentclass_id'];
     
@@ -55,6 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 		echo("</th><th>");
 		echo(' Last Name ');
 		echo("</th><th>");
+        echo(' DEX from pin ');
+		echo("</th><th>");
         echo(' User ID ');
 		echo("</th><th>");
 		echo('&nbsp; Password &nbsp;');
@@ -66,14 +68,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 
   
    
-   $sql = 'SELECT `student_id` FROM StudentCurrentClassConnect WHERE currentclass_id = :currentclass_id ';
+   $sql = 'SELECT `student_id`,`pin` FROM StudentCurrentClassConnect WHERE currentclass_id = :currentclass_id ';
    $stmt = $pdo->prepare($sql);
            $stmt -> execute(array (
            ':currentclass_id' => $currentclass_id,
            )); 
           $studentcurrentclass_data  = $stmt -> fetchALL();
           foreach ($studentcurrentclass_data as $studentcurrentclass_datum){
-              
+              $pin = $studentcurrentclass_datum['pin'];
+              $dex = ($pin-1) % 199 + 2;
                 $student_id = $studentcurrentclass_datum['student_id'];
               $sql = 'SELECT * FROM Student WHERE student_id = :student_id';
                  $stmt = $pdo->prepare($sql);
@@ -91,6 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                 echo('&nbsp; '.htmlentities($first_name).'&nbsp; ');
                 echo("</td><td>");	
                 echo('&nbsp; '.htmlentities($last_name).'&nbsp; ');
+                echo("</td><td>");	
+                echo('&nbsp; '.htmlentities($dex).'&nbsp; ');
                 echo("</td><td>");	
                 echo('&nbsp; '.htmlentities($username).'&nbsp; ');
                 echo("</td><td>");	
