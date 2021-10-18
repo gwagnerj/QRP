@@ -926,14 +926,16 @@ if ($dex == 1) {
 
 	<?php
     if($attempt_type ==1 || ($attempt_type ==2 && $count <= $num_attempts)){
-	if ($partsFlag[0]){ ?> 
-
-	<p> <span id = "input_a"> a) <?php if($dex!=1) { echo '('. $eexamtime_data['perc_a_'.$alias_num].'%):';} ?> <input [ type=number]{width: 5%;} id = "a" name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> &nbsp; count <?php echo(@$wrongCount[0].' ');?> </span><span id = "disp_ans_a"></span>
+	if ($partsFlag[0]){  
+  if ($corr['a']=="Correct" && $game_flag == 1 ){ $sticky_correct_a = 'display_none';} else { $sticky_correct_a = "";}
+  ?>
+	<p> <span id = "input_a" class = "input-box <?php echo ($sticky_correct_a)?>"> a) <?php if($dex!=1) { echo '('. $eexamtime_data['perc_a_'.$alias_num].'%):';} ?> <input [ type=number]{width: 5%;} id = "a" name="a" size = 10% value="<?php echo (htmlentities($resp['a']))?>" > <?php echo($unit[0]) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> &nbsp; count <?php echo(@$wrongCount[0].' ');?> </span><span id = "disp_ans_a"></span>
 	<?php //echo ('wrongcount: '.$wrongCount[0]); ?>
 	<?php if (isset($_POST['pin']) && @$wrongCount[0]>$hintLimit && $corr['a']=="Not Correct" && $hintaPath != "uploads/default_hints.html" ){echo '<a href="'.$hintaPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) && $changed[0] && @$wrongCount[0]>$time_sleep1_trip && @$wrongCount[0]< $time_sleep2_trip && $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) && $changed[0] && @$wrongCount[0]>=$time_sleep2_trip && $corr['a']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
-	 <input type="hidden" id="ans_a" value="<?php echo ($soln[0])?>" >
+	<?php if ($sticky_correct_a == "display_none") echo '<span id = "response_a">a) '.$resp['a'].' '.$unit[0].' - Correct </span> '; ?>
+  <input type="hidden" id="ans_a" value="<?php echo ($soln[0])?>" >
      	 <input type="hidden" id="display_ans_a" value="<?php echo ($display_ans[0])?>" >
        
 	<?php 
@@ -945,12 +947,16 @@ if ($dex == 1) {
     echo '</p>';
     
 
-	if ($partsFlag[1]){ ?> 
-	<p>  <span id = "input_b"> b)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_b_'.$alias_num].'%):';} ?><input [ type=number]{width: 5%;} id = "b" name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?> &nbsp - <b> <?php echo ($corr['b']) ?> </b> &nbsp; count <?php echo(@$wrongCount[1].' ');?>  </span><span id = "disp_ans_b"></span>
+	if ($partsFlag[1]){
+    if ($corr['b']=="Correct" && $game_flag == 1 ){ $sticky_correct_b = 'display_none';} else { $sticky_correct_b = "";}
+    ?> 
+	<p>  <span id = "input_b" class = "input-box <?php echo ($sticky_correct_b)?>"> b)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_b_'.$alias_num].'%):';} ?><input [ type=number]{width: 5%;} id = "b" name="b" size = 10% value="<?php echo (htmlentities($resp['b']))?>" > <?php echo($unit[1]) ?> &nbsp - <b> <?php echo ($corr['b']) ?> </b> &nbsp; count <?php echo(@$wrongCount[1].' ');?>  </span><span id = "disp_ans_b"></span>
 	<?php // if (isset($_POST['pin']) and $corr['b']=="Correct" ){echo '- Computed value is: '.$soln[1];} ?>  
 	<?php if (isset($_POST['pin']) and @$wrongCount[1]>$hintLimit and $corr['b']=="Not Correct" && $hintbPath != "uploads/default_hints.html" ){echo '<a href="'.$hintbPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[1] and @$wrongCount[1]>$time_sleep1_trip and @$wrongCount[1]< $time_sleep2_trip and $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[1] and @$wrongCount[1]>=$time_sleep2_trip and $corr['b']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+  <?php if ($sticky_correct_b == "display_none") echo '<span id = "response_b">b) '.$resp['b'].' '.$unit[1].' - Correct </span> '; ?>
+
 	 <input type="hidden" id="ans_b" value="<?php echo ($soln[1])?>" >
      	 <input type="hidden" id="display_ans_b" value="<?php echo ($display_ans[1])?>" >
         
@@ -962,11 +968,15 @@ if ($dex == 1) {
     } 
     echo '</p>';
   
-	if ($partsFlag[2]){ ?> 
-	<p>  <span id = "input_c"> c)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_c_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;}  id = "c" name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b> &nbsp;  count <?php echo(@$wrongCount[2].' ');?>  </span><span id = "disp_ans_c"></span>
+	if ($partsFlag[2]){
+    if ($corr['c']=="Correct" && $game_flag == 1 ){ $sticky_correct_c = 'display_none';} else { $sticky_correct_c = "";}
+     ?> 
+	<p>  <span id = "input_c" class = "input-box <?php echo ($sticky_correct_c)?>"> c)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_c_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;}  id = "c" name="c" size = 10% value="<?php echo (htmlentities($resp['c']))?>" > <?php echo($unit[2]) ?> &nbsp - <b><?php echo ($corr['c']) ?> </b> &nbsp;  count <?php echo(@$wrongCount[2].' ');?>  </span><span id = "disp_ans_c"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[2]>$hintLimit and $corr['c']=="Not Correct"&& $hintcPath != "uploads/default_hints.html" ){echo '<a href="'.$hintcPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[2] and @$wrongCount[2]>$time_sleep1_trip and @$wrongCount[2]< $time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[2] and @$wrongCount[2]>=$time_sleep2_trip and $corr['c']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+  <?php if ($sticky_correct_c == "display_none") echo '<span id = "response_c">c) '.$resp['c'].' '.$unit[2].' - Correct </span> '; ?>
+
 	 <input type="hidden" id="ans_c" value="<?php echo ($soln[2])?>" >
      	 <input type="hidden" id="display_ans_c" value="<?php echo ($display_ans[2])?>" >
         
@@ -978,11 +988,15 @@ if ($dex == 1) {
     } 
     echo '</p>';
 
-	if ($partsFlag[3]){ ?> 
-	<p>  <span id = "input_d"> d)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_d_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;} id = "d" name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b> &nbsp; count <?php echo(@$wrongCount[3].' ');?>  </span><span id = "disp_ans_d"></span>
+	if ($partsFlag[3]){
+    if ($corr['d']=="Correct" && $game_flag == 1 ){ $sticky_correct_d = 'display_none';} else { $sticky_correct_d = "";}
+    ?> 
+	<p>  <span id = "input_d" class = "input-box <?php echo ($sticky_correct_d)?>"> d)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_d_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;} id = "d" name="d" size = 10% value="<?php echo (htmlentities($resp['d']))?>" > <?php echo($unit[3]) ?> &nbsp - <b><?php echo ($corr['d']) ?> </b> &nbsp; count <?php echo(@$wrongCount[3].' ');?>  </span><span id = "disp_ans_d"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[3]>$hintLimit and $corr['d']=="Not Correct"&& $hintdPath != "uploads/default_hints.html" ){echo '<a href="'.$hintdPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[3] and @$wrongCount[3]>$time_sleep1_trip and @$wrongCount[3]< $time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[3] and @$wrongCount[3]>=$time_sleep2_trip and $corr['d']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+  <?php if ($sticky_correct_d == "display_none") echo '<span id = "response_d">d) '.$resp['d'].' '.$unit[3].' - Correct </span> '; ?>
+
 	 <input type="hidden" id="ans_d" value="<?php echo ($soln[3])?>" >
      	 <input type="hidden" id="display_ans_d" value="<?php echo ($display_ans[3])?>" >
         
@@ -994,11 +1008,15 @@ if ($dex == 1) {
     } 
     echo '</p>';
 
-	if ($partsFlag[4]){ ?> 
-	<p>  <span id = "input_e"> e)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_e_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;} id = "e" name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b> &nbsp; count <?php echo(@$wrongCount[4].' ');?>  </span><span id = "disp_ans_e"></span>
+	if ($partsFlag[4]){
+    if ($corr['e']=="Correct" && $game_flag == 1 ){ $sticky_correct_e = 'display_none';} else { $sticky_correct_e = "";}
+    ?> 
+	<p>  <span id = "input_e" class = "input-box <?php echo ($sticky_correct_e)?>"> e)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_e_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;} id = "e" name="e" size = 10% value="<?php echo (htmlentities($resp['e']))?>" > <?php echo($unit[4]) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b> &nbsp; count <?php echo(@$wrongCount[4].' ');?>  </span><span id = "disp_ans_e"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[4]>$hintLimit and $corr['e']=="Not Correct"&& $hintePath != "uploads/default_hints.html" ){echo '<a href="'.$hintePath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[4] and @$wrongCount[4]>$time_sleep1_trip and @$wrongCount[4]< $time_sleep1_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[4] and @$wrongCount[4]>=$time_sleep2_trip and $corr['e']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+  <?php if ($sticky_correct_e == "display_none") echo '<span id = "response_e">c) '.$resp['e'].' '.$unit[4].' - Correct </span> '; ?>
+
 	 <input type="hidden" id="ans_e" value="<?php echo ($soln[4])?>" >
      	 <input type="hidden" id="display_ans_e" value="<?php echo ($display_ans[4])?>" >
         
@@ -1010,11 +1028,15 @@ if ($dex == 1) {
     } 
     echo '</p>';
 
-	if ($partsFlag[5]){ ?> 
-	<p>  <span id = "input_f"> f)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_f_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;} id = "f" name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b> &nbsp; count <?php echo(@$wrongCount[5].' ');?>  </span><span id = "disp_ans_f"></span>
+	if ($partsFlag[5]){
+    if ($corr['f']=="Correct" && $game_flag == 1 ){ $sticky_correct_f = 'display_none';} else { $sticky_correct_f = "";}
+    ?> 
+	<p>  <span id = "input_f" class = "input-box <?php echo ($sticky_correct_f)?>"> f)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_f_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;} id = "f" name="f" size = 10% value="<?php echo (htmlentities($resp['f']))?>" > <?php echo($unit[5]) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b> &nbsp; count <?php echo(@$wrongCount[5].' ');?>  </span><span id = "disp_ans_f"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[5]>$hintLimit and $corr['f']=="Not Correct"&& $hintfPath != "uploads/default_hints.html" ){echo '<a href="'.$hintfPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[5] and @$wrongCount[5]>$time_sleep1_trip and @$wrongCount[5]< $time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[5] and @$wrongCount[5]>=$time_sleep2_trip and $corr['f']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+  <?php if ($sticky_correct_f == "display_none") echo '<span id = "response_f">f) '.$resp['f'].' '.$unit[5].' - Correct </span> '; ?>
+
 	 <input type="hidden" id="ans_f" value="<?php echo ($soln[5])?>" >
      	 <input type="hidden" id="display_ans_f" value="<?php echo ($display_ans[5])?>" >
         
@@ -1026,11 +1048,16 @@ if ($dex == 1) {
     } 
     echo '</p>';
 
-	if ($partsFlag[6]){ ?> 
-	<p>  <span id = "input_g"> g)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_g_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;} id = "g" name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b> &nbsp; count <?php echo(@$wrongCount[6].' ');?>  </span><span id = "disp_ans_g"></span>
+	if ($partsFlag[6]){
+    if ($corr['g']=="Correct" && $game_flag == 1 ){ $sticky_correct_g = 'display_none';} else { $sticky_correct_g = "";}
+
+    ?> 
+	<p>  <span id = "input_g" class = "input-box <?php echo ($sticky_correct_g)?>"> g)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_g_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;} id = "g" name="g" size = 10% value="<?php echo (htmlentities($resp['g']))?>" > <?php echo($unit[6]) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b> &nbsp; count <?php echo(@$wrongCount[6].' ');?>  </span><span id = "disp_ans_g"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[6]>$hintLimit and $corr['g']=="Not Correct"&& $hintgPath != "uploads/default_hints.html" ){echo '<a href="'.$hintgPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[6] and @$wrongCount[6]>$time_sleep1_trip and @$wrongCount[6]< $time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[6] and @$wrongCount[6]>=$time_sleep2_trip and $corr['g']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+  <?php if ($sticky_correct_g == "display_none") echo '<span id = "response_g">g) '.$resp['g'].' '.$unit[6].' - Correct </span> '; ?>
+
 		 <input type="hidden" id="ans_g" value="<?php echo ($soln[6])?>" >
      	 <input type="hidden" id="display_ans_g" value="<?php echo ($display_ans[6])?>" >
         
@@ -1043,11 +1070,15 @@ if ($dex == 1) {
     echo '</p>';
 
 
-	if ($partsFlag[7]){ ?> 
-	<p>  <span id = "input_h"> h)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_h_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;} id = "h" name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo($unit[7]) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b> &nbsp;  count <?php echo(@$wrongCount[7].' ');?>  </span><span id = "disp_ans_h"></span>
+	if ($partsFlag[7]){
+    if ($corr['h']=="Correct" && $game_flag == 1 ){ $sticky_correct_h = 'display_none';} else { $sticky_correct_h= "";}
+    ?> 
+	<p>  <span id = "input_h" class = "input-box <?php echo ($sticky_correct_h)?>"> h)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_h_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;} id = "h" name="h" size = 10% value="<?php echo (htmlentities($resp['h']))?>" > <?php echo($unit[7]) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b> &nbsp;  count <?php echo(@$wrongCount[7].' ');?>  </span><span id = "disp_ans_h"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[7]>$hintLimit and $corr['h']=="Not Correct"&& $hinthPath != "uploads/default_hints.html" ){echo '<a href="'.$hinthPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[7] and @$wrongCount[7]>$time_sleep1_trip and @$wrongCount[7]< $time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[7] and @$wrongCount[7]>=$time_sleep2_trip and $corr['h']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+  <?php if ($sticky_correct_h == "display_none") echo '<span id = "response_h">h) '.$resp['h'].' '.$unit[7].' - Correct </span> '; ?>
+
 		 <input type="hidden" id="ans_h" value="<?php echo ($soln[7])?>" >
      	 <input type="hidden" id="display_ans_h" value="<?php echo ($display_ans[7])?>" >
         
@@ -1060,11 +1091,16 @@ if ($dex == 1) {
     echo '</p>';
 
 
-	if ($partsFlag[8]){ ?> 
-	<p>  <span id = "input_i"> i)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_i_'.$alias_num].'%):';} ?> <input [ type=number]{width: 5%;} id = "i" name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b> &nbsp; count <?php echo(@$wrongCount[8].' ');?>  </span><span id = "disp_ans_i"></span>
+	if ($partsFlag[8]){ 
+    if ($corr['i']=="Correct" && $game_flag == 1 ){ $sticky_correct_i = 'display_none';} else { $sticky_correct_i = "";}
+
+    ?> 
+	<p>  <span id = "input_i" class = "input-box <?php echo ($sticky_correct_i)?>"> i)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_i_'.$alias_num].'%):';} ?> <input [ type=number]{width: 5%;} id = "i" name="i" size = 10% value="<?php echo (htmlentities($resp['i']))?>" > <?php echo($unit[8]) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b> &nbsp; count <?php echo(@$wrongCount[8].' ');?>  </span><span id = "disp_ans_i"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[8]>$hintLimit and $corr['i']=="Not Correct"&& $hintiPath != "uploads/default_hints.html" ){echo '<a href="'.$hintiPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[8] and @$wrongCount[8]>$time_sleep1_trip and @$wrongCount[8]< $time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[8] and @$wrongCount[8]>=$time_sleep2_trip and $corr['i']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+  <?php if ($sticky_correct_i == "display_none") echo '<span id = "response_i">i) '.$resp['i'].' '.$unit[8].' - Correct </span> '; ?>
+
 		 <input type="hidden" id="ans_i" value="<?php echo ($soln[8])?>" >
      	 <input type="hidden" id="display_ans_i" value="<?php echo ($display_ans[8])?>" >
         
@@ -1077,11 +1113,16 @@ if ($dex == 1) {
     echo '</p>';
 
 
-	if ($partsFlag[9]){ ?> 
-	<p>  <span id = "input_j"> j)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_j_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;}  id = "j" name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b> &nbsp;  count <?php echo(@$wrongCount[9].' ');?>  </span><span id = "disp_ans_j"></span>
+	if ($partsFlag[9]){
+    if ($corr['j']=="Correct" && $game_flag == 1 ){ $sticky_correct_j = 'display_none';} else { $sticky_correct_j = "";}
+
+    ?> 
+	<p>  <span id = "input_j class = "input-box <?php echo ($sticky_correct_j)?>""> j)<?php if($dex!=1) { echo '('. $eexamtime_data['perc_j_'.$alias_num].'%):';} ?>  <input [ type=number]{width: 5%;}  id = "j" name="j" size = 10% value="<?php echo (htmlentities($resp['j']))?>" > <?php echo($unit[9]) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b> &nbsp;  count <?php echo(@$wrongCount[9].' ');?>  </span><span id = "disp_ans_j"></span>
 	<?php if (isset($_POST['pin']) and @$wrongCount[9]>$hintLimit and $corr['j']=="Not Correct"&& $hintjPath != "uploads/default_hints.html" ){echo '<a href="'.$hintjPath.'"target = "_blank"> hints for this part </a>';} ?>  
 	<?php if (isset($_POST['pin']) and $changed[9] and @$wrongCount[9]>$time_sleep1_trip and @$wrongCount[9]< $time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep1." s"); sleep($time_sleep1);} ?>
 	<?php if (isset($_POST['pin']) and $changed[9] and @$wrongCount[9]>=$time_sleep2_trip and $corr['j']=="Not Correct"){echo ("   time delay ".$time_sleep2." s"); sleep($time_sleep2);} ?>
+  <?php if ($sticky_correct_j == "display_none") echo '<span id = "response_j">j) '.$resp['j'].' '.$unit[9].' - Correct </span> '; ?>
+
 		 <input type="hidden" id="ans_j" value="<?php echo ($soln[9])?>" >
      	 <input type="hidden" id="display_ans_j" value="<?php echo ($display_ans[9])?>" >
         

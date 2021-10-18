@@ -410,23 +410,24 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
             }, $sum_invividual_correct_array[$i], $invividual_correct_array[$student_id]);
 
       
-            //  print_r( $invividual_correct_array);
+         //     print_r( $invividual_correct_array);
 
               $dev = $team_weighted_ave[$i]-($individual_score[$student_id]);
                   $cumm[$i] = $cumm[$i]+$dev*$dev;
                   $num_stu_on_team[$i]++;
                 }
 
-      //          print_r($sum_invividual_correct_array[$i]);
+        //        print_r($sum_invividual_correct_array[$i]);
                 $differences_in_correct[$i] = 0;
                 foreach ($sum_invividual_correct_array[$i] as $team_sum[$i] ){
                    
-                  $team_ave[$i] = $team_sum[$i] / count($sum_invividual_correct_array[$i]);
+                  $team_ave[$i] = $team_sum[$i] / $num_stu_on_team[$i];
+
                   if(!is_int($team_ave[$i])){ $differences_in_correct[$i] += 1;}
            //       echo ($team_ave[$i]);
                     
                 }
-         //       echo ('differences '. $differences_in_correct[$i]);
+              //  echo ('differences '. $differences_in_correct[$i]);
                // echo $cumm[$i];
 
 
