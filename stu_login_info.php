@@ -42,7 +42,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                 $class_name = $currentclass_data['name'];
   
     // set up the table
-    
+    ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Student Info</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+ <link rel="icon" type="image/png" href="McKetta.png" />  
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
+
+
+</head>
+<body>
+  
+</body>
+</html>
+    <?php
     echo('<h2>Quick Response Student Login Information for '.$class_name.'  </h2>');
 // table header
   
@@ -60,6 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
         echo(' User ID ');
 		echo("</th><th>");
 		echo('&nbsp; Password &nbsp;');
+	
+		echo("</th><th>");
+		echo('&nbsp; QR student_id &nbsp;');
+	
+		echo("</th><th>");
+		echo('&nbsp; Function &nbsp;');
 	
 		echo("</th></tr>\n");
 		 echo("</thead>");
@@ -100,6 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                 echo('&nbsp; '.htmlentities($username).'&nbsp; ');
                 echo("</td><td>");	
                 echo(' &nbsp;'.htmlentities($password).'&nbsp; ');
+                echo("</td><td>");	
+                echo(' &nbsp;'.htmlentities($student_id).'&nbsp; ');
+                echo("</td><td>");	
+                echo(' &nbsp; <button id = "remove-'.htmlentities($student_id).'" class = "remove btn btn-outline-danger p-1 b-1" style = "color-:red;">Remove</button> ');
                 echo("</td></tr>");	
           }     echo ('</tbody></table><br><br>');
 }
