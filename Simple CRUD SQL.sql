@@ -3035,3 +3035,19 @@ CHANGE `time_complete` `time_complete`  TIMESTAMP NULL DEFAULT NULL
 Alter TABLE `Assigntime`
 ADD UNIQUE `unique_index`(`iid`,`currentclass_id`,`assign_num`)
 
+
+
+ CREATE TABLE IF NOT EXISTS `Interest` (
+  `interest_id` int(11) NOT NULL AUTO_INCREMENT,
+   `first` varchar(50) NOT NULL,
+    `last` varchar(50) NOT NULL,
+	`email` varchar(50) NOT NULL,
+   `qrgame` int(2) DEFAULT 0,
+   `qrhomework` int(2) DEFAULT 0,
+   `qrexam` int(2) DEFAULT 0,
+   `contributing` int(2) DEFAULT 0,
+   `programming` int(2) DEFAULT 0,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`interest_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
