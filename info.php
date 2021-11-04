@@ -115,7 +115,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <span class="help-block"><?php echo $first_err; ?></span>
             </div>  
 			<div class="form-group <?php echo (!empty($last_err)) ? 'has-error' : ''; ?> py-4">
-                <label>Last (sir) Name</label>
+                <label>Last (Family) Name</label>
                 <input type="text" name="last"class="form-control" value="<?php echo $last; ?>">
                 <span class="help-block"><?php echo $last_err; ?></span>
             </div> 
