@@ -877,7 +877,7 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
 <?php if ( $pscore_less==$num_score_possible && $pscore_less !=0 && $pscore_less !='' && $now_int < $due_date_ec_int){$ec_elgible_flag =1;} else {$ec_elgible_flag =0;} ?>
          <span id ="t_delay_message"></span>
 	<!-- <p><input type = "submit" id = "check_submit" name = "check" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p><br> -->
-	<p><button type = "submit" id = "check_submit" class = "btn btn-primary ms-2 mt-3 position-absolute bottom-0  start-10 " style="font-size: 1.5rem;" name = "check" > Check <i class="bi bi-card-checklist" ></i> </button>
+	<p><button type = "submit" id = "check_submit" class = "btn btn-primary ms-2 mt-3 position-absolute bottom-1  start-10 " style="font-size: 1.5rem;" name = "check" > Check <i class="bi bi-card-checklist" ></i> </button>
              <input type="hidden" name="activity_id" value="<?php echo ($activity_id)?>" >
              <input type="hidden" id = "prob_parts" value="<?php echo ($probParts)?>" >
              <input type="hidden" id = "count_tot" value="<?php echo ($count_tot)?>" >
@@ -905,7 +905,7 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
 
 
           <!-- <p><input type = "submit"  id = "finish_submit" name = "finish" value="Finish and Proceed to Survey" size="10" style = "width: 30%; background-color: red; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p> -->
-          <p><button type = "submit"  id = "finish_submit" name = "finish" class = "btn btn-danger position-absolute bottom-0 mt-3 end-0 ">Finish and Proceed to Survey <i class="bi bi-skip-end"></i></button>
+          <p><button type = "submit"  id = "finish_submit" name = "finish" class = "btn btn-danger position-absolute bottom-1 mt-3 end-0 ">Finish and Proceed to Survey <i class="bi bi-skip-end"></i></button>
 
     </form>
 
