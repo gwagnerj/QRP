@@ -481,6 +481,16 @@ if (isset($_SESSION['error'])){
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
 <style>
+  .btn-group-line{
+   display: inline;
+  }
+  .hidden{ 
+    display: none;
+  }
+  .disable{ 
+    opacity: 0.5;
+    pointer-events: none;
+  }
 table.main_table{
   table-layout: fixed;
   width: 100%;  
@@ -502,11 +512,9 @@ table.main_table{
 		<p><button type = "submit"  name = "reset" class = "btn btn-warning  btn-outline-primary position-relative  bottom-0 start-0 justify-content-start"  > <i class="bi bi-box-arrow-left"></i> Back to Login </button>
 		<!-- <p><button type = "submit"  name = "reset" class = "btn btn-warning position-relative  bottom-0 start-0 justify-content-start"  > <i class="bi bi-box-arrow-left"></i> Back to Login </button> -->
  
-  <!-- <form method = "POST"  class="container-fluid justify-content-end"> --> 
   </form>  
   <div class="position-relative">
    <p><button name = "add_class" id="add-class" class = "btn btn-sm btn-outline-secondary position-absolute top-100 end-0 translate-middle"> Add Another Class <i class="bi bi-clipboard-plus"></i></button>
- <!-- </form> -->
 </div>
 
 </nav>
@@ -1286,13 +1294,18 @@ console.log ("n",n);
 //                                                card_body.appendChild(points);
 
                                                 console.log(`the activity id for j = ${j} and activity_id  is ${results[j]['activity_id']}`);
+                                                let activity_id_num = results[j]['activity_id'];
+                                                console.log("activity_id_num",activity_id_num);
+
                                                     $.ajax({
                                                         url: 'getfilenumber.php',
                                                         method: 'post',
-                                                        data: {activity_id:results[j]['activity_id']},
+ //?                                                       data: {activity_id:results[j]['activity_id']},
+                                                        data: {activity_id:activity_id_num},
                                                         
+//?                                                            success: function(num_files,status){
                                                             success: function(num_files,status){
-
+                                                              console.log("activity_id_num",activity_id_num);
                                                               console.log ("j",j);
                                                           console.log ("alias_nums",alias_num);
                                                         console.log ("num_files_type",typeof num_files);
@@ -1301,17 +1314,27 @@ console.log ("n",n);
                                                         console.log ("num_files",{num_files});
                                                               
                                                               let files_uploaded = document.createElement('div')
+                                                              let upload_more_files = document.createElement('span')
+ //                                                             let files_uploaded = document.createElement('button')
                                                                 if(num_files){num_files = num_files;} else {num_files =0;}
                                                                 
-                                                                let text_color = "text-primary";
-                                                             if (num_files == 0){text_color = "text-warning fw-bold"}
-  
-                                                              files_uploaded.innerHTML = '<div id = "num-work-files-'+alias_num+'" class=" text-start my-2 ms-2">Work Files Uploaded: &nbsp; <span class = "'+text_color+'" > '+num_files+'</span></div>';
+                                                                let text_color = "text-warning fw-bold";
+                                                                let display_buttons_class = "disable";
+                                                             if (num_files > 0 ){text_color = "text-primary"; display_buttons_class = ""; }
+                                                      //        let activity_id_num = activity_id;
+                                                              console.log("activity_id_num",activity_id_num);
+ //                                                           files_uploaded.innerHTML = '<div id = "num-work-files-'+alias_num+'" class=" text-start my-2 ms-2">Work Files Uploaded: &nbsp; <span class = "'+text_color+'" > '+num_files+'</span></div>';
+  //                                                          files_uploaded.innerHTML = '<button class = "btn btn-outline-secondary" id = "workFile-btn-'+alias_num+'" formmethod ="get" name = "workFile-btn-'+alias_num+'" value = "'+activity_id_num+'" formaction = "display_uploaded.php" formtarget = "_blank" ><div id = "num-work-files-'+alias_num+'" class=" text-start my-2 ms-2">Work Files Uploaded: &nbsp; <span class = "'+text_color+'" > '+num_files+'</span></div></button>';
+                                                            files_uploaded.innerHTML = '<div class ="btn-group-line"><button class = "btn btn-outline-secondary mx-1 pd-0 btn-sm '+display_buttons_class+'" id = "workFile-btn-'+alias_num+'" formmethod ="post" name = "activity_id" value = "'+activity_id_num+'" formaction = "get_pdf.php" formtarget = "_blank" ><div id = "num-work-files-'+alias_num+'" class=" text-start my-2 ms-2">Display Uploaded Files &nbsp; <span class = "'+text_color+'" > '+num_files+'</span></div></button>';
+                                                            upload_more_files.innerHTML = '<button class = "btn btn-outline-secondary btn-sm inline '+display_buttons_class+'" id = "upload_more_files-'+alias_num+'" formmethod ="post" name = "activity_id" value = "'+activity_id_num+'" formaction = "upload_work.php" formtarget = "_blank" ><div id = "upload_more-'+alias_num+'" class=" text-start my-2 ms-2">Upload More</div></button></div>';
                                                               let card_body = [];
                                                               card_body[j] = document.getElementById("card-body_"+alias_num);
                                                               console.log ("card_body[j]",card_body[j]);
-                                                              
+
+                                                              files_uploaded.appendChild(upload_more_files);
+
                                                               card_body[j].appendChild(files_uploaded);
+ //?                                                             card_body[j].appendChild(upload_more_files);
                                                            
                                                     
                                                     }

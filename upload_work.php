@@ -50,6 +50,11 @@ foreach ($results->getItems() as $item) {
 
 if(isset($_GET['activity_id'])){
     $activity_id = $_GET['activity_id'];
+    echo 'activity_id on GET '.$activity_id;
+} elseif(isset($_POST['activity_id'])){
+    $activity_id = $_POST['activity_id'];
+    echo 'activity_id on POST '.$activity_id;
+
 }else{
     $_SESSION['error'] = 'activity-id lost in upload_work';  
     
@@ -100,6 +105,7 @@ if(isset($_POST['submit_button'])){
                     if ($file_size > 2){
                         if ($file_size < 20000000){
                            $file_new_name = $activity_id.'-'.$i.'-'.$file_name; 
+                         //  echo 'file_new_name: '.$file_new_name;
                             $file_destination = 'student_work/'.$file_new_name;
                             // CHeck to see if there is a file by the same name
                             if (file_exists($file_destination)){
@@ -121,7 +127,7 @@ if(isset($_POST['submit_button'])){
         
        }
    
-       $_SESSION['success'] = 'Your work has been successfully uploaded - '.$i.' files uploaded';
+       $_SESSION['success'] = 'Your work has been successfully uploaded - '.$i.' activity_id is '.$activity_id.' files uploaded destination '.$file_destination;
      //   echo('Your work has been successfully uploaded');
         // probably go somewhere else maybe apply the points so that they recieve the provisional points
                 header("Location: finished_uploading.php");
@@ -205,6 +211,7 @@ if(isset($_POST['submit_button'])){
 
      <form method = "POST" enctype = "multipart/form-data" >
         <input type="file" id = "files" name = "files[]" multiple = "multiple"> &nbsp;
+        <input type="hidden" id = "activity_id" name = "activity_id" value = "<?php echo $activity_id ?>"> 
         (Accepted file types: jpg, jpeg, png and pdf)<br><br>
        
 

@@ -568,6 +568,13 @@ if (isset($_SESSION['error'])) {
             } ?> > <label for="no"> No </Label></input> </h4>
 
             </div>    
+            <div>
+           
+              <h4>  <input type="radio" name="will_help" id = "will_help" style = "width:10%; border:2px;
+    height: 1.2em;" value="unchecked" required> I will freely give and accept help from my team mates
+                 </input> </h4>
+            </div>    
+
             <div class="form-group">
                 <input type="submit" class="btn btn-primary" value="Submit">
             </div>

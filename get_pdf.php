@@ -3,6 +3,7 @@
 // Include config file
 require_once 'pdo.php';
 session_start();
+
 //require_once "random_compat-2.0.18/lib/random.php"; // needed this for the random_bytes function did not work on the online version
 //require_once('tcpdf_min/tcpdf.php');  
 
@@ -13,6 +14,11 @@ if (isset($_GET['activity_id'])){
     $activity_id = $_GET['activity_id'];
     $exam_flag = false;
   //  echo (' $activity_id  '.$activity_id);
+
+
+} elseif(isset($_POST['activity_id'])){
+    $activity_id = $_POST['activity_id'];
+    $exam_flag = false;
 } elseif(isset($_GET['eactivity_id'])){
 
   $eactivity_id = $_GET['eactivity_id'];
@@ -92,11 +98,15 @@ if($exam_flag){
             }
            }
   }
+
+  $extension = ' this is ';
 foreach($all_files as $all_file){
   // check the extension of the file 
      $tmp = explode('.', $all_file);
      $extension = end($tmp);
-    // echo(' $extension '.$extension);
+     $extension = strtolower($extension);($tmp);
+    //  echo(' extension is the '.$extension. ' wtg');
+   
      if ($extension == 'jpg' || $extension == 'jpeg' || $extension == 'png' ){
   
             echo'<br>';
@@ -110,8 +120,10 @@ foreach($all_files as $all_file){
      echo '</iframe>';
          
      } else {
-         $_SESSION['error'] = $extention.' file type not allowed';
-           echo ($extention.'<h2> file type not allowed </h2>');
+   
+    //  echo 'this is '.$extension;
+         $_SESSION['error'] = ' file type not allowed';
+           echo ($extension.'<h2> file type not allowed </h2>');
      }
 }
 
