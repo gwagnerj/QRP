@@ -50,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>View Student Info</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
@@ -67,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 // table header
   
 
-  echo ('<table id="table_format" class = "a" border="1" >'."\n");
+  echo ('<table id="table_format" class = "a table" border="2" rules = "rows" >'."\n");
         echo("<thead>");
 
 		echo("</td><th>");
@@ -129,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                 echo("</td><td>");	
                 echo(' &nbsp;'.htmlentities($student_id).'&nbsp; ');
                 echo("</td><td>");	
-                echo(' &nbsp; <button id = "remove-'.htmlentities($student_id).'" class = "remove btn btn-outline-danger p-1 b-1" style = "color-:red;">Remove</button> ');
+                echo(' &nbsp; <button id = "remove-'.htmlentities($student_id).'" onClick = "remove_student(this.id,'.$currentclass_id.')" class = "remove btn btn-outline-primary p-1 b-1" style = "color-:red;">Remove</button> ');
                 echo("</td></tr>");	
           }     echo ('</tbody></table><br><br>');
 }
@@ -146,6 +148,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 
 
 ?>
+<SCRIPT>
+
+//let remove = document.getElementsByClassName("remove");
+function remove_student(student_id,currentclass_id){
+  console.log("student_id",student_id) ;
+  let student_id2 = student_id.split("-")[1];
+  console.log("student_id2",student_id2) ;
+  console.log("currentclass_id",currentclass_id) ;
+  $.ajax({
+            url: 'remove_student_from_class.php',
+            method: 'post',
+            data: {student_id:student_id2,currentclass_id:currentclass_id},
+    
+    success: function(message){
+      console.log(message);                                                   
+      location.reload();
+
+    }
+
+            }
+            ); 
+</SCRIPT>
+
+
 
 
 
