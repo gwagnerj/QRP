@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
 
 
            if (isset($_POST['active_assign']))
-              { echo('<form action = "QRAssignmentStart0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input type = "submit" value ="Back to Edit Assignment"></form> &nbsp;');} 
+              { echo('<form action = "QRAssignmentStart0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input type = "submit" value ="Back to Assignment Managment"></form> &nbsp;');} 
            elseif(isset($_POST['active_exam'])) { 
                echo('<form action = "QRExamMgmt.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input type = "submit" value ="Back to Edit Exam"></form> &nbsp;');
             } else { 
@@ -169,6 +169,7 @@ function remove_student(student_id,currentclass_id){
 
             }
             ); 
+          }
 </SCRIPT>
 
 
