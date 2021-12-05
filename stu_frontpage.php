@@ -44,8 +44,9 @@
 
     } 
     else{
-      echo "error student_id not set in stu_frontpage";
-       $_SESSION['error'] = 'student_id not set in stu_frontpage';
+     // echo "error student_id not set in stu_frontpage";
+      header("Location: stu_login.php");
+   //    $_SESSION['error'] = 'student_id not set in stu_frontpage';
        die();
 	
     }
