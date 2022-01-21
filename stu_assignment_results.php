@@ -164,6 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                     echo ('Xtra Cred / Survey<p style="color:blue;font-size:10px;">'.$survey_perc_of_pblm.'% of pblm / </p>');
                     
                     
+                    if($assigntime_data['pre_look_pp1']==1){$text_for_field = 'perc_pp1_'.$alias_num; echo('</th><th>PreProblem1 <p style="color:blue;font-size:10px;"> '.$assigntime_data[$text_for_field].'% of pblm </p>');}
                     if($assign_datum['reflect_flag']==1){$text_for_field = 'perc_ref_'.$alias_num; echo('</th><th>Reflect <p style="color:blue;font-size:10px;"> '.$assigntime_data[$text_for_field].'% of pblm </p>');}
                     if($assign_datum['explore_flag']==1){$text_for_field = 'perc_exp_'.$alias_num; echo('</th><th>Explore <p style="color:blue;font-size:10px;"> '.$assigntime_data[$text_for_field].'% of pblm </p>');}
                     if($assign_datum['connect_flag']==1){$text_for_field = 'perc_con_'.$alias_num; echo('</th><th>Connect <p style="color:blue;font-size:10px;"> '.$assigntime_data[$text_for_field].'% of pblm </p>');}
@@ -410,20 +411,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
                                 $text_for_field = 'perc_'.$alias_num;
                                 $default_assn_tot = $default_assn_tot + $prob_default_tot*$assigntime_data[$text_for_field]/100;
                                  
-                                 if($assign_datum['reflect_flag']==1){
-                                     if($stu_activity['activity_id']>0){
-                                           $text_for_field = 'perc_ref_'.$alias_num;
+                                 if($assigntime_data['pre_look_pp1']==1){
+                                     if($stu_activity && $stu_activity['activity_id']>0){
+                                           $text_for_field = 'perc_pp1_'.$alias_num;
                                             $max_points = $assigntime_data[$text_for_field];
-                                             echo('<td style="width:200px; vertical-align: top;"><input type = "number" min = "0" max = "'.$max_points.'" class = "goestodb_'.$student_id.'"  id="reflect_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="reflect_'.$student_id.'_'.$stu_activity['activity_id'].'"placeholder = "Score" value = '.$stu_activity["reflect_pts"].'  > </input>'); 
+                                             echo('<td style="width:200px; vertical-align: top;"><input type = "number" min = 0 max = "'.$max_points.'" class = "goestodb_'.$student_id.'"  id="pp1_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="pp1_'.$student_id.'_'.$stu_activity['activity_id'].'"placeholder = "Score" value = '.$stu_activity["pp1_pts"].'  > </input>'); 
+           //                                 echo('<td style="width:200px; vertical-align: top;"><input type = "number" min = "'.$max_points.'" max = "'.$max_points.'" class = "goestodb_'.$student_id.'"  id="reflect_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="reflect_'.$student_id.'_'.$stu_activity['activity_id'].'"placeholder = "Score" value = '.$stu_activity["pp1_pts"].'  > </input>'); 
+            //                                 echo('<td style="width:200px; vertical-align: top;"><span  class = "goestodb_'.$student_id.'"  id="pp1_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="pp1_'.$student_id.'_'.$stu_activity['activity_id'].'"placeholder = "Score" value = '.$stu_activity["pp1_pts"].'  > '.$stu_activity["pp1_pts"].' </span>'); 
                                              echo'<br>';
-                                              echo('<br><input type = "text"  class = "goestodb_'.$student_id.'" id="fb_reflect_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="fb_reflect_'.$student_id.'_'.$stu_activity['activity_id'].'" placeholder = "__Feedback to Students__"  value = '.$stu_activity["fb_reflect"].'  > </input>');
-                                                 if($stu_activity['reflect_text']!=null){
-                                                    echo('<span class = "reflections">'.$stu_activity['reflect_text'].'</span>');
-                                                 }
                                                  echo ('</td>');
                                      }else {echo'<td></td>';}
                                   }
-                               
+
+
+                                
+                                  if( $assign_datum['reflect_flag']==1){
+                                      if($stu_activity && $stu_activity['activity_id']>0 )  {
+                                        
+                                            $text_for_field = 'perc_ref_'.$alias_num;
+                                              $max_points = $assigntime_data[$text_for_field];
+                                              echo('<td style="width:200px; vertical-align: top;"><input type = "number" min = "0" max = "'.$max_points.'" class = "goestodb_'.$student_id.'"  id="reflect_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="reflect_'.$student_id.'_'.$stu_activity['activity_id'].'"placeholder = "Score" value = '.$stu_activity["reflect_pts"].'  > </input>'); 
+                                              echo'<br>';
+                                                echo('<br><input type = "text"  class = "goestodb_'.$student_id.'" id="fb_reflect_'.$student_id.'_'.$stu_activity['activity_id'].'" name ="fb_reflect_'.$student_id.'_'.$stu_activity['activity_id'].'" placeholder = "__Feedback to Students__"  value = '.$stu_activity["fb_reflect"].'  > </input>');
+                                                  if($stu_activity['reflect_text']!=null){
+                                                      echo('<span class = "reflections">'.$stu_activity['reflect_text'].'</span>');
+                                                  }
+                                                  echo ('</td>');
+                                      
+                                      }else {echo'<td></td>';}
+                                    }
+                                
                                if($assign_datum['explore_flag']==1){ 
                                      if($stu_activity && $stu_activity['activity_id']>0){
                                         $text_for_field = 'perc_exp_'.$alias_num;
@@ -651,7 +668,7 @@ $('#table input').on('change',function(e){
  //  console.log('  activity_id_str '+activity_id_str);
     
     activity_id = activity_id_str.slice(-1)[0];
- //  console.log('  activity_id '+activity_id);
+//   console.log('  activity_id '+activity_id);
    
  //  console.log(typeof activity_id_str.slice(-2)[0]);
    
@@ -662,7 +679,7 @@ $('#table input').on('change',function(e){
  //    console.log('  column_type '+column_type);
   
     
-    if (column_type == "reflect" || column_type == "explore"|| column_type == "connect"|| column_type == "society" || column_type == "pNumScoreNet" || column_type == "ecPts" || column_type == "assign" || column_type == "other"){
+    if (column_type == "pp1" ||column_type == "reflect" || column_type == "explore"|| column_type == "connect"|| column_type == "society" || column_type == "pNumScoreNet" || column_type == "ecPts" || column_type == "assign" || column_type == "other"){
        // recompute problem total and the assignment total (need to somehow get the weights for the assignment) 
         var selector_end = '_'+student_id+'_'+activity_id;
         var probtot_sel =  '#probtot'+selector_end;
@@ -679,12 +696,18 @@ $('#table input').on('change',function(e){
    //     console.log (typeof(p_num_score_net));
         p_num_score_net = parseInt(p_num_score_net);
   //      console.log (typeof(p_num_score_net));
+  //    console.log("selector_end",selector_end)
+        var pp1_sel = '#pp1'+selector_end;      
         var reflect_sel = '#reflect'+selector_end;      
+  //      console.log ("reflect_sel",reflect_sel);
         var explore_sel = '#explore'+selector_end;      
         
         
         var connect_sel = '#connect'+selector_end;      
         var society_sel = '#society'+selector_end;    
+ //       console.log("pp1_sel",pp1_sel)
+        var pp1_pts = $(pp1_sel).val();
+ //       console.log("pp1_pts",pp1_pts)
         var reflect_pts = $(reflect_sel).val();
         var explore_pts = $(explore_sel).val();
    //       console.log(' explore_pts  '+explore_pts);
@@ -695,6 +718,7 @@ $('#table input').on('change',function(e){
           
         
         // get values and turn them all into integers
+         if(typeof(pp1_pts )=="undefined" || pp1_pts == "" || isNaN(pp1_pts) ){pp1_pts = 0;}else{ pp1_pts = parseInt(pp1_pts);}
          if(typeof(reflect_pts )=="undefined" || reflect_pts == "" || isNaN(reflect_pts) ){reflect_pts = 0;}else{ reflect_pts = parseInt(reflect_pts);}
          if(typeof(explore_pts )=="undefined" || explore_pts == "" || isNaN(explore_pts)){explore_pts = 0;}else{ explore_pts = parseInt(explore_pts);}
          if(typeof(connect_pts )=="undefined" || connect_pts == "" || isNaN(connect_pts)){connect_pts = 0;}else{ connect_pts = parseInt(connect_pts);}
@@ -704,7 +728,7 @@ $('#table input').on('change',function(e){
          if(typeof(p_num_score_net )=="undefined" || p_num_score_net == "" || isNaN(p_num_score_net)){p_num_score_net = 0;}else{ p_num_score_net = parseInt(p_num_score_net);}
          if(typeof(ec_pts )=="undefined" || ec_pts == "" || isNaN(ec_pts)){ec_pts = 0;}else{ ec_pts = parseInt(ec_pts);}
   //        console.log(' ec_pts2  '+ec_pts);
-        var probtot = p_num_score_net+survey_pts+reflect_pts+explore_pts+connect_pts+society_pts+ec_pts;
+        var probtot = p_num_score_net+survey_pts+pp1_pts+reflect_pts+explore_pts+connect_pts+society_pts+ec_pts;
    //     console.log('  probtot '+probtot);
       $(probtot_sel).val(probtot);
       // now get the total for the assignment need to select all of the probtot for this row

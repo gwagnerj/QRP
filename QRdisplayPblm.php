@@ -62,9 +62,10 @@ session_start();
       $salt2 = $problem_id*$problem_id+$problem_id;
       $enc_key = $enc_key.$salt;
       $vid_enc_key = $vid_enc_key.$salt2;
+   //   var_dump($assign_data);
       
-         
-	$reflect_flag = $assign_data['reflect_flag'];    
+     
+      $reflect_flag = $assign_data['reflect_flag'];    
     $explore_flag = $assign_data['explore_flag'];    
     $connect_flag = $assign_data['connect_flag'];  
     $society_flag = $assign_data['society_flag'];  
@@ -75,7 +76,10 @@ session_start();
      $stmt->execute(array(':assign_num' => $assignment_num,
                           ':currentclass_id' => $currentclass_id));
      $assigntime_data = $stmt -> fetch();
+     $pp1_flag = $assigntime_data['pre_look_pp1'];    
+     $pp1_hours_before = $assigntime_data['pp1_hours_before'];
      $perc_of_assign = $assigntime_data['perc_'.$alias_num];
+     
      $due_date = new DateTime($assigntime_data['due_date']);
      //$due_date = $assigntime_data['due_date'];
      $due_date = $due_date->format(' D, M d,  g:i A');
@@ -97,6 +101,15 @@ session_start();
     $ec_daysb4due_elgible = $assigntime_data['ec_daysb4due_elgible'];
     $due_date_ec_int = $due_date_int - $ec_daysb4due_elgible*60*60*24;
     $due_date_ec = date(' D, M d,  g:i A', $due_date_ec_int);
+    //? this next bit sees if we need to add the time estimate input box for the preproblem and
+        $pp1_input_box_flag = 0; // default 
+        if($pp1_flag ==1){
+          $pp1_due_int = $due_date_int-$pp1_hours_before*60*60;
+          if($now_int<=$pp1_due_int && !is_numeric($activity_data["time_est"])){  //the last condition checks to see if they have already input an estimate
+            $pp1_input_box_flag = 1;
+          }
+
+        }
      
     if ($now_int > $due_date_int ) {  // figure out the late penalty
          if($late_points == 'linear'){
@@ -214,13 +227,15 @@ $htmlfilenm = "uploads/".$htmlfilenm;
      $reflection_button_flag = 0; 
    }
    
-   
+   $perc_pp1 = $assigntime_data['perc_pp1_'.$alias_num];
    
 $pass = array(
     
     'stu_name' => $stu_name,
     'activity_id' => $activity_id,
     'reflection_button_flag' => $reflection_button_flag,
+
+      'pp1_flag' => $pp1_flag,
       'reflect_flag' => $reflect_flag,
       'explore_flag' => $explore_flag,
       'connect_flag' => $connect_flag,
@@ -230,6 +245,7 @@ $pass = array(
       'perc_exp' => $assigntime_data['perc_exp_'.$alias_num],
       'perc_con' => $assigntime_data['perc_con_'.$alias_num],
       'perc_soc' => $assigntime_data['perc_soc_'.$alias_num],
+      'perc_pp1' =>  $perc_pp1,
        'switch_to_bc' => $switch_to_bc,
        'sequential' => $sequential
 
@@ -359,6 +375,7 @@ $pass = array(
     }else {$connect = '';}
      */
     
+    // if ($pp1_flag ==1){$pp1 = $html->find('#reflect',0).'<div id = "reflect_confirm"> </div><form id = "reflect_text_form"><textarea id = "reflect_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["reflect_text"]).'</textarea><button type = "submit" id = "submit_reflect" class = "btn btn-secondary">Save <i class="bi bi-save"></i></button></form>';}else {$reflect = '';}
     if ($reflect_flag ==1){$reflect = $html->find('#reflect',0).'<div id = "reflect_confirm"> </div><form id = "reflect_text_form"><textarea id = "reflect_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["reflect_text"]).'</textarea><button type = "submit" id = "submit_reflect" class = "btn btn-secondary">Save <i class="bi bi-save"></i></button></form>';}else {$reflect = '';}
     if ($connect_flag ==1){$connect = $html->find('#connect',0).'<div id = "connect_confirm"> </div><form id = "connect_text_form"><textarea id = "connect_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["connect_text"]).'</textarea><button type = "submit" id = "submit_connect" class = "btn btn-secondary">Save <i class="bi bi-save"></i></button></form>';}else {$connect = '';}
     if ($explore_flag ==1){$explore = $html->find('#explore',0).'<div id = "explore_confirm"> </div><form id = "explore_text_form"><textarea id = "explore_text"  r_class = "text_box" rows = "4" cols = "200" spellcheck = "true" maxlength = "3000" >'.htmlentities($activity_data["explore_text"]).'</textarea><button type = "submit" id = "submit_explore" class = "btn btn-secondary">Save <i class="bi bi-save"></i></button></form>';}else {$explore = '';}
@@ -532,8 +549,18 @@ $pass = array(
   
   ?>
   <!--   -->
-  <form>
+  <form id = "info-form">
+    <div id = "pre-problem-estimate-time">
+      <?php 
+          //? need to make sure  the time has not passed.  Also if we are only displaying one part at a time may need to do this on base case
+    //      echo('perc_pp1 '.$perc_pp1.' '.$due_date_int);
+        if($pp1_input_box_flag=="1" ) echo'<p> Time Estimate to Solve Problem: <input type = "number" min = "1" max = "999" id = "time-est"  ></input> minutes <button type = "button" id = "time-est-button" class = "btn btn-primary ms-3" >submit time estimate</button></p>';
+      ?>
+
+  </div>
+
   <input type="hidden" name="stu_name" id ="stu_name" value ="homer"> </input>
+  <input type="hidden" name="perc_pp1" id ="perc-pp1" value = <?php echo($perc_pp1);?> > </input>
     <input type="hidden" name="activity_id" id ="activity_id" value = <?php echo($activity_id);?> ></input>
     <input type="hidden" name="problem_id" id ="problem_id" value = "<?php echo($problem_id);?>"></input>
     <!-- <input type="text" name="stu_name" id ="stu_name" value ="<?php echo(str_replace(' ','_',$stu_name));?>"> </input> -->
@@ -624,10 +651,50 @@ $pass = array(
   top: 0px;
   z-index: -1;
 }
+
 </style>
 
  
 <script>
+
+let time_est_button = document.getElementById("time-est-button");
+      console.log("time-est-button", time_est_button);
+      if (time_est_button){
+        console.log ("are we hitting this ____________________________________")
+        time_est_button.addEventListener("click", storeTimeEst);
+      }
+
+
+function storeTimeEst2(){
+    console.log("click22222");
+  }
+
+function storeTimeEst(){
+ let time_est =  document.getElementById("time-est").value;
+ let activity_id =  document.getElementById("activity_id").value;
+ let perc_pp1 =  document.getElementById("perc-pp1").value;
+ let pre_problem_estimate_time = document.getElementById("pre-problem-estimate-time");
+  console.log("click",activity_id,time_est,perc_pp1);
+ if (time_est >=1 && time_est <= 999){
+
+  
+  $.ajax({
+                type: "POST",
+                url: "add_time_estimate_pp1.php",
+                data: {
+                  activity_id: activity_id,  
+                  time_est: time_est,
+                  perc_pp1: perc_pp1
+                },
+
+                success: function(result) {
+                  pre_problem_estimate_time.remove(); // gets rid of the time estimate buttons
+                }
+            });
+          } 
+ 
+}
+
 
 function resizeIFrameToFitContent( frame ) {
     console.log("frame",frame);
@@ -658,7 +725,6 @@ function resizeIFrameToFitContent( frame ) {
 
  $(document).ready(function(){
    
-
 
 
  //? window.addEventListener('error', function(event) { window.location.reload(true); })
@@ -693,8 +759,14 @@ function resizeIFrameToFitContent( frame ) {
       var perc_exp = pass['perc_exp'];
       var perc_con = pass['perc_con'];
       var perc_soc = pass['perc_soc'];
+      var perc_pp1 = pass['perc_pp1'];
       var switch_to_bc = pass['switch_to_bc'];
       var sequential = pass['sequential'];
+     
+
+
+
+
 
       var parts = new Array(10);
        parts[0] = document.getElementById("parta");

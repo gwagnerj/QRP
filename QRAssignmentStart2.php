@@ -313,12 +313,13 @@ echo ('<form method = "POST">');
                 if ($assign_data['connect_flag']==1){$n_ref_pp_parts++;}
                 if ($assign_data['explore_flag']==1){$n_ref_pp_parts++;} 
                 if ($assign_data['society_flag']==1){$n_ref_pp_parts++;} 
-                if ($assign_data['pp_flag1']==1){$n_ref_pp_parts++;} 
+                if ($assigntime_data['pre_look_pp1']==1){$n_ref_pp_parts++;} 
+                // if ($assign_data['pp_flag1']==1){$n_ref_pp_parts++;}  THis
                 if ($assign_data['pp_flag2']==1){$n_ref_pp_parts++;} 
                 if ($assign_data['ref_choice']==1){$n_ref_pp_parts++;} 
                 $points_ref_pp_default = 10; 
                 $points_survey_default = 5;               
-                $points_open_early_default = 3;               
+             //   $pp1_open_early_default = 5;          default is the same as a reflection 10 see calc below     
             $perc_tot_ref_pp_suvey = $points_survey_default+$points_ref_pp_default*$n_ref_pp_parts;  // default 5 percent for survey and 10 pts for the reflections
              $perc_per_part_default =  round((100-$perc_tot_ref_pp_suvey)/$n_parts);  
               $perc_per_part_last =  (100-$perc_tot_ref_pp_suvey )- $perc_per_part_default*($n_parts-1);  
@@ -386,9 +387,10 @@ echo ('<form method = "POST">');
                    echo("</td>");
             } else {echo("<td bgcolor = 'lightgray'> </td>");}
             
-               if ($assign_data['pp_flag1']==1){
+               if ($assigntime_data['pre_look_pp1']==1){
                    echo("<td>");
-                   if ($assigntime_data['perc_pp1_'.$i] != null){$points_ref = $assigntime_data['perc_pp1_'.$i];} else {$points_ref = $points_ref_pp_default;}
+                   if ($assigntime_data['perc_pp1_'.$i] != null)
+                    {$points_ref = $assigntime_data['perc_pp1_'.$i];} else {$points_ref = $points_ref_pp_default;}
 
                    echo('<input type = "number" min = "0" max = "100" id="perc_pp1_'.$i.'" name = "perc_pp1_'.$i.'" required  value ='.$points_ref.' > </input>');
                    echo("</td>");

@@ -673,10 +673,11 @@ $(document).ready( function () {
    var p_num_score_net =  [];
    var p_num_score_raw = [];
    var survey_pts = [];
+   var pp1_pts = [];
    var alias_nums = [];   
    var  activity_id_ar = new Array();
 
-       function getResults (assign_num,currentclass_id,p_num_score_net,p_num_score_raw,survey_pts){
+       function getResults (assign_num,currentclass_id,p_num_score_net,p_num_score_raw,survey_pts,pp1_pts){
 
             $.ajax({
                 url: 'getassign_id.php',
@@ -699,6 +700,7 @@ $(document).ready( function () {
                              p_num_score_net[i] = result["p_num_score_net"];
                              p_num_score_raw[i] = result["p_num_score_raw"];
                              survey_pts[i] = result["survey_pts"];
+                             pp1_pts[i] = result["pp1_pts"];
                               console.log('p_num_score_net1  '+ p_num_score_net[i]);
                        });
                         
@@ -977,9 +979,29 @@ console.log ("n",n);
                                                   if(results.length>0){ 
                                                     due_date = new Date(results[0]["due_date"]);
                                                  const formatted_date = due_date.toDateString();
-                                                 const formatted_time = due_date.toLocaleTimeString('en-US');	
+                                                 const formatted_time = due_date.toLocaleTimeString('en-US');
+                                                
                                        
                                                   due_info.innerText =' Due: '+formatted_date + ' at '+formatted_time;
+                                                  let pp1_hours_before = results[0]['pp1_hours_before'];
+                                                  let pre_look_pp1 = results[0]['pre_look_pp1'];
+                                                  console.log("pre_look_pp1*************************",pre_look_pp1);
+
+                                                  if (pp1_hours_before && pre_look_pp1 ==1){
+                                                      console.log("pp1 hours before ------------------",pp1_hours_before);
+                                                      pp1_due_date = new Date(results[0]["due_date"])
+                                                      pp1_due_date.setHours(pp1_due_date.getHours()-pp1_hours_before)
+                                                      now = new Date();
+                                                      if(now<pp1_due_date){
+                                                          const formatted_pp1_due_date = pp1_due_date.toDateString();
+                                                          const formatted_pp1_due_time = pp1_due_date.toLocaleTimeString('en-US')
+                                                          let pp1_node = document.createElement("p");                
+                                                            let pp1_due_node = document.createTextNode("Pre-Problem Due: "+formatted_pp1_due_date+" at "+formatted_pp1_due_time);        
+                                                            pp1_node.appendChild(pp1_due_node);                             
+                                                            due_info.appendChild(pp1_node);     
+                                                       }
+                                                  }
+
 
                                                     const assigntime_id = results[0]["assigntime_id"]
 
@@ -1027,7 +1049,7 @@ console.log ("n",n);
 
                                           //   let alias_num = i;
                                                let alias_num = results[j]["alias_num"];
-      //!                                        console.log("the results at j are ",results[j]);
+    //!                                        console.log("the results at j are ",results[j]);
 
 
       //                                        console.log(` the alias number is ${alias_num}`);
@@ -1266,14 +1288,23 @@ console.log ("n",n);
 
 
                                                 let survey_points_text = results[j]["survey_pts"];  if (!survey_points_text){survey_points_text=0;}
-
                                                 let survey_points_possible = 0;
                                                 let survey_points_possible_key = 'survey_'+alias_num;
                                                 if(results[j][survey_points_possible_key]){survey_points_possible = results[j][survey_points_possible_key];}
                                                let survey_points_html = '<div class = "row text-start"  style = "font-size:0.9rem;"><div class = "col ps-3 pe-0">Survey: &nbsp;'+survey_points_text+' of '+survey_points_possible+'</div>';
                                                if (perc_soc[j] !=0 || any_bol){survey_points_html += '<div class = "col px-1"> Society: &nbsp;'+society_pts+' of '+ perc_soc[j] +'</div></div>';} else {survey_points_html += '</div>';}
 
-                                                points.innerHTML += '<div class="d-flex justify-content-between align-items-center ps-2 mt-3 text-primary" >Points</div> <div id = "points-box_'+alias_num+'" class = "border border-primary p-2"> '+provisional_points_html+fb_p_num_score_net_html+extra_credit_points_html+late_penalty_points_html+survey_points_html+fb_probtot_pts_html+'</div>';
+
+
+                                               let pp1_points_text = results[j]["pp1_pts"];  if (!pp1_points_text){pp1_points_text=0;}
+                                               let pp1_points_possible = 0;
+                                                let pp1_points_possible_key = 'perc_pp1_'+alias_num;
+                                                if(results[j][pp1_points_possible_key]){pp1_points_possible = results[j][pp1_points_possible_key];}
+                                               let pp1_points_html = '<div class = "row text-start"  style = "font-size:0.9rem;"><div class = "col ps-3 pe-0">Pre Problem: &nbsp;'+pp1_points_text+' of '+pp1_points_possible+'</div>';
+                                               if (perc_soc[j] !=0 || any_bol){pp1_points_html += '<div class = "col px-1"> Society: &nbsp;'+society_pts+' of '+ perc_soc[j] +'</div></div>';} else {pp1_points_html += '</div>';}
+
+
+                                                points.innerHTML += '<div class="d-flex justify-content-between align-items-center ps-2 mt-3 text-primary" >Points</div> <div id = "points-box_'+alias_num+'" class = "border border-primary p-2"> '+provisional_points_html+fb_p_num_score_net_html+extra_credit_points_html+late_penalty_points_html+survey_points_html+pp1_points_html+fb_probtot_pts_html+'</div>';
                                               var card_body = [];
                                                card_body[j] = document.getElementById("card-body_"+alias_num);
 
@@ -1326,7 +1357,7 @@ console.log ("n",n);
                                                               console.log("activity_id_num",activity_id_num);
  //                                                           files_uploaded.innerHTML = '<div id = "num-work-files-'+alias_num+'" class=" text-start my-2 ms-2">Work Files Uploaded: &nbsp; <span class = "'+text_color+'" > '+num_files+'</span></div>';
   //                                                          files_uploaded.innerHTML = '<button class = "btn btn-outline-secondary" id = "workFile-btn-'+alias_num+'" formmethod ="get" name = "workFile-btn-'+alias_num+'" value = "'+activity_id_num+'" formaction = "display_uploaded.php" formtarget = "_blank" ><div id = "num-work-files-'+alias_num+'" class=" text-start my-2 ms-2">Work Files Uploaded: &nbsp; <span class = "'+text_color+'" > '+num_files+'</span></div></button>';
-                                                            files_uploaded.innerHTML = '<div class ="btn-group-line"><button class = "btn btn-outline-secondary mx-1 pd-0 btn-sm '+display_buttons_class+'" id = "workFile-btn-'+alias_num+'" formmethod ="post" name = "activity_id" value = "'+activity_id_num+'" formaction = "get_pdf.php" formtarget = "_blank" ><div id = "num-work-files-'+alias_num+'" class=" text-start my-2 ms-2">Display Uploaded Files &nbsp; <span class = "'+text_color+'" > '+num_files+'</span></div></button>';
+                                                             files_uploaded.innerHTML = '<div class ="btn-group-line"><button class = "btn btn-outline-secondary mx-1 pd-0 btn-sm '+display_buttons_class+'" id = "workFile-btn-'+alias_num+'" formmethod ="post" name = "activity_id" value = "'+activity_id_num+'" formaction = "get_pdf.php" formtarget = "_blank" ><div id = "num-work-files-'+alias_num+'" class=" text-start my-2 ms-2">Display Uploaded Files &nbsp; <span class = "'+text_color+'" > '+num_files+'</span></div></button>';
                                                             upload_more_files.innerHTML = '<button class = "btn btn-outline-secondary btn-sm inline '+display_buttons_class+'" id = "upload_more_files-'+alias_num+'" formmethod ="post" name = "activity_id" value = "'+activity_id_num+'" formaction = "upload_work.php" formtarget = "_blank" ><div id = "upload_more-'+alias_num+'" class=" text-start my-2 ms-2">Upload More</div></button></div>';
                                                               let card_body = [];
                                                               card_body[j] = document.getElementById("card-body_"+alias_num);

@@ -57,7 +57,8 @@ if (isset($_GET['new_flag'])) {
     $help_n_ta = 99;
     $help_n_instruct = 99;
     $help_n_hint = 2;
-    
+    $pre_look_pp1 = 0;
+    $pp1_hours_before = 48;
     
     $help_t_stu = 2;
     $help_t_ta = 5;
@@ -140,6 +141,9 @@ if($new_flag == 0){
         //  $window_closes = $assigntime_data['window_closes'];
           $due_date = $assigntime_data['due_date'];
            $due_date = new DateTime($due_date);
+           $pre_look_pp1 = $assigntime_data['pre_look_pp1'];
+           $pp1_hours_before = $assigntime_data['pp1_hours_before'];
+
           }
 
 
@@ -202,6 +206,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
              
              
              due_date=:due_date, 
+              pre_look_pp1 =:pre_look_pp1,
+              pp1_hours_before =:pp1_hours_before,
+
              credit=:credit, 
              late_points=:late_points, 
              fixed_percent_decline=:fixed_percent_decline
@@ -243,6 +250,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
               ':peer_refl_t' => $_POST['peer_refl_t'],
               ':peer_refl_n' => $_POST['peer_refl_n'],
               ':due_date' => $_POST['due_date'],
+              ':pre_look_pp1' => $_POST['pre_look_pp1'],
+              ':pp1_hours_before' => $_POST['pp1_hours_before'],
               ':credit' => $_POST['credit'],
               ':late_points' => $_POST['late_points'],
               ':fixed_percent_decline' => $_POST['fixed_percent_decline'],
@@ -256,8 +265,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
    
    // input the values from the form into the Assigntime table - get the assigntime_id and then move onto page two to get points values for each part
    
-       $sql = 'INSERT INTO `Assigntime` (assign_num, iid, currentclass_id, work_flow, time_sleep1_trip, time_sleep1,time_sleep2_trip, time_sleep2, bc_ans_n,bc_ans_t, p_bc_n, p_bc_t, help_n_stu, help_t_stu, help_n_ta, help_t_ta, help_n_instruct, help_t_instruct,help_n_hint, help_t_hint, work_time_per_problem, max_attempts_per_problem, window_opens, window_closes, perc_ec_max_p_assign, perc_ec_max_p_pblm, perc_ec_max_person_to_person, ec_daysb4due_elgible,ec_open_daysb4due_elgible,perc_ec_base_video, perc_ec_base_audio, perc_ec_base_written, peer_refl_t, peer_refl_n, due_date,credit, late_points, fixed_percent_decline)	
-                                    VALUES (:assign_num, :iid, :currentclass_id, :work_flow, :time_sleep1_trip, :time_sleep1, :time_sleep2_trip, :time_sleep2,:bc_ans_n,:bc_ans_t, :p_bc_n, :p_bc_t, :help_n_stu, :help_t_stu, :help_n_ta, :help_t_ta, :help_n_instruct, :help_t_instruct, :help_n_hint, :help_t_hint,:work_time_per_problem, :max_attempts_per_problem, :window_opens, :window_closes, :perc_ec_max_p_assign, :perc_ec_max_p_pblm, :perc_ec_max_person_to_person, :ec_daysb4due_elgible, :ec_open_daysb4due_elgible,:perc_ec_base_video, :perc_ec_base_audio, :perc_ec_base_written,:peer_refl_t,:peer_refl_n, :due_date, :credit, :late_points, :fixed_percent_decline)';
+       $sql = 'INSERT INTO `Assigntime` (assign_num, iid, currentclass_id, work_flow, time_sleep1_trip, time_sleep1,time_sleep2_trip, time_sleep2, bc_ans_n,bc_ans_t, p_bc_n, p_bc_t, help_n_stu, help_t_stu, help_n_ta, help_t_ta, help_n_instruct, help_t_instruct,help_n_hint, help_t_hint, work_time_per_problem, max_attempts_per_problem, window_opens, window_closes, perc_ec_max_p_assign, perc_ec_max_p_pblm, perc_ec_max_person_to_person, ec_daysb4due_elgible,ec_open_daysb4due_elgible,perc_ec_base_video, perc_ec_base_audio, perc_ec_base_written, peer_refl_t, peer_refl_n, due_date,pre_look_pp1,pp1_hours_before,credit, late_points, fixed_percent_decline)	
+                                    VALUES (:assign_num, :iid, :currentclass_id, :work_flow, :time_sleep1_trip, :time_sleep1, :time_sleep2_trip, :time_sleep2,:bc_ans_n,:bc_ans_t, :p_bc_n, :p_bc_t, :help_n_stu, :help_t_stu, :help_n_ta, :help_t_ta, :help_n_instruct, :help_t_instruct, :help_n_hint, :help_t_hint,:work_time_per_problem, :max_attempts_per_problem, :window_opens, :window_closes, :perc_ec_max_p_assign, :perc_ec_max_p_pblm, :perc_ec_max_person_to_person, :ec_daysb4due_elgible, :ec_open_daysb4due_elgible,:perc_ec_base_video, :perc_ec_base_audio, :perc_ec_base_written,:peer_refl_t,:peer_refl_n, :due_date, :pre_look_pp1, :pp1_hours_before, :credit, :late_points, :fixed_percent_decline)';
                 $stmt = $pdo->prepare($sql);
                 $stmt -> execute(array(
                   ':assign_num' => $_POST['assign_num'],
@@ -295,6 +304,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
                     ':peer_refl_t' => $_POST['peer_refl_t'],
                   ':peer_refl_n' => $_POST['peer_refl_n'],
                   ':due_date' => $_POST['due_date'],
+                  ':pre_look_pp1' => $_POST['pre_look_pp1'],
+                  'pp1_hours_before' => $_POST['pp1_hours_before'],
                   ':credit' => $_POST['credit'],
                   ':late_points' => $_POST['late_points'],
                   ':fixed_percent_decline' => $_POST['fixed_percent_decline'],
@@ -330,13 +341,30 @@ $_SESSION['counter']=0;  // this is for the score board
 <title>QR Assignment Start</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Latest compiled JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <style>
    .outer {
   width: 100%;
   margin: 0 auto;
  
 }
+h2{ font-size: 1.3rem;
+  font-weight: bold;
+  color:blue;
+}
+h3{ font-size: 1.1rem;
+  font-weight: bold;
+  color:#003399;
+}
+.section{ 
+margin-bottom: 1.5rem;
 
+}
 .inner {
   margin-left: 50px;
  
@@ -350,6 +378,7 @@ $_SESSION['counter']=0;  // this is for the score board
 </head>
 
 <body>
+<div class="container-fluid ps-5">
 <header>
 <h1>Quick Response Assignment Setup</h1>
 </header>
@@ -373,8 +402,8 @@ $_SESSION['counter']=0;  // this is for the score board
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
 <form id = "the_form"  method = "POST"  >
-	
-    <div id ="current_class_dd">	
+	<h3>
+    <span id ="current_class_dd">	
 				Course: &nbsp;
 				<span name = "currentclass_id" id = "currentclass_id">
 				
@@ -385,26 +414,86 @@ $_SESSION['counter']=0;  // this is for the score board
 					$stmt -> execute(array(':currentclass_id' => $currentclass_id));
 					 $row = $stmt->fetch(); 
 						 echo $row['name']; ?> 
-						
-                    
-                    
 				</span>
-		</div>
-             </br>
+  </span> &nbsp;
+ 
+
+            
                 <font color=#003399>Assignment Number: &nbsp; </font>
                     <?php echo ($assign_num);?>
                    
-                </br>	
+              
+    </h3>
           <!--      
                 <br>
                   <font color=#003399>new_flag: &nbsp; </font>
                     <?php //echo ($new_flag);?>
                    
               -->
-                
-  
+             
+     <section class = "due-date section">
+            <h2 > <small>Assignment Timing:   </h2>
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Opens <input type="datetime-local" id="window_opens" name = "window_opens" required value="<?php if ($window_opens!=''){echo $window_opens->format('Y-m-d\TH:i');}
+            else {$date = new DateTime();$timezone = new DateTimeZone('America/New_York');
+            $date->setTimezone($timezone);  $interval = new DateInterval('P1D');   $date->sub($interval);  echo($date->format('Y-m-d\TH:i'));} 
+            ?>"> </input><br><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Due for Full Credit <input type="datetime-local" id="due_date" name = "due_date" required value="<?php if($due_date !=''){ echo $due_date->format('Y-m-d\TH:i'); }
+            else {$date = new DateTime(); $timezone = new DateTimeZone('America/New_York');
+            $date->setTimezone($timezone); $interval = new DateInterval('P7D');   $date->add($interval); echo($date->format('Y-m-d\TH:i'));}
+            ?>"> </input><br><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Closes - No Access After <input type="datetime-local" id="window_closes" name = "window_closes" required value="<?php
+            // if($window_closes!='')
+            // {echo $window_closes->format('Y-m-d\TH:i');}
+            // else { 
+            $date = date('Y-m-d\TH:i',$current_class_exp_date);  echo($date);
+            ?>"> </input><br><br>
+     </section> 
+
+     
+
+
+    <section class = "late-penalty section">
+             <h2>Late Penalty Applies to: &nbsp; </h2>
+            <!--
+           &nbsp;&nbsp; <input type="radio" name="credit" id = "credit"
+                    <?php if (isset($credit) && $credit=="latetoall"  ) echo "checked";?>
+                    value="latetoall"> Entire Assignment &nbsp;&nbsp;&nbsp;&nbsp;
+              -->      
+           &nbsp;&nbsp; <input type="radio" name="credit" id = "credit" value = "latetoproblems" checked> Each Problem
+                    
+            
+           &nbsp;&nbsp; <input type="radio" name="credit" id = "credit"
+                    <?php if ((isset($credit) && $credit=="latetoparts")||!isset($credit)) echo "checked";?>
+                    value="latetoparts"> Parts of the Problem that are Late &nbsp;&nbsp;&nbsp;&nbsp;
+                   
+                    
+            <br><font color=#003399> Late Policy &nbsp; </font><br>
+        
+           &nbsp;&nbsp; <input type="radio" name="late_points" id = "late_points"
+                    <?php if ((isset($late_points) && $late_points=="fixedpercent") || !isset($late_points)  ) echo "checked";?>
+                    value="fixedpercent"> Fixed Percent of Maximum per day after Due date of: &nbsp;
+                <span id = "fixed_percent_per_day">
+                   
+                       &nbsp;&nbsp;  <input type = "number" min = "0" max = "100" id = "fixed_percent_decline" name = "fixed_percent_decline" <?php echo ("value = ".$fixed_percent_decline); ?> > </input><br>
+                    </span>
+  </section> 
+ 
+  <section class = "pre-problem section">
+             <h2>First Look Policy - When Should Student First Look at Problems: &nbsp; </h2>
+         
+             <p>&nbsp;&nbsp; <input type="radio" name="pre_look_pp1"  value = "0" checked> Anytime (No Policy)</p>
+      
+           &nbsp;&nbsp; <input type="radio" name="pre_look_pp1" title = "This is an attempt to help students not procrastinate"
+                    <?php if ((isset($pre_look_pp1) && $pre_look_pp1=="1")   ) echo "checked";?>
+                    value="1"> Before Assignment is Due by:
+                <span id = "time-before-due-box">
+                   
+                        <input type = "number" min = "0" max = "99" id = "pp1_hours_before" name = "pp1_hours_before" <?php echo ("value = ".$pp1_hours_before); ?> > </input>Hours<br>
+                    </span> 
+  </section> 
+
                 <br>
-                <font color=#003399>Effort on base-case per problem part before answers are given: &nbsp; </font><br>
+                <h2>Effort on base-case per problem part before answers are given: &nbsp; </h2>
                     
                    &nbsp;&nbsp;Time (minutes): <input type = "number" min = "0" max = "20" id="bc_ans_t" name = "bc_ans_t" required value =<?php echo $bc_ans_t; ?> > </input><br>
                     &nbsp;&nbsp;Number of attempts: <input type = "number" min = "0" max = "20" id="bc_ans_n" name = "bc_ans_n" required value = <?php echo $bc_ans_n; ?>> </input><br>
@@ -473,51 +562,13 @@ $_SESSION['counter']=0;  // this is for the score board
                     <?php if (isset($work_flow) && $work_flow=="bc_first") echo "checked";?>
                     value="bc_first"> Base-Case First - Students work the base-case before they can work on their problem &nbsp;&nbsp;&nbsp;&nbsp;
            
-           </br> </br>
-            <font color=#003399> Assignment Timing: &nbsp; </font><br>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Opens <input type="datetime-local" id="window_opens" name = "window_opens" required value="<?php if ($window_opens!=''){echo $window_opens->format('Y-m-d\TH:i');}
-            else {$date = new DateTime();$timezone = new DateTimeZone('America/New_York');
-            $date->setTimezone($timezone);  $interval = new DateInterval('P1D');   $date->sub($interval);  echo($date->format('Y-m-d\TH:i'));} 
-            ?>"> </input><br><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Due for Full Credit <input type="datetime-local" id="due_date" name = "due_date" required value="<?php if($due_date !=''){ echo $due_date->format('Y-m-d\TH:i'); }
-            else {$date = new DateTime(); $timezone = new DateTimeZone('America/New_York');
-            $date->setTimezone($timezone); $interval = new DateInterval('P7D');   $date->add($interval); echo($date->format('Y-m-d\TH:i'));}
-            ?>"> </input><br><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date and Time Assignment Window Closes - No Access After <input type="datetime-local" id="window_closes" name = "window_closes" required value="<?php
-            // if($window_closes!='')
-            // {echo $window_closes->format('Y-m-d\TH:i');}
-            // else { 
-            $date = date('Y-m-d\TH:i',$current_class_exp_date);  echo($date);
-            ?>"> </input><br><br>
             
               <font color=#003399> Peer Rating of Reflections: &nbsp; </font><br>
             &nbsp;&nbsp;&nbsp;&nbsp; Number of days after assignment due date that students should complete the rating of the reflections: <input type = "number" min = "0" max = "20" id="peer_refl_t" name = "peer_refl_t" value = <?php echo $peer_refl_t; ?>  > </input><br><br>
            
            &nbsp;&nbsp;&nbsp;&nbsp; Number of reflections that students should rate per reflection submitted: <input type = "number" min = "0" max = "7" id="peer_refl_n" name = "peer_refl_n" value = <?php echo $peer_refl_n; ?>  > </input><br><br>
 
-            <font color=#003399>Late Penalty Applies to: &nbsp; </font><br>
-            <!--
-           &nbsp;&nbsp; <input type="radio" name="credit" id = "credit"
-                    <?php if (isset($credit) && $credit=="latetoall"  ) echo "checked";?>
-                    value="latetoall"> Entire Assignment &nbsp;&nbsp;&nbsp;&nbsp;
-              -->      
-           &nbsp;&nbsp; <input type="radio" name="credit" id = "credit" value = "latetoproblems" checked> Each Problem
-                    
-            
-           &nbsp;&nbsp; <input type="radio" name="credit" id = "credit"
-                    <?php if ((isset($credit) && $credit=="latetoparts")||!isset($credit)) echo "checked";?>
-                    value="latetoparts"> Parts of the Problem that are Late &nbsp;&nbsp;&nbsp;&nbsp;
-                   
-                    
-            <br><font color=#003399> Late Policy &nbsp; </font><br>
-        
-           &nbsp;&nbsp; <input type="radio" name="late_points" id = "late_points"
-                    <?php if ((isset($late_points) && $late_points=="fixedpercent") || !isset($late_points)  ) echo "checked";?>
-                    value="fixedpercent"> Fixed Percent of Maximum per day after Due date of: &nbsp;
-                <span id = "fixed_percent_per_day">
-                   
-                       &nbsp;&nbsp;  <input type = "number" min = "0" max = "100" id = "fixed_percent_decline" name = "fixed_percent_decline" <?php echo ("value = ".$fixed_percent_decline); ?> > </input><br>
-                    </span>
+ 
            <p><input type="hidden" name="currentclass_id" id="currentclass_id" value=<?php echo($currentclass_id);?> ></p>
             <p><input type="hidden" name="assign_num" id="assign_num" value=<?php echo($assign_num);?> ></p>
             <p><input type="hidden" name="assigntime_id" id="assigntime_id" value=<?php echo($assigntime_id);?> ></p>
@@ -530,7 +581,7 @@ $_SESSION['counter']=0;  // this is for the score board
   <p style="font-size:100px;"></p>   
     
 	<a href="QRPRepo.php">Finished / Cancel - go back to Repository</a>
-	
+ </div>
 	<script>
 	
 	

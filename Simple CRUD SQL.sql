@@ -3051,3 +3051,122 @@ ADD UNIQUE `unique_index`(`iid`,`currentclass_id`,`assign_num`)
 	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`interest_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+  ALTER TABLE `Assigntime` 
+	ADD `pre_look_pp1` int(2) DEFAULT 0 AFTER `late_points`, 
+	ADD `pp1_hours_before` int(4) AFTER `pre_look_pp1`
+
+CREATE TABLE IF NOT EXISTS `Question` (
+  `question_id` int(11) NOT NULL AUTO_INCREMENT,
+   `course_id` INT(11) NOT NULL,
+   `primary_concept` varchar(128) NOT NULL,
+   `secondary_concept` varchar(128),
+   `tertiary_concept` varchar(128),
+    `title` varchar(128) NOT NULL,
+    `subject` varchar(128) NOT NULL,
+    `grade` INT(3),
+    `type` INT(3),
+    `specif_ref` varchar(128) NOT NULL,
+    `unpubl_auth` varchar(128) NOT NULL,
+    `course` varchar(128) NOT NULL,
+	`email` varchar(50) NOT NULL,
+   `status` varchar(16),
+   `nm_author` varchar(128), 
+   `docxfilenm` varchar(128), 
+   `videonm1` varchar(128), 
+   `videonm2` varchar(128), 
+   `videonm3` varchar(128), 
+   `user_id` int(11) NOT NULL,
+   `htmlfilenm` VARCHAR(128) NOT NULL,
+  `key_a` INT(3) DEFAULT 0,
+  `key_b` INT(3) DEFAULT 0,
+  `key_c` INT(3) DEFAULT 0,
+  `key_d` INT(3) DEFAULT 0,
+  `key_e` INT(3) DEFAULT NULL,
+  `key_f` INT(3) DEFAULT NULL,
+  `key_g` INT(3) DEFAULT NULL,
+  `key_h` INT(3) DEFAULT NULL,
+  `key_i` INT(3) DEFAULT NULL,
+  `key_j` INT(3) DEFAULT NULL,
+  `text_a` VARCHAR(255) DEFAULT NULL,
+  `text_b` VARCHAR(255) DEFAULT NULL,
+  `text_c` VARCHAR(255) DEFAULT NULL,
+  `text_d` VARCHAR(255) DEFAULT NULL,
+  `text_e` VARCHAR(255) DEFAULT NULL,
+  `text_f` VARCHAR(255) DEFAULT NULL,
+  `text_g` VARCHAR(255) DEFAULT NULL,
+  `text_h` VARCHAR(255) DEFAULT NULL,
+  `text_i` VARCHAR(255) DEFAULT NULL,
+  `text_j` VARCHAR(255) DEFAULT NULL,
+  `imagefile_a` VARCHAR(128) DEFAULT NULL,
+  `imagefile_b` VARCHAR(128) DEFAULT NULL,
+  `imagefile_c` VARCHAR(128) DEFAULT NULL,
+  `imagefile_d` VARCHAR(128) DEFAULT NULL,
+  `imagefile_e` VARCHAR(128) DEFAULT NULL,
+  `imagefile_f` VARCHAR(128) DEFAULT NULL,
+  `imagefile_g` VARCHAR(128) DEFAULT NULL,
+  `imagefile_h` VARCHAR(128) DEFAULT NULL,
+  `imagefile_i` VARCHAR(128) DEFAULT NULL,
+  `imagefile_j` VARCHAR(128) DEFAULT NULL,
+  `fbtext_a` VARCHAR(255) DEFAULT NULL,
+  `fbtext_b` VARCHAR(255) DEFAULT NULL,
+  `fbtext_c` VARCHAR(255) DEFAULT NULL,
+  `fbtext_d` VARCHAR(255) DEFAULT NULL,
+  `fbtext_e` VARCHAR(255) DEFAULT NULL,
+  `fbtext_f` VARCHAR(255) DEFAULT NULL,
+  `fbtext_g` VARCHAR(255) DEFAULT NULL,
+  `fbtext_h` VARCHAR(255) DEFAULT NULL,
+  `fbtext_i` VARCHAR(255) DEFAULT NULL,
+  `fbtext_j` VARCHAR(255) DEFAULT NULL,
+  `fbfile_a` VARCHAR(128) DEFAULT NULL,
+  `fbfile_b` VARCHAR(128) DEFAULT NULL,
+  `fbfile_c` VARCHAR(128) DEFAULT NULL,
+  `fbfile_d` VARCHAR(128) DEFAULT NULL,
+  `fbfile_e` VARCHAR(128) DEFAULT NULL,
+  `fbfile_f` VARCHAR(128) DEFAULT NULL,
+  `fbfile_g` VARCHAR(128) DEFAULT NULL,
+  `fbfile_h` VARCHAR(128) DEFAULT NULL,
+  `fbfile_i` VARCHAR(128) DEFAULT NULL,
+  `fbfile_j` VARCHAR(128) DEFAULT NULL,
+  `num_resp_a` int(11) DEFAULT 0,
+  `num_resp_b` int(11) DEFAULT 0,
+  `num_resp_c` int(11) DEFAULT 0,
+  `num_resp_d` int(11) DEFAULT 0,
+  `num_resp_e` int(9) DEFAULT 0,
+  `num_resp_f` int(9) DEFAULT 0,
+  `num_resp_g` int(7) DEFAULT 0,
+  `num_resp_h` int(7) DEFAULT 0,
+  `num_resp_i` int(7) DEFAULT 0,
+  `num_resp_j` int(7) DEFAULT 0,
+  `num_correct` int(11) DEFAULT 0,
+  `num_total` int(11) DEFAULT 0,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`question_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+  ALTER TABLE `Question` 
+	ADD `question_type` int(2) AFTER `status`, 
+	ADD `question_use` int(2) AFTER `question_type`
+
+
+    CREATE TABLE IF NOT EXISTS QuestionProblemConnect (
+      `question_id` INT(11) NOT NULL,
+      `problem_id` INT(11) NOT NULL,
+  	CONSTRAINT FOREIGN KEY (question_id) REFERENCES Question (question_id) 
+		ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT FOREIGN KEY (problem_id) REFERENCES Problem (problem_id) 
+		ON DELETE CASCADE ON UPDATE CASCADE,	
+      PRIMARY KEY (`question_id`,`problem_id`)
+    ) ENGINE=InnoDB CHARACTER SET = utf8;    
+
+
+CREATE TABLE IF NOT EXISTS QuestionActivity (
+  questionactivity_id INT(16),
+  question_id INT(11) NOT NULL,
+  student_id INT(11) NOT NULL,
+  score INT (7),
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`questionactivity_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
