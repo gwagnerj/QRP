@@ -375,7 +375,7 @@ session_start();
                 $old_resp[$i] = '';
             }
 
-            if(isset($_POST[$v]) && $_POST[$v] != ''){
+            if(isset($_POST[$v]) && $_POST[$v] !== ''){
   //              echo ' v '.$v.'<br>';
                 $resp[$v]=(float)$_POST[$v]+0.0;
             } else {

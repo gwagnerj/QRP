@@ -295,10 +295,8 @@ session_start();
                 $resp[$v]= '';
             }
             
- //             $resp[$v]=(float)$_POST[$v]+0.0;
             
-            
-            if(isset($_POST[$v])){
+            if(isset($_POST[$v])&& $_POST[$v] !== ''){
                 $resp[$v]=(float)$_POST[$v]+0.0;
             } else {
                  $resp[$v]= '';
