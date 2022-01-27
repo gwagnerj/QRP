@@ -241,6 +241,7 @@
  //           echo('<form action = "QRExamStart.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Start Exam"></form> &nbsp;');
  //           echo('<form action = "QRExamRetrieve.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Retrieve Exam Results"></form> &nbsp;');
             echo('<form action = "QRAssignmentStart0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Hmwk Management"></form> &nbsp;');
+            echo('<form action = "QRQuestionMgmt.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Question Mgmt"></form> &nbsp;');
             echo('<form action = "QRClassMgmt.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Class Management"></form> &nbsp;');
 
           //     echo '<a href="QRExamStart.php?iid ='.$users_id.'" >Start an Exam</b></a>';

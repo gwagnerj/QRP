@@ -3170,3 +3170,55 @@ CREATE TABLE IF NOT EXISTS QuestionActivity (
 	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`questionactivity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS `QuestionTime` (
+  `questiontime_id` int(11) NOT NULL AUTO_INCREMENT,
+   `currentclass_id` INT(5) NOT NULL,
+   `currentcourse_id` INT(5) NOT NULL,
+   `currentdiscipline_id` INT(5) NOT NULL,
+   `pastcourse_id1` INT(5) NOT NULL,
+   `pastcourse_id2` INT(5) NOT NULL,
+   `pastcourse_id3` INT(5) NOT NULL,
+   `pastcourse_id4` INT(5) NOT NULL,
+   `pastcourse_id5` INT(5) NOT NULL,
+   `pastcourse_id6` INT(5) NOT NULL,
+   `pastcourse_id7` INT(5) NOT NULL,
+   `pastcourse_id8` INT(5) NOT NULL,
+   `pastcourse_id9` INT(5) NOT NULL,
+   `pastcourse_id10` INT(5) NOT NULL,
+   `pastcourse_id11` INT(5) NOT NULL,
+   `pastcourse_id12` INT(5) NOT NULL,
+   `delivery_scheme` INT(3) NOT NULL,
+   `start_date` datetime DEFAULT CURRENT_TIMESTAMP,
+   `stop_date` datetime DEFAULT NULL,
+   `num_mon` INT(3) NOT NULL,
+   `num_tue` INT(3) NOT NULL,
+   `num_wed` INT(3) NOT NULL,
+   `num_thu` INT(3) NOT NULL,
+   `num_fri` INT(3) NOT NULL,
+   `num_sat` INT(3) NOT NULL,
+   `num_sun` INT(3) NOT NULL,
+    `grade` INT(3),
+  `target_percent_basic` INT(3),
+  `target_percent_current` INT(3),
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`questiontime_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+    CREATE TABLE IF NOT EXISTS CurrentClassConceptConnect (
+      `currentclass_id` INT(11) NOT NULL,
+      `concept_id` INT(11) NOT NULL,
+     `start_date` datetime DEFAULT CURRENT_TIMESTAMP,
+   `stop_date` datetime DEFAULT NULL,
+     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	CONSTRAINT FOREIGN KEY (currentclass_id) REFERENCES CurrentClass (currentclass_id) 
+		ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT FOREIGN KEY (concept_id) REFERENCES Concept (concept_id) 
+		ON DELETE CASCADE ON UPDATE CASCADE,	
+      PRIMARY KEY (`currentclass_id`,`concept_id`)
+    ) ENGINE=InnoDB CHARACTER SET = utf8;    
+
