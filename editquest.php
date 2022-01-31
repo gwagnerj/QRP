@@ -246,11 +246,11 @@ $stmt = $pdo->prepare($sql);
 
 			   if($questionproblemconnect_data){
 				   if (isset($questionproblemconnect_data['problem_id']) && $questionproblemconnect_data['problem_id']> 0 ){
-					$problem_id = $questionproblemconnect_data['problem_id'];
+					$problem_id = $questionproblemconnect_data['problem_id'];  // we already have a problem associated with this question
 				   }
 			   }
 	   // have a new problem
-			if (isset($_POST['problem_id']) && $problem_id ==''&& $problem_id ==0){
+			if (isset($_POST['problem_id']) && $_POST['problem_id']!='' && $_POST['problem_id']>0 && $problem_id ==''){  // we posted a problem_id in the form and don't have on in the data base
 				$sql = "INSERT INTO QuestionProblemConnect (`question_id`,`problem_id`)
 				 VALUES (:question_id,:problem_id) ";
 				$stmt = $pdo->prepare($sql);
@@ -537,7 +537,7 @@ $stmt = $pdo->prepare($sql);
 	<head>
 	<link rel="icon" type="image/png" href="McKetta.png" />  
 	<meta Charset = "utf-8">
-	<title>QRProblems</title>
+	<title>QRQuestions</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<style>
@@ -597,7 +597,7 @@ $stmt = $pdo->prepare($sql);
 
 
 	
-	<p>Html Problem Statement File: <span style = "color:red; vertical-align:super">*</span> <input  type='file' accept='.htm' name='htmlfile'/></p>
+	<p>Html Problem Statement File: <span style = "color:red; vertical-align:super">*</span> <input  type='file' accept='.htm, .html' name='htmlfile'/></p>
 	<p> Html Problem Associated Directory Containing Pictures (only if figures are used): <input type="file" name="picfiles[]" id="HTMLPics" multiple="" directory="" webkitdirectory="" mozdirectory="">
 	
 
@@ -651,6 +651,7 @@ $stmt = $pdo->prepare($sql);
 
 
 <hr>
+<p> Some changes might take a page refresh to see the updates show up on this page </p>
 	<input type="hidden" name="question_id" value="<?= $question_id ?>">
 	<p><input type="submit" value="Update" id="Update_btn"/>
 	<a href="QRPRepo.php">Cancel</a></p>

@@ -251,16 +251,18 @@ echo '<iframe src="' . $solnfilenm . '" width="60%" height="600px" ></iframe>';
 echo '<hr>';
 echo '<p style="page-break-before: always"> ';
 
-echo $reflection_text;
+ echo $reflection_text;
 
 //! This is a security hole but could be used if the server were having problems keeping up we could put this in and check the answers with the data parameters in the page in any case we should have a separate encryption key for the
 //!  video question and data as well as the Parameters which dont matter that much anyway.  
 //! echo "<script>document.write(localStorage.setItem('enc_key', '".$enc_key."'))</script>";  // this is not the answer key encryption key that is $enc_key_key in editpblm file - different for each part of problem
 //? put a way to tell if the server is overused and then the code to handle it in the file and uncover the above key - lookback at the editpblem file to see how to decode the $enc_key_key
 
-echo "<script>document.write(localStorage.setItem('vid_enc_key', '".$vid_enc_key."'))</script>";
-echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."'))</script>";
-echo "<script>document.write(localStorage.setItem('drawing_tool_background_src', '". $drawing_tool_background_src."'))</script>";
+
+//! these were returning undefined so I commented them out - they may not be a problem except interactive video which are probably going away
+//! if (isset($vid_enc_key)){echo "<script>document.write(localStorage.setItem('vid_enc_key', '".$vid_enc_key."'))</script>";}
+//! if (isset($problem_id)){echo "<script>document.write(localStorage.setItem('problem_id', '".$problem_id."'))</script>";}
+ if (isset($drawing_tool_background_src)){echo "<script>document.write(localStorage.setItem('drawing_tool_background_src', '". $drawing_tool_background_src."'))</script>";}
 
 ?>
 

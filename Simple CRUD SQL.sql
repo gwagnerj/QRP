@@ -3153,10 +3153,6 @@ CREATE TABLE IF NOT EXISTS `Question` (
     CREATE TABLE IF NOT EXISTS QuestionProblemConnect (
       `question_id` INT(11) NOT NULL,
       `problem_id` INT(11) NOT NULL,
-  	CONSTRAINT FOREIGN KEY (question_id) REFERENCES Question (question_id) 
-		ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT FOREIGN KEY (problem_id) REFERENCES Problem (problem_id) 
-		ON DELETE CASCADE ON UPDATE CASCADE,	
       PRIMARY KEY (`question_id`,`problem_id`)
     ) ENGINE=InnoDB CHARACTER SET = utf8;    
 
@@ -3177,21 +3173,11 @@ CREATE TABLE IF NOT EXISTS `QuestionTime` (
    `currentclass_id` INT(5) NOT NULL,
    `currentcourse_id` INT(5) NOT NULL,
    `currentdiscipline_id` INT(5) NOT NULL,
-   `pastcourse_id1` INT(5) NOT NULL,
-   `pastcourse_id2` INT(5) NOT NULL,
-   `pastcourse_id3` INT(5) NOT NULL,
-   `pastcourse_id4` INT(5) NOT NULL,
-   `pastcourse_id5` INT(5) NOT NULL,
-   `pastcourse_id6` INT(5) NOT NULL,
-   `pastcourse_id7` INT(5) NOT NULL,
-   `pastcourse_id8` INT(5) NOT NULL,
-   `pastcourse_id9` INT(5) NOT NULL,
-   `pastcourse_id10` INT(5) NOT NULL,
-   `pastcourse_id11` INT(5) NOT NULL,
-   `pastcourse_id12` INT(5) NOT NULL,
+   `iid` INT(11) NOT NULL,
    `delivery_scheme` INT(3) NOT NULL,
    `start_date` datetime DEFAULT CURRENT_TIMESTAMP,
    `stop_date` datetime DEFAULT NULL,
+   `start_time` time DEFAULT NULL,
    `num_mon` INT(3) NOT NULL,
    `num_tue` INT(3) NOT NULL,
    `num_wed` INT(3) NOT NULL,
@@ -3208,17 +3194,15 @@ CREATE TABLE IF NOT EXISTS `QuestionTime` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-    CREATE TABLE IF NOT EXISTS CurrentClassConceptConnect (
-      `currentclass_id` INT(11) NOT NULL,
+    CREATE TABLE IF NOT EXISTS QuestiontimeConceptConnect (
+      `questiontime_id` INT(11) NOT NULL,
       `concept_id` INT(11) NOT NULL,
+      `piority` INT(2) NOT NULL,
+      `current_flag` INT(2) NOT NULL DEFAULT 0,
      `start_date` datetime DEFAULT CURRENT_TIMESTAMP,
    `stop_date` datetime DEFAULT NULL,
      `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
 	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  	CONSTRAINT FOREIGN KEY (currentclass_id) REFERENCES CurrentClass (currentclass_id) 
-		ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT FOREIGN KEY (concept_id) REFERENCES Concept (concept_id) 
-		ON DELETE CASCADE ON UPDATE CASCADE,	
-      PRIMARY KEY (`currentclass_id`,`concept_id`)
+      PRIMARY KEY (`questiontime_id`,`concept_id`)
     ) ENGINE=InnoDB CHARACTER SET = utf8;    
 

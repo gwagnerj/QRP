@@ -4,7 +4,8 @@ session_start();
 	if (isset($_POST['course'])){
 	
 	$_SESSION['course'] = $_POST['course'];
-	 $stmt = "SELECT Concept.concept_name 
+	//  $stmt = "SELECT Concept.concept_name 
+	  $stmt = "SELECT Concept.concept_name, Concept.concept_id
 	FROM Course JOIN CourseConceptConnect JOIN Concept
 
 	ON CourseConceptConnect.course_id = Course.course_id AND CourseConceptConnect.concept_id = Concept.concept_id

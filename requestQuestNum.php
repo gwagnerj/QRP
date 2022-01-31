@@ -41,7 +41,10 @@ if (isset($_POST['title'])){
 						
 
 if(isset($_POST['title'])&&  isset($_POST['subject'])&& isset($_POST['course']) && isset($_POST['p_concept'])&& isset($_POST['submit'])){	
-	
+
+
+
+
 $title = $_POST['title'];
 $_SESSION['title'] = $title;
 		// Data validation Stuff
