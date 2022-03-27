@@ -7,7 +7,7 @@ if (isset($_POST['iid'])) {
 } elseif (isset($_GET['iid'])) {
     $iid = $_GET['iid'];
 } else {
-    $_SESSION['error'] = 'invalid User_id in QRQuestionMgmt ';
+    $_SESSION['error'] = 'invalid User_id in QRQuestionMgmt1 ';
     header('Location: QRPRepo.php');
     die();
 }
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
             // echo (' discipline_id= '.$discipline_id);
         } else {
             $_SESSION['error'] = 'Please Select a Discipline ';
-            header('Location: QRQuestionMgmt.php?iid='.$iid);
+            header('Location: QRQuestionMgmt1.php?iid='.$iid);
             die();
         }
         
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
          
         } else {
             $_SESSION['error'] = 'Please Select a Current Course ';
-            header('Location: QRQuestionMgmt.php?iid='.$iid);
+            header('Location: QRQuestionMgmt1.php?iid='.$iid);
             die();
         }
         
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_name'])) {
 
     } else {
         $_SESSION['error'] = 'Please Select a Current Class ';
-        header('Location: QRQuestionMgmt.php?iid='.$iid);
+        header('Location: QRQuestionMgmt1.php?iid='.$iid);
         die();
     }
     $new_flag = 0;
@@ -173,7 +173,7 @@ $course_id = $course_iddata['course_id'];
         $questiontime_id = $questiontime_iddata['questiontime_id'];
        if (!isset($questiontime_id)){
            $_SESSION["error"] = "Could not find the questiontime_id ";
-           header('Location: QRQuestionMgmt.php?iid='.$iid);
+           header('Location: QRQuestionMgmt1.php?iid='.$iid);
            die();
        }
    $course_id = $questiontime_iddata['currentcourse_id'];    
@@ -591,7 +591,7 @@ if (isset($_SESSION['success'])) {
     </div>
                     
             <p><input type="hidden" name="iid" id="iid" value=<?php echo $iid; ?> ></p>
-			<p><input type="hidden" name="where_from" id="where_from" value="QRQuestionMgmt" ></p>
+			<p><input type="hidden" name="where_from" id="where_from" value="QRQuestionMgmt1" ></p>
 			<p><input type = "submit" name = "submit_name" id = "submit_id" value = "Submit"></p><hr><br>
 	</form>
 
@@ -616,7 +616,7 @@ let current_class = document.getElementById('currentclass_id');
 current_class.addEventListener('change', getClass_id);
 function getClass_id(){
     //console.log ("change",current_class.value);
-    location.href= 'QRQuestionMgmt.php?iid='+iid+'&currentclass_id='+current_class.value
+    location.href= 'QRQuestionMgmt1.php?iid='+iid+'&currentclass_id='+current_class.value
 }
 
 

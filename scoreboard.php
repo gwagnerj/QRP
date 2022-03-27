@@ -642,6 +642,7 @@ $stmt->execute(array(":eexamnow_id" => $eexamnow_id));
                     $chaos_team_num = $i;
                   }
             }
+           
                 $fin_score_max = max($fin_score);
                 $env_score_max = max($env_score);
                 $soc_score_max = max($soc_score);

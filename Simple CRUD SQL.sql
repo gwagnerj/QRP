@@ -3150,6 +3150,25 @@ CREATE TABLE IF NOT EXISTS `Question` (
 	ADD `question_use` int(2) AFTER `question_type`
 
 
+
+  ALTER TABLE `Question` 
+	ADD `university` VARCHAR(255) AFTER `nm_author`, 
+	ADD `id_checker1` INT (11)  DEFAULT 0 AFTER `university`,
+	ADD `id_checker2` INT (11)  DEFAULT 0 AFTER `id_checker1`,
+	ADD `id_checker3` INT (11)  DEFAULT 0 AFTER `id_checker2`,
+	ADD `id_checker4` INT (11)  DEFAULT 0 AFTER `id_checker3`,
+	ADD `id_checker5` INT (11)  DEFAULT 0 AFTER `id_checker4`,
+	ADD `nm_checker1` VARCHAR (128) AFTER `id_checker5`,
+	ADD `nm_checker2` VARCHAR (128) AFTER `nm_checker1`,
+	ADD `nm_checker3` VARCHAR (128) AFTER `nm_checker2`,
+	ADD `nm_checker4` VARCHAR (128) AFTER `nm_checker3`,
+	ADD `nm_checker5` VARCHAR (128) AFTER `nm_checker4`,
+	ADD `explanation_filenm` VARCHAR(128) AFTER `nm_checker4`,
+	ADD `student_id` INT(11) AFTER `explanation_filenm`
+
+
+
+
     CREATE TABLE IF NOT EXISTS QuestionProblemConnect (
       `question_id` INT(11) NOT NULL,
       `problem_id` INT(11) NOT NULL,
@@ -3158,9 +3177,14 @@ CREATE TABLE IF NOT EXISTS `Question` (
 
 
 CREATE TABLE IF NOT EXISTS QuestionActivity (
-  questionactivity_id INT(16),
+  questionactivity_id INT(16) AUTO_INCREMENT,
   question_id INT(11) NOT NULL,
+  questionset_id INT(11) NOT NULL,
   student_id INT(11) NOT NULL,
+  response_st VARCHAR (10) NOT NULL,
+  repeat_correct_flag INT (1) DEFAULT 0,
+  repeat_wrong_flag INT (1) DEFAULT 0,
+  correct_flag INT (1) NOT NULL,
   score INT (7),
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
 	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -3197,12 +3221,244 @@ CREATE TABLE IF NOT EXISTS `QuestionTime` (
     CREATE TABLE IF NOT EXISTS QuestiontimeConceptConnect (
       `questiontime_id` INT(11) NOT NULL,
       `concept_id` INT(11) NOT NULL,
-      `piority` INT(2) NOT NULL,
+      `priority` INT(2) NOT NULL,
       `current_flag` INT(2) NOT NULL DEFAULT 0,
-     `start_date` datetime DEFAULT CURRENT_TIMESTAMP,
-   `stop_date` datetime DEFAULT NULL,
+      `past_course_id` INT(11) ,
+     `concept_start_date` datetime DEFAULT CURRENT_TIMESTAMP,
+   `concept_stop_date` datetime DEFAULT NULL,
      `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
 	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       PRIMARY KEY (`questiontime_id`,`concept_id`)
     ) ENGINE=InnoDB CHARACTER SET = utf8;    
+
+ALTER TABLE `CourseConceptConnect` 
+	ADD `relative_order` INT(2) DEFAULT 9 AFTER `concept_id`
+
+    CREATE TABLE IF NOT EXISTS QuestionSet (
+      `questionset_id` INT(11) NOT NULL  AUTO_INCREMENT,
+      `questiontime_id` INT(11) NOT NULL,
+      `question_id` INT(11) NOT NULL,
+      `set_day_alias` INT(3) NOT NULL,
+     `set_date` datetime NOT NULL,
+     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+    	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (`questionset_id`),
+      UNIQUE `unique_combo`(`questiontime_id`,`set_date`,`set_day_alias`)
+    ) ENGINE=InnoDB CHARACTER SET = utf8;    
+
+
+CREATE TABLE IF NOT EXISTS `QuestionWomb` (
+  `questionwomb_id` int(11) NOT NULL AUTO_INCREMENT,
+   `primary_concept` varchar(128) NOT NULL,
+   `secondary_concept` varchar(128),
+   `tertiary_concept` varchar(128),
+    `title` varchar(128) NOT NULL,
+    `subject` varchar(128) NOT NULL,
+    `grade` INT(3),
+    `question_type` INT(2),
+    `question_use` INT(2),
+    `specif_ref` varchar(128) NOT NULL,
+    `unpubl_auth` varchar(128) NOT NULL,
+    `course` varchar(128) NOT NULL,
+	`email` varchar(50) NOT NULL,
+  `universtiy` varchar(255),
+   `status` varchar(16),
+   `nm_author` varchar(128), 
+   `university` varchar(255) NOT NULL,
+   `id_checker1` INT(11) DEFAULT 0, 
+   `id_checker2`  INT(11) DEFAULT 0, 
+   `id_checker3`  INT(11) DEFAULT 0, 
+   `nm_checker1` varchar(128), 
+   `nm_checker2` varchar(128), 
+   `nm_checker3` varchar(128), 
+   `auth_solnfilenm` varchar(128), 
+   `check1_solnfilenm` varchar(128), 
+   `check2_solnfilenm` varchar(128), 
+   `check3_solnfilenm` varchar(128), 
+   `videonm1` varchar(128), 
+   `videonm2` varchar(128), 
+   `videonm3` varchar(128), 
+   `user_id` int(11),
+   `student_id` int(11),
+   `htmlfilenm` VARCHAR(128) NOT NULL,
+  `key_a` INT(3) DEFAULT 0,
+  `key_b` INT(3) DEFAULT 0,
+  `key_c` INT(3) DEFAULT 0,
+  `key_d` INT(3) DEFAULT 0,
+  `key_e` INT(3) DEFAULT NULL,
+  `key_f` INT(3) DEFAULT NULL,
+  `key_g` INT(3) DEFAULT NULL,
+  `key_h` INT(3) DEFAULT NULL,
+  `key_i` INT(3) DEFAULT NULL,
+  `key_j` INT(3) DEFAULT NULL,
+  `fbtext_wrong` VARCHAR(255) DEFAULT NULL,
+  `fbtext_correct` VARCHAR(255) DEFAULT NULL,
+  `fbtext_a` VARCHAR(255) DEFAULT NULL,
+  `fbtext_b` VARCHAR(255) DEFAULT NULL,
+  `fbtext_c` VARCHAR(255) DEFAULT NULL,
+  `fbtext_d` VARCHAR(255) DEFAULT NULL,
+  `fbtext_e` VARCHAR(255) DEFAULT NULL,
+  `fbtext_f` VARCHAR(255) DEFAULT NULL,
+  `fbtext_g` VARCHAR(255) DEFAULT NULL,
+  `fbtext_h` VARCHAR(255) DEFAULT NULL,
+  `fbtext_i` VARCHAR(255) DEFAULT NULL,
+  `fbtext_j` VARCHAR(255) DEFAULT NULL,
+  `fbfile_a` VARCHAR(128) DEFAULT NULL,
+  `fbfile_b` VARCHAR(128) DEFAULT NULL,
+  `fbfile_c` VARCHAR(128) DEFAULT NULL,
+  `fbfile_d` VARCHAR(128) DEFAULT NULL,
+  `fbfile_e` VARCHAR(128) DEFAULT NULL,
+  `fbfile_f` VARCHAR(128) DEFAULT NULL,
+  `fbfile_g` VARCHAR(128) DEFAULT NULL,
+  `fbfile_h` VARCHAR(128) DEFAULT NULL,
+  `fbfile_i` VARCHAR(128) DEFAULT NULL,
+  `fbfile_j` VARCHAR(128) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`questionwomb_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `QuestionWomb` 
+	ADD `explaination_filenm` VARCHAR(128)  AFTER `auth_solnfilenm`
+
+ALTER TABLE `QuestionWomb` 
+	ADD `num_accept` INT (3)  DEFAULT 0 AFTER `university`,
+	ADD `num_reject` INT (3)  DEFAULT 0 AFTER `num_accept`,
+	ADD `id_checker4` INT (11)  DEFAULT 0 AFTER `id_checker3`,
+	ADD `id_checker5` INT (11)  DEFAULT 0 AFTER `id_checker4`,
+	ADD `nm_checker4` VARCHAR (128) AFTER `nm_checker3`,
+	ADD `nm_checker5` VARCHAR (128) AFTER `nm_checker4`,
+	ADD `reject_justification1` VARCHAR (512)  DEFAULT NULL AFTER `nm_checker5`,
+	ADD `reject_justification2` VARCHAR (512)  DEFAULT NULL AFTER `reject_justification1`
+
+ALTER TABLE `QuestionWomb` 
+	ADD `message` VARCHAR (512)   AFTER `status`
+
+ALTER TABLE `QuestionWomb` 
+	ADD `num_looks` INT (6) DEFAULT 0  AFTER `university`
+
+
+CREATE TABLE IF NOT EXISTS QuestionWombActivity (
+  questionwombactivity_id INT(16) AUTO_INCREMENT,
+  questionwomb_id INT(11) NOT NULL,
+  student_id INT(11) NOT NULL,
+  activity VARCHAR (20) NOT NULL,
+  score INT (7) NOT NULL DEFAULT 0,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`questionwombactivity_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `QuestionWombActivity`
+ADD `kill_justification` VARCHAR (512)  DEFAULT NULL AFTER `activity`
+
+
+CREATE TABLE IF NOT EXISTS `QuestionTomb` (
+  `questiontomb_id` int(11) NOT NULL AUTO_INCREMENT,
+   `course_id` INT(11) NOT NULL,
+   `primary_concept` varchar(128) NOT NULL,
+   `secondary_concept` varchar(128),
+   `tertiary_concept` varchar(128),
+    `title` varchar(128) NOT NULL,
+    `subject` varchar(128) NOT NULL,
+    `grade` INT(3),
+    `type` INT(3),
+    `specif_ref` varchar(128) NOT NULL,
+    `unpubl_auth` varchar(128) NOT NULL,
+    `course` varchar(128) NOT NULL,
+	`email` varchar(50) NOT NULL,
+   `status` varchar(16),
+   	`question_type` int(2) , 
+	 `question_use` int(2) ,
+   `nm_author` varchar(128), 
+   	 `university` VARCHAR(255) , 
+	 `id_checker1` INT (11)  DEFAULT 0 ,
+	 `id_checker2` INT (11)  DEFAULT 0,
+	 `id_checker3` INT (11)  DEFAULT 0 ,
+	 `id_checker4` INT (11)  DEFAULT 0 ,
+	 `id_checker5` INT (11)  DEFAULT 0 ,
+	 `nm_checker1` VARCHAR (128) ,
+	 `nm_checker2` VARCHAR (128) ,
+	 `nm_checker3` VARCHAR (128) ,
+	 `nm_checker4` VARCHAR (128) ,
+	 `nm_checker5` VARCHAR (128) ,
+	 `explanation_filenm` VARCHAR(128),
+	 `student_id` INT(11), 
+   `docxfilenm` varchar(128), 
+   `videonm1` varchar(128), 
+   `videonm2` varchar(128), 
+   `videonm3` varchar(128), 
+   `user_id` int(11) NOT NULL,
+   `htmlfilenm` VARCHAR(128) NOT NULL,
+  `key_a` INT(3) DEFAULT 0,
+  `key_b` INT(3) DEFAULT 0,
+  `key_c` INT(3) DEFAULT 0,
+  `key_d` INT(3) DEFAULT 0,
+  `key_e` INT(3) DEFAULT NULL,
+  `key_f` INT(3) DEFAULT NULL,
+  `key_g` INT(3) DEFAULT NULL,
+  `key_h` INT(3) DEFAULT NULL,
+  `key_i` INT(3) DEFAULT NULL,
+  `key_j` INT(3) DEFAULT NULL,
+  `text_a` VARCHAR(255) DEFAULT NULL,
+  `text_b` VARCHAR(255) DEFAULT NULL,
+  `text_c` VARCHAR(255) DEFAULT NULL,
+  `text_d` VARCHAR(255) DEFAULT NULL,
+  `text_e` VARCHAR(255) DEFAULT NULL,
+  `text_f` VARCHAR(255) DEFAULT NULL,
+  `text_g` VARCHAR(255) DEFAULT NULL,
+  `text_h` VARCHAR(255) DEFAULT NULL,
+  `text_i` VARCHAR(255) DEFAULT NULL,
+  `text_j` VARCHAR(255) DEFAULT NULL,
+  `imagefile_a` VARCHAR(128) DEFAULT NULL,
+  `imagefile_b` VARCHAR(128) DEFAULT NULL,
+  `imagefile_c` VARCHAR(128) DEFAULT NULL,
+  `imagefile_d` VARCHAR(128) DEFAULT NULL,
+  `imagefile_e` VARCHAR(128) DEFAULT NULL,
+  `imagefile_f` VARCHAR(128) DEFAULT NULL,
+  `imagefile_g` VARCHAR(128) DEFAULT NULL,
+  `imagefile_h` VARCHAR(128) DEFAULT NULL,
+  `imagefile_i` VARCHAR(128) DEFAULT NULL,
+  `imagefile_j` VARCHAR(128) DEFAULT NULL,
+  `fbtext_a` VARCHAR(255) DEFAULT NULL,
+  `fbtext_b` VARCHAR(255) DEFAULT NULL,
+  `fbtext_c` VARCHAR(255) DEFAULT NULL,
+  `fbtext_d` VARCHAR(255) DEFAULT NULL,
+  `fbtext_e` VARCHAR(255) DEFAULT NULL,
+  `fbtext_f` VARCHAR(255) DEFAULT NULL,
+  `fbtext_g` VARCHAR(255) DEFAULT NULL,
+  `fbtext_h` VARCHAR(255) DEFAULT NULL,
+  `fbtext_i` VARCHAR(255) DEFAULT NULL,
+  `fbtext_j` VARCHAR(255) DEFAULT NULL,
+  `fbfile_a` VARCHAR(128) DEFAULT NULL,
+  `fbfile_b` VARCHAR(128) DEFAULT NULL,
+  `fbfile_c` VARCHAR(128) DEFAULT NULL,
+  `fbfile_d` VARCHAR(128) DEFAULT NULL,
+  `fbfile_e` VARCHAR(128) DEFAULT NULL,
+  `fbfile_f` VARCHAR(128) DEFAULT NULL,
+  `fbfile_g` VARCHAR(128) DEFAULT NULL,
+  `fbfile_h` VARCHAR(128) DEFAULT NULL,
+  `fbfile_i` VARCHAR(128) DEFAULT NULL,
+  `fbfile_j` VARCHAR(128) DEFAULT NULL,
+  `num_resp_a` int(11) DEFAULT 0,
+  `num_resp_b` int(11) DEFAULT 0,
+  `num_resp_c` int(11) DEFAULT 0,
+  `num_resp_d` int(11) DEFAULT 0,
+  `num_resp_e` int(9) DEFAULT 0,
+  `num_resp_f` int(9) DEFAULT 0,
+  `num_resp_g` int(7) DEFAULT 0,
+  `num_resp_h` int(7) DEFAULT 0,
+  `num_resp_i` int(7) DEFAULT 0,
+  `num_resp_j` int(7) DEFAULT 0,
+  `num_correct` int(11) DEFAULT 0,
+  `num_total` int(11) DEFAULT 0,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`questiontomb_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
 

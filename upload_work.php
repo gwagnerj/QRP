@@ -50,10 +50,10 @@ foreach ($results->getItems() as $item) {
 
 if(isset($_GET['activity_id'])){
     $activity_id = $_GET['activity_id'];
-    echo 'activity_id on GET '.$activity_id;
+ //   echo 'activity_id on GET '.$activity_id;
 } elseif(isset($_POST['activity_id'])){
     $activity_id = $_POST['activity_id'];
-    echo 'activity_id on POST '.$activity_id;
+  //  echo 'activity_id on POST '.$activity_id;
 
 }else{
     $_SESSION['error'] = 'activity-id lost in upload_work';  

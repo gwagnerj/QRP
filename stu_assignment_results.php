@@ -195,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
           
              $sql = "SELECT * FROM `Student` 
              INNER JOIN `StudentCurrentClassConnect` ON Student.student_id = StudentCurrentClassConnect.student_id
-              WHERE StudentCurrentClassConnect.currentclass_id = :currentclass_id
+              WHERE StudentCurrentClassConnect.currentclass_id = :currentclass_id AND Student.username NOT LIKE 'temp_%'
               GROUP BY Student.student_id
                ORDER BY Student.last_name ASC,Student.first_name ASC";
 

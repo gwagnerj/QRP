@@ -241,7 +241,7 @@
  //           echo('<form action = "QRExamStart.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Start Exam"></form> &nbsp;');
  //           echo('<form action = "QRExamRetrieve.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Retrieve Exam Results"></form> &nbsp;');
             echo('<form action = "QRAssignmentStart0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Hmwk Management"></form> &nbsp;');
-            echo('<form action = "QRQuestionMgmt.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Question Mgmt"></form> &nbsp;');
+            echo('<form action = "QRQuestionMgmt0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Question Mgmt"></form> &nbsp;');
             echo('<form action = "QRClassMgmt.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Class Management"></form> &nbsp;');
 
           //     echo '<a href="QRExamStart.php?iid ='.$users_id.'" >Start an Exam</b></a>';
@@ -267,7 +267,7 @@
 		if (($security == 'admin' || $security == 'contrib' || $security == 'stu_contrib') && $threat_level <= 3){
 		echo '<div id = "request_prob">';
 		echo '<span class = "fw-bold fs-6">Contributing a New Problem or Question? </span><br>';
-		echo '<a href="requestPblmNum.php" style = "color:blue;"><button title = "Problems have numerical answers and variable parameters" class = "btn btn-outline-primary" style = "color:white;"><i class="bi bi-list-ol"></i> Request Problem Number</buttton></a>';
+		echo '<a href="requestPblmNum.php" style = "color:blue;"><button title = "Problems have numerical answers and variable parameters" class = "btn btn-outline-primary me-4" style = "color:white;"><i class="bi bi-list-ol"></i> Request Problem Number</buttton></a>';
 		echo '<a href="requestQuestNum.php" style = "color:green;"><button title = "Questions are multiple choice type questions" class = "btn btn-outline-secondary"><i class="bi bi-list-ol" ></i> Request Question Number</buttton></a>';
 		echo '<a href="editquest.php" style = "color:gray;"><button title = "Questions are multiple choice type questions" class = "btn btn-outline-secondary"><i class="bi bi-list-ol" ></i> Question Edit </buttton></a>';
 		echo '</div>';

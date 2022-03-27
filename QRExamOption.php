@@ -619,7 +619,7 @@ $_SESSION['counter']=0;  // this is for the score board
                        &nbsp;&nbsp;  <input type = "number" min = "0" max = "100" id = "fixed_percent_decline" name = "fixed_percent_decline" <?php echo ("value = ".$fixed_percent_decline); ?> > </input><br>
                     </span>
 
-	</fofixedrm>
+	</form>
 	
 	<script>
 	

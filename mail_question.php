@@ -1,4 +1,4 @@
-<?php
+<?php 
 // Include config file
 require_once 'pdo.php';
 require_once '../email_password.php';
@@ -8,6 +8,7 @@ use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';// Load Composer's autoloader
 require_once "random_compat-2.0.18/lib/random.php"; // needed this for the random_bytes function did not work on the online version
 
+$shuffle_flag = 1;
 
 $mail = new PHPMailer(true);
 // Define variables and initialize with empty values
@@ -15,13 +16,101 @@ $username = $password = $confirm_password = $university = "";
 $username_err = $email = $email_err = $password_err = $confirm_password_err = $university_err = "";
 $first_err = $last_err = $first = $last = $new_univ = $security_err = $sponsor_err = $university_err = $exp_date = "";
  
-$first = "John";
-$last = "Wagner";
-$email = "Wagnerj@trine.edu";
-					 
-            
-      $student_id = 1;
-	  $question_id = 2;
+// $first = "John";
+// $last = "Wagner";
+// $email = "Wagnerj@trine.edu";
+
+if (isset($_GET['cc_id'])){
+	$currentclass_id = $_GET['cc_id'];
+} else {
+	$currentclass_id = 44;  //?  44 is the testing problems class
+
+}
+	
+// echo ' currentclass_id: '.$currentclass_id;
+date_default_timezone_set('America/New_York');
+// $timezone = date_default_timezone_get();
+// echo "The current server timezone is: " . $timezone;
+$now = date('Y-m-d');
+// echo ' now: '.$now;
+
+	$question_id = $questionset_id = 0;
+
+   $sql = 'SELECT * FROM QuestionTime
+    JOIN QuestionSet ON QuestionTime.questiontime_id = QuestionSet.questiontime_id
+	WHERE currentclass_id = :currentclass_id AND QuestionSet.set_day_alias = 0 AND date(set_date) = CURDATE() LIMIT 1';  
+//    $sql = 'SELECT * FROM QuestionTime
+//     JOIN QuestionSet ON QuestionTime.questiontime_id = QuestionSet.questiontime_id
+// 	WHERE currentclass_id = :currentclass_id AND QuestionSet.set_day_alias = 0 ORDER BY QuestionSet.questionset_id DESC';  
+//    $sql = 'SELECT * FROM QuestionTime
+//     JOIN QuestionSet ON QuestionTime.questiontime_id = QuestionSet.questiontime_id
+// 	WHERE currentclass_id = :currentclass_id';  
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+				':currentclass_id' => $currentclass_id
+				));
+				$qt_datum = $stmt->fetch(PDO::FETCH_ASSOC);
+
+				if (!$qt_datum){  // guard clause
+					echo '<h1> No Question today </h1>';
+					die();
+				}
+			//	var_dump($questionTime_data);
+				$question_id = $qt_datum['question_id'];
+	  			$questionset_id = $qt_datum['questionset_id'];
+
+				$set_day_alias = $qt_datum['set_day_alias'];
+				$set_date = explode(" ",$qt_datum['set_date'])[0];
+			//	 echo ' question_id: '. $question_id .'  questionset_id: '. $questionset_id .' set_date '.$set_date.'<br>';  //! echo statement
+
+			
+
+			
+// 				 $questionTime_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
+// 			//	var_dump($questionTime_data);
+// 		foreach ($questionTime_data as $qt_datum){
+// 				$question_id = $qt_datum['question_id'];
+// 				$set_day_alias = $qt_datum['set_day_alias'];
+// 				$set_date = explode(" ",$qt_datum['set_date'])[0];
+// 				// echo ' question_id: '. $question_id .' set_date '.$set_date.'<br>';
+// //! final version uncomment the next line and comment the one below it
+// 				if ($set_date == $now && $set_day_alias == 0){
+// 			//	 if ( $set_day_alias == 0){
+// 					$question_id = $qt_datum['question_id'];
+// 					$questionset_id = $qt_datum['questionset_id'];
+// 				}
+
+// 			}
+
+			//? could put a if set_date = $now then check get the address of all of the students in the current class
+
+	
+		//	 if ($question_id !=0 ){
+
+				$sql = 'SELECT * FROM StudentCurrentClassConnect
+				JOIN Student ON StudentCurrentClassConnect.student_id = Student.student_id
+				WHERE currentclass_id = :currentclass_id';  
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute(array(
+					':currentclass_id' => $currentclass_id
+					));
+				$studentccconnect_data = $stmt->fetchALL(PDO::FETCH_ASSOC);
+				$i=0;
+				foreach ($studentccconnect_data as $sccc_datum){
+					$student_ids[$i] = $sccc_datum['student_id'];
+					$emails[$i] = $sccc_datum['school_email'];
+					// echo ' student_id: '.$student_ids[$i].' email '.$emails[$i].'<br>';
+					$i++;
+				}
+			
+
+		
+
+
+	// die();
+
+   //    $student_id = 1;
+	//   $question_id = 2;
 
 	  $sql = "SELECT * FROM Question WHERE question_id = :question_id";
 		$stmt = $pdo->prepare($sql);
@@ -35,13 +124,97 @@ $email = "Wagnerj@trine.edu";
               
 	   $html->load_file($fullpath); 
 
-$needle = 'student_id=1';
-$replacement = 'student_id='.$student_id;
-$html = str_replace($needle,$replacement,$html);
-	   echo ($html);
-$body=$html;
+//? find out how may options we have for this question
+$option_texts = $html->find ('.option_text');
+
+$num_options = count($option_texts);
+// echo ' num_options: '.$num_options;
+// echo ' question_id '.$question_id;
+
+$option_text = array();
+$shuffle_keys = array();
+$shuffle_keys = range(0,$num_options-1);
+
+// var_dump ($shuffle_keys);
+// echo '<br>';
+$option_text_temp = array();
+for($i = 1; $i <= $num_options; $i++){
+	 $key = '#option_text-'.$i;
+	 $option = $html->find($key)[0];
+	$k = $i-1;
+	$option_text[$k] = $option ->plaintext;
+	
+	$option_text_temp[$k] = 'temp___'.$i;
+}
+
+// var_dump($option_text);
+// echo '<br>';
 
 
+//var_dump($emails);
+
+$i = 0;
+ foreach ($emails as $email)	{
+	if ($shuffle_flag ==1){shuffle($shuffle_keys);}
+
+	$html2 = $html;
+	// echo 'num_options1  '.$num_options;
+
+	$key_code = "";
+	 for($j = 0; $j < $num_options; $j++){
+		$key_code =$key_code.$shuffle_keys[$j];
+		$option_text2[$j] = $option_text[$shuffle_keys[$j]] ;
+		$option_text_temp2[$j] = $option_text_temp[$shuffle_keys[$j]] ; // temp2 is shuffled in the same way
+	
+	 }
+
+
+			//? this is where I woule re-arrange the file to randomize the order of the responses but the res-number would stay the same 
+		//	echo ($html2); 
+	   
+
+
+
+
+		$needle = 'student_id=0';
+		$replacement = 'student_id='.$student_ids[$i].'&email_flag=1&questionset_id='.$questionset_id.'&key_code='.$key_code;
+//		echo ' replacement = '.$replacement;
+//		$replacement_enc='encode='.base64_encode($replacement);  //! put this in at the end after trouble shooting - will have to add the decode statement to question_show
+		// $replacement_enc='encode='.urlencode(base64_encode($replacement));
+		// echo ' replacement: '.$replacement_enc;
+	//	$html2 = str_replace($needle,$replacement_enc,$html2);        //! put this in at the end after trouble shooting - will have to add the decode statement to question_show
+		$html2 = str_replace($needle,$replacement,$html2);        //! comment this out after  after trouble shooting - 
+		// $replacement_enc='encode='.urlencode(base64_encode($replacement));
+
+		// var_dump ($option_text);
+		// echo '<br>';
+		// var_dump ($option_text_temp2);
+		// echo '<br>';
+
+
+		$html2 = str_replace($option_text,$option_text_temp2,$html2);
+		$html2 = str_replace($option_text_temp2,$option_text2,$html2);
+		$html2 = str_replace('##','',$html2);
+
+
+
+		$html2 = str_replace('https://www.qrproblems.org/QRP/','',$html2);  //! kill this in the final version this will take it to a local file instead of the server
+
+
+		for($j = 0; $j < $num_options; $j++){
+			$k = $j+1;
+
+			$needle = 'class="option_text">'.$option_text[$j];
+			// echo ' needle ' . $needle;
+			$replacement = 'class="option_text_temp">'.$option_text2[$j];
+			// echo ' replacement ' . $replacement;
+
+			$html2 = str_replace($needle,$replacement,$html2);
+
+
+		 }
+
+		$body=$html2;
 				
 				// now send email
 				
@@ -134,17 +307,28 @@ $body=$html;
 					//$mail -> setFrom($email);
 					$mail->setFrom('wagnerj@excelproblempedia.org', 'John');
 					$mail->addAddress($email);     // Add a recipient
-					$mail->addAddress('wagnerj@trine.edu');               // Name is optional	
-					$mail->addAddress('gwagnerj@gmail.com');               // Name is optional	
-							
+					// $mail->addAddress('wagnerj@trine.edu');               // Name is optional	
+					// $mail->addAddress('gwagnerj@gmail.com');               // Name is optional	
+
+
+				//	$mail->addAddress($emaileo);
+						
 					
 					$mail->isHTML(true);  	
 					$mail -> Subject = $subject;
 					
 					$mail->Body    = $body;
-					$mail->AltBody = strip_tags($body);			
+					$mail->AltBody = strip_tags($body);
 					
-					$mail->send();
+	//				echo 'email'.$email;  //! get rid of this after trouble shooting
+
+					echo ($html2);  //! get rid of this in final version	
+					
+//			$mail->send();
+//				$mail->send();    //! Put this in the active version
+
+				$mail->clearAllRecipients( ); // clear all		
+				//	$mail->clearAddresses();
 					   // echo 'Message has been sent';
 					//	$response = "Email is Sent - to system administrator and sponsor";
 					//	echo ($response);
@@ -156,12 +340,17 @@ $body=$html;
 					} catch (Exception $e) {
 						$_SESSION['failure'] = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 						// echo '<a href = "emailForm.php" >back to email form</a>';
-					}	
+					}
+			$i++;		
+			}
+
 				$_SESSION['sucess'] = 'registration sucessful';
+
+				echo '<h1> Success - '.$i.' emails sent ';
 				
-				
+	//	}			
       
-		
+			 	
 		
   
 ?>
