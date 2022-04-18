@@ -20,6 +20,10 @@
 	
 	if(isset($_POST['concept']) && strlen($_POST['concept'])>0){
 		$concept_name = htmlentities ($_POST['concept']);
+
+		if (isset($_POST['relative_order'])){
+			$relative_order = $_POST['relative_order'];
+		}
 		if(isset($_POST['syn1']) && strlen($_POST['syn1'])>0){
 				$syn1 = $_POST['syn1'];
 		}
@@ -71,12 +75,13 @@
 					
 					// connect the concept to the course so it ends up added to the list when you pull down the concept
 					
-					$sql = "INSERT INTO CourseConceptConnect (course_id, concept_id)
-							VALUES (:course_id, :concept_id)";
+					$sql = "INSERT INTO CourseConceptConnect (course_id, concept_id, relative_order)
+							VALUES (:course_id, :concept_id,:relative_order)";
 					$stmt = $pdo->prepare($sql);
 					$stmt->execute(array(
 					':course_id' => $course_id,
-					':concept_id' => $concept_id
+					':concept_id' => $concept_id,
+					':relative_order' => $relative_order,
 					));
 					
 					 $_SESSION['sucess'] = 'the concept was added to database';
@@ -108,10 +113,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="DataTables-1.10.18/js/jquery.dataTables.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
+<style>
+	
+
+	</style>
+		
 </head>
-
-<body>
+<body class ="ms-4">
 
 
 
@@ -126,9 +138,22 @@ echo('Session course '.$_SESSION['course']);
 <!--<h3>Print the problem statement with "Ctrl P"</h3>
  <p><font color = 'blue' size='2'> Try "Ctrl +" and "Ctrl -" for resizing the display</font></p>  -->
 <form  method="POST"  autocomplete = 'off' >
-	
-	<p><font color=#003399>Title of Concept: </font><input type="text" class = "text" name="concept" id = "concept" size= 40   > <input type = "button" name = "add synonym" value = "Add Synonym" id = "add_syn1"> </p>
-<!-- 	<div class="input_fields_wrap">
+	<br>
+	<font color=#003399>Title of Concept: </font><input type="text" class = "text" name="concept" id = "concept" size= 40   > <input type = "button" name = "add synonym" value = "Add Synonym" id = "add_syn1">
+<label for="relative_order" class = "ms-5">Relative Order in Course:</label>
+	 <select   name="relative_order" id = "relative_order" required >
+		 <option value = "">Select</option>
+		 <option value = "1" >Preliminary</option>
+		 <option value = "2" >Early</option>
+		 <option value = "3" >Mid-Course</option>
+		 <option value = "4" >Late</option>
+		 <option value = "5" >Very Late</option>
+
+	 </select>
+
+
+
+	<!-- 	<div class="input_fields_wrap">
     <button class="add_field_button">Add Synonyms</button>
     <div id = "blank"><input type="text" name="syn[]"></div>
 	</div>

@@ -6,6 +6,7 @@
     require_once '../encryption_base.php';
 	$_SESSION['success'] = '';
 
+$question_title = $grade = $discipline = false;
 
 	$sql = 'SELECT MAX(question_id) FROM Question';
 	$stmt = $pdo->prepare($sql);
@@ -13,7 +14,7 @@
 	$question_data = $stmt->fetch(PDO::FETCH_ASSOC);
 	$max_question_id=$question_data['MAX(question_id)'];
 
-
+// echo (' max question '.$max_question_id);
 
 	if (isset($_GET['question_id'])) {
 		$question_id=$_GET['question_id'];
@@ -27,7 +28,7 @@
 		// header('Location: QRPRepo.php');
 		// die();
 	}
-	// echo $question_id;
+	//  echo ' question_id '.$question_id;
 $sql = "SELECT * FROM Question WHERE question_id = :question_id";
 $stmt = $pdo->prepare($sql);
 		$stmt->execute(array(
@@ -239,7 +240,7 @@ $stmt = $pdo->prepare($sql);
 			$problem_id ='';
 
 
-			$sql = "SELECT * FROM QuestionProblemConnect WHERE question_id = :question_id";
+			$sql = "SELECT * FROM QuestionProblemConnect2 WHERE question_id = :question_id";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(':question_id' => $question_id));
 			$questionproblemconnect_data = $stmt -> fetch();
@@ -251,7 +252,7 @@ $stmt = $pdo->prepare($sql);
 			   }
 	   // have a new problem
 			if (isset($_POST['problem_id']) && $_POST['problem_id']!='' && $_POST['problem_id']>0 && $problem_id ==''){  // we posted a problem_id in the form and don't have on in the data base
-				$sql = "INSERT INTO QuestionProblemConnect (`question_id`,`problem_id`)
+				$sql = "INSERT INTO QuestionProblemConnect2 (`question_id`,`problem_id`)
 				 VALUES (:question_id,:problem_id) ";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
@@ -260,7 +261,7 @@ $stmt = $pdo->prepare($sql);
 			}
 		// need to update the Table structure
 		if (isset($_POST['problem_id'])&& $problem_id > 0 && $_POST['problem_id'] != $problem_id ){
-			$sql = "UPDATE QuestionProblemConnect SET problem_id = :problem_id WHERE question_id = :question_id";
+			$sql = "UPDATE QuestionProblemConnect2 SET problem_id = :problem_id WHERE question_id = :question_id";
 			$stmt = $pdo->prepare($sql);
 			$stmt->execute(array(
 				':problem_id' => $_POST['problem_id'],
@@ -392,25 +393,130 @@ $stmt = $pdo->prepare($sql);
 // echo '<br>';
 			if (isset($_FILES['htmlfile']) && $_FILES['htmlfile']['size'] != 0){
 // echo "what +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++";
-               $tags = $html->find('p');
+               $tags = $html->find('p');  //! for this code to work the ## meta data tags must be on separate paragraphs
             //    $html = str_replace($html->find('p' , 0),'<div id = "quote">'.$html->find('p' , 0).'</div>',$html);
              $k=1;
                 foreach ($tags as $tag){
                     //  if (strpos(trim($tag->plaintext),'q==')!== false) {$html = str_replace($tag->outertext,'</div><div id="question-stem">' . $tag->outertext,$html);}
                     //  if (strpos(trim($tag->plaintext),'==q')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}       
-
+                    if (strpos(trim($tag->plaintext),'##directions')!== false) {        
+                        $html = str_replace($tag->outertext,'<div id="directions">' . $tag->outertext,$html);
+                     if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+					}
+                    if (strpos(trim($tag->plaintext),'##discipline')!== false) {        
+                        $html = str_replace($tag->outertext,'<div id="discipline" style = "display: none;">' . $tag->outertext,$html);
+                     if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+					}
+                    if (strpos(trim($tag->plaintext),'##grade')!== false) {        
+                        $html = str_replace($tag->outertext,'<div id="grade"  style = "display: none;">' . $tag->outertext,$html);
+                     if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+					}
+                    if (strpos(trim($tag->plaintext),'##course')!== false) {        
+                        $html = str_replace($tag->outertext,'<div id="course"  style = "display: none;">' . $tag->outertext,$html);
+                     if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+					}
+                    if (strpos(trim($tag->plaintext),'##concept')!== false) {        
+                        $html = str_replace($tag->outertext,'<div id="concept" style = "display: none;">' . $tag->outertext,$html);
+                     if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+					}
+                    if (strpos(trim($tag->plaintext),'##question_title')!== false) {        
+                        $html = str_replace($tag->outertext,'<div id="question_title" style = "display: none;">' . $tag->outertext,$html);
+                     if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+					}
+                    if (strpos(trim($tag->plaintext),'##author')!== false) {        
+                        $html = str_replace($tag->outertext,'<div id="author" style = "display: none;">' . $tag->outertext,$html);
+                     if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+					}
+                    if (strpos(trim($tag->plaintext),'##reference')!== false) {        
+                        $html = str_replace($tag->outertext,'<div id="reference" style = "display: none;">' . $tag->outertext,$html);
+                     if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+					}
+                    if (strpos(trim($tag->plaintext),'##question_usage')!== false) {        
+                        $html = str_replace($tag->outertext,'<div id="question_usage" style = "display: none;">' . $tag->outertext,$html);
+                     if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+					}
+                    if (strpos(trim($tag->plaintext),'##question_type')!== false) {        
+                        $html = str_replace($tag->outertext,'<div id="question_type" style = "display: none;">' . $tag->outertext,$html);
+                     if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+					}
                     if (strpos(trim($tag->plaintext),'##option')!== false) {        
                         $html = str_replace($tag->outertext,'<div id="option-'.$k.'" class = "options">' . $tag->outertext,$html);
                         $k = $k+1;
                      if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
 				}
+				// }
+                //     if (strpos(trim($tag->plaintext),'##option')!== false) {        
+                //         $html = str_replace($tag->outertext,'<div id="option-'.$k.'" class = "options">' . $tag->outertext,$html);
+                //         $k = $k+1;
+                //      if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+				// }
+                //     if (strpos(trim($tag->plaintext),'##option')!== false) {        
+                //         $html = str_replace($tag->outertext,'<div id="option-'.$k.'" class = "options">' . $tag->outertext,$html);
+                //         $k = $k+1;
+                //      if (strpos(trim($tag->plaintext),'##')!== false) {$html = str_replace($tag->outertext,$tag->outertext."</div>",$html);}
+				// }
 
 
             }
+//? read stuff from the Html Document created by Word form
 
             $htmlGetVals = str_get_html($html);            //? convert it back to an html document
-          //  var_dump($html);
+			$directions = $htmlGetVals->find("#directions");
+		if($directions){$directions_text = $directions[0]->plaintext;
+		$needle = '##directions';
+		$pos1 = strpos($html,$needle);
+		$pos2 = strpos($html,'##',$pos1+3);
+		$length = $pos2 - $pos1;
+		$html = substr_replace($html,'', $pos1, $length);   //? get rid of the directions
+		}
+		if($htmlGetVals->find("#discipline")){
+		$discipline = $htmlGetVals->find("#discipline")[0]->plaintext;  //? get the question meta data - first one multiline and subsequent one line
+		$discipline= explode(';',$discipline)[1];
+		$discipline = str_replace("##","",$discipline);
+		}
 
+	if($htmlGetVals->find("#grade")){$grade = str_replace('##','',explode(';',$htmlGetVals->find("#grade")[0]->plaintext)[1]);}  
+
+	if($htmlGetVals->find("#course")){
+		$course = str_replace('##','',explode(';',$htmlGetVals->find("#course")[0]->plaintext)[1]);  
+		if(str_contains($course,'Choose')){$course = false;}
+	}
+	if($htmlGetVals->find("#concept")){
+		$concept = str_replace('##','',explode(';',$htmlGetVals->find("#concept")[0]->plaintext)[1]);  
+	}
+	if($htmlGetVals->find("#question_title")){
+		$question_title = str_replace('##','',explode(';',$htmlGetVals->find("#question_title")[0]->plaintext)[1]);  
+		if(str_contains($question_title,'Click')){$question_title = false;}
+	}
+	if($htmlGetVals->find("#author")){
+		$author = str_replace('##','',explode(';',$htmlGetVals->find("#author")[0]->plaintext)[1]);  
+		if(str_contains($author,'Choose')){$author = false;}
+	}
+	if($htmlGetVals->find("#reference")){
+		$reference = str_replace('##','',explode(';',$htmlGetVals->find("#reference")[0]->plaintext)[1]); 
+		if (str_contains($reference,'Click')){$reference = '';}  //? they did not select anything
+	}
+	if($htmlGetVals->find("#question_type")){
+		$question_type = str_replace('##','',explode(';',$htmlGetVals->find("#question_type")[0]->plaintext)[1]);  
+		if(str_contains($question_type,'Choose')){$question_type = false;}
+	}
+
+	if($htmlGetVals->find("#question_usage")){
+		$question_usage = str_replace('##','',explode(';',$htmlGetVals->find("#question_usage")[0]->plaintext)[1]);  
+		if(str_contains($question_usage,'Choose')){$question_usage = false;}
+	}
+
+		// $grade = str_replace('##','',explode(';',$htmlGetVals->find("#grade")[0]->plaintext)[1]);  
+		// $grade = str_replace('##','',explode(';',$htmlGetVals->find("#grade")[0]->plaintext)[1]);  
+
+//    echo 'grade '.$grade .' course '.$course.' concept '.$concept.' question_title '.$question_title.' author '.$author.' reference '.$reference;          
+ //? should make sure that they get put in the html below
+
+
+
+
+	//	echo 'directions_text '.$directions_text;
+		// die();
 		//	$option1 = $html->find("#option-1");
 			$options = $htmlGetVals->find(".options");
           //  var_dump($option1);
@@ -423,7 +529,8 @@ $stmt = $pdo->prepare($sql);
    //         echo $html;
 
           $alphabet = array('a','b','c','d','e','f','g','h','i','j');
-        $btn_color = array("dodgerBlue", "IndianRed", "LightSeaGreen", "RebeccaPurple", "blue", "orange", "teal", "gray", "fuchsia", "lime");
+        $btn_color = array("#005073", "#107dac", "#189ad3", "#1ebbd7", "#71c7ec", "#8594a3", "#088F8F", "#5F9EA0", "#00A36C", "#228B22");
+        // $btn_color = array("dodgerBlue", "IndianRed", "LightSeaGreen", "RebeccaPurple", "blue", "orange", "teal", "gray", "fuchsia", "lime");
           for($i=0;$i<$L;$i++){
             $opt = $options[$i];
             $letter = $alphabet[$i];
@@ -434,7 +541,10 @@ $stmt = $pdo->prepare($sql);
             $text[$i] = str_replace("##","",$text[$i]);
             $key_text = 'key_'.$letter;
             $text_key = 'text_'.$letter;
-            
+
+			// echo ' key[i] '.$key[$i];
+            // echo ' text[$i] '.$text[$i];
+
             $sql = 'UPDATE Question SET '.$key_text.' = :key,'.$text_key.' =:text WHERE question_id = :question_id';
             $stmt = $pdo->prepare($sql);
             $stmt->execute(array(
@@ -446,23 +556,23 @@ $stmt = $pdo->prepare($sql);
                 // get rid of the markup and put in links to take them to the email recieving file
                 
                $needle = "##option;";
-               $anchor_tag = '<br><br><a id = "select-'.$alphabet[$i].'" class = "select" style ="margin-right:0.5rem;font-size:1.2rem;padding-right:0.5rem; padding-top:0.3rem;padding-bottom:0.3rem; text-decoration: none; padding-left:0.5rem;   text-align: center;font-weight: bold; line-height: 25px; border-radius: 5px; border:3px solid; border-color:  black; background-color:'.$btn_color[$i].';color:white;" href="https://www.qrproblems.org/QRP/mail_quiz_receive.php?response='.$alphabet[$i].'&question_id='.$question_id.'&student_id=1" target="_blank">'.$alphabet[$i].')</a>';
+               $anchor_tag = '<br><br><a id = "select-'.$alphabet[$i].'" class = "select" style ="margin-right:0.5rem;font-size:1.2rem;padding-right:0.5rem; padding-top:0.3rem;padding-bottom:0.3rem; text-decoration: none; padding-left:0.5rem;   text-align: center;font-weight: bold; line-height: 25px; border-radius: 5px; border:3px solid; border-color:  black; background-color:'.$btn_color[$i].';color:white;" href="https://www.qrproblems.org/QRP/question_show.php?response='.$alphabet[$i].'&question_id='.$question_id.'&student_id=0" target="_blank">'.$alphabet[$i].')</a>';
                 $pos = strpos($html,$needle);
                 if ($pos !== false) {
                     $html = substr_replace($html,$anchor_tag, $pos, strlen($needle));
                 }
-
-               $needle =  $key[$i].';';
+				$k = $i +1;
+               $needle =  $key[$i].';';  //? this is the place where we put in which option is correct I am using akey here for answer key
                 $pos = strpos($html,$needle,$pos);
                 if ($pos !== false) {
-                    $html = substr_replace($html,"", $pos, strlen($needle));
+                    $html = substr_replace($html,'<span id="option_text-'.$k.'" class = "option_text" >##', $pos, strlen($needle));
                 }
 
-               $needle = "##";
-                $pos = strpos($html,$needle,$pos);
-                if ($pos !== false) {
-                    $html = substr_replace($html,"", $pos, strlen($needle));
-                }
+            //    $needle = "##";
+            //     $pos = strpos($html,$needle,$pos);
+            //     if ($pos !== false) {
+            //         $html = substr_replace($html,"", $pos, strlen($needle));
+            //     }
 
 
           }
@@ -480,16 +590,32 @@ $stmt = $pdo->prepare($sql);
 	
                     
      }
-   echo ($html);
+
+//? don't display the ## ## notation after each option but still have it in the file that is saved
+ $html3 = $html;
+
+
+
+ $images = $html3->find('img');
+ foreach ($images as $image){
+	$src3 =  $image -> src;
+	// echo ' src3: '.$src3;
+	$src3 = 'uploads/'.$src3;
+	$image->src =$src3;
+ }
+ $html3 = str_replace('##','',$html3);
+   echo ($html3);
    echo '<hr>';
 
-            //! added three brackets to get it to wrk when commented all the way down 
+           
  //  }
     
 
-        
+ $p = htmlentities($question_data['title']);
 
- 	$p = htmlentities($question_data['title']);
+//  echo ' quesiton_title: '.$question_title;
+     
+if ($question_title != false){$p = $question_title;}
  	$df = htmlentities($question_data['docxfilenm']);
  	$hf = htmlentities($question_data['htmlfilenm']);
   
@@ -500,7 +626,7 @@ $stmt = $pdo->prepare($sql);
  	$htmlfilenm_strip = substr($hf,strpos($hf,'_ht_')+4);
 
 	 
-	 $sql = "SELECT * FROM QuestionProblemConnect WHERE question_id = :question_id";
+	 $sql = "SELECT * FROM QuestionProblemConnect2 WHERE question_id = :question_id";
 	 $stmt = $pdo->prepare($sql);
 	 $stmt->execute(array(':question_id' => $question_id));
 	 $questionproblemconnect_data = $stmt -> fetch();
