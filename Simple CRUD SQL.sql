@@ -3149,6 +3149,10 @@ CREATE TABLE IF NOT EXISTS `Question` (
 	ADD `question_type` int(2) AFTER `status`, 
 	ADD `question_use` int(2) AFTER `question_type`
 
+  ALTER TABLE `Question` 
+	ADD `clarity_total` INT(20) DEFAULT 0 AFTER `num_total`, 
+	ADD `relavance_total` INT(20) DEFAULT 0 AFTER `clarity_total`
+
 
 
   ALTER TABLE `Question` 
@@ -3352,6 +3356,10 @@ CREATE TABLE IF NOT EXISTS QuestionWombActivity (
 
 ALTER TABLE `QuestionWombActivity`
 ADD `kill_justification` VARCHAR (512)  DEFAULT NULL AFTER `activity`
+
+
+ALTER TABLE `QuestionWombActivity`
+ADD `question_id` INT (11)  DEFAULT NULL AFTER `questionwomb_id`
 
 
 CREATE TABLE IF NOT EXISTS `QuestionTomb` (

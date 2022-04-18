@@ -253,6 +253,15 @@ $count_first_time = 0;
     ));
     $question_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    $nm_author = $question_data['nm_author'];
+    $nm_checker1 = $question_data['nm_checker1'];
+    $nm_checker2 = $question_data['nm_checker2'];
+    $nm_checker3 = $question_data['nm_checker3'];
+    $nm_checker4 = $question_data['nm_checker4'];
+    $nm_checker5 = $question_data['nm_checker5'];
+    $explanation_filenm = $question_data['explanation_filenm'];
+
+
     //? look thru questiondata and see how many correct options there already
     $num_correct_responses = $num_responses = $key_total = 0;
     $select_one_flag = 1;
@@ -345,6 +354,23 @@ $stmt->execute(array(
 //     echo '<br>';
 //     echo ' question_id = '.$question_id;
 
+        //? see if the student has ever seen this problem before to see if they should rate it  Same code from question_check
+        $sql = "SELECT * FROM QuestionActivity WHERE question_id = :question_id AND questionset_id = :questionset_id AND student_id = :student_id AND (repeat_correct_flag = 1 OR repeat_wrong_flag = 1) ORDER BY questionactivity_id DESC LIMIT 1";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array(
+        ':question_id' => $question_id,
+        ':questionset_id' => $questionset_id,
+        ':student_id' => $student_id,
+        ));
+            $questionactivity_data = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if($questionactivity_data){
+                //? already answered this question activity
+              $first_time_flag = 0;
+
+            } else {
+                $first_time_flag = 1;
+            }
 
 
 ?>
@@ -369,6 +395,9 @@ $stmt->execute(array(
 }
 .hide{ 
 display: none;
+}
+.disable{ 
+    pointer-events:none;
 }
 .container{
     display: flex
@@ -499,6 +528,28 @@ if (strlen($error)>2){
 echo 'Question Number: '.$question_id;
 ?>
 
+<span id = "author_container" class = "hide">
+        <span id = "nm_author" class = "text-dark mx-1 fw-normal">
+        <?php
+        if (isset($nm_author)&& strlen($nm_author)>1){
+            echo 'Author: '.$nm_author;
+        }
+        ?>
+
+        </span>
+        <span id = "nm_checkers" class = " mx-1 fw-light">
+        <?php
+        if (isset($nm_checker1)&& strlen($nm_checker1)>1){ echo 'Editors: '.$nm_checker1;}
+        if (isset($nm_checker2)&& strlen($nm_checker1)>2){ echo ', '.$nm_checker2;}
+        if (isset($nm_checker3)&& strlen($nm_checker1)>3){ echo ', '.$nm_checker3;}
+        if (isset($nm_checker4)&& strlen($nm_checker4)>1){ echo ', '.$nm_checker4;}
+        if (isset($nm_checker5)&& strlen($nm_checker5)>1){ echo ', '.$nm_checker5;}
+        ?>
+
+    </span>
+<span>
+
+
 </div>
 <div id ="results-container" class = "mt-1 ms-3 hide">
     <h2> 
@@ -523,7 +574,7 @@ echo $html2;
             <input id = "clarity_rating" class="rating " max="5"  oninput="this.style.setProperty('--value', this.value)" step="1" type="range"  value="1">
             </label>
             <label class="rating-label">  Relavance of Question
-            <input id = "relavance_rating" class="rating hide" max="5"  oninput="this.style.setProperty('--value', this.value)" step="0.5" type="range"  value="1">
+            <input id = "relavance_rating" class="rating hide disable" max="5"  oninput="this.style.setProperty('--value', this.value)" step="0.5" type="range"  value="1">
             </label>
 </div>
 
@@ -545,10 +596,16 @@ echo $html2;
             <input type = "hidden" id = "email-flag" name = "email-flag" value = "<?php echo $email_flag;?>"></input>
             <input type = "hidden" id = "show_answer_flag" name = "show_answer_flag" value = "<?php echo $show_answer_flag;?>"></input>
             <input type = "hidden" id = "total_count" name = "total_count" value = "<?php echo $total_count;?>"></input>
+            <input type = "hidden" id = "first_time_flag" name = "first_time_flag" value = "<?php echo $first_time_flag;?>"></input>
+            <input type = "hidden" id = "explanation_filenm" name = "explanation_filenm" value = "<?php echo $explanation_filenm;?>"></input>
 
             <button type = "submit" id = "next_question" class = "btn btn-warning ms-5 hide">Next Question</button>
             <h3 id = "no_more_questions" class = "text-success hide" > All Questions Completed.  <p> You may close the browser window </p> </h3>
           </form>
+        <br>
+          <div id = "explanation_container" class = "ms-2">
+
+          </div>
   
         </div>
 
@@ -584,19 +641,29 @@ const no_more_questions = document.getElementById('no_more_questions');
 const total_count = document.getElementById('total_count');
 const clarity_rating = document.getElementById('clarity_rating'); 
 const relavance_rating = document.getElementById('relavance_rating'); 
+const author_container = document.getElementById('author_container');
+const first_time_flag = document.getElementById('first_time_flag').value;
+const explanation_filenm = document.getElementById('explanation_filenm').value;
+const explanation_container = document.getElementById('explanation_container');
 
+
+ console.log ('explanation_filenm ', explanation_filenm);
 
 clarity_rating.addEventListener('change', ()=>{
-// unhide the clarity rating
-relavance_rating.classList.remove('hide');
-
+    // unhide the clarity rating
+    if (first_time_flag ==1){
+            relavance_rating.classList.remove('hide');
+            relavance_rating.classList.remove('disable');
+            star_rating.classList.remove('hide');
+    }
 })
-relavance_rating.addEventListener('change', ()=>{
-// unhide the submit button
-submit_button.classList.remove("hide");
+    relavance_rating.addEventListener('change', ()=>{
+    // unhide the submit button
+    submit_button.classList.remove("hide");
 
-})
+    })
 
+    // console.log ('clarity rating value ',clarity_rating.value)
 
 
 //? shuffle the responses and keep track of how we shuffled them
@@ -677,6 +744,7 @@ function shuffle(array) {
             let selected = document.getElementById(event.target.id);
             if(selected.value =="unselected"){selected.value = "selected";}else{selected.value = "unselected";};
 console.log ('select one flag',select_one_flag);
+
             
             
       //      if(selected.classList.contains("gray") && select_one_flag == 0 ){selected.classList.remove("gray"); selected.value = "selected"; submit_button.classList.remove("hide");}else{selected.classList.add("gray");  selected.value = "selected";};
@@ -695,8 +763,10 @@ console.log ('select one flag',select_one_flag);
                     }
                         selected.classList.remove("gray");
                         selected.value = "selected";
+
+                        if (first_time_flag == 1){star_rating.classList.remove("hide");} else {submit_button.classList.remove("hide");}
  //!                       submit_button.classList.remove("hide");
-                        star_rating.classList.remove("hide");
+       //                 star_rating.classList.remove("hide");
               //          selected.classList.add("selected");
 
                         console.log (' selected', selected);
@@ -760,7 +830,9 @@ console.log('selected_ar',selected_ar);
    info[2] = questionset_id;
    info[3] = student_id;
    info[4] = email_flag;
-   let k = 5;
+   info[5] = clarity_rating.value;
+   info[6] = relavance_rating.value;
+   let k = 7;
     selected_ar.forEach((selected)=>{
         info[k] = selected;
         console.log (info[k]);
@@ -781,6 +853,17 @@ console.log('selected_ar',selected_ar);
                     console.log('rd_score',rd.score);
                     question_id.value = rd.question_id;
                     questionset_id.value = rd.questionset_id;
+
+                    //? display the explaination if there is ones
+                    if (explanation_filenm){
+                        const full_path =  "uploads/"+explanation_filenm+".htm"
+ //                       console.log("full_path",full_path);
+
+                        explanation_container.innerHTML = '<object type="text/html" data="'+full_path+'" ></object>'
+                    }
+
+
+
             //       if(questionset_id.value != 0){
                     // if(rd.count_first_time >= 0 || rd.count_repeat >= 0){
 
@@ -788,8 +871,8 @@ console.log('selected_ar',selected_ar);
 
                         if(typeof   rd.questionset_id === 'undefined' ||  rd.questionset_id == 0){
                         // if(rd.count_first_time == 0 && rd.count_repeat == 0){
-                        next_question.classList.add("hide");
-                        no_more_questions.classList.remove("hide");
+                            next_question.classList.add("hide");
+                            no_more_questions.classList.remove("hide");
                         } else {
                             next_question.classList.remove("hide");
                         }
@@ -802,6 +885,7 @@ console.log('selected_ar',selected_ar);
                         results.innerHTML += '<p class = "text-secondary mt-2 fs-5"> Points= '+rd.score+' Total Points = '+rd.total_score+'</p>';
 
                         results_container.classList.remove('hide');
+                        author_container.classList.remove('hide');
 
                         const correct_icons = document.querySelectorAll(".correct_icon");
                         let z = 0;

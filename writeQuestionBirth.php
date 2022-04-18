@@ -71,6 +71,7 @@ table {
 
     <h1> Quick Response Review and Promote Questions </h1>
 
+	<div class="goback ms-4 my-2"><a  href="QRPRepo.php">Finished / Cancel - go back to Repository</a></div>
 
         <?php
         if (isset($_GET['success_flag']) && $_GET['success_flag'] != '0'){
@@ -90,6 +91,8 @@ table {
                 <th> Course </th>
                 <th> Concept </th>
                 <th> Title </th>
+                <th> Accepts </th>
+                <th> Reject </th>
                 <th> Status </th>
                 <th> Type </th>
                 <th> Use </th>
@@ -117,6 +120,12 @@ table {
                     </td>
                     <td >
                     '.$qw_datum["title"].'
+                    </td>
+                    <td >
+                    '.$qw_datum["num_accept"].'
+                    </td>
+                    <td >
+                    '.$qw_datum["num_reject"].'
                     </td>
                     <td >
                     '.$qw_datum["status"].'

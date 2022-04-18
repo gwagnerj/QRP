@@ -27,9 +27,11 @@
         $questionset_id = $info[2];
         $student_id = $info[3];
         $email_flag = $info[4];
+        $clarity_rating = intval(($info[5]+0)*10);
+        $relavance_rating = intval(($info[6]+0)*10);
         $selected_ar = array();
-        for ($i = 5; $i < count($info); $i++){
-            $k = $i-5;
+        for ($i = 7; $i < count($info); $i++){
+            $k = $i-7;
             $selected_ar[$k] = $info[$i];
             $response_alias_ar[$k] = explode('-',$info[$i])[1];
         }
@@ -244,6 +246,32 @@
                           ':score' => $score,
                              )
                  );
+
+                        if ($correct_flag == 1 && $first_time_flag ==1 ){
+                                    $sql = "UPDATE Question SET  num_total = num_total + 1, clarity_total = clarity_total + :clarity_rating, relavance_total = relavance_total + :relavance_rating
+                                        WHERE `question_id` = :question_id
+                                    ";
+                                            $stmt = $pdo->prepare($sql);
+                                                $stmt->execute(array(
+                                                ':question_id'=>  $question_id,
+                                                ':clarity_rating'=>  $clarity_rating,
+                                                ':relavance_rating'=>  $relavance_rating,
+                                                    )
+                                        );
+                                    } else if($correct_flag == 0  && $first_time_flag ==1 ) {
+                                        $sql = "UPDATE Question SET  num_total = num_total + 1, num_correct = num_correct+1, clarity_total = clarity_total + :clarity_rating, relavance_total = relavance_total + :relavance_rating
+                                        WHERE `question_id` = :question_id
+                                    ";
+                                            $stmt = $pdo->prepare($sql);
+                                                $stmt->execute(array(
+                                                ':question_id'=>  $question_id,
+                                                ':clarity_rating'=>  $clarity_rating,
+                                                ':relavance_rating'=>  $relavance_rating,
+
+                                                    )
+                                        );
+
+                                    }
 
         } 
         else

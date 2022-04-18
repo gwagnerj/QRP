@@ -38,6 +38,10 @@ display: none;
 
 body {margin:2em;padding:0}
 
+.navbar{
+display: flex;
+}
+
 </style>
 
 
@@ -59,11 +63,15 @@ if (isset($_SESSION['success'])) {
     unset($_SESSION['success']);
 }
 
-echo('<form action = "QRQuestionMgmt1.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-dark" type = "submit" value ="Question Mgmt"></form> &nbsp;');
-echo('<form action = "writeQuestionBirth.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-primary" type = "submit" value ="Promote Questions to Active Bank"></form> &nbsp;');
+?>
+<nav class="navbar">
+    <?php
+    echo('<form action = "QRQuestionMgmt1.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-dark btn-lg" type = "submit" value ="Set Up Questions for Delivery"></form> &nbsp;');
+    echo('<form action = "writeQuestionBirth.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-primary btn-lg" type = "submit" value ="Promote Questions to Active Bank"></form> &nbsp;');
+    echo('<form action = "writeQuestionStudentActivity.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-success btn-lg" type = "submit" value ="Check Student Question Activity"></form> &nbsp;');
 
 ?>
-
+</nav>
 
   <p style="font-size:20px;"></p>   
     

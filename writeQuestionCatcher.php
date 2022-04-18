@@ -254,7 +254,7 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 					if ($question_use == 1){ $score = 10;}
 					if ($question_use == 2){ $score = 15;}
 					if ($question_use == 3){ $score = 20;}
-					if ($question_use == 4){ $score = 30;}
+					if ($question_use == 4){ $score = 25;}
 		
 
 

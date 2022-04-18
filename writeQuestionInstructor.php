@@ -76,8 +76,12 @@ if (isset($_GET['questionwomb_id'])){
         $full_explan_filenm = 'uploads/'.$explanation_filenm.'.htm';
      //   echo ' full_explan_filenm   ______  '. $full_explan_filenm;
         $html_explan -> load_file ($full_explan_filenm);
-        $ret_expl = $html_explan->find('#explanation')[0]->innertext;
-        $explanation_str = $ret_expl;
+        if ($html_explan){
+            $ret_expl = $html_explan->find('#explanation')[0]->innertext;
+            $explanation_str = $ret_expl;
+        } else {
+            $explanation_str = '';
+        }
     }
 
     $html = new simple_html_dom();

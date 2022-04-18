@@ -140,12 +140,15 @@ $html_explan_str = $html_explan;
 <section id = "instructions" class = "instructions my-4">
 		<label for = "check_items" class = "fw-bold"> Please Check Question for: </label>
 	<div id = "check_items" class = " p-2 ">
-		<div class = "row  ">
+	<div class = "row  ">
 			<div class = "col-3 " title = "It should be clear what the question is asking">
 				<input class ="form-check-input p-2" type = "checkbox"   > Clarity </input>
 			</div>
 			<div class = "col-3" title = "Question should fit the catagory and be a good question for that catagory and grade">
 				<input class ="form-check-input p-2" type = "checkbox"   > Relavance </input>
+			</div>
+			<div class = "col-3"  title = "Catagories are Basic Knowledge, Basic Concept, More Advanced Concept, and Involving Calculations">
+				<input class ="form-check-input p-2" type = "checkbox"  > Question Usage & Type</input>
 			</div>
 			<div class = "col-3"  title = "No spelling or gramatical errors and sentences should be clear and easy to read">
 				<input class ="form-check-input p-2" type = "checkbox"  > Spelling/Grammer</input>
@@ -158,6 +161,10 @@ $html_explan_str = $html_explan;
 			<div class = "col-3" title = "Options that are not the key should be clearly incorrect">
 				<input class ="form-check-input" type = "checkbox"  > Non Key Options Incorrect</input>
 			</div>
+			<div class = "col-3"  title = "Catagories are Just Text - Single Correct, Contains images - Single Correct and Multiple Correct">
+				<input class ="form-check-input p-2" type = "checkbox"  > Title, Discipline, Course, Concept</input>
+			</div>
+
 			<div class = "col-3">
 				<input id = "explaination_check" class ="form-check-input" type = "checkbox"  title = "Numerical questions should have a clear solution and conceptual questions should have a clear explaination"  > <span id = "explaination_check_text"  title = "Numerical questions should have a clear solution and conceptual questions should have a clear explaination" class = ""> Explaination/Solution is clear </span></input>
 		</div>
@@ -184,9 +191,25 @@ for ($i = 0; $i < 10; $i++){
 echo '<br>';
 
 // $question_use
+// echo '<br>';
+
+// $question_use
 echo '<span class = "text-primary">Question Usage: </span>'.$question_use_ar[$question_use];
 echo '<br>';
 echo '<span class = "text-primary">Question Type: </span>'.$question_type_ar[$question_type];
+echo '<br>';
+echo '<br>';
+echo '<span class = "text-primary">Title: </span>'.$questionwomb_data['title'];
+echo '<br>';
+echo '<span class = "text-primary">Discipline: </span>'.$questionwomb_data['subject'];
+echo '<br>';
+
+echo '<span class = "text-primary">Course: </span>'.$questionwomb_data['course'];
+echo '<br>';
+
+echo '<span class = "text-primary">Primary Concept: </span>'.$questionwomb_data['primary_concept'];
+
+echo '<hr>';
 
 echo $html_explan_str;
 
@@ -195,7 +218,6 @@ echo $html_explan_str;
 ?>
 		<input type="hidden" id="iid" value="<?php echo ($iid)?>">
 		<input type="hidden" id="questionwomb_id" value="<?php echo ($questionwomb_id)?>">
-		<input type="hidden" id="go_to_edit_flag" value="<?php echo ($go_to_edit_flag)?>">
 		<input type="hidden" id="question_use" value="<?php echo ($question_use)?>">
 
 <script>

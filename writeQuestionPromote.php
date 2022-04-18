@@ -16,7 +16,6 @@ require_once "pdo.php";
             $qw_data = $stmt -> fetch();
             $qw_student_id = $qw_data['student_id'];
 
-            // $status = $qw_data['status'];
             $question_use = $qw_data['question_use'];
             // $id_checker1 = $qw_data['id_checker1'];
             // $id_checker2 = $qw_data['id_checker2'];
@@ -29,29 +28,6 @@ require_once "pdo.php";
             if ($question_use == 3){ $score = 10;}
             if ($question_use == 4){ $score = 10;}
 
-        // $sql = 'SELECT * FROM Student WHERE student_id = :student_id';
-        // $stmt = $pdo->prepare($sql);	
-		// 	$stmt->execute(array(
-        //         ":student_id"   =>   $qw_student_id, 
-        //     ));
-        //     $student_data = $stmt -> fetch();
-
-        //     $first_name = $student_data['first_name'];
-        //     $last_name = $student_data['last_name'];
-        //     $student_name = $first_name . ' ' . $last_name;
-
-           
-        //     $sel_nm = '';
-        //     if ($id_checker5 ==0){ $sel_id = 'id_checker5'; $sel_nm = 'nm_checker5'; $status = 'reviewed5'; }  //? select the first nonzero entry
-        //     if ($id_checker4 ==0){ $sel_id = 'id_checker4'; $sel_nm = 'nm_checker4'; $status = 'reviewed4'; }  //? select the first nonzero entry
-        //     if ($id_checker3 ==0){ $sel_id = 'id_checker3'; $sel_nm = 'nm_checker3'; $status = 'reviewed3'; }  //? select the first nonzero entry
-        //     if ($id_checker2 ==0){ $sel_id = 'id_checker2'; $sel_nm = 'nm_checker2'; $status = 'reviewed2';}
-        //     if ($id_checker1 ==0){ $sel_id = 'id_checker1'; $sel_nm = 'nm_checker1'; $status = 'reviewed1';}
-
-        //     if ($sel_nm == ''){ 
-        //         echo '0';    // indicates a failure
-        //         die();
-        //         }
 
                 $sql = "INSERT INTO QuestionWombActivity (
                     `student_id`,
@@ -72,7 +48,7 @@ require_once "pdo.php";
                 ':activity' => 'promoted',
                 ':score' => $score,
                 ));	
-
+                $questionwombactivity_id = $pdo->lastInsertId();
               
 
       
@@ -102,7 +78,7 @@ require_once "pdo.php";
                 nm_checker3,
                 nm_checker4,
                 nm_checker5,
-                htmlfilenm,
+              
                 key_a,
                 key_b,
                 key_c,
@@ -112,8 +88,7 @@ require_once "pdo.php";
                 key_g,
                 key_h,
                 key_i,
-                key_j,
-                explanation_filenm
+                key_j
                 )
                 VALUES (
                     :primary_concept,
@@ -141,7 +116,6 @@ require_once "pdo.php";
                     :nm_checker3,
                     :nm_checker4,
                     :nm_checker5,
-                    :htmlfilenm,
                     :key_a,
                     :key_b,
                     :key_c,
@@ -151,8 +125,7 @@ require_once "pdo.php";
                     :key_g,
                     :key_h,
                     :key_i,
-                    :key_j,
-                    :explanation_filenm
+                    :key_j
                   )';
 			$stmt = $pdo->prepare($sql);	
 			$stmt->execute(array(
@@ -181,7 +154,6 @@ require_once "pdo.php";
                ':nm_checker3' => $qw_data['nm_checker3'],
                ':nm_checker4' => $qw_data['nm_checker4'],
                ':nm_checker5' => $qw_data['nm_checker5'],
-               ':htmlfilenm' => $qw_data['htmlfilenm'],
                ':key_a' => $qw_data['key_a'],
                ':key_b' => $qw_data['key_b'],
                ':key_c' => $qw_data['key_c'],
@@ -192,8 +164,71 @@ require_once "pdo.php";
                ':key_h' => $qw_data['key_h'],
                ':key_i' => $qw_data['key_i'],
                ':key_j' => $qw_data['key_j'],
-               ':explanation_filenm' => $qw_data['explanation_filenm']
             ));
+            $question_id = $pdo->lastInsertId();
+
+            $qw_htmlfilenm =  $qw_data['htmlfilenm'];
+            $qw_htmlfilenm_ar = explode('_',$qw_htmlfilenm);
+            $qw_htmlfilenm_ar = array_slice($qw_htmlfilenm_ar,2);
+            $q_htmlfilenm = 'q'.$question_id.'_'.implode('_',$qw_htmlfilenm_ar);
+            // rename the file in the directory to
+            $qw_fullnm = 'uploads/'.$qw_htmlfilenm.'.htm';
+            $q_fullnm = 'uploads/'.$q_htmlfilenm.'.htm';
+       
+            rename ($qw_fullnm,$q_fullnm);
+
+            $sql = 'UPDATE Question SET 
+                htmlfilenm=:htmlfilenm
+                WHERE question_id = :question_id';
+            $stmt = $pdo->prepare($sql);
+            $stmt -> execute(array(
+            ':question_id' => $question_id,
+            ':htmlfilenm' => $q_htmlfilenm,
+            ));
+
+            $sql = 'UPDATE QuestionWombActivity SET 
+                question_id=:question_id
+                WHERE questionwombactivity_id = :questionwombactivity_id';
+            $stmt = $pdo->prepare($sql);
+            $stmt -> execute(array(
+            ':question_id' => $question_id,
+            ':questionwombactivity_id' => $questionwombactivity_id,
+            ));
+
+
+
+
+            if($qw_data['explanation_filenm'] && strlen($qw_data['explanation_filenm'])>2){
+
+                $qw_expl_htmlfilenm =  $qw_data['explanation_filenm'];
+                $qw_expl_htmlfilenm_ar = explode('_',$qw_expl_htmlfilenm);
+                $qw_expl_htmlfilenm_ar = array_slice($qw_expl_htmlfilenm_ar,3);
+                $q_exp_filenm = 'q'.$question_id.'_expl_'.implode('_',$qw_expl_htmlfilenm_ar);
+
+                $qw_exp_fullnm = 'uploads/'.$qw_expl_htmlfilenm.'.htm';
+                $q_exp_fullnm = 'uploads/'.$q_exp_filenm.'.htm';
+
+                rename ($qw_exp_fullnm,$q_exp_fullnm);
+
+                $sql = 'UPDATE Question SET 
+               explanation_filenm=:explanation_filenm
+                WHERE question_id = :question_id';
+                $stmt = $pdo->prepare($sql);
+                $stmt -> execute(array(
+                ':question_id' => $question_id,
+                ':explanation_filenm' =>  $q_exp_filenm,
+                ));
+
+
+    
+
+            }
+
+
+
+            
+
+            // get the last question_id so we can remane the file then update the 
 
             // delete the entry from the questionwomb
 
