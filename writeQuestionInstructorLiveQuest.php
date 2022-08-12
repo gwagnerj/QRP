@@ -7,8 +7,16 @@ session_start();
 
 $explanation_str = '';
 
-if(isset($_POST)){
-  //  var_dump($_POST);
+if(isset($_POST['iid'])){
+  $iid = $_POST['iid'];
+} elseif (isset($_GET['iid'])){
+    $iid = $_GET['iid'];
+} else {
+
+$_SESSION['error'] = 'iid lost in writeQuestionInstructorLiveQuest';
+header('Location: QRPRepo.php');
+die();
+
 }
 
 if (isset($_GET['check_flag'])){ $check_flag = $_GET['check_flag'];}else{ $check_flag =0;}
@@ -26,53 +34,40 @@ $course = $primary_concept = $secondary_concept = $tertiary_concept = $question_
 $stem_text_1_str = '';
 $option_str_ar = array_fill(0,10,''); // initialize a array of blank strings
 
-//  $option_1_str =  $option_2_str = $option_3_str = $option_4_str = $option_5_str = '';
-//  $option_6_str = $option_7_str = $option_8_str = $option_9_str = '';
-$is_author_flag = true;  // assume this is true until we show it as false
-$questionwomb_id =0;
+$is_author_flag = false;  // assume this is false - not sure we need this
+$question_id =0;
 $status = "started";  //? Assume this until we can show otherwise
 
-
-
-$num_looks = 0;
-if (isset($_GET['num_looks'])){
-    $num_looks = $_GET['num_looks'];
-}
-
-
-
-if (isset($_GET['questionwomb_id'])){
-    $questionwomb_id = $_GET['questionwomb_id'];
+if (isset($_GET['question_id'])){
+    $question_id = $_GET['question_id'];
     
     
 
    
     //? comming from an edit and need to see if this is the author 1st reviewer or 2nd reviewer
-    $sql = "SELECT * FROM QuestionWomb WHERE questionwomb_id = :questionwomb_id";
+    $sql = "SELECT * FROM Question WHERE question_id = :question_id";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(':questionwomb_id' => $questionwomb_id));
-    $questionwomb_data = $stmt -> fetch();
+    $stmt->execute(array(':question_id' => $question_id));
+    $question_data = $stmt -> fetch();
 
-    $qw_student_id = $questionwomb_data['student_id'];
-    $qw_user_id = $questionwomb_data['user_id'];
-    $primary_concept = $questionwomb_data['primary_concept'];
-    $secondary_concept = $questionwomb_data['secondary_concept'];
-    $tertiary_concept = $questionwomb_data['tertiary_concept'];
-    $title = $questionwomb_data['title'];
-    $subject = $questionwomb_data['subject'];
-    $grade = $questionwomb_data['grade'];
-    $question_type = $questionwomb_data['question_type'];
-    $question_use = $questionwomb_data['question_use'];
-    $specif_ref = $questionwomb_data['specif_ref'];
-    $unpubl_auth = $questionwomb_data['unpubl_auth'];
-    $course = $questionwomb_data['course'];
-    $status = $questionwomb_data['status'];
-    $htmlfilenm = $questionwomb_data['htmlfilenm'];
-    $explanation_filenm = $questionwomb_data['explanation_filenm'];
+    $qw_student_id = $question_data['student_id'];
+    $qw_user_id = $question_data['user_id'];
+    $primary_concept = $question_data['primary_concept'];
+    $secondary_concept = $question_data['secondary_concept'];
+    $tertiary_concept = $question_data['tertiary_concept'];
+    $title = $question_data['title'];
+    $subject = $question_data['subject'];
+    $grade = $question_data['grade'];
+    $question_type = $question_data['question_type'];
+    $question_use = $question_data['question_use'];
+    $specif_ref = $question_data['specif_ref'];
+    $unpubl_auth = $question_data['unpubl_auth'];
+    $course = $question_data['course'];
+    $status = $question_data['status'];
+    $htmlfilenm = $question_data['htmlfilenm'];
+    $explanation_filenm = $question_data['explanation_filenm'];
 
-if ($check_flag ==0 && $status =='sent_back'){
-    $status = 're_started';
-}
+
   //  var_dump( $explanation_filenm);
 
     if ($explanation_filenm){
@@ -81,45 +76,39 @@ if ($check_flag ==0 && $status =='sent_back'){
         $full_explan_filenm = 'uploads/'.$explanation_filenm.'.htm';
      //   echo ' full_explan_filenm   ______  '. $full_explan_filenm;
         $html_explan -> load_file ($full_explan_filenm);
-        $ret_expl = $html_explan->find('#explanation')[0]->innertext;
-        $explanation_str = $ret_expl;
+        if ($html_explan){
+            $ret_expl = $html_explan->find('#explanation')[0]->innertext;
+            $explanation_str = $ret_expl;
+        } else {
+            $explanation_str = '';
+        }
     }
+// echo ' htmlfilenm '.$htmlfilenm;
 
     $html = new simple_html_dom();
     $full_htmlfn = 'uploads/'.$htmlfilenm.'.htm';
+
+
     $html -> load_file ($full_htmlfn);
     $ret = $html->find('#stem_text_1')[0]->innertext;
+
     $stem_text_1_str = $ret;
     $num_options = 0;
     $i = 0;
     foreach ($letters as $l){
         $select = 'key_'.$l;
-        $key[$l] = $questionwomb_data[ $select];
-        if ($questionwomb_data[ $select] != NULL){  //? its null if there is no value for it (that question did not have that part)
+        $key[$l] = $question_data[ $select];
+
+        if ($question_data[ $select] != NULL){  //? its null if there is no value for it (that question did not have that part)
             $num_options++;
             $sel = '#question_option_'.$l;
-            $option_str_ar[$i] = str_replace('##','',$html->find($sel)[0]->innertext);  //? should read in all of the previosu text from the file options that has already been put in
-        }
+            if ($html->find($sel) != NULL){
+             $option_str_ar[$i] = str_replace('##','',$html->find($sel)[0]->innertext);  //? should read in all of the previosu text from the file options that has already been put in
+            }
+         }
         $i++;
     }
-//    var_dump($key);
-  // var_dump($option_str_ar);
-   //? ________________________________________________________________________________________________________________________________________________________________
-
-   //? this is all about getting the question html and put it in the form for editing via tinymce
-
-
-    // $i=0;
-    // foreach ($letters as $l){
-        
-
-    //     $i++;
-    // }
-    //     $option_1_str = $html->find('#question_option_a')[0]->innertext;
-    // $option_1_str = str_replace('##','',$option_1_str);
-    // $option_1_str = str_replace('##','',$html->find('#question_option_a')[0]->innertext);
-    // echo $html;
-
+//   var_dump ($option_str_ar);
   
 }
 
@@ -129,63 +118,23 @@ if ($check_flag ==0 && $status =='sent_back'){
 
 //? get the contributor or student contributor information
 //? first set it up for a student coming from moodle_to_writeQuestion.php
-$student_id = 0;
-$iid = 0;
-      
-           if (isset($_POST['student_id'])){   //! uncomment this after testing
-               $student_id = $_POST['student_id'];  }
-        elseif (isset($_GET['student_id'])) 
-                { $student_id = $_GET['student_id'];    } //! uncomment this after testing
-            elseif(isset($_POST['iid'])){
-                $iid = $_POST['iid'];
-            } elseif(isset($_GET['iid'])) {
-                $iid = $_GET['iid'];
-            } else {
-                $_SESSION['error'] = "no student_id or iid in writeQuestion";
-            }
-    
-    // $student_id = 3;            //! elliminate this after editing
-if ($student_id != 0){
-            //  echo ("student_id ".$student_id) ;
-            $sql = 'SELECT * FROM Student WHERE `student_id` = :student_id';
-            $stmt = $pdo->prepare($sql);
-                $stmt->execute(array(':student_id' => $student_id));
-                $student_data = $stmt -> fetch();
-                $first_name = $student_data['first_name'];
-                $last_name = $student_data['last_name'];
-                $nm_author = $first_name.' '.$last_name;
-                $university = $student_data['university'];
-                $email = $student_data['school_email'];
-                $user_id = '';
-}
-                              //! uncomment this after testing
+
+            // $sql = 'SELECT * FROM Student WHERE `student_id` = :student_id';
+            // $stmt = $pdo->prepare($sql);
+            //     $stmt->execute(array(':student_id' => $qw_student_id));
+            //     $student_data = $stmt -> fetch();
+            //     $first_name = $student_data['first_name'];
+            //     $last_name = $student_data['last_name'];
+            //     $nm_author = $first_name.' '.$last_name;
+            //     $university = $student_data['university'];
+            //     $email = $student_data['school_email'];
 
 
-
-            if ( $iid !=0){   //! uncomment this after testing
-                $user_id = $iid;           
-       
-            $sql = 'SELECT * FROM Users WHERE `users_id` = :users_id';
-            $stmt = $pdo->prepare($sql);
-                $stmt->execute(array(':users_id' => $user_id));
-                $users_data = $stmt -> fetch();
-                $first_name = $users_data['first'];
-                $last_name = $users_data['last'];
-                $nm_author = $first_name.' '.$last_name;
-                $university = $users_data['university'];
-                $email = $users_data['email'];
-                $student_id = '';
-
-           }                       //! uncomment this after testing
-
-    if ($questionwomb_id !=0 && ($student_id == $qw_student_id || $user_id == $qw_user_id))  {
-        $is_author_flag = true;
-    }    else {
-        $is_author_flag = false;
-    } 
+    // if ($question_id !=0 && ($student_id == $qw_student_id || $user_id == $qw_user_id))  {
+    //     $is_author_flag = true;
+    // }     
 
   
-//    var_dump($_POST);
 
 
 
@@ -205,9 +154,10 @@ $discipline = '';
 		echo '<p style="color:red">'.$_SESSION['error']."</p>\n";
 		unset($_SESSION['error']);
 	}
-
+// echo 'check_flag '.$check_flag;
 ?>
 <!DOCTYPE HTML>
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> -->
 <html lang = "en">
 <head>
 <link rel="icon" type="image/png" href="McKetta.png" />  
@@ -220,8 +170,10 @@ $discipline = '';
          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"> 
          <!-- <script type="text/javascript" src="jquery-te-1.3.2.js"></script> -->
          <!-- <script src="node_modules/@wiris/mathtype-generic/wirisplugin-generic.js"></script> -->
-        <!-- <script src="https://cdn.tiny.cloud/1/85w3ssemz2iqrt9zi0qce5e3emgos9nsyvkfv9bt0loc3twd/tinymce/6/tinymce.min.js" referrerpolicy="origin"> </script>      -->
-        <script src="/QRP/tinyMCE/node_modules/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+         <!-- <script src="https://cdn.tiny.cloud/1/85w3ssemz2iqrt9zi0qce5e3emgos9nsyvkfv9bt0loc3twd/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> -->
+         <script src="/QRP/tinyMCE/node_modules/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+
+         </script>
 
     <?php  
     echo "  <script>
@@ -304,27 +256,6 @@ $discipline = '';
 
 
 
-//     echo "  <script>
-//     tinymce.init({
-//       selector: '#question-option_1',
-//       setup: function (editor) {
-//       editor.on('init', function (e) {
-//         editor.setContent('".$option_1_str."');
-//       });
-//     },
-//       min_height: 50,
-//       height: 110,
-//       margin: 10,
-//       content_style: 'body { line-height: 1; }',
-//            menubar: false,
-//            toolbar: ' superscript subscript bold italic underline cut copy paste',
-//       tinycomments_mode: 'embedded',
-//       tinycomments_author: 'Author name',
-//          plugins: 'a11ychecker advcode casechange export formatpainter linkchecker autolink lists checklist media mediaembed pageembed permanentpen powerpaste table advtable tinycomments tinymcespellchecker',
-//        //    toolbar: 'a11ycheck addcomment showcomments casechange checklist code export formatpainter pageembed permanentpen table',
-
-//     });
-//   </script>";
 
    
 
@@ -332,9 +263,6 @@ $discipline = '';
 
 
 
-         <!-- <script type="text/javascript" src="jquery-te-1.3.2.min.js"></script> -->
-        <!-- <link type="text/css" rel="stylesheet" href="jquery-te-1.3.2.css" charset="utf-8" /> -->
-        <!-- <script defer src="//unpkg.com/mathlive/dist/mathlive.min.js"></script> -->
 <style type="text/css">
 .hide{
     display: none;
@@ -426,23 +354,22 @@ input[type='checkbox'] {
    <div id = "meta_container" class = "hide">
 
         <h3><b>Please Provide Question Meta Data:</b></h3>
-   <form id = "main_form" method="POST" action ="writeQuestionCatcher.php" enctype = "multipart/form-data">
+   <form id = "main_form" method="POST" action ="writeQuestionCatcherInstructorLiveQuest.php" enctype = "multipart/form-data">
         <p></p>
 
         <input type="hidden" name="email" value ="<?php echo ($email)?>" >
         <input type="hidden" name="nm_author" value ="<?php echo ($nm_author)?>" >
         <input type="hidden" name="university" value="<?php echo ($university)?>" >
-        <input type="hidden" name="student_id" id = "student_id" value="<?php echo ($student_id)?>">
-        <input type="hidden" name="user_id" value="<?php echo ($user_id)?>">
+        <input type="hidden" name="student_id" id = "student_id" value="<?php echo ($qw_student_id)?>">
+        <input type="hidden" name="iid" value="<?php echo ($iid)?>">
         <input type="hidden" name="num_options" id = "num_options" value="<?php echo ($num_options)?>">
         <input type="hidden"  id = "is_author_flag" value="<?php echo ($is_author_flag)?>">
         <input type="hidden"  id = "qw_course" value="<?php echo ($course)?>">
         <input type="hidden"  id = "qw_primary_concept" value="<?php echo ($primary_concept)?>">
         <input type="hidden"  id = "qw_secondary_concept" value="<?php echo ($secondary_concept)?>">
-        <input type="hidden"  id = "questionwomb_id" name = "questionwomb_id" value="<?php echo ($questionwomb_id)?>">
+        <input type="hidden"  id = "question_id" name = "question_id" value="<?php echo ($question_id)?>">
         <input type="hidden"  id = "status" name = "status" value="<?php echo ($status)?>">
         <input type="hidden"  id = "check_flag" name = "check_flag" value="<?php echo ($check_flag)?>">
-        <input type="hidden"  id = "num_looks" name = "num_looks" value="<?php echo ($num_looks)?>">
        
         <div class = "row" id = "title_container">
             <p> Question Title:
@@ -760,15 +687,18 @@ $(document).ready(function(){
     let radios = document.getElementsByClassName("radio");
      let checks = document.getElementsByClassName("check");
      const error_in_form = document.getElementById('error_in_form');
-     const questionwomb_id = document.getElementById('questionwomb_id').value;
+     const question_id = document.getElementById('question_id').value;
      const write_btn = document.getElementById('write_btn');
     const big_question_container = document.getElementById('big_question_container');
     const soln_container = document.getElementById('soln_container');
     const student_id = document.getElementById('student_id').value;
     const check_flag = document.getElementById('check_flag').value;
-    const num_looks = document.getElementById('num_looks').value;
     const explanation = document.getElementById('explanation');
 
+
+    // these function not needed for this application_name
+    write_btn.classList.add("hide");
+    check_btn.classList.add("hide");
   
 // let tox_editor_header = document.getElementsByClassName('tox-editor-header');
 //     console.log(' tox_editor_header', tox_editor_header);
@@ -835,7 +765,7 @@ $(document).ready(function(){
 
     })
 
-        if (questionwomb_id != 0){
+        if (question_id != 0){
             meta_container.classList.add('hide');
             hide_meta_btn.classList.remove('hide');
             btn_group.classList.add('hide');

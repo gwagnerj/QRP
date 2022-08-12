@@ -3467,6 +3467,58 @@ CREATE TABLE IF NOT EXISTS `QuestionTomb` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+ALTER TABLE `Users`
+ADD `discipline_id` INT (5)  DEFAULT 1 AFTER `email`
+
+
+    CREATE TABLE IF NOT EXISTS UserTypicalCourseConnect (
+      `usertypicalcourseconnect_id` INT(11) NOT NULL  AUTO_INCREMENT,
+      `users_id` INT(11) NOT NULL,
+      `course_id` INT(11) NOT NULL,
+     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+    	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+       CONSTRAINT FOREIGN KEY (`users_id`) REFERENCES Users (users_id),
+      CONSTRAINT FOREIGN KEY (`course_id`) REFERENCES Course ( `course_id`),
+      PRIMARY KEY (`usertypicalcourseconnect_id`)
+    ) ENGINE=InnoDB CHARACTER SET = utf8;    
 
 
 
+CREATE TABLE IF NOT EXISTS QuickQuestionActivity (
+  quickquestionactivity_id INT(16) AUTO_INCREMENT,
+  question_id INT(11) NOT NULL,
+  questionset_id INT(11) NOT NULL,
+  currentclass_id INT(11) NOT NULL,
+  student_id INT(11) NOT NULL,
+  try_number INT(2) DEFAULT 0 NOT NULL,
+  response_st VARCHAR (10) NOT NULL,
+  correct_flag INT (1) NOT NULL,
+  score INT (7),
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   CONSTRAINT FOREIGN KEY (`question_id`) REFERENCES Question (question_id),
+   CONSTRAINT FOREIGN KEY (`currentclass_id`) REFERENCES CurrentClass ( `currentclass_id`),
+   CONSTRAINT FOREIGN KEY (`student_id`) REFERENCES Student (`student_id`),
+  PRIMARY KEY (`quickquestionactivity_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS UniversityCourseQRCourseConnect (
+  universitycourseqrcourseconnect_id INT(11) AUTO_INCREMENT,
+  university_name VARCHAR(255)DEFAULT "TrineUniversity",
+  universitycourse_name VARCHAR(255) NOT NULL,
+  course_id INT(11) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   CONSTRAINT FOREIGN KEY (`course_id`) REFERENCES Course ( `course_id`),
+  PRIMARY KEY (`universitycourseqrcourseconnect_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+	
+ALTER TABLE `CurrentClass`
+ADD `course_id` INT (11)  DEFAULT NULL AFTER `iid`
+
+ALTER TABLE CurrentClass
+ADD CONSTRAINT  
+FOREIGN KEY (`course_id`) 
+REFERENCES Course(`course_id`);

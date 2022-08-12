@@ -16,7 +16,7 @@
 // die();
 
 
-//? get info from the post information from writeQuestion and put all meta data in the questionwomb table
+//? get info from the post information from writeQuestion and put all meta data in the question table
 $letters = range ('a','j');    //? this bit initializzes the correct key to zero so if we change it only one is selected
 
 		if (isset($_POST['iid'])){
@@ -59,37 +59,36 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 
 		//? see if the question already exists in the table_format
 
-		if (isset($_POST['questionwomb_id']) && $_POST['questionwomb_id'] != '0'){  //? we are editing a problem
-			$questionwomb_id = $_POST['questionwomb_id'];
-		} elseif (isset($_GET['questionwomb_id']) && $_GET['questionwomb_id'] != '0'){ 
-			$questionwomb_id = $_GET['questionwomb_id'];
-		}
+		if (isset($_POST['question_id']) && $_POST['question_id'] != '0'){  //? we are editing a problem
+			$question_id = $_POST['question_id'];
+		} elseif (isset($_GET['question_id']) && $_GET['question_id'] != '0'){ 
+			$question_id = $_GET['question_id'];
+		} else {
+            echo 'error question_id lost in writeQuestionCatcherLiveQuest';  //? put in session and relocate 
+            die();
+        }
 
-		//? prevent refresh of the page causing another insert by looking in table for that problem but not by questionwomb id
+		//? prevent refresh of the page causing another insert by looking in table for that problem but not by question id
 
-		if(isset($_POST['title'])){
-			$sql = 'SELECT questionwomb_id FROM QuestionWomb 
-				WHERE student_id =:student_id AND user_id = :user_id AND title = :title AND `course`= :course AND `primary_concept`= :primary_concept';
+	
+			$sql = 'SELECT * FROM Question 
+				WHERE question_id = :question_id';
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
-					':student_id' => $student_id,
-					':user_id' => $iid,
-					':course' => $_POST['course'],
-					':primary_concept' =>$_POST['p_concept'],
-					':title' => $title,
+					':question_id' => $question_id,
 				));
-				$questionwomb_id_data = $stmt -> fetch();
+				$question_old_data = $stmt -> fetch();
 
-				If ($questionwomb_id_data){
-					 $questionwomb_id = $questionwomb_id_data['questionwomb_id'];
+				If ($question_old_data){
+                    $htmlfilenm = $question_old_data['htmlfilenm'];      
+                    $explanation_filenm = $question_old_data['explanation_filenm'];             
 					$go_to_edit_flag = true;
 					
 				}
 
-		} 
 
 
-		if ($questionwomb_id != 0){  // we have an edited problem and need to update it
+		if ($question_id != 0){  // we have an edited problem and need to update it
 
 		$correct_entry = '';
 		for ($i = 0; $i <$num_correct; $i++) {
@@ -98,10 +97,10 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 		$correct_entry = rtrim($correct_entry,',');
 	//	 echo ' correct entry '.$correct_entry;
 
-			// $sql = "SELECT * FROM QuestionWomb WHERE questionwomb_id = :questionwomb_id";
+			// $sql = "SELECT * FROM Question WHERE question_id = :question_id";
 			// $stmt = $pdo->prepare($sql);
-			// $stmt->execute(array(':questionwomb_id' => $questionwomb_id));
-			// $questionwomb_data = $stmt -> fetch();
+			// $stmt->execute(array(':question_id' => $question_id));
+			// $question_data = $stmt -> fetch();
 
 
 			//! this was put in to make sure there is no more than the correct key written but right now is erasign all
@@ -109,9 +108,9 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 		if (isset($_POST['correct_option'])){
 			for ($i = 0; $i < $num_options; $i++){  //? this bit initializzes the correct key to zero so if we change it only one is selected
 				$sel = 'key_'.$letters[$i];
-				$sql = 'UPDATE QuestionWomb SET	'.$sel.' = 0 WHERE questionwomb_id = :questionwomb_id';
+				$sql = 'UPDATE Question SET	'.$sel.' = 0 WHERE question_id = :question_id';
 				$stmt = $pdo->prepare($sql);
-				$stmt->execute(array(':questionwomb_id'=>$questionwomb_id));
+				$stmt->execute(array(':question_id'=>$question_id));
 
 			}
 		}
@@ -126,15 +125,8 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 				$question_format_tx = $question_format_ar[$index];
 
 
-			$htmlfilenm = 'qw_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
 
-
-
-			$sql = "UPDATE QuestionWomb SET 
-			`htmlfilenm` = :htmlfilenm, 
-			`nm_author` = :nm_author,
-			`email` = :email,
-			`student_id`= :student_id,
+			$sql = "UPDATE Question SET 
 			`user_id` = :user_id,
 			`unpubl_auth`= :unpubl_auth,
 			`specif_ref` = :specif_ref,
@@ -150,13 +142,9 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 			`status`= :status,
 			`university`= :university,
 			".$correct_entry."
-		WHERE questionwomb_id=:questionwomb_id";
+		WHERE question_id=:question_id";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
-					':htmlfilenm'=> $htmlfilenm,
-					':nm_author' => $nm_author,
-					':email' => $_POST['email'],
-					':student_id' => $student_id,
 					':user_id' => $iid,
 					':unpubl_auth' => $un_nm_author,
 					':specif_ref' => $spec_ref,
@@ -171,9 +159,7 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 					':question_use' => $_POST['question_usage'],
 					':status' => $_POST['status'],
 					':university' => $_POST['university'],
-					':questionwomb_id' => $questionwomb_id,
-					
-
+					':question_id' => $question_id,
 				));
 		
 		
@@ -181,7 +167,7 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 
 
 
-					// $sql = "INSERT INTO QuestionWomb (
+					// $sql = "INSERT INTO Question (
 					// 	`nm_author`,
 					// 	`email`,
 					// 	`student_id`,
@@ -243,7 +229,7 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 
 					// ));	
 
-					// $questionwomb_id = $pdo->lastInsertId();
+					// $question_id = $pdo->lastInsertId();
 
 					// //? figure out score for this
 
@@ -256,29 +242,29 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 		
 
 
-					// $sql = "INSERT INTO QuestionWombActivity (
+					// $sql = "INSERT INTO QuestionActivity (
 					// 	`student_id`,
-					// 	`questionwomb_id`,
+					// 	`question_id`,
 					// 	`activity`,
 					// 	`score`
 					// 	)
 					// VALUES (
 					// 	:student_id,
-					// 	:questionwomb_id,
+					// 	:question_id,
 					// 	:activity,
 					// 	:score
 					// 	) ";
 					// $stmt = $pdo->prepare($sql);
 					// $stmt->execute(array(
 					// ':student_id' => $student_id,
-					// ':questionwomb_id' => $questionwomb_id,
+					// ':question_id' => $question_id,
 					// ':activity' => 'author',
 					// ':score' => $score,
 					// ));	
 	
 	
 		}
-		// echo ' questionwomb_id '. $questionwomb_id;
+		// echo ' question_id '. $question_id;
 		// echo '<br>';
 
 		$question_use_ar = array('_BK_','_BC_','_AC_','_Num_');
@@ -291,49 +277,47 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 		// echo ' index ',$index;
 		//  echo ' question_format_tx ',$question_format_tx;
 
-		$htmlfilenm = 'qw_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
-		$auth_solnfilenm = 'qw_soln_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
-		$check1_solnfilenm = 'qw_check1_soln_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
-		$check2_solnfilenm = 'qw_check2_soln_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
-		$check3_solnfilenm = 'qw_check3_soln_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
-		$explanation_filenm = 'qw_explanation_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
+		// $htmlfilenm = 'qw_'.$question_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
+		// $auth_solnfilenm = 'qw_soln_'.$question_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
+		// $check1_solnfilenm = 'qw_check1_soln_'.$question_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
+		// $check2_solnfilenm = 'qw_check2_soln_'.$question_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
+		// $check3_solnfilenm = 'qw_check3_soln_'.$question_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
+		// $explanation_filenm = 'qw_explanation_'.$question_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
 
-		$sql = "UPDATE QuestionWomb SET 
-		htmlfilenm = :htmlfilenm, 
-		auth_solnfilenm = :auth_solnfilenm, 
-		check1_solnfilenm = :check1_solnfilenm,
-		check2_solnfilenm = :check2_solnfilenm, 
-		check3_solnfilenm = :check3_solnfilenm,	
-		explanation_filenm = :explanation_filenm	
-		WHERE questionwomb_id=:questionwomb_id";
-				$stmt = $pdo->prepare($sql);
-				$stmt->execute(array(
-					':htmlfilenm'=> $htmlfilenm,
-					':auth_solnfilenm' => $auth_solnfilenm,
-					':questionwomb_id' => $questionwomb_id,
-					':check1_solnfilenm' => $check1_solnfilenm,
-					':check2_solnfilenm' => $check2_solnfilenm,
-					':check3_solnfilenm' => $check3_solnfilenm,
-					':explanation_filenm' => $explanation_filenm,
-				));
+		// $sql = "UPDATE Question SET 
+		// htmlfilenm = :htmlfilenm, 
+		// auth_solnfilenm = :auth_solnfilenm, 
+		// check1_solnfilenm = :check1_solnfilenm,
+		// check2_solnfilenm = :check2_solnfilenm, 
+		// check3_solnfilenm = :check3_solnfilenm,	
+		// explanation_filenm = :explanation_filenm	
+		// WHERE question_id=:question_id";
+		// 		$stmt = $pdo->prepare($sql);
+		// 		$stmt->execute(array(
+		// 			':htmlfilenm'=> $htmlfilenm,
+		// 			':auth_solnfilenm' => $auth_solnfilenm,
+		// 			':question_id' => $question_id,
+		// 			':check1_solnfilenm' => $check1_solnfilenm,
+		// 			':check2_solnfilenm' => $check2_solnfilenm,
+		// 			':check3_solnfilenm' => $check3_solnfilenm,
+		// 			':explanation_filenm' => $explanation_filenm,
+		// 		));
 
 
 
 // get the keys to mark the correct answer(s) below
-	$sql = "SELECT * FROM QuestionWomb WHERE questionwomb_id = :questionwomb_id";
+	$sql = "SELECT * FROM Question WHERE question_id = :question_id";
 	$stmt = $pdo->prepare($sql);
-	$stmt->execute(array(':questionwomb_id' => $questionwomb_id));
-	$questionwomb_data = $stmt -> fetch();
+	$stmt->execute(array(':question_id' => $question_id));
+	$question_data = $stmt -> fetch();
 	for ($i = 0; $i < $num_options; $i++){
 		$sel = 'key_'.$letters[$i];
-		$key[$i] = $questionwomb_data[$sel];
+		$key[$i] = $question_data[$sel];
 	}
 // if ($go_to_edit_flag){
-// 	header('Location: writeQuestion.php?questionwomb_id='.$questionwomb_id.'&student_id='.$student_id);
+// 	header('Location: writeQuestion.php?question_id='.$question_id.'&student_id='.$student_id);
 //     die();
 // }
-
-
 
 //? make the html file with simple_html_dom
   $question_stem_text_1 = strip_ps( $_POST['question_stem_text_1']);
@@ -375,12 +359,13 @@ for ($i = 0; $i < $num_options ;$i++){
 
 
 $html ->load($body);
-//! write the new information to the file
-
 
 $full_htmlfilenm = 'uploads/'.$htmlfilenm.'.htm';
-$html->save($full_htmlfilenm);
 
+// echo ' full_htmlfilenm '.$full_htmlfilenm;
+// die();
+
+$html->save($full_htmlfilenm);
 //! this is the same as above but without the ## around the option to display the preview
 $body = '
 <html>
@@ -437,97 +422,98 @@ $html_explanation = $html_explain;
 
 // die();		
 			if (isset($_POST['feedback_a'])){
-				$sql = "UPDATE QuestionWomb SET fbtext_a = :fbtext_a WHERE questionwomb_id = :questionwomb_id";
+				$sql = "UPDATE Question SET fbtext_a = :fbtext_a WHERE question_id = :question_id";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':fbtext_a' => $_POST['feedback_a'],
-					':questionwomb_id' => $_POST['questionwomb_id']));	
+					':question_id' => $_POST['question_id']));	
 			}
 			
 			
 			if (isset($_POST['feedback_b'])){
-				$sql = "UPDATE QuestionWomb SET fbtext_b = :fbtext_b WHERE questionwomb_id = :questionwomb_id";
+				$sql = "UPDATE Question SET fbtext_b = :fbtext_b WHERE question_id = :question_id";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':fbtext_b' => $_POST['feedback_b'],
-					':questionwomb_id' => $_POST['questionwomb_id']));	
+					':question_id' => $_POST['question_id']));	
 			}
 			
 			
 			if (isset($_POST['feedback_c'])){
-				$sql = "UPDATE QuestionWomb SET fbtext_c = :fbtext_c WHERE questionwomb_id = :questionwomb_id";
+				$sql = "UPDATE Question SET fbtext_c = :fbtext_c WHERE question_id = :question_id";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':fbtext_c' => $_POST['feedback_c'],
-					':questionwomb_id' => $_POST['questionwomb_id']));	
+					':question_id' => $_POST['question_id']));	
 			}
 			
 			
 			if (isset($_POST['feedback_d'])){
-				$sql = "UPDATE QuestionWomb SET fbtext_d = :fbtext_d WHERE questionwomb_id = :questionwomb_id";
+				$sql = "UPDATE Question SET fbtext_d = :fbtext_d WHERE question_id = :question_id";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':fbtext_d' => $_POST['feedback_d'],
-					':questionwomb_id' => $_POST['questionwomb_id']));	
+					':question_id' => $_POST['question_id']));	
 			}
 			
 			
 			if (isset($_POST['feedback_e'])){
-				$sql = "UPDATE QuestionWomb SET fbtext_e = :fbtext_e WHERE questionwomb_id = :questionwomb_id";
+				$sql = "UPDATE Question SET fbtext_e = :fbtext_e WHERE question_id = :question_id";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':fbtext_e' => $_POST['feedback_e'],
-					':questionwomb_id' => $_POST['questionwomb_id']));	
+					':question_id' => $_POST['question_id']));	
 			}
 			
 			
 			if (isset($_POST['feedback_f'])){
-				$sql = "UPDATE QuestionWomb SET fbtext_f = :fbtext_f WHERE questionwomb_id = :questionwomb_id";
+				$sql = "UPDATE Question SET fbtext_f = :fbtext_f WHERE question_id = :question_id";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':fbtext_f' => $_POST['feedback_f'],
-					':questionwomb_id' => $_POST['questionwomb_id']));	
+					':question_id' => $_POST['question_id']));	
 			}
 			
 			
 			if (isset($_POST['feedback_g'])){
-				$sql = "UPDATE QuestionWomb SET fbtext_g = :fbtext_g WHERE questionwomb_id = :questionwomb_id";
+				$sql = "UPDATE Question SET fbtext_g = :fbtext_g WHERE question_id = :question_id";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':fbtext_g' => $_POST['feedback_g'],
-					':questionwomb_id' => $_POST['questionwomb_id']));	
+					':question_id' => $_POST['question_id']));	
 			}
 			
 			
 			if (isset($_POST['feedback_h'])){
-				$sql = "UPDATE QuestionWomb SET fbtext_h = :fbtext_h WHERE questionwomb_id = :questionwomb_id";
+				$sql = "UPDATE Question SET fbtext_h = :fbtext_h WHERE question_id = :question_id";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':fbtext_h' => $_POST['feedback_h'],
-					':questionwomb_id' => $_POST['questionwomb_id']));	
+					':question_id' => $_POST['question_id']));	
 			}
 			
 			
 			if (isset($_POST['feedback_i'])){
-				$sql = "UPDATE QuestionWomb SET fbtext_i = :fbtext_i WHERE questionwomb_id = :questionwomb_id";
+				$sql = "UPDATE Question SET fbtext_i = :fbtext_i WHERE question_id = :question_id";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':fbtext_i' => $_POST['feedback_i'],
-					':questionwomb_id' => $_POST['questionwomb_id']));	
+					':question_id' => $_POST['question_id']));	
 			}
 			
 			
 			if (isset($_POST['feedback_j'])){
-				$sql = "UPDATE QuestionWomb SET fbtext_j = :fbtext_j WHERE questionwomb_id = :questionwomb_id";
+				$sql = "UPDATE Question SET fbtext_j = :fbtext_j WHERE question_id = :question_id";
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute(array(
 					':fbtext_j' => $_POST['feedback_j'],
-					':questionwomb_id' => $_POST['questionwomb_id']));	
+					':question_id' => $_POST['question_id']));	
 			}
 			
 if ($check_flag !=0){
 
-	 	header('Location: writeQuestionPromotePreview.php?questionwomb_id='.$questionwomb_id.'&iid='.$iid.'&check_flag='.$check_flag);
+	 	header('Location: editActiveQuestionPreview.php?question_id='.$question_id.'&iid='.$iid.'&check_flag='.$check_flag);
+	 	// header('Location: writeQuestionPromotePreview.php?question_id='.$question_id.'&iid='.$iid.'&check_flag='.$check_flag);
 		die();
 }
 			
@@ -576,7 +562,7 @@ if ($check_flag !=0){
 
 
 <h2 class = 'mt-3'> Problem Preview </h2>
-<h6 class = "mb-1 ms-4 text-secondary"> questionw_id: <?php echo $questionwomb_id;?></h6>
+<h6 class = "mb-1 ms-4 text-secondary"> questionw_id: <?php echo $question_id;?></h6>
 
 <hr>
 
@@ -589,7 +575,7 @@ if ($check_flag !=0){
 
 		<input type="hidden" id="student_id" value="<?php echo ($student_id)?>">
 		<input type="hidden" id="iid" value="<?php echo ($iid)?>">
-		<input type="hidden" id="questionwomb_id" value="<?php echo ($questionwomb_id)?>">
+		<input type="hidden" id="question_id" value="<?php echo ($question_id)?>">
 		<input type="hidden" id="go_to_edit_flag" value="<?php echo ($go_to_edit_flag)?>">
 
 <script>
@@ -598,7 +584,7 @@ const write_btn = document.getElementById('write_btn');
 const edit_btn = document.getElementById('edit_btn');
 const check_btn = document.getElementById('check_btn');
 const student_id = document.getElementById('student_id').value;
-const questionwomb_id = document.getElementById('questionwomb_id').value;
+const question_id = document.getElementById('question_id').value;
 const delete_btn = document.getElementById('delete_btn');
 const delete_btn_activate = document.getElementById('delete_btn_activate');
 const copy_btn = document.getElementById('copy_btn');
@@ -611,12 +597,13 @@ write_btn.addEventListener('click', () =>{
 	 window.location.href = location;
 })
 edit_btn.addEventListener('click', () =>{
-	let location = 'writeQuestionInstructor.php?iid='+iid+'&questionwomb_id='+questionwomb_id;
+	let location = 'writeQuestionInstructor.php?iid='+iid+'&question_id='+question_id;
 	console.log ('location',location);
 	 window.location.href = location;
 })
 check_btn.addEventListener('click', () =>{
-	let location = 'writeQuestionPromotePreview.php?iid='+iid+'&questionwomb_id='+questionwomb_id;
+	let location = 'editActiveQuestionPreview.php?iid='+iid+'&question_id='+question_id;
+	// let location = 'writeQuestionPromotePreview.php?iid='+iid+'&question_id='+question_id;
 	console.log ('location',location);
 	 window.location.href = location;
 })
@@ -634,7 +621,7 @@ delete_btn_activate.addEventListener('click', () =>{
 //! need to fix this so that it only goes back to the edit when we want it too
 // if (go_to_edit_flag){
 // 	console.log ('go_to_edit_flag',go_to_edit_flag);
-// 	let location = 'writeQuestion.php?student_id='+student_id+'&questionwomb_id='+questionwomb_id;
+// 	let location = 'writeQuestion.php?student_id='+student_id+'&question_id='+question_id;
 // 	console.log ('location',location);
 // 	 window.location.href = location;
 // }
@@ -642,8 +629,8 @@ delete_btn_activate.addEventListener('click', () =>{
 copy_btn.addEventListener('click', () =>{
 	
 	window.location.reload();
-	// const new_question_id = parseInt(questionwomb_id) +1;
-	// let location = 'writeQuestionCatcher.php?student_id='+student_id+'&questionwomb_id='+new_question_id;
+	// const new_question_id = parseInt(question_id) +1;
+	// let location = 'writeQuestionCatcher.php?student_id='+student_id+'&question_id='+new_question_id;
 	// console.log ('location',location);
 	//  window.location.href = location;
 

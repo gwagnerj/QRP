@@ -1,7 +1,9 @@
 <?php
 	require_once "pdo.php";
 	session_start();
-    
+    if(isset($_GET['iid'])){
+		$user_id = $_GET['iid'];
+	}
     
     
     // Should put the redirects up hear or the header location will have already been sent
@@ -266,10 +268,10 @@
 
 		if (($security == 'admin' || $security == 'contrib' || $security == 'stu_contrib') && $threat_level <= 3){
 		echo '<div id = "request_prob">';
-		echo '<span class = "fw-bold fs-6">Contributing a New Problem or Question? </span><br>';
+		echo '<span class = "fw-bold fs-6">Contributing a New Problem? </span><br>';
 		echo '<a href="requestPblmNum.php" style = "color:blue;"><button title = "Problems have numerical answers and variable parameters" class = "btn btn-outline-primary me-4" style = "color:white;"><i class="bi bi-list-ol"></i> Request Problem Number</buttton></a>';
-		echo '<a href="requestQuestNum.php" style = "color:green;"><button title = "Questions are multiple choice type questions" class = "btn btn-outline-secondary"><i class="bi bi-list-ol" ></i> Request Question Number</buttton></a>';
-		echo '<a href="editquest.php" style = "color:gray;"><button title = "Questions are multiple choice type questions" class = "btn btn-outline-secondary"><i class="bi bi-list-ol" ></i> Question Edit </buttton></a>';
+		// echo '<a href="requestQuestNum.php" style = "color:green;"><button title = "Questions are multiple choice type questions" class = "btn btn-outline-secondary"><i class="bi bi-list-ol" ></i> Request Question Number</buttton></a>';
+		// echo '<a href="editquest.php" style = "color:gray;"><button title = "Questions are multiple choice type questions" class = "btn btn-outline-secondary"><i class="bi bi-list-ol" ></i> Question Edit </buttton></a>';
 		echo '</div>';
 		
 	}
@@ -533,7 +535,12 @@
 			echo("</td><td>");  
 			echo(htmlentities($row['title']));
 			echo("</td><td>");
+			
+
+			$status_update = '';
 			// if we have over 7 students that have completed it successfully we should change the status to circulated if it is not already
+			//! stupid place to put this and it does it every time thru the loop
+			
 			if($eff_stu_tot > 6 && $row['status'] != 'Circulated'){
 				$status_update = 'Circulated';
 				$sql = "UPDATE Problem SET status = :status WHERE problem_id =:problem_id";
@@ -542,11 +549,9 @@
 					'status' => $status_update,
 					'problem_id' => $row['problem_id']
 					));
-			} else {
-				$status_update = '';
 			}
 		
-		
+		//! these need to be in a 
 			$active_flag = 0; // just initializing it
 			// if it is active for this user print active for the status
 					$sql = "SELECT Assign.assign_num AS assign_ass_num, Assign.alias_num AS alias_num,Assign.currentclass_id as currentclass_id ,Assign.assign_id as assign_id FROM Assign WHERE prob_num = :prob_num and iid = :iid";
@@ -556,6 +561,8 @@
                       ':iid' => $users_id,
                     ));
 					$row2 = $stmt8->fetch(PDO::FETCH_ASSOC); 
+
+					$assign_id = '';
                     if ($row2 !=false ){
                        $assign_id =  $row2['assign_id'];
                        $sql = "SELECT assigntime_id FROM Assigntime WHERE assign_num = :assign_num AND iid = :iid AND currentclass_id = :currentclass_id";
@@ -572,8 +579,6 @@
                            $active_flag = 1; //staged but not active
                         }
                        
-                    } else {
-                       $assign_id = '';
                     }
                     
                     

@@ -69,6 +69,8 @@ if (isset($_SESSION['success'])) {
     echo('<form action = "QRQuestionMgmt1.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-dark btn-lg" type = "submit" value ="Set Up Questions for Delivery"></form> &nbsp;');
     echo('<form action = "writeQuestionBirth.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-primary btn-lg" type = "submit" value ="Promote Questions to Active Bank"></form> &nbsp;');
     echo('<form action = "writeQuestionStudentActivity.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-success btn-lg" type = "submit" value ="Check Student Question Activity"></form> &nbsp;');
+    echo('<form action = "editActiveQuestion.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-danger btn-lg" type = "submit" value ="Edit Active Bank Questions"></form> &nbsp;');
+    echo('<form action = "writeQuestion.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-secondary btn-lg" type = "submit" value ="Write Questions"></form> &nbsp;');
 
 ?>
 </nav>

@@ -8,7 +8,7 @@ if (isset($_POST['iid'])){
 }else if(isset($_GET['iid'])){
     $iid = $_GET['iid'];
 } else {
-    $_SESSION['error'] = 'iid was lost in writeQuestionBirth';
+    $_SESSION['error'] = 'iid was lost in editActiveQuestion';
     header('Location: QRPRepo.php');
     die();
 }
@@ -17,9 +17,9 @@ if (isset($_POST['iid'])){
 
 $discipline = 'Chemical Engineering';
     
-            $sql = 'SELECT * FROM QuestionWomb   
+            $sql = 'SELECT * FROM Question   
         WHERE `subject` = :discipline 
-        ORDER BY num_reject DESC, num_accept DESC, course DESC, question_use ASC
+        ORDER BY question_id DESC
            ';
        $stmt = $pdo->prepare($sql);
            $stmt->execute(array(':discipline' => $discipline));
@@ -78,7 +78,7 @@ table {
 
 </div>
 
-    <h1> Quick Response Review and Promote Questions </h1>
+    <h1> Quick Response Edit Questions in Active Bank </h1>
 
 	<div class="goback ms-4 my-2"><a  href="QRPRepo.php">Finished / Cancel - go back to Repository</a></div>
 
@@ -94,18 +94,18 @@ table {
     <form>
 <input type="hidden" id = "iid" value = "<?php echo $iid;?>"></input>
     <table id = "edit_question_tbl" class = "table table-striped mt-5 mx-4">
+
         <thead>
             <tr>
                  <th> Select </th>
                 <th> Course </th>
                 <th> Concept </th>
                 <th> Title </th>
-                <th> Accepts </th>
-                <th> Reject </th>
+                <th> Author </th>
                 <th> Status </th>
                 <th> Type </th>
                 <th> Use </th>
-                <th> questionw_id </th>
+                <th> question_id </th>
             </tr>
         </thead>
          <tbody>
@@ -119,7 +119,7 @@ table {
 
            echo '<tr id = "table_row'.$i.'" class = "table_row">
                     <td >
-                   <button type="button" id = "btn_'.$qw_datum["questionwomb_id"].'" class = " select btn btn-outline-primary btn-sm '.$qw_datum["course"].'">select</button>
+                   <button type="button" id = "btn_'.$qw_datum["question_id"].'" class = " select btn btn-outline-primary btn-sm '.$qw_datum["course"].'">select</button>
                     </td>
                     <td >
                     '.$qw_datum["course"].'
@@ -131,10 +131,7 @@ table {
                     '.$qw_datum["title"].'
                     </td>
                     <td >
-                    '.$qw_datum["num_accept"].'
-                    </td>
-                    <td >
-                    '.$qw_datum["num_reject"].'
+                    '.$qw_datum["nm_author"].'
                     </td>
                     <td >
                     '.$qw_datum["status"].'
@@ -146,7 +143,7 @@ table {
                     '.$q_use.'
                     </td>
                     <td >
-                    '.$qw_datum["questionwomb_id"].'
+                    '.$qw_datum["question_id"].'
                     </td>
                     
                     </tr>' ;
@@ -177,13 +174,14 @@ table {
 				"order": [[ 0, 'dsc' ] ],
                 "paging": false,
 				"oColumnFilterWidgets": {
-				"aiExclude": [ 0,3,9] }});
+				"aiExclude": [ 0,3,8] }});
 
 
             for (let i=0; i<selections.length; i++) {
                 selections[i].addEventListener('click',(e)=>{
-                    let questionwomb_id = e.target.id.split('_')[1];
-                    let location = 'writeQuestionPromotePreview.php?questionwomb_id='+questionwomb_id+'&iid='+iid;
+                    let question_id = e.target.id.split('_')[1];
+                    let location = 'editActiveQuestionPreview.php?question_id='+question_id+'&iid='+iid;
+                    // let location = 'writeQuestionPromotePreview.php?question_id='+question_id+'&iid='+iid;
                     console.log ('location',location);
                     window.location.href = location;
                 })

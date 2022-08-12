@@ -127,7 +127,7 @@ if (!$big_data) {
      }
 
     $active_problem_number = count($eactivity_data);
-
+// $_SESSION['error'] = 'active_problem_number: '.$active_problem_number.' student_id: '.$student_id.' eregistration_id: '.$eregistration_id.' eexamnow_id: '.$eexamnow_id;
 
   //  echo 'active_problem_number: '.$active_problem_number;
     //  echo ('eregistration_id: '.$eregistration_id);

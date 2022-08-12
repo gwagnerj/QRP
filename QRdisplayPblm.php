@@ -188,7 +188,7 @@ $sql = "SELECT * FROM Users WHERE users_id = :users_id";
          // QRcode::png($text); 
         // Displaying the stored QR code from directory 
     
-      $qrcode_bc = "<span id = 'qrcode_id_bc'><img src='".$file_bc."'><p> Base-Case Checker </p></span>"; 
+      $qrcode_bc = "<span id = 'qrcode_id_bc'><img src='".$file_bc."'><h2> Base-Case Checker </h2></span>"; 
       
       
 
@@ -213,7 +213,7 @@ $htmlfilenm = "uploads/".$htmlfilenm;
 
    // Read in the value for the input variables
    
-    for ($i = 0; $i <= $nv; $i++) {
+    for ($i = 0; $i <= 13; $i++) {
         if($row['v_'.($i+1)]!='Null' ){
             $vari[$i] = $row['v_'.($i+1)];
             $BC_vari[$i] = $BC_row['v_'.($i+1)];
@@ -301,12 +301,13 @@ $pass = array(
 <style>
 
 #base_case{
-   background-color: #e6f7ff;  
+  border: 4px solid blue;
+  padding: 5px;
+  width: 90%;
 }
-#BC_checker2{
-   background-color: #e6f7ff;  
-}
-
+h2{
+   color: blue;
+   }
 </style>
 
 
@@ -383,7 +384,7 @@ $pass = array(
      
              // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
 
-      for( $i=0;$i<$nv;$i++){
+      for( $i=0;$i<14;$i++){
            if($row['v_'.($i+1)]!='Null' ){
             $problem = preg_replace($pattern[$i],$vari[$i],$problem);
             $base_case = preg_replace($pattern[$i],$BC_vari[$i],$base_case);
@@ -454,13 +455,6 @@ $pass = array(
        
        // turn problem back into and simple_html_dom object that I can replace the varaible images on 
        
-    /*      
-       if(str_get_html($base_case) != false){
-            $base_case =str_get_html($base_case); 
-           
-           $keep = 0;
-           $varImages = $base_case -> find('.var_image');
-        */
        
         if(str_get_html($problem) != false){
            
@@ -470,7 +464,7 @@ $pass = array(
                foreach($varImages as $varImage) {
                   $var_image_id = $varImage -> id;  
                   
-                   for( $i=0;$i<$nv;$i++){
+                   for( $i=0;$i<14;$i++){
                       if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
                     } 
                     
@@ -489,12 +483,15 @@ $pass = array(
   // repeat with the base_case ______________________________________________________________________
      
          // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
-       for( $i=0;$i<$nv;$i++){
+       for( $i=0;$i<14;$i++){
              if($row['v_'.($i+1)]!='Null' ){
                 $base_case = preg_replace($pattern[$i],$vari[$i],$base_case);
              }
         }
-         
+
+
+ //        echo $base_case;
+
           $dom = new DOMDocument();
    libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $base_case);
@@ -509,6 +506,8 @@ $pass = array(
              $base_case = $dom->saveHTML();
        }
        
+                // echo $base_case;
+
        // turn base-case back into and simple_html_dom object that I can replace the varaible images on 
        
         if(str_get_html($base_case) != false){
@@ -518,7 +517,7 @@ $pass = array(
            foreach($varImages as $varImage) {
               $var_image_id = $varImage -> id;  
               
-               for( $i=0;$i<$nv;$i++){
+               for( $i=0;$i<14;$i++){
                   if(trim($var_image_id) == trim($BC_vari[$i])){$keep = 1;} 
                 } 
                 If ($keep==0){
@@ -532,12 +531,12 @@ $pass = array(
                  $keep = 0;
             } 
         }
-         
+                  //  echo $base_case;
     // only include the document above the checker
-       $this_html ='<hr>'.$qrcode.$qrcode_bc.$problem.'<hr> <div id = "base_case" class = "ms-5"><h2>Base-Case:</h2>'.$base_case.'</div>';
+       $this_html ='<hr>'.$qrcode.$qrcode_bc.$problem.'<hr> <div id = "base_case" class = "ms-4"><h2>Base-Case:</h2>'.$base_case.'</div>';
  
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
-       for( $i=0;$i<$nv;$i++){
+       for( $i=0;$i<14;$i++){
              if($row['v_'.($i+1)]!='Null' ){
                 $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
              }
@@ -576,7 +575,7 @@ $pass = array(
  // the document below the checker
   $this_html = '<hr><div id = "reflections" class = "ms-5">'.$reflect.$explore.$connect.$society.'</div>';
   // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
-       for( $i=0;$i<$nv;$i++){
+       for( $i=0;$i<14;$i++){
              if($row['v_'.($i+1)]!='Null' ){
                 $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
              }
@@ -585,7 +584,7 @@ $pass = array(
    
    
           // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
-       for( $i=0;$i<$nv;$i++){
+       for( $i=0;$i<14;$i++){
              if($row['v_'.($i+1)]!='Null' ){
                 $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
              }
@@ -618,7 +617,7 @@ $pass = array(
            foreach($varImages as $varImage) {
               $var_image_id = $varImage -> id;  
               
-               for( $i=0;$i<$nv;$i++){
+               for( $i=0;$i<14;$i++){
                   if(trim($var_image_id) == trim($BC_vari[$i])){$keep = 1;} 
                 } 
                 If ($keep==0){
@@ -706,22 +705,7 @@ function resizeIFrameToFitContent( frame ) {
             console.log ("frame.style.height",frame.style.height);
            
   
-         // set the width of the iframe as the 
-         // width of the iframe content
-        //  frame.style.width  = 
-     //     frame.contentWindow.document.body.scrollWidth+'px';
-        // iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
-        // iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
         }
-    //     function resizeIFrameToFitContent_bc( frame ) {
-    // console.log("frame",frame);
-    // let iframe_height = parseInt(frame.contentWindow.document.body.scrollHeight);
-    // iframe_height = Math.round(iframe_height **1.08) +1000;
-    // iframe_height = iframe_height.toString() + "px" ;
-    //         frame.style.height =  iframe_height
-    //         console.log ("frame.style.height",frame.style.height);
-
-    //     }
 
  $(document).ready(function(){
    
@@ -732,15 +716,6 @@ function resizeIFrameToFitContent( frame ) {
 
 
 
-//   if (typeof window.interactiveVideoJSloaded == 'undefined') {
-//     console.log ("window.interactiveVideoJSloaded","undefined");
-//     console.log ("window.vid_ar",window.vid_ar);
-//     $.getScript('interactiveVideos.js');
-// } else {
-// console.log ("window.interactiveVideoJSloaded",window.interactiveVideoJSloaded);
-// console.log ("window.vid_ar",window.vid_ar);
-
-// }
 
 
 

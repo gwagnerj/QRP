@@ -14,9 +14,13 @@ $mail = new PHPMailer(true);
 $username = $password = $confirm_password = $university = "";
 $username_err = $email = $email_err = $password_err = $confirm_password_err = $university_err = "";
 $first_err = $last_err = $first = $last = $new_univ = $security_err = $sponsor_err = $university_err = $exp_date = "";
+$TA_course_1 = $TA_course_2 = $TA_course_3 = $TA_course_4 = null;
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+
+	
  
     // Validate username
     if(empty(trim($_POST["username"]))){
@@ -179,17 +183,30 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	$allow_clone_default = $_POST['allow_clone_default'];
 	$allow_edit_default = $_POST['allow_edit_default'];
 	$grade_level = $_POST['grade_level'];
-	$default_subject = $_POST['subject'];
+	$discipline = $_POST['discipline'];
+
+	$sql = "SELECT discipline_id FROM `Discipline` WHERE discipline_name = :discipline_name";
+	$stmt = $pdo->prepare($sql);
+					$stmt ->execute(array(
+						':discipline_name' => $discipline,
+					));
+
+					$discipline_ids = $stmt->fetch();
+					$discipline_id = $discipline_ids[0];
+
 	
     // Check input errors before inserting in database
     if(empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($university_err) && 
 	empty($email_err) && empty($first_err) && empty($last_err) && empty($security_err) && empty($sponsor_err) && 
 	empty($university_err)  && empty($course_name_error)){
-        
+
+
+// insert the typical classes
+
         // Prepare an insert statement
 		
-        $sql = "INSERT INTO `Users` (`username`, `password`, `university`, `security`, `email`, first, `last`, `sponsor_id`, `grade_level`, `allow_clone_default`, `allow_edit_default`, `TA_course_1`, `TA_course_2`, `TA_course_3`, `TA_course_4`, `exp_date`)
-		VALUES (:username, :password, :university, :security, :email, :first, :last, :sponsor_id, :grade_level, :allow_clone_default, :allow_edit_default, :TA_course_1, :TA_course_2, :TA_course_3, :TA_course_4, :exp_date)";
+        $sql = "INSERT INTO `Users` (`username`, `password`, `university`, `security`, `email`, first, `last`, `sponsor_id`, `grade_level`, `allow_clone_default`, `allow_edit_default`, `TA_course_1`, `TA_course_2`, `TA_course_3`, `TA_course_4`, `exp_date`,`discipline_id`)
+		VALUES (:username, :password, :university, :security, :email, :first, :last, :sponsor_id, :grade_level, :allow_clone_default, :allow_edit_default, :TA_course_1, :TA_course_2, :TA_course_3, :TA_course_4, :exp_date, :discipline_id)";
   
 		
         if($stmt = $pdo->prepare($sql)){
@@ -210,6 +227,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			$stmt->bindParam(':TA_course_3', $param_TA_course_3, PDO::PARAM_STR);
 			$stmt->bindParam(':TA_course_4', $param_TA_course_4, PDO::PARAM_STR);
 			$stmt->bindParam(':exp_date', $param_exp_date, PDO::PARAM_STR);
+			$stmt->bindParam(':discipline_id', $param_discipline_id, PDO::PARAM_STR);
 			
             // Set parameters
             $param_username = $username;
@@ -228,10 +246,41 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			 $param_TA_course_3 = $TA_course_3;
 			 $param_TA_course_4 = $TA_course_4;
 			 $param_exp_date = $exp_date;
-
+			 $param_discipline_id = $discipline_id;
 					 
             // Attempt to execute the prepared statement
             if($stmt->execute()){
+
+
+				// get the users_id and then put in the typical courses list
+
+				$sql = "SELECT MAX(users_id) FROM Users";
+				$stmt2 = $pdo->prepare($sql);
+				$stmt2->execute();
+				
+
+
+
+					$new_users_id = $stmt2 -> fetch();
+					$new_users_id = $new_users_id[0];
+					
+			//		echo 'new users id '.$new_users_id;
+
+				foreach ($_POST['typical_courses'] as $typical_course_id){
+					// echo '<br>'.$typical_course_id;
+			
+					$sql = 'INSERT INTO UserTypicalCourseConnect(`users_id`,`course_id`)
+							VALUES (:users_id, :course_id)
+					';
+					$stmt = $pdo->prepare($sql);
+					$stmt ->execute(array(
+						':users_id' => $new_users_id,
+						':course_id' => $typical_course_id
+					));
+					
+				}
+			
+		
 				
 				
 				// now send email
@@ -245,6 +294,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 								
 					try {
 					//Server settings
+					$mail->CharSet = 'UTF-8';
 					$mail->SMTPDebug = 0;                                       // Enable verbose debug output 0 is off and 4 is everything
 					$mail->isSMTP();                                            // Set mailer to use SMTP
 					$mail->Host       = $email_host;  // Specify main and backup SMTP servers
@@ -256,8 +306,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 					//Recipients
 					//$mail -> setFrom($email);
-					$mail->setFrom('wagnerj@excelproblempedia.org', 'John');
-					$mail->addAddress($email);     // Add a recipient
+					$mail->setFrom('wagnerj@qrproblems.org', 'John');
+					// $mail->addAddress($email);     // Add a recipient
 					$mail->addAddress('wagnerj@trine.edu');               // Name is optional	
 					$mail->addAddress('gwagnerj@gmail.com');               // Name is optional	
 							
@@ -365,10 +415,24 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
     <title>Sign Up</title>
 	<link rel="icon" type="image/png" href="McKetta.png" />  
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <style type="text/css">
+		#typical_class{
+			 display: grid;
+			 grid-template-columns: 1fr 1fr;
+			
+			
+			}
+
         body{ font: 14px sans-serif; }
         .wrapper{ width: 70%; padding: 20px; }
+
+
+
+
+
     </style>
 </head>
 <body>
@@ -412,17 +476,17 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
             </div>  
 			<div class="form-group <?php echo (!empty($last_err)) ? 'has-error' : ''; ?>">
                 <label>Last Name</label>
-                <input type="text" name="last"class="form-control" value="<?php echo $last; ?>">
+                <input type="text" name="last"class="form-control " value="<?php echo $last; ?>">
                 <span class="help-block"><?php echo $last_err; ?></span>
             </div> 
 
 			<div class="form-group <?php  echo (!empty($university_err)) ? 'has-error' : ''; ?>">
-                <label>School or Organization</label></br>
+                <br><label>School or Organization</label></br>
 				
 				<div id ="univ_drop_down">	
 				<select name = "university" id = "university">
 				<?php
-					$sql = 'SELECT `university_name` FROM `University` ';
+					$sql = 'SELECT `university_name` FROM `University` ORDER BY university_id ';
 					$stmt = $pdo->prepare($sql);
 					$stmt -> execute();
 					while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
@@ -436,7 +500,7 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 				<div id = "new_univ">
 					 <input type="text" name="new_univ" value="<?php echo $new_univ; ?>"> Please Be careful with spelling and capitalization - this will go in the data base
 				</div>
-				</br> If your School or Organization is not shown -  <span id = "addUniv"><button id = "addUniv_button" name = "addUniv_button"><b>Click Here</b></button></span></br>
+				<span class = "ms-5"> If your School or Organization is not shown -  <span id = "addUniv"><button id = "addUniv_button" class = "btn btn-sm btn-outline-secondary" name = "addUniv_button">Click Here</button></span></span><br>
 					
 				
 				<span class="help-block"><?php echo $university_err; ?></span>
@@ -445,9 +509,9 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 
 			
 			
-			<div id = "security_block">
+			<div id = "security_block" class = "mt-3">
 			<label> Type of account you would like? </label> </br>
-               &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "contrib" checked >  Contributor - Can contribute and use all problems </br>
+               &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "contrib" checked >  Contributor - Can contribute and use all problems and sponsor others (recommended) </br>
                &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "instruct">  Instructor - Can use all problems </br>
 		       &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "stu_contrib">  Student Contributor - Can contribute problems and also edit/clone those problems specified by any Contributor</br>
 		       &nbsp; &nbsp; &nbsp; <input type="radio" name="security" class = "security" value = "TA">  Teaching Assistant - Similar to Instructor but restricted to problems for selected courses of instructor sponsor - also has Grader priviledges</br>
@@ -456,8 +520,19 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 			</br>
 			<div id = "sponsor_block">
 			 <label>Sponsor ID</label> </br>
-				<input type = "number" name = "sponsor" value = "<?php echo $sponsor_id; ?>" required> ID of person that can vouch for you.
-					&nbsp;   To open a listing of ID's in a separate tab: <a href="getiid.php" target = "_blank"><b>Click Here</b></a></font></br>
+			 <select name = "sponsor" id = "sponsor">
+				<?php
+					$sql = 'SELECT users_id,`first`,`last`,university FROM `Users` WHERE (`security` = "admin" OR `security` = "contrib") GROUP BY CONCAT(`first`,`last`,`university`) ORDER BY users_id ';
+					$stmt = $pdo->prepare($sql);
+					$stmt -> execute();
+					while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) 
+						{ ?>
+						<option value="<?php echo $row['users_id']; ?>"<?php //  if($row['university_name']=='Trine University'){echo 'selected';}?> ><?php echo $row['first'].' '.$row['last'].' from '.$row['university']; ?> </option>
+						<?php
+ 							}
+						?>
+				</select>
+
 			<span class="help-block"><?php echo $sponsor_err; ?></span>
 			</div>
 			</br>
@@ -501,29 +576,31 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 			</select>
 			</div> 
 			</br>
-			<div id = "subject">
-			 <label>Default Quantitative Subject?</label> </br>
-			&nbsp; &nbsp; &nbsp; &nbsp; <select name = "subject">
-				 <option value = '1'> Math</option>
-				 <option value = '2'> Chemistry</option>
-				 <option value = '3'> Biology</option>
-				 <option value = '4'> Medicine</option>
-				 <option value = '5'> Other Science</option>
-				 <option value = '6'> Business / Economics</option>
-				 <option selected = "selected" value = '7'> Chemical Engineering</option> 
-				 <option value = '8'> Civil Engineering</option>
-				 <option value = '9'> Mechanical Engineering</option>
-				 <option value = '10'> Electrical Engineering</option>
-				 <option value = '11'> Biomedical Engineering</option>
-				 <option value = '12'> Other Engineering</option>
-				 <option value = '13'> Other - Not Listed</option>
+			<div id = "discipline_container">
+			 <label>Default Quantitative Discipline?</label> </br>
+			&nbsp; &nbsp; &nbsp; &nbsp; <select name = "discipline" id = "discipline">
+				<option value="" disabled selected>Choose</option>
+				<?php
+						$sql = 'SELECT * FROM `Discipline` ';
+						$stmt = $pdo->prepare($sql);
+						$stmt -> execute();
+						$disciplines = $stmt->fetchAll(PDO::FETCH_ASSOC);
+						foreach ($disciplines as $discipline){
+							echo '<option value ="'.$discipline['discipline_name'].'" >'.$discipline['discipline_name'].'</option>';
+							// echo '<option value ="'.$discipline['discipline_id'].'" >'.$discipline['discipline_name'].'</option>';
+						}
+				?>
 				 
 			</select>
 			</div>
 			</br>
-            <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Submit">
-                <input type="reset" class="btn btn-default" value="Reset">
+			<div id = 'typical_class_container'></div>
+				
+						<div class = "" id = "typical_class" name = "typical_class"></div>
+			
+            <div class="form-group mt-3">
+                <input type="submit" class="btn btn-primary me-3" value="Submit">
+                <input type="reset" class="btn btn-outline-secondary" value="Reset">
             </div>
 			</br>
             <p>Already have an account? <a href="login.php">Login here</a>.</p>
@@ -532,6 +609,44 @@ $_SESSION['checker'] = 2;  // for getid.php and the sponsor ID number
 </body>
 
 <script>
+
+	const discipline = document.getElementById('discipline');
+	const typical_class = document.getElementById('typical_class');
+	const typical_class_container = document.getElementById('typical_class_container');
+
+	discipline.addEventListener('change',(e) =>{
+		console.log(discipline.value);
+
+				fetch('getCousesForDiscipline.php',{method: 'POST',
+			headers: {
+				
+				"Content-Type": "application/json",
+				"Accept":"application/json, text/plain, */*"
+			},
+			body: JSON.stringify({discipline:discipline.value}),
+		})
+		.then((res) => res.json())
+		.then((data) =>{
+			 console.log(data);
+			let course_select_conatiner = ''
+			data.forEach((course)=>{
+				course_select_conatiner += '<div class = "check_item">';
+			course_select_conatiner += `<input type = "checkbox" value = ${course.course_id} name = "typical_courses[]" class = "course-checkbox m-1" id = ${course.course_id}>${course.course_name}</input>`;
+			course_select_conatiner += '</div>';
+
+		})
+			
+
+			typical_class.innerHTML = course_select_conatiner;
+			 typical_class_container.outerHTML = '<p>Courses you Normally Teach (helps in prioritizing displays)</p>';
+    })
+
+		
+	})
+
+
+
+
 	var checklimit = 3;
 	$("#course_checkbox").hide();
 	$("#security_block").on('change',function(){

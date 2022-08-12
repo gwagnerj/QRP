@@ -139,7 +139,7 @@ if ($row != false) {
     $pin = $pin_data['pin'];
 } else {
     $_SESSION['error'] =
-        'examactivity table could not be read in QRdisplayExamPblem.php';
+        'examactivity table could not be read in QRdisplayExamPblem.php eactivity = '.$eactivity_id. 'eregistration_id ='.$eregistration_id.' and problem_id = '.$problem_id.' and student_id = '.$student_id;
     header('Location: QRExamRegistration.php');
     die();
 }
@@ -280,7 +280,7 @@ $BC_row = $stmt->fetch();
 
 // Read in the value for the input variables
 
-for ($i = 0; $i < $nv; $i++) {
+for ($i = 0; $i < 14; $i++) {
     if ($row['v_' . ($i + 1)] != 'Null') {
         $pattern[$i] = '/##' . $nvar[$i] . ',.+?##/';
         $vari[$i] = $row['v_' . ($i + 1)];
@@ -443,7 +443,7 @@ echo $header_stuff;
 $problem = $html->find('#problem', 0);
 $base_case = $html->find('#problem', 0);
 
-for ($i = 0; $i < $nv; $i++) {
+for ($i = 0; $i < 14; $i++) {
     if ($row['v_' . ($i + 1)] != 'Null') {
         $problem = preg_replace($pattern[$i], $vari[$i], $problem);
         $base_case = preg_replace($pattern[$i], $BC_vari[$i], $base_case);

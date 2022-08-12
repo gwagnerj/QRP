@@ -110,13 +110,20 @@ foreach($all_files as $all_file){
      if ($extension == 'jpg' || $extension == 'jpeg' || $extension == 'png' ){
   
             echo'<br>';
+            if ($exam_flag){
+              echo '<img src="student_exam_work/'.$all_file.'"   width="70%" height="100%">';
+            } else {
             echo '<img src="student_work/'.$all_file.'"   width="70%" height="100%">';
+            }
      } elseif($extension == 'pdf'){
        // echo(' all_file  '.$all_file); 
         echo(' <iframe frameborder="0" scrolling="no"');
          echo('width="70%" height="100%"');
+         if ($exam_flag){
+          echo('src="student_exam_work/'.$all_file.'">');
+        } else {
          echo('src="student_work/'.$all_file.'">');
-         
+         }
      echo '</iframe>';
          
      } else {

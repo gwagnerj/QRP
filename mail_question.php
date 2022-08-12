@@ -8,6 +8,7 @@ use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';// Load Composer's autoloader
 require_once "random_compat-2.0.18/lib/random.php"; // needed this for the random_bytes function did not work on the online version
 
+$production_flag = true;
 $shuffle_flag = 1;
 
 $mail = new PHPMailer(true);
@@ -56,10 +57,11 @@ $now = date('Y-m-d');
 					die();
 				}
 			//	var_dump($questionTime_data);
-				$question_id = $qt_datum['question_id'];
+			// var_dump($qt_datum);
 	  			$questionset_id = $qt_datum['questionset_id'];
-
-				$set_day_alias = $qt_datum['set_day_alias'];
+				  $question_id = $qt_datum['question_id'];
+				//   echo 'question_id: '.$questionset_id;
+				  $set_day_alias = $qt_datum['set_day_alias'];
 				$set_date = explode(" ",$qt_datum['set_date'])[0];
 			//	 echo ' question_id: '. $question_id .'  questionset_id: '. $questionset_id .' set_date '.$set_date.'<br>';  //! echo statement
 
@@ -104,8 +106,7 @@ $now = date('Y-m-d');
 				}
 			
 
-		
-
+	$letter = array("a","b","c","d","e","f","g","h","i","j");
 
 	// die();
 
@@ -121,14 +122,15 @@ $now = date('Y-m-d');
        $htmlfilenm = $question_data['htmlfilenm'];
 	   $html = new simple_html_dom();
 	   $fullpath = 'uploads/'.$htmlfilenm;
+	//    echo 'fullpath: '.$fullpath;
               
 	   $html->load_file($fullpath); 
 
 //? find out how may options we have for this question
-$option_texts = $html->find ('.option_text');
+$option_texts = $html->find ('.select');
 
 $num_options = count($option_texts);
-// echo ' num_options: '.$num_options;
+//  echo ' num_options: '.$num_options;
 // echo ' question_id '.$question_id;
 
 $option_text = array();
@@ -139,11 +141,19 @@ $shuffle_keys = range(0,$num_options-1);
 // echo '<br>';
 $option_text_temp = array();
 for($i = 1; $i <= $num_options; $i++){
-	 $key = '#option_text-'.$i;
-	 $option = $html->find($key)[0];
 	$k = $i-1;
-	$option_text[$k] = $option ->plaintext;
+	 $key = '#question_option_'.$letter[$k];
+	//  echo 'key: '.$key;
+	//  echo "<br>";
+	//  $key = '#option_text-'.$i;
+	 $option = $html->find($key)[0];
+//	 $option = $option[0];
+//	var_dump ($option);
+	//  $option = $html->find($key)[0];
+
+	  $option_text[$k] = $option ->innertext;
 	
+	// $option_text_temp[$k] = 'temp___'.$i;
 	$option_text_temp[$k] = 'temp___'.$i;
 }
 
@@ -157,6 +167,10 @@ $i = 0;
  foreach ($emails as $email)	{
 	if ($shuffle_flag ==1){shuffle($shuffle_keys);}
 
+
+// var_dump($shuffle_keys);
+
+
 	$html2 = $html;
 	// echo 'num_options1  '.$num_options;
 
@@ -167,7 +181,10 @@ $i = 0;
 		$option_text_temp2[$j] = $option_text_temp[$shuffle_keys[$j]] ; // temp2 is shuffled in the same way
 	
 	 }
-
+	//  var_dump($option_text2);
+	//   echo '<br>';
+	//   echo '<br>';
+	//  echo 'key_code: '.$key_code;
 
 			//? this is where I woule re-arrange the file to randomize the order of the responses but the res-number would stay the same 
 		//	echo ($html2); 
@@ -182,24 +199,52 @@ $i = 0;
 //		$replacement_enc='encode='.base64_encode($replacement);  //! put this in at the end after trouble shooting - will have to add the decode statement to question_show
 		// $replacement_enc='encode='.urlencode(base64_encode($replacement));
 		// echo ' replacement: '.$replacement_enc;
-	//	$html2 = str_replace($needle,$replacement_enc,$html2);        //! put this in at the end after trouble shooting - will have to add the decode statement to question_show
 		$html2 = str_replace($needle,$replacement,$html2);        //! comment this out after  after trouble shooting - 
-		// $replacement_enc='encode='.urlencode(base64_encode($replacement));
+	 	$needle = 'question_id=0';
+		 $replacement = 'question_id='.$question_id;
+		 $html2 = str_replace($needle,$replacement,$html2);
 
+	//	$html2 = str_replace($needle,$replacement_enc,$html2);        //! put this in at the end after trouble shooting - will have to add the decode statement to question_show
+		// $replacement_enc='encode='.urlencode(base64_encode($replacement));
+		
+		
+		// echo '<br>';
 		// var_dump ($option_text);
 		// echo '<br>';
 		// var_dump ($option_text_temp2);
 		// echo '<br>';
+		// var_dump ($option_text2);
+		// echo '<br>';
+
+
+		// $html2 = str_replace($option_text,$option_text2,$html2);
+// echo 'num_options: '.$num_options;
+// echo '<br>';
+
+// 		for($j = 0; $j < $num_options; $j++){
+// 			echo 'replace '.$option_text[$j].' with '.$option_text_temp2[$j]; 
+// 			echo '<br>';
+// 			$html2 = str_replace($option_text[$j],$option_text_temp2[$j],$html2);
+// 			echo '<br>';
+// 			echo 'html2: '.$html2;
+// 			echo '<br>';
+// 			echo 'end';
+// 			echo '<br>';
+	   
+// 		 }
+	
+
 
 
 		$html2 = str_replace($option_text,$option_text_temp2,$html2);
 		$html2 = str_replace($option_text_temp2,$option_text2,$html2);
-		$html2 = str_replace('##','',$html2);
+
+		 $html2 = str_replace('##','',$html2);
 
 
-
-		$html2 = str_replace('https://www.qrproblems.org/QRP/','',$html2);  //! kill this in the final version this will take it to a local file instead of the server
-
+		if(!$production_flag){
+				$html2 = str_replace('https://www.qrproblems.org/QRP/','',$html2);  //! kill this in the final version this will take it to a local file instead of the server
+		}
 
 		for($j = 0; $j < $num_options; $j++){
 			$k = $j+1;
@@ -294,7 +339,7 @@ $i = 0;
 					try {
 					//Server settings
 					$mail->CharSet = 'UTF-8';
-					$mail->SMTPDebug = 0;                                       // Enable verbose debug output 0 is off and 4 is everything
+					$mail->SMTPDebug = 4;                                       // Enable verbose debug output 0 is off and 4 is everything
 					$mail->isSMTP();                                            // Set mailer to use SMTP
 					$mail->Host       = $email_host;  // Specify main and backup SMTP servers
 					$mail->SMTPAuth   = true;                                   // Enable SMTP authentication
@@ -321,12 +366,13 @@ $i = 0;
 					$mail->AltBody = strip_tags($body);
 					
 	//				echo 'email'.$email;  //! get rid of this after trouble shooting
-
+			if (!$production_flag){
 					echo ($html2);  //! get rid of this in final version	
-					
-//			$mail->send();
-//				$mail->send();    //! Put this in the active version
-
+				}	
+				
+				if ($production_flag){
+					$mail->send();    //! Put this in the active version
+				}
 				$mail->clearAllRecipients( ); // clear all		
 				//	$mail->clearAddresses();
 					   // echo 'Message has been sent';
@@ -345,9 +391,10 @@ $i = 0;
 			}
 
 				$_SESSION['sucess'] = 'registration sucessful';
+			if ($production_flag){
 
 				echo '<h1> Success - '.$i.' emails sent ';
-				
+			}
 	//	}			
       
 			 	

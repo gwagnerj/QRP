@@ -90,10 +90,18 @@ if(isset($_POST['iid'])){
 <header>
 <h1 class = "fs-1 text-primary ms-4 mt-4">QR Homework Moodle XML Input </h1>
 </header>
+
+
+
 <div class = "form-container ms-5 bs-3">
+
+<form method = "POST" action="makeMoodleXML.php">
+<label class = "fs-3 my-4" for = "num_copies"> Number of different versions</label>
+<input type="number" id = "num_copies" name = "num_copies"  value= "100" min = "1" max = "119" ></input>
+
     <div class = "fs-2"> Weight for Each Part </div>
 <div class = "percentage-container ms-4">
-<form method = "POST" action="makeMoodleXML.php">
+
 <input type="hidden" name = "problem_id"  value= "<?php echo ($problem_id);?>"></input>
 <input type="hidden" name = "iid"  value= "<?php echo ($iid);?>"></input>
 <?php

@@ -52,14 +52,17 @@ $stmt->execute([':problem_id' => $problem_id, ':dex' => 1]);
 $BC_row = $stmt->fetch();
 
 // Read in the value for the input variables
-
-for ($i = 0; $i <= $nv; $i++) {
+//var_dump($BC_row);
+for ($i = 0; $i <= 13; $i++) {
     if ($BC_row['v_' . ($i + 1)] != 'Null') {
         $vari[$i] = $BC_row['v_' . ($i + 1)];
         $BC_vari[$i] = $BC_row['v_' . ($i + 1)];
         $pattern[$i] = '/##' . $nvar[$i] . ',.+?##/';
     }
 }
+
+// var_dump($pattern);
+
 ?>
 
 <!DOCTYPE html >
@@ -114,8 +117,8 @@ $base_case = $html->find('#problem', 0);
 //? echo ('$base_case '.$base_case);
 $reflection_text = $html->find('#reflections', 0);
 // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
-
-for ($i = 0; $i < $nv; $i++) {
+//echo ' nv '.$nv;
+for ($i = 0; $i < 14; $i++) {
     if ($BC_row['v_' . ($i + 1)] != 'Null') {
         $base_case = preg_replace($pattern[$i], $BC_vari[$i], $base_case);
         $reflection_text = preg_replace(

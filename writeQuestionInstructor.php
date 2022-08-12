@@ -111,7 +111,7 @@ if (isset($_GET['questionwomb_id'])){
 
 //? get the contributor or student contributor information
 //? first set it up for a student coming from moodle_to_writeQuestion.php
-
+if ($qw_student_id !=0){
             $sql = 'SELECT * FROM Student WHERE `student_id` = :student_id';
             $stmt = $pdo->prepare($sql);
                 $stmt->execute(array(':student_id' => $qw_student_id));
@@ -121,7 +121,7 @@ if (isset($_GET['questionwomb_id'])){
                 $nm_author = $first_name.' '.$last_name;
                 $university = $student_data['university'];
                 $email = $student_data['school_email'];
-
+}
 
     // if ($questionwomb_id !=0 && ($student_id == $qw_student_id || $user_id == $qw_user_id))  {
     //     $is_author_flag = true;
@@ -150,6 +150,7 @@ $discipline = '';
 // echo 'check_flag '.$check_flag;
 ?>
 <!DOCTYPE HTML>
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> -->
 <html lang = "en">
 <head>
 <link rel="icon" type="image/png" href="McKetta.png" />  
@@ -162,7 +163,9 @@ $discipline = '';
          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"> 
          <!-- <script type="text/javascript" src="jquery-te-1.3.2.js"></script> -->
          <!-- <script src="node_modules/@wiris/mathtype-generic/wirisplugin-generic.js"></script> -->
-         <script src="https://cdn.tiny.cloud/1/85w3ssemz2iqrt9zi0qce5e3emgos9nsyvkfv9bt0loc3twd/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+         <!-- <script src="https://cdn.tiny.cloud/1/85w3ssemz2iqrt9zi0qce5e3emgos9nsyvkfv9bt0loc3twd/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> -->
+         <script src="/QRP/tinyMCE/node_modules/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+
          </script>
 
     <?php  
