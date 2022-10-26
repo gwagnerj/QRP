@@ -18,9 +18,12 @@ if (isset($_POST['iid'])){
 $discipline = 'Chemical Engineering';
     
             $sql = 'SELECT * FROM QuestionWomb   
-        WHERE `subject` = :discipline 
-        ORDER BY num_reject DESC, num_accept DESC, course DESC, question_use ASC
+                ORDER BY num_reject DESC, num_accept DESC, course DESC, question_use ASC
            ';
+        //     $sql = 'SELECT * FROM QuestionWomb   
+        // WHERE `subject` = :discipline 
+        // ORDER BY num_reject DESC, num_accept DESC, course DESC, question_use ASC
+        //    ';
        $stmt = $pdo->prepare($sql);
            $stmt->execute(array(':discipline' => $discipline));
            $qw_data = $stmt -> fetchAll();

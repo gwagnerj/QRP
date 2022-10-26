@@ -30,7 +30,7 @@
     } else {
         $error = $error." last_name not found";
     }
-    if (isset($_GET['university'])){
+    if (isset($_GET['university']) && strlen($_GET['university']) > 2 ){
         $university =   $_GET['university'];
     } else {
         $university =   'Trine University';
@@ -38,9 +38,13 @@
 
     if(strlen($error)>1){
 
-        $error  = $error." Please contact your instructor or report this error to John Wagner at wagnerj@trine.edu ";
+        $error  = "<h3> If you have reached this page after slecting a URL in Moodle,</h3>
+        <h3 style ='color: navy;'>Try hovering over the link in Moodle, right clicking it and selecting -<span style ='color: blue;' > open in new tab </span> - (or similar) from the right click menu.</h3>
+         <h3 style ='color: navy;'>If that does not work, you can sign up directly at <a style ='color: blue;' href = 'https://www.qrhomework.org' target='_blank'> qrhomework.org </a> and use your <span style ='color: blue;'> full university email address </span> for your username and <span style ='color: blue;'> student ID number </span> for your password. </h3>
+         <h3> If that does not work, please contact your instructor or report this error to John Wagner at wagnerj@trine.edu </h3>
+         <h4>Specific error message in file moodle_to_QRhomework.php to follow: ".$error."</h4>";
     
-        echo '<h3 style ="color: red;">'.$error.'</h3>';
+        echo $error;
        
         die();
     }

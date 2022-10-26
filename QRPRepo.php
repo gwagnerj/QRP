@@ -244,6 +244,7 @@
  //           echo('<form action = "QRExamRetrieve.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Retrieve Exam Results"></form> &nbsp;');
             echo('<form action = "QRAssignmentStart0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Hmwk Management"></form> &nbsp;');
             echo('<form action = "QRQuestionMgmt0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Question Mgmt"></form> &nbsp;');
+            echo('<form action = "QuestionRepo.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-success" type = "submit" value ="Question Repo"></form> &nbsp;');
             echo('<form action = "QRClassMgmt.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Class Management"></form> &nbsp;');
 
           //     echo '<a href="QRExamStart.php?iid ='.$users_id.'" >Start an Exam</b></a>';
@@ -748,7 +749,8 @@
 			echo(htmlentities($row['nm_author']));
 			
 			echo("</td><td>"); 
-			if($row['username']==$username || $security=='admin' || ($security == 'contrib' && $row['allow_edit'] == 2) || (($security == 'contrib') && ($users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3']))){
+			if($row['username']==$username || $security=='admin' || ($security == 'contrib' ) || (($security == 'contrib') && ($users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3']))){
+			//? allow_edit button not set to 1 on allow edit so changed the if statement to allow all problems to be edited by contributors.  if($row['username']==$username || $security=='admin' || ($security == 'contrib' && $row['allow_edit'] == 2) || (($security == 'contrib') && ($users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3']))){
 				echo('<form action = "editpblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input class = "btn btn-secondary" type = "submit" value ="Edit"></form>');
 			}
 			if($row['username']==$username || $security=='admin'){

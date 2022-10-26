@@ -5,9 +5,9 @@ require_once "pdo.php";
 session_start();
 // $iid = 1;
  // $currentclass_id = 44;
- // $question_id = 80;
+//   $question_id = 78;
 
-$course = "Testing Problems";
+// $course = "Testing Problems";
 
      $json = file_get_contents("php://input"); // json string
 
@@ -16,16 +16,18 @@ $course = "Testing Problems";
             $iid = $object->iid;  // pulls the iid value out of the key value 
             $course = $object->course;  
             $question_id = $object->question_id;  
-          
     }
 
         $sql = "SELECT currentclass_id  FROM CurrentClass         
-        WHERE  `name` = :course";
+        WHERE  `name` = :course AND iid = :iid";
 			$stmt = $pdo->prepare($sql);	
 			$stmt->execute(array(
                 ':course'	=> $course,
+                ':iid'	=> $iid,
             ));
 			$currentclass_id = $stmt->fetchColumn();
+
+            // echo 'currentclass_id '.$currentclass_id;
 
 
         $sql = "SELECT try_number,response_st, COUNT(*) AS count  FROM QuickQuestionActivity         

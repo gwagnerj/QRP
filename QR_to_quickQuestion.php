@@ -23,8 +23,9 @@ if (strlen($error)>1){
     die();
 }
 
+header('Location: url_to_quickQuestion.php?question_id='.$question_id.'&currentcourse_id='.$currentclass_id);
 
-
+die();
 
 
 ?>

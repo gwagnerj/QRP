@@ -15,10 +15,14 @@ if (isset($_POST['iid'])){
 
 //$student_id = 1; //! delete this line after edits
 
-$discipline = 'Chemical Engineering';
+// $discipline = 'Chemical Engineering';
     
+        //     $sql = 'SELECT * FROM Question   
+        // WHERE `subject` = :discipline 
+        // ORDER BY question_id DESC
+        //    ';
             $sql = 'SELECT * FROM Question   
-        WHERE `subject` = :discipline 
+        WHERE 1
         ORDER BY question_id DESC
            ';
        $stmt = $pdo->prepare($sql);

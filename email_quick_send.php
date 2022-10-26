@@ -15,16 +15,18 @@ require 'vendor/autoload.php';// Load Composer's autoloader
 
 $mail = new PHPMailer(true);
 $production_flag = true;
-$shuffle_flag = 1;
+$shuffle_flag = true;
+$hours_active = "3";
 
 
 //! This file will given a question id and current class email them a question
 session_start();
  $iid = 1;
  $currentclass_name = "Testing Problems";
- $question_id = 66;
+ $question_id = 61;
  $currentclass_id = 44;  //?  44 is the testing problems class
- $email_flag = false;
+ $email_flag = true;
+ $discuss_stage ="1";
 
      $json = file_get_contents("php://input"); // json string
 
@@ -34,20 +36,25 @@ session_start();
             $currentclass_name = $object->course;  
             $question_id = $object->question_id;  
             $email_flag = $object->email_flag;  
+            $discuss_stage = $object->discuss_stage;  
+			 $hours_active = $object->hours_active; 
+			 $shuffle_flag = $object->shuffle_flag; 
     }
 
+
 //? get the info for the current class
-        $sql = "SELECT currentclass_id FROM CurrentClass WHERE `name` = :currentclass_name ";
+        $sql = "SELECT currentclass_id FROM CurrentClass WHERE `name` = :currentclass_name AND iid = :iid";
 			$stmt = $pdo->prepare($sql);	
 			$stmt->execute(array(
                 ':currentclass_name'	=> $currentclass_name,
+                ':iid'	=> $iid,
             ));
 			$currentclass_id= $stmt->fetch(PDO::FETCH_COLUMN);
 
             // echo ($currentclass_id);
 
-			date_default_timezone_set('America/New_York');
-			$now = date('Y-m-d');
+			// date_default_timezone_set('America/New_York');
+			// $now = date('Y-m-d');
 
 //? get all of the students info in that class
 
@@ -65,7 +72,7 @@ session_start();
 					$emails[$i] = $sccc_datum['school_email'];
 					$i++;
 				}
-
+//? need to get the 
 //? make the question active by putting an entry for all of the students in the QuickQuestionActivity table with a try_number of 0 (the default) and 
 
 
@@ -77,30 +84,51 @@ foreach ($student_ids as $student_id){
 
 		$sql = "SELECT COUNT(*) 
 		FROM QuickQuestionActivity 
-		WHERE student_id = :student_id AND question_id = :question_id AND currentclass_id = :currentclass_id AND try_number = 0 AND  created_at  >= NOW() - INTERVAL 8 HOUR
+		WHERE student_id = :student_id AND question_id = :question_id AND currentclass_id = :currentclass_id AND try_number = 0 AND  created_at  >= NOW() - INTERVAL :hours_active  HOUR
 		";
 					$stmt = $pdo->prepare($sql);	
 					$stmt->execute(array(
 						':student_id'	=> $student_id,
 						':question_id'	=> $question_id,
 						':currentclass_id'	=> $currentclass_id,
-					
+						':hours_active'	=> $hours_active,
+
 					));
 					$previos_entry = $stmt->fetch();
 		// echo "previos enrty ".$previos_entry[0];
 
 		if($previos_entry[0]==0){
 
-			$sql = "INSERT INTO QuickQuestionActivity (question_id, questionset_id, currentclass_id, student_id, try_number)
-			VALUES (:question_id, :questionset_id,:currentclass_id, :student_id, :try_number) ";
+			$sql = "INSERT INTO QuickQuestionActivity (question_id, questionset_id, currentclass_id, student_id,email_flag,discuss_stage, try_number,expires_at)
+			VALUES (:question_id, :questionset_id,:currentclass_id, :student_id,:email_flag,:discuss_stage, :try_number, DATE_ADD(NOW(),INTERVAL :hours_active HOUR)) ";
 						$stmt = $pdo->prepare($sql);	
 						$stmt->execute(array(
 							':question_id'	=> $question_id,
 							':questionset_id' => 1000,
 							':currentclass_id'	=> $currentclass_id,
 							':student_id'	=> $student_id,
+							':email_flag'	=> $email_flag,
+							':discuss_stage'	=> $discuss_stage,
+							':hours_active'	=> $hours_active,
 							':try_number'	=> 0,
 						));
+		} else {
+			$sql = "UPDATE QuickQuestionActivity
+			SET discuss_stage = :discuss_stage, email_flag = :email_flag, expires_at = DATE_ADD(NOW(),INTERVAL :hours_active HOUR)
+		   WHERE currentclass_id = :currentclass_id AND student_id = :student_id AND question_id = :question_id AND try_number = :try_number
+	   ";
+					  $stmt = $pdo->prepare($sql);	
+					  $stmt->execute(array(
+						':question_id'	=> $question_id,
+						':currentclass_id'	=> $currentclass_id,
+						':student_id'	=> $student_id,
+						':email_flag'	=> $email_flag,
+						':discuss_stage'	=> $discuss_stage,
+						':hours_active'	=> $hours_active,
+						':try_number'	=> 0,
+				  ));
+
+
 		}
 }
 
@@ -109,7 +137,6 @@ foreach ($student_ids as $student_id){
 		$success['flag'] = true;
 
 
-if ($email_flag){
 			
 
 	$letter = array("a","b","c","d","e","f","g","h","i","j");
@@ -121,68 +148,99 @@ if ($email_flag){
 		':question_id' => $question_id
 		));
         $question_data = $stmt->fetch(PDO::FETCH_ASSOC);
-       $htmlfilenm = $question_data['htmlfilenm'];
+    //    $htmlfilenm = $question_data['htmlfilenm'];
+
+	   $html_fn = $question_data['htmlfilenm'];
+	   if(!strpos($html_fn,'.htm')){
+		   $html_fn = $html_fn.'.htm';
+	   }
+   // echo('$html_fn: '.$html_fn);
+	  $html_fp = 'uploads/'.$html_fn;  // the file path to the question
+   // echo('$html_fp: '.$html_fp);
+
+
+
 	   $html = new simple_html_dom();
-	   $fullpath = 'uploads/'.$htmlfilenm.'.htm';
+	//    $fullpath = 'uploads/'.$htmlfilenm.'.htm';
 	//    echo 'fullpath: '.$fullpath;
               
-	   $html->load_file($fullpath); 
+	   $html->load_file($html_fp); 
 
-//? find out how may options we have for this question
-$option_texts = $html->find ('.select');
+	//? find out how may options we have for this question
+	$option_texts = $html->find ('.select');
 
-$num_options = count($option_texts);
-//  echo ' num_options: '.$num_options;
-// echo ' question_id '.$question_id;
+	$num_options = count($option_texts);
+	//  echo ' num_options: '.$num_options;
+	// echo ' question_id '.$question_id;
 
-$option_text = array();
-$shuffle_keys = array();
-$shuffle_keys = range(0,$num_options-1);
+	$option_text = array();
+	$shuffle_keys = array();
+	$shuffle_keys = range(0,$num_options-1);
 
-// var_dump ($shuffle_keys);
-// echo '<br>';
-$option_text_temp = array();
-for($i = 1; $i <= $num_options; $i++){
-	$k = $i-1;
-	 $key = '#question_option_'.$letter[$k];
-	//  echo 'key: '.$key;
-	//  echo "<br>";
-	//  $key = '#option_text-'.$i;
-	 $option = $html->find($key)[0];
-//	 $option = $option[0];
-//	var_dump ($option);
-	//  $option = $html->find($key)[0];
+	// var_dump ($shuffle_keys);
+	// echo '<br>';
+	$option_text_temp = array();
+	for($i = 1; $i <= $num_options; $i++){
+		$k = $i-1;
+		$key = '#question_option_'.$letter[$k];
+		//  echo 'key: '.$key;
+		//  echo "<br>";
+		//  $key = '#option_text-'.$i;
+		$option = $html->find($key)[0];
+	//	 $option = $option[0];
+	//	var_dump ($option);
+		//  $option = $html->find($key)[0];
 
-	  $option_text[$k] = $option ->innertext;
-	
-	// $option_text_temp[$k] = 'temp___'.$i;
-	$option_text_temp[$k] = 'temp___'.$i;
-}
+		$option_text[$k] = $option ->innertext;
+		
+		// $option_text_temp[$k] = 'temp___'.$i;
+		$option_text_temp[$k] = 'temp___'.$i;
+	}
 
-// var_dump($option_text);
-// echo '<br>';
-
-
-//var_dump($emails);
-
-$i = 0;
- foreach ($emails as $email)	{
-	if ($shuffle_flag ==1){shuffle($shuffle_keys);}
+	// var_dump($option_text);
+	// echo '<br>';
 
 
-// var_dump($shuffle_keys);
+	//var_dump($emails);
+
+	$i = 0;
+	foreach ($emails as $email)	{
+		if ($shuffle_flag ==1){shuffle($shuffle_keys);}
 
 
-	$html2 = $html;
-	// echo 'num_options1  '.$num_options;
+	// var_dump($shuffle_keys);
 
-	$key_code = "";
-	 for($j = 0; $j < $num_options; $j++){
-		$key_code =$key_code.$shuffle_keys[$j];
-		$option_text2[$j] = $option_text[$shuffle_keys[$j]] ;
-		$option_text_temp2[$j] = $option_text_temp[$shuffle_keys[$j]] ; // temp2 is shuffled in the same way
+
+		$html2 = $html;
+		// echo 'num_options1  '.$num_options;
+
+		$key_code = "";
+		for($j = 0; $j < $num_options; $j++){
+			$key_code =$key_code.$shuffle_keys[$j];
+			$option_text2[$j] = $option_text[$shuffle_keys[$j]] ;
+			$option_text_temp2[$j] = $option_text_temp[$shuffle_keys[$j]] ; // temp2 is shuffled in the same way
 	
 	 }
+
+
+	 //? update the quickquestionactivity table with the key_code and
+
+	 $sql = "UPDATE QuickQuestionActivity
+	 		 SET key_code = :key_code
+			 WHERE currentclass_id = :currentclass_id AND student_id = :student_id AND question_id = :question_id AND try_number = :try_number
+	     ";
+						$stmt = $pdo->prepare($sql);	
+						$stmt->execute(array(
+							':question_id'	=> $question_id,
+							':key_code' => $key_code,
+							':currentclass_id'	=> $currentclass_id,
+							':student_id'	=> $student_ids[$i],
+							':try_number'	=> 0,
+						));
+
+
+		if ($email_flag){
+
 	//  var_dump($option_text2);
 	//   echo '<br>';
 	//   echo '<br>';
@@ -271,7 +329,7 @@ $i = 0;
 				}	
 				
 				if ($production_flag){
-					$mail->send();    //! Put this in the active version
+				$mail->send();    //! Put this in the active version
 				}
 				$mail->clearAllRecipients( ); // clear all		
 				//	$mail->clearAddresses();
@@ -289,8 +347,13 @@ $i = 0;
                         $success['num_emails'] = 0;
                         $success['flag'] = false;
 					}
-			$i++;		
-			}
+			} //? end if email_flag condition
+
+			$i++;	
+			
+			
+
+		}  //? end for each email
 
 				$_SESSION['success'] = 'registration sucessful';
 			if ($production_flag){
@@ -300,7 +363,7 @@ $i = 0;
                 $success['flag'] = true;
 
 			}
-	} 
+	
 		 echo json_encode($success);
 	
  ?>

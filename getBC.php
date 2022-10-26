@@ -4,7 +4,7 @@ session_start();
 
 //$stu_name = '';
 $problem_id= '';
-//$index='';
+$index='1';
 /* 
 Was setting this up to do more php input validation - but have put it off
 $PIN_LLimit = 1;
@@ -23,25 +23,24 @@ $prob_Check = array('options'=>array('min_range'=>$prob_LLimit,'max_range'=>$pro
 }  */
 
 if(isset($_POST['problem_id'])){
-	
 	$problem_id = htmlentities($_POST['problem_id']);
-	
+	$_SESSION['problem_id']=$problem_id;
+} elseif (isset($_GET['problem_id'])){
+	$problem_id = htmlentities($_GET['problem_id']);
 	$_SESSION['problem_id']=$problem_id;
 }
 
-if(isset($_POST['index'])){
+// if(isset($_POST['index'])){
 	
-	$index = 1;
-	/*
-		See comment above
-	if(filter_var($index,FILTER_VALIDATE_INT,$PIN_Check) === FALSE){
-		set($_SESSION['error']);
-		echo'invalid data';
-	} */
+// 	$index = 1;
+// 	/*
+// 		See comment above
+// 	if(filter_var($index,FILTER_VALIDATE_INT,$PIN_Check) === FALSE){
+// 		set($_SESSION['error']);
+// 		echo'invalid data';
+// 	} */
 	$_SESSION['index']=$index;
-	
-	
-}
+// }
 
 ?>
 <!DOCTYPE html>

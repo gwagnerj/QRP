@@ -3490,10 +3490,15 @@ CREATE TABLE IF NOT EXISTS QuickQuestionActivity (
   questionset_id INT(11) NOT NULL,
   currentclass_id INT(11) NOT NULL,
   student_id INT(11) NOT NULL,
-  try_number INT(2) DEFAULT 0 NOT NULL,
+  try_number INT(1) DEFAULT 0 NOT NULL,
+  discuss_stage INT(1) DEFAULT 0 NOT NULL,
   response_st VARCHAR (10) NOT NULL,
+  email_flag INT (1) NOT NULL,
+  key_code VARCHAR (10) NOT NULL ,
   correct_flag INT (1) NOT NULL,
   score INT (7),
+  `expires_at` datetime DEFAULT NULL,
+  `instructor_actived_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
 	`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
    CONSTRAINT FOREIGN KEY (`question_id`) REFERENCES Question (question_id),
@@ -3501,6 +3506,10 @@ CREATE TABLE IF NOT EXISTS QuickQuestionActivity (
    CONSTRAINT FOREIGN KEY (`student_id`) REFERENCES Student (`student_id`),
   PRIMARY KEY (`quickquestionactivity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- CREATE TRIGGER QuickQuestionActivityDefaultExpiration BEFORE INSERT ON QuickQuestionActivity FOR EACH ROW 
+--   SET NEW.expires_at = NOW() + INTERVAL 12 HOUR;
+
 
 
 CREATE TABLE IF NOT EXISTS UniversityCourseQRCourseConnect (

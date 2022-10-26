@@ -27,11 +27,13 @@ $contrib_id = $pblm_data['users_id'];
 $nm_author = $pblm_data['nm_author'];
 $specif_ref = $pblm_data['specif_ref'];
 $htmlfilenm = $pblm_data['htmlfilenm'];
+$title = $pblm_data['title'];
+$primary_concept = $pblm_data['primary_concept'];
 
 $solnfilenm = $pblm_data['soln_pblm'];
 $solnfilenm = 'uploads/' . $solnfilenm;
 
-$htmlfilenm = 'uploads/' . $htmlfilenm;
+$htmlfilenm = 'uploads/'.$htmlfilenm;
 
 //             echo ('<h2> htmlfilenm: '.$htmlfilenm.'</h2>');
 
@@ -232,10 +234,11 @@ if (str_get_html($base_case) != false) {
 
 // only include the document above the checker
 $this_html =
-    ' <div id = "base_case"><h4>Base Case Problem ' .
+    ' <div id = "base_case"><header><h4>Base Case Problem ' .
     $problem_id .
-    '.</h4>' .
-    $base_case .
+    ' - '.$title.' -&nbsp; <span style="font-size: 0.7em;" > Primary Concept: '.$primary_concept.
+    '</span></h4></header>'.
+    $base_case.
     '</div>';
 /* 
    // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced

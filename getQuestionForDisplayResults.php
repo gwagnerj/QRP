@@ -29,7 +29,7 @@ session_start();
 
 
 
-        $sql = "SELECT * FROM Question WHERE  course = :course AND `question_id`=:question_id ";
+        $sql = "SELECT * FROM Question WHERE  course = :course AND `question_id`=:question_id ORDER BY `question_id` DESC";
 
 			$stmt = $pdo->prepare($sql);	
 			$stmt->execute(array(

@@ -510,7 +510,7 @@ table.main_table{
 <nav class="navbar sticky-top  navbar-light bg-light">
 
 <form method = "POST" class="container-fluid ">
-		<p><button type = "submit"  name = "reset" class = "btn btn-warning  btn-outline-primary position-relative  bottom-0 start-0 justify-content-start"  > <i class="bi bi-box-arrow-left"></i> Back to Login </button>
+		<!-- <p><button type = "submit"  name = "reset" class = "btn btn-warning  btn-outline-primary position-relative  bottom-0 start-0 justify-content-start"  > <i class="bi bi-box-arrow-left"></i> Back to Login </button> -->
 		<!-- <p><button type = "submit"  name = "reset" class = "btn btn-warning position-relative  bottom-0 start-0 justify-content-start"  > <i class="bi bi-box-arrow-left"></i> Back to Login </button> -->
  
   </form>  
@@ -580,7 +580,7 @@ table.main_table{
                    } else {
 						echo('<select name = "cclass_id" id = "current_class_dd">');
                         echo ('	<option value = "" selected disabled hidden >  Select Class  </option> ');
-                          $sql = 'SELECT * FROM `StudentCurrentClassConnect` JOIN CurrentClass ON StudentCurrentClassConnect.currentclass_id = CurrentClass.currentclass_id WHERE StudentCurrentClassConnect.student_id = :student_id';
+                          $sql = 'SELECT * FROM `StudentCurrentClassConnect` JOIN CurrentClass ON StudentCurrentClassConnect.currentclass_id = CurrentClass.currentclass_id WHERE StudentCurrentClassConnect.student_id = :student_id AND CurrentClass.exp_date > NOW()';
                           $stmt = $pdo->prepare($sql);
                           $stmt->execute(array(':student_id' => $student_id));
              

@@ -15,11 +15,11 @@ session_start();
     }elseif(isset($_GET["course"])){
         $course = $_GET["course"];
     }
-    $currentcourse = 'Testing Problems';
+    $currentclass = 'Testing Problems';
     if(isset($_POST["course"])){
-        $currentcourse = $_POST["currentcourse"];
+        $currentclass = $_POST["currentcourse"];
     }elseif(isset($_GET["currentcourse"])){
-        $currentcourse = $_GET["currentcourse"];
+        $currentclass = $_GET["currentcourse"];
     }
     $question_id = '1';
     if(isset($_POST["question_id"])){
@@ -33,7 +33,7 @@ session_start();
 
     $stmt = $pdo->prepare($sql);	
     $stmt->execute(array(
-        ':course'	=> $course,
+        ':course'	=> $currentclass,
        
     ));
     $currentclass_id_ar = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -57,11 +57,11 @@ session_start();
    $html_fp = 'uploads/'.$html_fn;  // the file path to the question
 // echo('$html_fp: '.$html_fp);
 
+// echo 'currentclass_id'.$currentclass_id;
 
 
-
-// $qrchecker_text =  'https://www.qrproblems.org/QRP/QR_BC_Checker2.php?question_id='.$question_id.'&currentcourse='.$currentcourse; 
-$qrquestion_text =  'localhost/QRP/QR_to_quickQuestion.php?question_id='.$question_id.'&currentcourse='.$currentcourse; 
+// $qrquestion_text =  'https://www.qrproblems.org/QRP/QR_BC_Checker2.php?question_id='.$question_id.'&currentcourse='.$currentclass; 
+$qrquestion_text =  'https://www.qrproblems.org/QRP/QR_to_quickQuestion.php?question_id='.$question_id.'&currentclass_id='.$currentclass_id; 
 
 $file_qrcode = 'uploads/temp_bc.png'; 
         // $ecc stores error correction capability('L') 
@@ -82,9 +82,8 @@ $file_qrcode = 'uploads/temp_bc.png';
 <html lang="en">
 <head>
     <link rel="icon" type="image/png" href="McKetta.png" />  
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">   
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -123,13 +122,14 @@ display:none !important;
 
 </head>
 <body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <button id = "toggle_question"type="button" class="btn btn-outline-secondary mx-3 ">Toggle Question</button>
-             <button id = "show_chart" type="button" class="btn btn-outline-primary ">Show Results</button>
+            <button id = "toggle_question"type="button" class="btn btn-outline-secondary mx-3 "> <i class="bi bi-question-circle"></i> Toggle Question</button>
+             <button id = "show_chart" type="button" class="btn btn-outline-primary "><i class="bi bi-bar-chart-line"></i> Show Results</button>
 
-            <button id = "toggle_QRCode" type="button" class="btn btn-outline-success position-absolute top-0 end-0 m-3">Toggle QRCode</button>
-
+            <button id = "toggle_QRCode" type="button" class="btn btn-outline-success position-absolute top-0 end-0 m-3"> <i class="bi bi-qr-code"></i> Toggle QRCode</button>
+           
         </nav>
         <div id="question_info">
             <div class="row m-2  ">
@@ -140,12 +140,12 @@ display:none !important;
                     <h4 class = "text-primary  ms-5">Question Number: <span class="text-primary fw-bold border rounded"> <?php echo $question_id ?></span></h4>
                 </div>
             <div class="col">
-                    <h4 class = "text-success text-decoration-underline ms-5">Class Number: <span class="text-success fw-bold border rounded"><?php echo $currentclass_id ?></span></h4>
+                    <h4 class = "text-success  ms-5">Class Number: <span class="text-success fw-bold border rounded"><?php echo $currentclass_id ?></span></h4>
             </div>
         </div>
         </div>
 
-    <div id = "question_title" class="question_title h1"> <?php echo $question['title']?> Question Respose:</div>
+    <div id = "question_title" class="question_title h1 mb-2"> <?php echo $question['title']?> Question Response:</div>
 
             <div class="response_container">
 
@@ -170,16 +170,15 @@ display:none !important;
                         <div class="results-control" id="results_control">
                             <div class="row">
                                 <div class="col">
-                                    <button id = "toggle_chart" type="button" class="btn btn-outline-primary">Initial/Final</button>
+                                    <button id = "toggle_chart" type="button" class="btn btn-outline-primary btn-lg fs-2 fw-bold mt-4">Initial Response</button>
                                  </div>
                                  <div class="col">
-                                        <button id = "refresh_chart" type="button" class="btn btn-outline-secondary position-absolute top-0 end-0 m-3">Refresh Data</button>
+                                        <button id = "refresh_chart" type="button" title = "Refresh Chart" class="btn btn-outline-secondary position-absolute top-0 end-0 m-3"><i class="bi bi-arrow-clockwise"style = "font-size:1.5rem;"></i></button>
                                  </div>
                             </div>
                         </div>
 
 
-                            <div class="result_type h3 m-5 text-primary" id="result_type">Initial Results</div>
                 
 
                         <canvas id = "quick1_chart"></canvas>
@@ -218,7 +217,6 @@ display:none !important;
         const toggle_question = document.getElementById('toggle_question')
         const show_chart = document.getElementById('show_chart')
         const question_results_graph = document.getElementById('question_results_graph');
-        const result_type = document.getElementById('result_type');
         const toggle_QRCode = document.getElementById('toggle_QRCode');
         const qrcode = document.getElementById('qrcode');
         const refresh_chart = document.getElementById('refresh_chart');
@@ -320,7 +318,7 @@ display:none !important;
             responses.forEach((response)=>{
               for (let j = 0; j < response.response_st.length; j++) {
                 // console.log('response.response_st.charAt(j): ',response.response_st.charAt(j))
-                if(response.response_st.charAt(j) == String.fromCharCode(i+97) && response.try_number==1){
+                if(response.response_st.charAt(j) == String.fromCharCode(i+97) && response.try_number==0){
                  count += parseInt(response.count);
                 }
               }
@@ -334,7 +332,7 @@ display:none !important;
               for (let j = 0; j < response.response_st.length; j++) {
                //   console.log(response.charAt(i));
               
-              if(response.response_st.charAt(j) == String.fromCharCode(i+97) && response.try_number==2){
+              if(response.response_st.charAt(j) == String.fromCharCode(i+97) && response.try_number==1){
                 count += parseInt(response.count);
                 }
               }
@@ -368,6 +366,7 @@ display:none !important;
                 
                 data: chart_data,
                 options: {
+                    
                         indexAxis: 'y',
                         scales: {
                         x: {
@@ -400,7 +399,8 @@ display:none !important;
                             }
                         }
                         }
-                    }
+                    },
+                    legend: {position: 'bottom' , display: false}
                 };
             
                  myChart = new Chart(
@@ -413,6 +413,7 @@ display:none !important;
                 console.log('chart_data.datasets[0].data1',chart_data.datasets[0].data)
                 toggle_chart.classList.toggle('btn-outline-primary')
                         toggle_chart.classList.toggle('btn-outline-success')
+                        
 
                 if (data1_flag){
                 data1_flag = false;
@@ -420,9 +421,7 @@ display:none !important;
                 chart_data.datasets[0].label = "Response After Discussion";
                 chart_data.datasets[0].backgroundColor = 'rgb(0, 72, 0)';
                 chart_data.datasets[0].borderColor = 'rgb(0, 72, 0)';
-                result_type.innerText = 'Response After Discussion';
-                result_type.classList.add('text-success');
-                result_type.classList.remove('text-primary');
+                toggle_chart.innerText = 'Response After Discussion';
 
 
                 } else {
@@ -431,9 +430,8 @@ display:none !important;
                 chart_data.datasets[0].label = "Initial Response";
                 chart_data.datasets[0].backgroundColor = 'rgb(0, 73, 153)';
                 chart_data.datasets[0].borderColor = 'rgb(0, 73, 153)';
-                result_type.innerText = 'Initial Response';
-                result_type.classList.add('text-primary');
-                result_type.classList.remove('text-success');
+                toggle_chart.innerText = 'Initial Response';
+
                 }
                 myChart.update();
                 console.log('chart_data.datasets[0].data2',chart_data.datasets[0].data)
@@ -471,7 +469,7 @@ const update_chart = () => {
             responses.forEach((response)=>{
               for (let j = 0; j < response.response_st.length; j++) {
                 // console.log('response.response_st.charAt(j): ',response.response_st.charAt(j))
-                if(response.response_st.charAt(j) == String.fromCharCode(i+97) && response.try_number==1){
+                if(response.response_st.charAt(j) == String.fromCharCode(i+97) && response.try_number==0){
                  count += parseInt(response.count);
                 }
               }
@@ -485,7 +483,7 @@ const update_chart = () => {
               for (let j = 0; j < response.response_st.length; j++) {
                //   console.log(response.charAt(i));
               
-              if(response.response_st.charAt(j) == String.fromCharCode(i+97) && response.try_number==2){
+              if(response.response_st.charAt(j) == String.fromCharCode(i+97) && response.try_number==1){
                 count += parseInt(response.count);
                 }
               }

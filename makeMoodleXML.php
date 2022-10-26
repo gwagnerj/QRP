@@ -66,6 +66,12 @@ function get_string_between($string, $start, $end){
     return substr($string, $ini, $len);
 }
 
+$num_copies = 100;
+
+if (isset($_POST['num_copies']) && $_POST['num_copies'] > 0 ){
+  $num_copies = $_POST['num_copies'];
+}
+
 if(isset($_POST['problem_id'])){
 	$problem_id = htmlentities($_POST['problem_id']);
     
@@ -180,9 +186,11 @@ if(isset($_POST['iid'])){
 
         $xml_quiz->appendChild( $xml_question );
  
+        $dex_start = 80;
+        $dex_end = $dex_start + $num_copies;
    
    //--------------------------------big Loop---------------------------------------------------------------------------------------------------
-  for($dex=80; $dex<=180; $dex++){
+  for($dex=$dex_start; $dex<=$dex_end; $dex++){
       
     $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
 	$stmt->execute(array(":problem_id" => $_POST['problem_id'], ":dex" => $dex));

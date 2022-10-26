@@ -103,8 +103,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <body>
     <div class="wrapper">
 	
-        <h2>Quick Response Problems Login</h2>
-        <p>Please fill in your credentials to login.</p>
+        <h2>Quick Response Problems Instructor Login</h2>
+        <h4>Please fill in your credentials to login.</h4>
 		
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
@@ -124,7 +124,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		
 		 </p> </br>
 			<p>Forgot your Password or Usename? <a href="pswdRecovForm.php">Click Here</a>.</p> </br>
-			<p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
+			<!-- <p>Don't have an account? <a href="register.php">Sign up now</a>.</p> -->
 			<br/>
 		</br>
 		  

@@ -17,15 +17,16 @@
         $return_data = array();
 
 
-        $index_st = $info[0];
+        $index_st = $info[0];   // these are where the responses are
         $question_id = $info[1];
         $student_id = $info[2];
         $email_flag = $info[3];
         $currentclass_id = $info[4];
         $questionset_id = $info[5];
+        $quickquestionactivity_id = $info[6];
         $selected_ar = array();
-        for ($i = 6; $i < count($info); $i++){
-            $k = $i-6;
+        for ($i = 7; $i < count($info); $i++){
+            $k = $i-7;
             $selected_ar[$k] = $info[$i];
             $response_alias_ar[$k] = explode('-',$info[$i])[1];
         }
@@ -146,25 +147,28 @@
             // echo ' selected_correct '.$selected_correct.' selected_wrong '.$selected_wrong.' percent_correct '.$percent_correct;
             // echo ' response_st '.$response_st;
 
-        //? see if the student has ever seen this problem before for this problem setting  this is for the scoring (are we adding points or taking them away)
-        $sql = "SELECT * FROM QuickQuestionActivity WHERE question_id = :question_id AND currentclass_id = :currentclass_id AND student_id = :student_id  ORDER BY quickquestionactivity_id DESC LIMIT 1";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(array(
-        ':question_id' => $question_id,
-        ':currentclass_id' => $currentclass_id,
-        ':student_id' => $student_id,
-        ));
-            $quickquestionactivity_data = $stmt->fetch(PDO::FETCH_ASSOC);
+        // //? make sure the question is valid for the student 
+        //? this is already done in the question_quick_show calling file
+        // $sql = "SELECT quickquestionactivity_id FROM QuickQuestionActivity
+        //  WHERE question_id = :question_id AND currentclass_id = :currentclass_id AND student_id = :student_id 
+        //  AND expires_at > NOW() AND response_st > :response_st
+        //   ORDER BY quickquestionactivity_id DESC LIMIT 1";
+        // $stmt = $pdo->prepare($sql);
+        // $stmt->execute(array(
+        // ':question_id' => $question_id,
+        // ':currentclass_id' => $currentclass_id,
+        // ':student_id' => $student_id,
+        // ':response_st' => '',
+        // ));
+        //     $quickquestionactivity_data = $stmt->fetch(PDO::FETCH_ASSOC);
     
-            if($quickquestionactivity_data){
-                //? already answered this question activity
-              $first_time_flag = 0;
-               $try_number = $quickquestionactivity_data['try_number']+1;
+        //     if($quickquestionactivity_data){
+        //         $quickquestionactivity_id = $quickquestionactivity_data['quickquestionactivity_id'];
+        //         //? already answered this question activity
 
-            } else {
-                $first_time_flag = 1;
-                $try_number = 1;
-            }
+        //     } else {
+        //         $quickquestionactivity_id = "0";
+        //     }
 
             // score if email the problem - if late one point fore every 24 hours
 
@@ -179,28 +183,52 @@
 
         
              //? insert the information into the questionactivity table, the response table and possibly update the Question for the statistics for that question
-if($try_number<3){  //! only allow them to answer twice
-             $sql = "INSERT INTO QuickQuestionActivity (question_id,questionset_id,currentclass_id,student_id,try_number,response_st,correct_flag,score) 
-             VALUES(:question_id,:questionset_id,:currentclass_id,:student_id,:try_number,:response_st,:correct_flag,:score)";
+             $sql = "UPDATE QuickQuestionActivity SET response_st = :response_st,correct_flag = :correct_flag,score = :score
+                    WHERE quickquestionactivity_id = :quickquestionactivity_id
+             ";
                        $stmt = $pdo->prepare($sql);
                          $stmt->execute(array(
-                         ':question_id'=>  $question_id,
-                         ':questionset_id' =>  $questionset_id,
-                         ':currentclass_id' =>  $currentclass_id,
-                          ':student_id' => $student_id,
-                          ':try_number' => $try_number,
+                          ':quickquestionactivity_id' => $quickquestionactivity_id,
                           ':response_st' => $response_st,
                           ':correct_flag' => $correct_flag,
                           ':score' => $score,
                              )
                  );
-              }
-                    
 
-        
+                
+                 //? not sure why we need the try_number returned for us
+
+             $sql = "SELECT try_number FROM QuickQuestionActivity WHERE quickquestionactivity_id = :quickquestionactivity_id";            
+             $stmt = $pdo->prepare($sql);
+             $stmt->execute(array(
+                 ':quickquestionactivity_id' => $quickquestionactivity_id
+             ));
+                 $try_number_ar = $stmt->fetch(PDO::FETCH_ASSOC);
+                 $try_number = $try_number_ar['try_number'];
+     
+
+
+
+
+        //          //! get the next question if there is one available    
+                 
+        //      $sql = "SELECT * FROM QuickQuestionActivity WHERE 
+        //             expires_at >NOW() AND email_flag = :email_flag AND response_st = :response_st AND student_id = :student_id 
+        //             AND currentclass_id = :currentclass_id 
+        //             ORDER BY discuss_stage DESC, try_number ASC LIMIT 1
+        //      ";
+        //         $stmt = $pdo->prepare($sql);
+        //         $stmt->execute(array(
+        //             ':response_st' => "",
+        //             ':email_flag' => "0",
+        //             ':student_id' => $student_id,
+        //             ':currentclass_id' => $currentclass_id,
+        //   ));
+        //             $next_question_ar = $stmt->fetch(PDO::FETCH_ASSOC);
             
             $return_data['score']=$score;
              $return_data['response_st']= $response_st;
+             $return_data['try_number']= $try_number;
              $return_data['questionset_id']= $questionset_id;
             $return_data['percent_correct'] =$percent_correct;
              $return_data['selected_correct_number'] = $selected_correct;
@@ -210,10 +238,22 @@ if($try_number<3){  //! only allow them to answer twice
              $return_data['correct_alias']=$correct_alias;
              $return_data['question_id'] = $question_id;
              $return_data['wrong_ar'] = $wrong_ar;
-             $return_data['try_number'] = $try_number;
              $return_data['selected_options_ar'] = $selected_options_ar;
              $return_data['correct_ar'] = $correct_ar;
-           
+            //  $return_data['next_question_id'] = $next_question_ar['question_id'];
+             
+            //  if ($next_question_ar){
+            //     $return_data['next_question_id'] = $next_question_ar['question_id'];
+            //     $return_data['next_try_number'] = $next_question_ar['try_number'];
+            //     $return_data['next_discuss_stage'] = $next_question_ar['discuss_stage'];
+            //     $return_data['next_quickquestionactivity_id'] = $next_question_ar['quickquestionactivity_id'];
+            //  } else {
+            //     $return_data['next_question_id'] = "none";
+            //     $return_data['next_try_number'] = "";
+            //     $return_data['next_discuss_stage'] = "";
+            //     $return_data['next_quickquestionactivity_id'] = "";
+
+            //  }
 
               print json_encode($return_data);
 

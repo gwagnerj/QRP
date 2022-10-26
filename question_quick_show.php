@@ -6,10 +6,14 @@ require_once "simple_html_dom.php";
 // require_once '../encryption_base.php';
 $error = '';
 $show_answer_flag = 0;
+$submit_btn_value = "Submit";
+$submit_disabled_text = "";
+$discuss_stage = 0;
+$try_number = 0;
 
-$changed_question_flag = 0;
-
-$student_id = $question_id = "";
+// $changed_question_flag = false;
+$question_answered = $more_questions = true;
+$student_id = $question_id = $school_id = $school_email = "";
 $shuffle_flag = 1;
 if (isset($_GET['encode'])){
     $encode = $_GET['encode'];
@@ -21,18 +25,93 @@ if (isset($_GET['encode'])){
         $_GET[$name]=$value;
     } 
 }
-$response = '';
-$key_code = $email_flag = 0;
+$response = $key_code_in = $error = $key_code = '';
+$email_flag = 0;
 
-if (isset($_GET['student_id'])){$student_id = $_GET['student_id'];} elseif (isset($_POST['student_id'])){$student_id = $_POST['student_id'];} 
- if (isset($_GET['key_code'])){$key_code = $_GET['key_code'];} elseif (isset($_POST['key_code'])){$key_code = $_POST['key_code'];} 
+if (isset($_GET['student_id'])){$student_id = $_GET['student_id'];} elseif (isset($_POST['student_id'])){$student_id = $_POST['student_id'];} else {$error = $error." student_id not set in quick question show. ";}
+if (isset($_GET['school_id'])){$school_id = $_GET['school_id'];} elseif (isset($_POST['school_id'])){$school_id = $_POST['student_id'];} 
+if (isset($_GET['school_email'])){$school_email = $_GET['school_email'];} elseif (isset($_POST['school_email'])){$school_email = $_POST['student_id'];} 
+ if (isset($_GET['key_code'])){$key_code_in = $_GET['key_code'];} elseif (isset($_POST['key_code'])){$key_code_in = $_POST['key_code'];} 
 if (isset($_GET['response'])){$response = $_GET['response'];} 
-if (isset($_GET['question_id'])){$question_id = $_GET['question_id'];} elseif(isset($_POST['question_id'])){$question_id = $_POST['question_id'];} else {$question_id = 0;}
-if (isset($_GET['currentclass_id'])){$currentclass_id = $_GET['currentclass_id'];}elseif(isset($_POST['currentclass_id'])){$currentclass_id = $_POST['currentclass_id'];} else {$currentclass_id =44;} // testing problems has a currentclass_id of 44
-if (isset($_GET['questionset_id'])){$questionset_id = $_GET['questionset_id'];} elseif(isset($_POST['questionset_id'])){$questionset_id = $_POST['questionset_id'];} else {$questionset_id =0;} // testing problems has a currentclass_id of 44
-if (isset($_POST['email_flag'])){$email_flag = 0;} elseif (isset($_GET['email_flag'])){$email_flag = $_GET['email_flag'];}  
+if (isset($_GET['question_id'])){$question_id = $_GET['question_id'];} elseif(isset($_POST['question_id'])){$question_id = $_POST['question_id'];} else {$question_id = 0; $error = $error." question_id not set. ";}
+if (isset($_GET['currentclass_id'])){$currentclass_id = $_GET['currentclass_id'];}elseif(isset($_POST['currentclass_id'])){$currentclass_id = $_POST['currentclass_id'];} else {$currentclass_id =44; $error = $error." currentclass_id not set  ";} // testing problems has a currentclass_id of 44
+if (isset($_GET['questionset_id'])){$questionset_id = $_GET['questionset_id'];} elseif(isset($_POST['questionset_id'])){$questionset_id = $_POST['questionset_id'];} else {$questionset_id =0; } 
+if (isset($_POST['email_flag'])){$email_flag = 0;} elseif (isset($_GET['email_flag'])){$email_flag = $_GET['email_flag'];} else {$email_flag =0; } 
 //  echo 'key_code: '.$key_code;
-$_GET = array();
+
+//? error checking here for ...
+if (strlen($error)>2){ 
+    $_SESSION['error'] =$error;
+    header('Location: url_to_quickQuestion.php?school_id='.$school_id.'&school_email='.$school_email.'&question_id='.$question_id.'&currentcourse_id='.$currentclass_id);
+    die();
+}
+
+
+//? go get the keycode and Try_number 
+
+    $sql = "SELECT quickquestionactivity_id,key_code,try_number,discuss_stage FROM QuickQuestionActivity
+    WHERE student_id =:student_id AND question_id =:question_id AND currentclass_id = :currentclass_id AND response_st = :response_st AND expires_at > NOW()
+    ORDER BY try_number DESC LIMIT 1";"
+    ";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array(
+        ':student_id' => $student_id,
+        ':question_id' => $question_id,
+        ':currentclass_id' => $currentclass_id,
+        ':response_st' => ""
+        ));
+        $QQA_ar = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if($QQA_ar){
+        $key_code = $QQA_ar['key_code'];
+        $try_number = $QQA_ar['try_number'];
+        $quickquestionactivity_id = $QQA_ar['quickquestionactivity_id'];
+        $discuss_stage = $QQA_ar['discuss_stage'];
+        } else {
+            $question_answered = true;
+            // $changed_question_flag = true;
+
+                        //! get the next question if there is one available    
+            
+                        $sql = "SELECT * FROM QuickQuestionActivity WHERE 
+                        expires_at >NOW() AND email_flag = :email_flag AND response_st = :response_st AND student_id = :student_id 
+                        AND currentclass_id = :currentclass_id 
+                        ORDER BY discuss_stage DESC, try_number ASC LIMIT 1
+                ";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute(array(
+                        ':response_st' => "",
+                        ':email_flag' => "0",
+                        ':student_id' => $student_id,
+                        ':currentclass_id' => $currentclass_id,
+                        ));
+                        $next_question_ar = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                        if ( $next_question_ar){
+                            $more_questions = true;
+                            $quickquestionactivity_id = $next_question_ar['quickquestionactivity_id'];
+                            $question_id = $next_question_ar['question_id'];
+                            $key_code = $next_question_ar['key_code'];
+                            $try_number = $next_question_ar['try_number'];
+                            $discuss_stage = $next_question_ar['discuss_stage'];
+
+                        } else {
+                            $more_questions = false;
+                            // $submit_disabled_text = "disabled";  //? I don't think I want to disable this button since they could use the same tab on their phone in class
+                        }
+         
+
+
+
+        }
+// echo 'quickquestionactivity_id '.$quickquestionactivity_id;
+
+// if ($key_code != $key_code_in){
+//     echo '<h2 style="font-color:red"> key codes do not match in question quick show</h2>';
+//     die();
+// }
+
+// $_GET = array();
 
 
 //   echo ' $student_id= '.$student_id.' $questionset_id= '.$questionset_id.' $key_code = '.$key_code.' $response= '.$response.' email_flag = '.$email_flag;  //! delete this after troubleshooting
@@ -44,12 +123,12 @@ $total_correct = $total_score = $count = 0;
 // get the questiontime_id for the question that was sent
 
     if ($question_id ==0){
-      
-        echo 'No question was found in question quick show $question_id was 0 ';
+        $_SESSION['error'] ='No question was found in question quick show $question_id was 0 ';
+        header('Location: url_to_quickQuestion.php?school_id='.$school_id.'&school_email='.$school_email.'&question_id='.$question_id.'&currentcourse_id='.$currentclass_id);
         die();
     }
 
- if($question_id != 0){
+ if($question_id != 0 && $more_questions){
 
     $sql = "SELECT * FROM Question WHERE question_id = :question_id";
     $stmt = $pdo->prepare($sql);
@@ -91,15 +170,15 @@ $total_correct = $total_score = $count = 0;
 
 $num_options = count($option_texts);
 
-if ($num_options != strlen($key_code)){  //? get another shuffled key code
-    $shuffle_keys = array();
-    $shuffle_keys = range(0,$num_options-1);
-    shuffle($shuffle_keys);
-    $key_code = "";
-    for($j = 0; $j < $num_options; $j++){
-       $key_code =$key_code.$shuffle_keys[$j];
-    }
-}
+// if ($num_options != strlen($key_code)){  //? get another shuffled key code
+//     $shuffle_keys = array();
+//     $shuffle_keys = range(0,$num_options-1);
+//     shuffle($shuffle_keys);
+//     $key_code = "";
+//     for($j = 0; $j < $num_options; $j++){
+//        $key_code =$key_code.$shuffle_keys[$j];
+//     }
+// }
 
    $html2 = $html;
 
@@ -113,6 +192,10 @@ if ($num_options != strlen($key_code)){  //? get another shuffled key code
 
  }
 
+ //? logic of the submit button for
+ if ($try_number == 1 && $discuss_stage ==2 ){$submit_btn_value = "Discussion Stage - Press me after this Stage is Over";}
+ if ($try_number == 1 && $discuss_stage ==3 ){$submit_btn_value = "Second Submit";}
+
 //?   now get the question
 
 ?>
@@ -125,7 +208,7 @@ if ($num_options != strlen($key_code)){  //? get another shuffled key code
 <title>QR Question</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
@@ -276,18 +359,22 @@ echo 'Question Number: '.$question_id;
 </div>
 <section id = "changed-question-message" class = "message">
 <?php
-if ( $changed_question_flag ==1){ echo '<p class = "text-primary">Original question had been attempted resently or not yet due </p>';}
+// if ( $changed_question_flag ){ echo '<p class = "text-primary">Original question had been attempted rescently or not yet due </p>';}
+if ( !$more_questions  && $try_number == 0 && $discuss_stage != 0 ){ echo '<p class = "text-danger fs-2">There are no more questions at this time.  You may close this tab in your browser or Wait Until the Instructor Activates the Discussion Phase </p>';}
+if ( !$more_questions  && $try_number == 1 && $discuss_stage != 0 ){ echo '<p class = "text-danger fs-2"> Final Submission Made. There are no more questions at this time.  You may close this tab in your browser </p>';}
+if ( !$more_questions  &&  $discuss_stage == 0 ){ echo '<p class = "text-danger fs-2"> Final Submission Made. There are no more questions at this time.  You may close this tab in your browser </p>';}
 ?>
 </section>
 
 <section id = "question-container" class = "fs-3">
 
 <?php
-echo $html2;
-
+if (isset($html2)){
+    echo $html2;
+}
 ?>
 
-<button type = "button" id = "submit_button" class = "btn btn-primary mt-1 ms-5">Submit</button>
+<!-- <button type = "button" id = "submit_button" class = "btn btn-primary btn-lg mt-5 ms-3">Submit</button> -->
 </section>
 
     <div id = "move_on" class ="">
@@ -304,10 +391,19 @@ echo $html2;
             <input type = "hidden" id = "email-flag" name = "email-flag" value = "<?php echo $email_flag;?>"></input>
             <input type = "hidden" id = "show_answer_flag" name = "show_answer_flag" value = "<?php echo $show_answer_flag;?>"></input>
             <input type = "hidden" id = "explanation_filenm" name = "explanation_filenm" value = "<?php echo $explanation_filenm;?>"></input>
+            <input type = "hidden" id = "quickquestionactivity_id" name = "quickquestionactivity_id" value = "<?php echo $quickquestionactivity_id;?>"></input>
+            <input type = "hidden" id = "question_answered" name = "question_answered" value = "<?php echo $question_answered;?>"></input>
+            <input type = "hidden" id = "try_number" name = "try_number" value = "<?php echo $try_number;?>"></input>
+            <input type = "hidden" id = "discuss_stage" name = "discuss_stage" value = "<?php echo $discuss_stage;?>"></input>
+        <input type = "submit" id = "submit_button" class = "btn btn-primary btn-lg mt-5 ms-3" value = "<?php echo $submit_btn_value ?>" <?php echo $submit_disabled_text ?>></input>
 
           </form>
         <br>
-          <div id = "explanation_container" class = "ms-2">
+          <div id = "explanation_container" class = "ms-2 ">
+
+          </div>
+  
+          <div id = "message_container" class = " fs-3 text-primary">
 
           </div>
   
@@ -342,6 +438,14 @@ const total_count = document.getElementById('total_count');
 const author_container = document.getElementById('author_container');
 const explanation_filenm = document.getElementById('explanation_filenm').value;
 const explanation_container = document.getElementById('explanation_container');
+const message_container = document.getElementById('message_container');
+const quickquestionactivity_id = document.getElementById('quickquestionactivity_id').value
+const question_answered = document.getElementById('question_answered').value
+const try_number = document.getElementById('try_number').value
+const discuss_stage = document.getElementById('discuss_stage').value
+const form = document.getElementById('form')
+
+
 
 
 let option_texts =[];
@@ -459,7 +563,18 @@ console.log ('select one flag',select_one_flag);
         }
 
 const submit_btn = document.getElementById('submit_button');
-submit_btn.addEventListener('click',function(){
+
+//if(question_answered){submit_btn.classList.add("hide")}
+
+submit_btn.addEventListener('click',function(e){
+    e.preventDefault()
+   if (discuss_stage ==2) {  //dont evaluate the response  Students are suppose to be in the discussion stage put in a message and  resubmit the form
+        document.getElementById('message_container').innerText = 'Discussion phase still active. Input not accepted. Try again after instructor allows input'
+
+            form.submit();
+            return false;
+    };
+
 let num_selected=0;
 let selected_ar = [];
 console.log ('submit button click');
@@ -478,18 +593,6 @@ changed_question_message.classList.add('hide');
 
 
 //? put in the wrong and correct icons
-        //   let m = 0;
-        //  selects.forEach((select) =>{
-        //     let v = String.fromCharCode(97 + m)  // for the icon id's
-
-        //     let wrong_element = document.createElement("span");
-        //     select.insertBefore(wrong_element,select.firstSibling);
-        //     wrong_element.outerHTML = '<span id = "wrong_icon-'+v+'" class = "wrong-icon ms-1 hide"><i class="bi wrong bi-x-square"></i></span>';
-        //     let correct_element = document.createElement("span");
-        //     select.insertBefore(correct_element,select.firstSibling);
-        //     correct_element.outerHTML = '<span id = "correct_icon-'+v+'" class = "correct_icon ms-1 hide"><i class="bi correct bi-check-circle"></i></span>';
-        //     m++;
-        //     })
 
     //? this is where we need to do AJAX and have it update the QuestionActivity table after it does the appropriate checks.  then it can hide or unhide the correct or wrong messages and unhide the correct
     //? get another question button if appropriate.  Get another question should call this file with either the existing id and have it figure it up top or do it with ajax and get the new number
@@ -503,7 +606,8 @@ console.log('selected_ar',selected_ar);
    info[3] = email_flag;
    info[4] = currentclass_id;
    info[5] = questionset_id;
-   let k = 6;
+   info[6] = quickquestionactivity_id;
+   let k = 7;
     selected_ar.forEach((selected)=>{
         info[k] = selected;
         console.log (info[k]);
@@ -517,6 +621,8 @@ console.log('selected_ar',selected_ar);
                 method: 'post',
                 data: {info:info}
             }).done(function(return_data){
+                    // question_answered.value = true;
+                    // submit_btn.classList.add("hide")
                     console.log (return_data)
                     let rd = JSON.parse(return_data);
                     console.log('rd_score',rd.score);
@@ -524,51 +630,69 @@ console.log('selected_ar',selected_ar);
                     question_id.value = rd.question_id;
                     let try_number = rd.try_number;
                     //? display the explaination if there is ones
-                    if (explanation_filenm){
-                        const full_path =  "uploads/"+explanation_filenm+".htm"
- //                       console.log("full_path",full_path);
+//                     if (explanation_filenm){
+//                         const full_path =  "uploads/"+explanation_filenm+".htm"
+//  //                       console.log("full_path",full_path);
 
-                        explanation_container.innerHTML = '<object type="text/html" data="'+full_path+'" ></object>'
-                    }
+//                         explanation_container.innerHTML = '<object type="text/html" data="'+full_path+'" ></object>'
+//                     }
 
 
-                        document.getElementById('email-flag').value = 0;
-                        document.getElementById('question_id').value = rd.question_id;
-                        if (try_number ==1){
-                            submit_btn.innerText = "2nd Submit";
-                            submit_btn.classList.remove('btn-primary');
-                            submit_btn.classList.add('btn-danger');
+                        // if (next_discuss_stage ==1 && next_try_number==0){  // we are in the discussion stage and have only tried once
 
-                        }
-                        if (try_number >=2){
-                            submit_btn.classList.add('hide');
-                        }
-                        explanation_container.classList.add('hide');
-                        if(rd.percent_correct==100){results.innerHTML = '<span class = "text-success"> Correct </span>';} else if (rd.percent_correct==0){results.innerHTML = '<span class = "text-danger"> Not Correct </span>';} else {results.innerHTML = ' Partially Correct';}
-                        results.innerHTML += '<p class = "text-secondary mt-2 fs-5"> Points= '+rd.score+' Total Points = '+rd.total_score+'</p>';
+                        //     //! add a button to 
+
+                            
+                        //      submit_btn.innerText = "Discussion Stage";
+                        //     submit_btn.classList.remove('btn-primary');
+                        //     submit_btn.classList.add('btn-secondary');
+                            
+                        //     // submit_btn.classList.add('disabled');
+                        //       //! add a button to check to see if the discussion phase is over maybe
+
+                        // }
+                        // if (next_discuss_stage ==2 && next_try_number==1){  // we are ready for 2nd input
+
+                        //     //! add a button to 
+
+
+                        //      submit_btn.innerText = "2nd Submit";
+                        //     submit_btn.classList.remove('btn-primary');
+                        //     submit_btn.classList.add('btn-danger');
+                        //     // submit_btn.classList.add('disabled');
+
+                        // }
+                    //     if (try_number >=1){
+
+                    //         //! Add a button to check for more questions - 
+                    //  //       submit_btn.classList.add('hide');
+                    //     }
+                        // explanation_container.classList.add('hide');
+                        // if(rd.percent_correct==100){results.innerHTML = '<span class = "text-success"> Correct </span>';} else if (rd.percent_correct==0){results.innerHTML = '<span class = "text-danger"> Not Correct </span>';} else {results.innerHTML = ' Partially Correct';}
+                        // results.innerHTML += '<p class = "text-secondary mt-2 fs-5"> Points= '+rd.score+' Total Points = '+rd.total_score+'</p>';
 
                  //?       results_container.classList.remove('hide');
-                        author_container.classList.remove('hide');
+                        // author_container.classList.remove('hide');
 
-                        const correct_icons = document.querySelectorAll(".correct_icon");
-                        let z = 0;
+                        // const correct_icons = document.querySelectorAll(".correct_icon");
+                        // let z = 0;
 
-                        correct_icons.forEach((correct_icon) =>{
-                            if(rd.selected_correct_alias[z]==1){
-                                correct_icon.classList.remove('hide');
-                            }
-                            z++;  
-                        })
+                        // correct_icons.forEach((correct_icon) =>{
+                        //     if(rd.selected_correct_alias[z]==1){
+                        //         correct_icon.classList.remove('hide');
+                        //     }
+                        //     z++;  
+                        // })
 
-                        const wrong_icons = document.querySelectorAll(".wrong-icon");
-                            z = 0;
+                        // const wrong_icons = document.querySelectorAll(".wrong-icon");
+                        //     z = 0;
 
-                        wrong_icons.forEach((wrong_icon) =>{
-                            if(rd.selected_wrong_alias[z]==1){
-                                wrong_icon.classList.remove('hide');
-                            }
-                            z++;  
-                        })
+                        // wrong_icons.forEach((wrong_icon) =>{
+                        //     if(rd.selected_wrong_alias[z]==1){
+                        //         wrong_icon.classList.remove('hide');
+                        //     }
+                        //     z++;  
+                        // })
                     if(try_number >= 2){  //? let them submit a 2nd time after group chat
                         selects.forEach((select) =>{
                             console.log('anchor ',select.href);
@@ -579,9 +703,13 @@ console.log('selected_ar',selected_ar);
                             select.removeEventListener('click',selectClick);
                         
                     })
-                }
-            })
-})
+                }  //? end if try_number = 2 block
+           form.submit();  // move on to the next question if there is one
+
+
+            })  //? end ajax done
+            // form.submit();  // move on to the next question if there is one
+})  //? end submit button listener
 
 
 selects.forEach((select) =>{
