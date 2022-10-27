@@ -40,6 +40,16 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 			$spec_ref = htmlentities($_POST['spec_ref']);
 			$num_options = $_POST['num_options'];
 
+					// Remove anything which isn't a word, whitespace, number
+					// or any of the following caracters -_~,;[]().
+					// If you don't need to handle multi-byte characters
+					// you can use preg_replace rather than mb_ereg_replace
+					$html_title = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $title);
+					// Remove any runs of periods (thanks falstro!)
+					$html_title = mb_ereg_replace("([\.]{2,})", '', $html_title);
+					$html_title = trim($html_title);
+
+
 			$num_correct = count($_POST['correct_option']);  //? to get the correct options if there is more than one and put them in the table
 			$correct_val = array_fill(0,$num_correct,1);
 			$correct_val = implode(', ',$correct_val);
@@ -126,7 +136,7 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 				$question_format_tx = $question_format_ar[$index];
 
 
-			$htmlfilenm = 'qw_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
+			$htmlfilenm = 'qw_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$html_title;
 
 
 
@@ -291,12 +301,12 @@ $letters = range ('a','j');    //? this bit initializzes the correct key to zero
 		// echo ' index ',$index;
 		//  echo ' question_format_tx ',$question_format_tx;
 
-		$htmlfilenm = 'qw_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
-		$auth_solnfilenm = 'qw_soln_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
-		$check1_solnfilenm = 'qw_check1_soln_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
-		$check2_solnfilenm = 'qw_check2_soln_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
-		$check3_solnfilenm = 'qw_check3_soln_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
-		$explanation_filenm = 'qw_explanation_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$_POST['title'];
+		$htmlfilenm = 'qw_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$html_title;
+		$auth_solnfilenm = 'qw_soln_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$html_title;
+		$check1_solnfilenm = 'qw_check1_soln_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$html_title;
+		$check2_solnfilenm = 'qw_check2_soln_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$html_title;
+		$check3_solnfilenm = 'qw_check3_soln_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$html_title;
+		$explanation_filenm = 'qw_explanation_'.$questionwomb_id.'_'.$question_use_tx.$question_format_tx.$html_title;
 
 		$sql = "UPDATE QuestionWomb SET 
 		htmlfilenm = :htmlfilenm, 

@@ -25,6 +25,8 @@ foreach ($users_info as $user_info){
     $typical_courses[] = $user_info['course_name'];
 }
 
+
+
 $sql = "SELECT discipline_name FROM Discipline ORDER BY discipline_id";
 $stmt = $pdo->prepare($sql);
 $stmt ->execute();
@@ -41,27 +43,30 @@ $stmt ->execute(array(
 ));
 $courses = $stmt ->fetchAll(PDO::FETCH_COLUMN);
 
-$stmt = "SELECT `name`,currentclass_id
+$stmt = "SELECT CurrentClass.name as `name`,
+                CurrentClass.currentclass_id AS currentclass_id,
+                Course.course_name as course_name
 			FROM CurrentClass
+      LEFT JOIN Course ON CurrentClass.course_id = Course.course_id
 			WHERE iid =:iid AND exp_date > NOW()"; 
 			$stmt = $pdo->prepare($stmt);	
 			$stmt->execute(array(':iid' => $iid));
 			$currentclasses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+
       $cclasses = array();
+      $courses_list = array();
     $i = 0;
       foreach ($currentclasses as $currentclass){
         $cclasses[$i] = $currentclass['name'];
         $cclasses_id[$i] = $currentclass['currentclass_id'];
+        if ($currentclass['course_name']&& !in_array($currentclass['course_name'], $courses_list, true)){
+          array_push($courses_list,$currentclass['course_name']);
+        }
         $i++;
       }
       $num_currentclasses = $i;
-      
-      // $cclasses_id = $cclasses['currentclass_id'];
-
-$courses_list = $cclasses;
-// loop thru the typical courses array and if it is not in the courses_list add it
-$see_more_courses = true;
+    $see_more_courses = true;
 
 if ($see_more_courses){
 
@@ -185,9 +190,7 @@ if ($see_more_courses){
 
 <body>
   <nav>
-  <!-- <a href="QRPRepo.php">Finished / Cancel - go back to Repository</a> -->
   <a id = "back_to_problem_repo" class="btn btn-outline-primary btn-sm m-2" href="QRPRepo.php"role="button">Problem Repository</a>
-  <!-- <a id = "back_to_problem_repo" class="btn btn-outline-primary" href="QRPRepo.php?iid=<?php echo$iid; ?>"role="button">Problem Repository</a> -->
   </nav>
 
 
@@ -206,8 +209,8 @@ if ($see_more_courses){
         </div>
         <!-- <form> -->
         <div class="currentclass bg-light " id="currentclass">
-          <h3 class="current_class_title text-primary fs-2">Current Class</h3>
-          <div class="row mx-2 mb-5 ms-1 border" id = "current_classes">
+          <h3 class="current_class_title text-primary fs-2">Current Class <span class = "text-primary fs-5"> (group of students)</span></h3>
+          <div class="row mx-2 mb-3 ms-1 border" id = "current_classes">
             <?php 
 
               if ($num_currentclasses == 0){
@@ -228,7 +231,11 @@ if ($see_more_courses){
                 ?>
            </div>
         </div>
-        <h4 id="active_container_title" class="active-conatiner-title text-danger fs-4 hide ">Active Problems </h4>
+        <header class = "active_card_header mb-2">
+            <span id="active_container_title" class="active-conatiner-title text-primary fs-4 me-5 hide ">Active Questions </span>
+            <button id="display_all_active_btn" class="btn btn-outline-primary hide ">Display & Responses for Active Questions</button>
+            <button id="display_rescent_activity_btn" class="btn btn-outline-secondary hide ms-5">Display Who Respondedks for me</button>
+        </header>
         <div class="row" id = "active_card_container">        
               
         </div>
@@ -242,7 +249,7 @@ if ($see_more_courses){
             <!-- <input type="hidden" id="course" value="Material Balances"> -->
             <div class="form-group course-list-container hide row mt-3" id = "course_list" >
               
-            <h3 class="course text-primary fs-2 mt-5">Select Questions from this Course</h3>
+            <h3 class="course text-primary fs-2 mt-5">Select Questions from this Course </h3>
                 <div class="row mx-2  mb-2 ms-1 border" id = "question_classes" >
 
                     <?php 
@@ -285,11 +292,6 @@ if ($see_more_courses){
                 <label for="hours_active" class = "form-label mt-4 fs-5 text-primary">Hours from now students can respond</label>
                   <input type = number class = " mb-4" id = "hours_active" min = "0.05" max = "999" step = "any" value = 3 ></input>
               </div>
-              <div class="discussion-control my-4 border form-check" id="discussion_control" title = "Discussion is in-class discussion. If email is sent then the discussion will be when question is selected and activated by the instructor">
-                  <input type = "radio" name = "discuss_stage" class = "discuss_stage ms-4 " checked value = "1"> Discussion</input>
-                  <input type = "radio" name = "discuss_stage" class = "discuss_stage ms-4  "  value = "0"> No Discussion</input>
-
-              </div>
 
               <div class="form-check form-switch">
                   <input class="form-check-input my-3 ms-5" type="checkbox" role="switch" id="shuffle_flag" name = "shuffle_flag" checked="true" autocompleted="">
@@ -317,7 +319,7 @@ if ($see_more_courses){
           
             <div>
               <button id = "toggle_chart"type="button" class="btn btn-outline-primary ">Toggle Chart</button>
-              <button id = "display_chart" type="button" class="btn btn-danger ms-1">Student Display</button>
+              <button id = "display_chart" type="button" class="btn btn-danger ms-1 hide">Student Display</button>
             </div>
 
                   <div>
@@ -379,7 +381,8 @@ const allow_2nd_submit = document.getElementById('allow_2nd_submit');
 const active_card_container = document.getElementById('active_card_container');
 let data1_flag = true;
 
-
+const display_all_active_btn = document.getElementById('display_all_active_btn');
+const display_rescent_activity_btn = document.getElementById('display_rescent_activity_btn');
 
 
 //const quick1_chart_ctx = document.getElementById('quick1_chart').getContext('2d');
@@ -388,6 +391,19 @@ let selected_sendcourse = '';
 let question_id;
 let currentclass_id;
 const offcanvasQuick1Response = document.getElementById('offcanvasQuick1Response');
+
+display_rescent_activity_btn.addEventListener('click', () =>{
+  console.log ("rescent Activity clicked")
+// open a page with the selected class that with the date range gets all the student activity for each question
+    selected_sendcourse = current_classes.querySelector('input[name ="currentclass"]:checked').value;
+  let url_str = `question_show_rescent_activity.php?iid=${iid}&currentclass=${selected_sendcourse}`;
+
+    window.open(url_str, '_blank');
+
+})
+
+
+
 
 //! function to get the questions that are active and make cards from these active cards and put them in the active card sections
 
@@ -403,6 +419,9 @@ function displayActiveCards (){
     course_list.classList.remove('hide');
     active_card_container.innerHTML = '';
     document.getElementById('active_container_title').classList.remove('hide')
+    display_all_active_btn.classList.remove('hide')
+    display_rescent_activity_btn.classList.remove('hide')
+
     currentclass_id = current_classes.querySelector('input[name ="currentclass"]:checked').getAttribute('data-ccid')
     fetch('getActiveQuickQuestion.php',{method: 'POST',
     headers: {
@@ -414,8 +433,44 @@ function displayActiveCards (){
 })
 .then((res) => res.json())
 .then((data) =>{
-    console.log('data');
-    console.log(data);
+    // console.log('data');
+    // console.log(data);
+    // console.log(data.length);
+    if (data.length > 0) {
+      //? Put together the display all active Questions
+      display_all_active_btn.addEventListener('click',()=>{
+        // console.log ("Display All Active clicked")
+
+         let send_course_name = current_classes.querySelector('input[name ="currentclass"]:checked').value;
+          let course_question = localStorage.getItem('course');
+          // console.log("send_course_name",send_course_name)
+          // console.log("course_question",course_question)
+          //? create string to send all of the problems to 
+          let url_string = `question_show_response.php?course=${course_question}&currentcourse=${send_course_name}&iid=${iid}`;
+            for (let i = 0; i <data.length; i++){
+              url_string += `&question_id_${i}=${data[i].question_id}`;
+            }
+            url_string += `&current_question_id=${data[0].question_id}`;
+          // console.log ("url_string",url_string);
+              window.open(url_string, '_blank');
+
+
+      })
+
+      
+
+
+      //     let question_send_id = localStorage.getItem('question_id');
+      //     let send_course_name = localStorage.getItem('sendcourse');
+      //     let course_question = localStorage.getItem('course');
+
+      //     // start the discussion stage for the question
+      //     // discussion_start.click();
+      //     display_chart.disabled = true;
+      //       window.open(`question_show_response.php?question_id=${question_send_id}&course=${course_question}&currentcourse=${send_course_name}&iid=${iid}`, '_blank');
+      //     })
+
+    }
 
      //? build the active card
      cards = '<div class="cards row mb-3" id = "active_cards" >';
@@ -436,7 +491,7 @@ function displayActiveCards (){
                 explanation_filenm += '.htm';
             }
             explanation_filenm = 'uploads/'+explanation_filenm;
-             console.log ('explanation_filenm',explanation_filenm);
+            //  console.log ('explanation_filenm',explanation_filenm);
             //  explanation_html = `<div class = "preview"><iframe class ="m-0" src ="${explanation_filenm}"  width="500px" height="150px" style="border:none;" ></iframe></div>`;
         }
         let key_str = '';
@@ -462,7 +517,7 @@ function displayActiveCards (){
             `
          } else {
             cards += ` <div class = "card active-card " id = "active_card_${question.question_id}">
-            <div class="card-header id">${question.question_id} <button id = "active_btn_${question.question_id}" class = "btn btn-outline-danger btn-sm position-absolute top-0 end-0"   aria-controls="quickSendSidebar">Responses</button></div>
+            <div class="card-header id">${question.question_id} <button id = "active_btn_${question.question_id}" class = "btn btn-outline-primary btn-sm position-absolute top-0 end-0"   aria-controls="quickSendSidebar">Responses</button></div>
 
             `
          }
@@ -489,7 +544,7 @@ function displayActiveCards (){
 
     let card_element = document.createElement('DIV');
     card_element.innerHTML =cards;
-    active_card_container.append(card_element);;
+    active_card_container.append(card_element);
   })
   
 }
@@ -508,7 +563,7 @@ function getResponseData(question_id,currentclass_id,num_parts,options_str){
         })
         .then((res1) => res1.json())
         .then((responses)=>{
-          console.log('response from get_quick1_question_response',responses);
+          // console.log('response from get_quick1_question_response',responses);
           data_for_1 = [];
           data_for_2 = [];
          let count =0;
@@ -539,8 +594,8 @@ function getResponseData(question_id,currentclass_id,num_parts,options_str){
             })
             data_for_2.push(count);
           }
-          console.log('data_for_1',data_for_1)
-          console.log('data_for_2',data_for_2)
+          // console.log('data_for_1',data_for_1)
+          // console.log('data_for_2',data_for_2)
 
           //? now graph the data
            const labels = options_str;
@@ -579,7 +634,7 @@ function getResponseData(question_id,currentclass_id,num_parts,options_str){
 
 
             toggle_chart.addEventListener('click',()=>{
-              console.log('chart_data.datasets[0].data1',chart_data.datasets[0].data)
+              // console.log('chart_data.datasets[0].data1',chart_data.datasets[0].data)
               if (data1_flag){
                 data1_flag = false;
                 chart_data.datasets[0].data = data_for_2;
@@ -597,7 +652,7 @@ function getResponseData(question_id,currentclass_id,num_parts,options_str){
 
               }
               myChart.update();
-              console.log('chart_data.datasets[0].data2',chart_data.datasets[0].data)
+              // console.log('chart_data.datasets[0].data2',chart_data.datasets[0].data)
 
 
           })
@@ -613,8 +668,8 @@ function getResponseData(question_id,currentclass_id,num_parts,options_str){
 
 function showResponsesInSidebar(question_id,currentclass_id){
   selected_sendcourse = current_classes.querySelector('input[name ="currentclass"]:checked').value;
-   console.log('selected currentclass_id',current_classes.querySelector('input[name ="currentclass"]:checked').getAttribute('data-ccid'))
-   console.log ('question_id',question_id)
+  //  console.log('selected currentclass_id',current_classes.querySelector('input[name ="currentclass"]:checked').getAttribute('data-ccid'))
+  //  console.log ('question_id',question_id)
    localStorage.setItem('sendcourse',selected_sendcourse);
   localStorage.setItem('question_id',question_id);
 
@@ -635,23 +690,23 @@ function showResponsesInSidebar(question_id,currentclass_id){
 //       let selected_card = .parentNode.parentNode.parentNode;
       let quick_response_card_iframe_conatiner = selected_card.querySelector('iframe');
       let q_title = selected_card.querySelector('.card-title')
-      console.log('card',selected_card);
-      console.log('q_title',q_title);
+      // console.log('card',selected_card);
+      // console.log('q_title',q_title);
 
           let iframe = quick_response_card_iframe_conatiner.contentWindow.document;
-          console.log('iframe',iframe);
+          // console.log('iframe',iframe);
 
             //? query the cards iframe to get the title, options and stem for the question response graph
           let child_nodes = iframe.childNodes;
-          console.log('child_nodes', child_nodes);
+          // console.log('child_nodes', child_nodes);
           // let q_title = child_nodes[0];
           let q_stem_html = child_nodes[0].querySelector('#stem_text_1').innerHTML;
           let q_stem_text = child_nodes[0].querySelector('#stem_text_1').innerText;
           //  child_nodes[0].innerHTML = child_nodes[0].innerHTML.replaceAll('##',''); //! put this when you get all of the iframes
-          console.log('q_stem_text',q_stem_text);
+          // console.log('q_stem_text',q_stem_text);
           q_stem = `<h4>Student Response to:</h4><h3> ${q_title.innerText}</h3> <h5>${q_stem_text}</h5>`;
           offcanvasQuick1Response.innerHTML=q_stem;
-          console.log('title',q_title);
+          // console.log('title',q_title);
           let options=[];
           let options_str = [];
           let num_parts = 0;
@@ -666,9 +721,9 @@ function showResponsesInSidebar(question_id,currentclass_id){
         }
 
 }
-console.log("options",options);
-console.log("options_str",options_str);
-console.log("num_parts",num_parts);
+// console.log("options",options);
+// console.log("options_str",options_str);
+// console.log("num_parts",num_parts);
 
          let data_for_1 = [];
         let data_for_2 = [];
@@ -709,7 +764,7 @@ cards_section.addEventListener('click', (event) => {
   event.preventDefault();
    question_id = event.target.id
    selected_sendcourse = current_classes.querySelector('input[name ="currentclass"]:checked').value;
-   console.log('selected',current_classes.querySelector('input[name ="currentclass"]:checked').getAttribute('data-ccid'))
+  //  console.log('selected',current_classes.querySelector('input[name ="currentclass"]:checked').getAttribute('data-ccid'))
       document.getElementById('selected_class_name_holder1').innerText = selected_sendcourse;  
       document.getElementById('selected_class_id_holder1').innerText = current_classes.querySelector('input[name ="currentclass"]:checked').getAttribute('data-ccid');  
       document.getElementById('selected_question_id_holder1').innerText = question_id;  
@@ -736,11 +791,11 @@ course_list.addEventListener("click",(e)=>{
 
       //   //? select the same course on the sidebar radio button list if available_funds
   const quick_send = document.getElementById('quick_send');  //this is the left off canvas to send the card
-  console.log('course',course);
+  // console.log('course',course);
    let selected_current_course = quick_send.querySelector(`input[value="${course}"]`)?quick_send.querySelector(`input[value="${course}"]`):'';  // this will look in the offcanvas and see if the card is selected 
    if(selected_current_course!=''){selected_current_course.setAttribute('checked',true)};  //? if the course is selected in the left offcanvas then check the check the course in the course_list
    
-   console.log("selected_current_course",selected_current_course)
+  //  console.log("selected_current_course",selected_current_course)
 
 
   })
@@ -749,27 +804,28 @@ course_list.addEventListener("click",(e)=>{
 //       //! put event listener on the div container both the send email button and the make question active buttons
 
       send_control.addEventListener('click',(e)=>{                        //? send control is the buttons on the left offcanvas to send the question or make it active
-     let discuss_stage = document.querySelector('input[name="discuss_stage"]:checked').value;
+     let discuss_stage = 1;
+    //  let discuss_stage = document.querySelector('input[name="discuss_stage"]:checked').value;
      let   email_flag = false;
         if (e.target.id == 'send_email_button'){
           email_flag = true;
         } 
 
       const  shuffle_flag = document.getElementById('shuffle_flag').checked
-        console.log('shuffle_flag',shuffle_flag);
+        // console.log('shuffle_flag',shuffle_flag);
 
       const  hours_active = document.getElementById('hours_active').value;
-        console.log('hours_active',hours_active);
-        console.log('e_target in send mail',e.target.id);
-        console.log('email flag',email_flag);
+        // console.log('hours_active',hours_active);
+        // console.log('e_target in send mail',e.target.id);
+        // console.log('email flag',email_flag);
    selected_sendcourse = current_classes.querySelector('input[name ="currentclass"]:checked').value;
     //? get the current cuouse selected from the sidebar and the card that was sent
 
-    console.log('the course is:',course);
-    console.log('the selected_sendcourse  is:',selected_sendcourse);
-    console.log('question_id',question_id);
-    console.log('discuss_stage',discuss_stage);
-   console.log(JSON.stringify({iid:iid, course:selected_sendcourse, question_id:question_id, email_flag:email_flag, discuss_stage:discuss_stage, hours_active:hours_active, shuffle_flag:shuffle_flag}))
+  //   console.log('the course is:',course);
+  //   console.log('the selected_sendcourse  is:',selected_sendcourse);
+  //   console.log('question_id',question_id);
+  //   console.log('discuss_stage',discuss_stage);
+  //  console.log(JSON.stringify({iid:iid, course:selected_sendcourse, question_id:question_id, email_flag:email_flag, discuss_stage:discuss_stage, hours_active:hours_active, shuffle_flag:shuffle_flag}))
     //? send the email using fetch
     fetch('email_quick_send.php',{method: 'POST',
     headers: {
@@ -784,7 +840,7 @@ course_list.addEventListener("click",(e)=>{
 
    displayActiveCards();
 
-    console.log(data);
+    // console.log(data);
     document.getElementById(question_id).click();  //? after you quick send the email send them back to the main page
     document.getElementById(question_id).classList.add("hide")
  
@@ -1083,10 +1139,10 @@ course = localStorage.getItem('course');
 
 function getTheCards () {
  currentclass_id = document.getElementById('currentclass').querySelector('input[name ="currentclass"]:checked').getAttribute('data-ccid');
- console.log ("currentclass 18 Aug 2022",currentclass_id)
+//  console.log ("currentclass 18 Aug 2022",currentclass_id)
 // get all of the cards
 
-console.log ('iid: ',iid,'course: ',course,'discipline_name: ',discipline_name,'currentclass_id: ',currentclass_id);
+// console.log ('iid: ',iid,'course: ',course,'discipline_name: ',discipline_name,'currentclass_id: ',currentclass_id);
 
 fetch('getQuestionsForRepo.php',{method: 'POST',
     headers: {
@@ -1140,11 +1196,10 @@ fetch('getQuestionsForRepo.php',{method: 'POST',
      question_send_id = localStorage.getItem('question_id');
      send_course_name = localStorage.getItem('sendcourse');
      course_question = localStorage.getItem('course');
-
-    console.log ('iid',iid)
-    console.log('discussion start question id: ',question_send_id);
-    console.log('discussion selected_send_courrse',send_course_name);
-    console.log('discussion selected_send_courrse',course_question);
+    // console.log ('iid',iid)
+    // console.log('discussion start question id: ',question_send_id);
+    // console.log('discussion selected_send_courrse',send_course_name);
+    // console.log('discussion selected_send_courrse',course_question);
 //? make an entry for each student in the table where the try_number is 1 and the discussion flag is still 1 in qqa table
 
       fetch('get_insert_quickquestion_trynum.php',{method: 'POST',
@@ -1157,12 +1212,10 @@ fetch('getQuestionsForRepo.php',{method: 'POST',
       })
       .then((res) => res.json())
       .then((data) =>{
-          console.log('data',data);
+          // console.log('data',data);
           discussion_start.classList.add("hide")
           allow_2nd_submit.classList.remove("hide")
       })
-
-
   })
 
 
@@ -1172,10 +1225,10 @@ fetch('getQuestionsForRepo.php',{method: 'POST',
      send_course_name = localStorage.getItem('sendcourse');
      course_question = localStorage.getItem('course');
 
-    console.log ('iid',iid)
-    console.log('discussion start question id: ',question_send_id);
-    console.log('discussion selected_send_courrse',send_course_name);
-    console.log('discussion selected_send_courrse',course_question);
+    // console.log ('iid',iid)
+    // console.log('discussion start question id: ',question_send_id);
+    // console.log('discussion selected_send_courrse',send_course_name);
+    // console.log('discussion selected_send_courrse',course_question);
 
 
     fetch('get_update_quickquestion_discuss_stage.php',{method: 'POST',
@@ -1188,7 +1241,7 @@ fetch('getQuestionsForRepo.php',{method: 'POST',
       })
       .then((res) => res.json())
       .then((data) =>{
-          console.log('data',data);
+          // console.log('data',data);
           allow_2nd_submit.classList.add("hide")
       })
 

@@ -25,7 +25,8 @@ $discipline = 'Chemical Engineering';
         // ORDER BY num_reject DESC, num_accept DESC, course DESC, question_use ASC
         //    ';
        $stmt = $pdo->prepare($sql);
-           $stmt->execute(array(':discipline' => $discipline));
+           $stmt->execute(array());
+        //    $stmt->execute(array(':discipline' => $discipline));
            $qw_data = $stmt -> fetchAll();
         //    var_dump($qw_data);
 

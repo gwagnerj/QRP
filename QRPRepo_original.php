@@ -4,111 +4,7 @@
     if(isset($_GET['iid'])){
 		$user_id = $_GET['iid'];
 	}
-
-
-
-    	//find out what kind of security level they have if they are logged in 
-	if(isset($_SESSION['username'])){
-		$username=$_SESSION['username'];
-	$sql = " SELECT * FROM Users where username = :username";
-			$stmt = $pdo->prepare($sql);
-			$stmt->execute(array(
-			':username' => $username));
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			$security = $row['security'];
-			$user_sponsor_id = $row['sponsor_id'];
-			$user_grade_level = $row['grade_level'];
-			$user_university = $row['university'];
-			
-			$users_id=$row['users_id'];
-			$_SESSION['iid']=$users_id;
-			$suspended = $row['suspended'];
-			$TA_course_1 = $row['TA_course_1'];
-			$TA_course_2 = $row['TA_course_2'];
-			$TA_course_3 = $row['TA_course_3'];
-			$TA_course_4 = $row['TA_course_4'];
-			$user_signon_date = $row['created_at'];
-			$users_exp_date = $row['exp_date'];
-	}
-	
-	if ($suspended == 1){
-		 $_SESSION['failure'] = 'Please Check with Administrator wagnerj@trine.edu - Account has been Suspended';
-		 header("location: login.php");
-		 die();
-	}
-
-    $preview="Null";
-	//if they request the file then set the $preview variable to the name of the file
-	if (isset($_POST['preview']) ){
-		$preview='uploads/'.htmlentities($_POST['preview']);
-	}
-	if (isset($_POST['soln_preview']) ){
-			$preview='uploads/'.htmlentities($_POST['soln_preview']);
-	}
-
-	
-	// check to see if the user is past the exp date
-		$now = time();
-		$exp_date = strtotime($users_exp_date);
-		$diff = $now - $exp_date;
-		if ( strtolower($exp_date) != 'null' && $exp_date != 0 && $diff > 0 ) {
-			 $_SESSION['failure'] = 'Please Check with Administrator wagnerj@trine.edu - Account is past the expiration date';
-			 header("location: login.php");
-			 die();
-		}
-	
-// find out what kind of threat Level is currently active
-	$sql = 'SELECT * FROM `Threat` ORDER BY `threat_id` DESC LIMIT 1';
-					$stmt = $pdo->prepare($sql);
-					$stmt -> execute(array(
-					));
-				
-					$t_row = $stmt->fetch(PDO::FETCH_ASSOC);
-					$threat_level = $t_row['threat_level'];
-					
-					
-	// check to see if the userhas signed up in the last three months and the threat level is high				
-
-	$signon_date = strtotime($user_signon_date);
-			$diff = $now - $signon_date; 
-			$crit = 3*30*24*3600; // 3 months in secounds
-			
-			if ( $diff < $crit && $threat_level >=3 ) {  // not allowing new users in when the threat level is high
-				 $_SESSION['failure'] = 'Please Check with Administrator wagnerj@trine.edu - Threat level is too high and your account will be restored as soon as possible';
-				 header("location: login.php");
-				 die();
-			}
-			if ($threat_level == 4 && $security != 'admin'){  // locks everyone out except the administrators when the threat level gets to 4
-				 $_SESSION['failure'] = 'Please Check with Administrator wagnerj@trine.edu - Threat level is too high system has been locked down - your account will be restored as soon as possible';
-				 header("location: login.php");
-				 die();
-			}
-		
-            $qstmnt="SELECT Problem.problem_id AS problem_id,Users.username AS username, Users.first AS name,Problem.subject as subject,Problem.course as course,Problem.primary_concept as p_concept,Users.users_id as users_id,
-            Problem.secondary_concept as s_concept,Problem.title as title,Problem.specif_ref as ref,Problem.status as status, Problem.soln_pblm as soln_pblm,Problem.game_prob_flag as game_prob_flag, 
-            Problem.nm_author as nm_author,Problem.docxfilenm as docxfilenm,Problem.infilenm as infilenm,Problem.pdffilenm as pdffilenm,
-            Problem.eff_stu_1 as eff_stu_1,Problem.eff_stu_2 as eff_stu_2,Problem.eff_stu_3 as eff_stu_3,Problem.eff_stu_4 as eff_stu_4,Problem.eff_stu_5 as eff_stu_5,
-            Problem.diff_stu_1 as diff_stu_1,Problem.diff_stu_2 as diff_stu_2,Problem.diff_stu_3 as diff_stu_3,Problem.diff_stu_4 as diff_stu_4,Problem.diff_stu_5 as diff_stu_5,
-            Problem.t_take1_1 as t_take1_1,Problem.t_take1_2 as t_take1_2,Problem.t_take1_3 as t_take1_3,Problem.t_take1_4 as t_take1_4,Problem.t_take1_5 as t_take1_5,Problem.t_take1_6 as t_take1_6,Problem.t_take1_7 as t_take1_7,
-            Problem.t_take1_np_1 as t_take1_np_1,Problem.t_take1_np_2 as t_take1_np_2,Problem.t_take1_np_3 as t_take1_np_3,Problem.t_take1_np_4 as t_take1_np_4,Problem.t_take1_np_5 as t_take1_np_5, Problem.t_take1_np_6 as t_take1_np_6,Problem.t_take1_np_7 as t_take1_np_7,
-            Problem.t_take2_1 as t_take2_1,Problem.t_take2_2 as t_take2_2,Problem.t_take2_3 as t_take2_3,Problem.t_take2_4 as t_take2_4,Problem.t_take2_5 as t_take2_5,Problem.t_take2_6 as t_take2_6,Problem.t_take2_7 as t_take2_7,
-            Problem.t_b4due_1 as t_b4due_1,Problem.t_b4due_2 as t_b4due_2,Problem.t_b4due_3 as t_b4due_3,Problem.t_b4due_4 as t_b4due_4,Problem.t_b4due_5 as t_b4due_5,Problem.t_b4due_6 as t_b4due_6,Problem.t_b4due_7 as t_b4due_7,
-            Problem.t_b4due_np_1 as t_b4due_np_1,Problem.t_b4due_np_2 as t_b4due_np_2,Problem.t_b4due_np_3 as t_b4due_np_3,Problem.t_b4due_np_4 as t_b4due_np_4,Problem.t_b4due_np_5 as t_b4due_np_5, Problem.t_b4due_np_6 as t_b4due_np_6, Problem.t_b4due_np_7 as t_b4due_np_7,
-            Problem.confidence_1 as confidence_1,Problem.confidence_2 as confidence_2,Problem.confidence_3 as confidence_3,Problem.confidence_4 as confidence_4,Problem.confidence_5 as confidence_5,
-            Problem.confidence_np_1 as confidence_np_1,Problem.confidence_np_2 as confidence_np_2,Problem.confidence_np_3 as confidence_np_3,Problem.confidence_np_4 as confidence_np_4,Problem.confidence_np_5 as confidence_np_5,
-             Users.university as s_name, Problem.preprob_3 as mc_prelim, Problem.preprob_4 as misc_prelim, Problem.hint_a as hint_a, Problem.hint_b as hint_b, Problem.hint_c as hint_c, Problem.hint_d as hint_d, Problem.hint_e as hint_e,
-             Problem.hint_f as hint_f,Problem.hint_g as hint_g,Problem.hint_h as hint_h, Problem.hint_i as hint_i, Problem.hint_j as hint_j, Problem.video_clip as video_clip, Problem.simulation as simulation, Problem.demonstration_directions as demo_directions,
-             Problem.activity_directions as activity_directions, Problem.computation_name as computation_name, Problem.allow_clone as allow_clone, Problem.allow_edit as allow_edit, Problem.parent as parent, Problem.children as children, Problem.orig_contr_id as orig_contr_id,
-            Problem.edit_id1 as edit_id1, Problem.edit_id2 as edit_id2, Problem.edit_id3 as edit_id3
-            FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id ORDER BY problem_id DESC";
-        
-        
-            $stmt = $pdo->query($qstmnt);
-             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-		//	 var_dump($rows);
-        
-
+    
     
     // Should put the redirects up hear or the header location will have already been sent
 ?>
@@ -238,6 +134,82 @@
 		unset($_SESSION['success']);
 	}
 
+	$preview="Null";
+	//if they request the file then set the $preview variable to the name of the file
+	if (isset($_POST['preview']) ){
+		$preview='uploads/'.htmlentities($_POST['preview']);
+	}
+	if (isset($_POST['soln_preview']) ){
+			$preview='uploads/'.htmlentities($_POST['soln_preview']);
+	}
+
+	//find out what kind of security level they have if they are logged in 
+	if(isset($_SESSION['username'])){
+		$username=$_SESSION['username'];
+	$sql = " SELECT * FROM Users where username = :username";
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute(array(
+			':username' => $username));
+			$row = $stmt->fetch(PDO::FETCH_ASSOC);
+			$security = $row['security'];
+			$user_sponsor_id = $row['sponsor_id'];
+			$user_grade_level = $row['grade_level'];
+			$user_university = $row['university'];
+			
+			$users_id=$row['users_id'];
+			$_SESSION['iid']=$users_id;
+			$suspended = $row['suspended'];
+			$TA_course_1 = $row['TA_course_1'];
+			$TA_course_2 = $row['TA_course_2'];
+			$TA_course_3 = $row['TA_course_3'];
+			$TA_course_4 = $row['TA_course_4'];
+			$user_signon_date = $row['created_at'];
+			$users_exp_date = $row['exp_date'];
+	}
+	
+	if ($suspended == 1){
+		 $_SESSION['failure'] = 'Please Check with Administrator wagnerj@trine.edu - Account has been Suspended';
+		 header("location: login.php");
+		 die();
+	}
+	
+	// check to see if the user is past the exp date
+		$now = time();
+		$exp_date = strtotime($users_exp_date);
+		$diff = $now - $exp_date;
+		if ( strtolower($exp_date) != 'null' && $exp_date != 0 && $diff > 0 ) {
+			 $_SESSION['failure'] = 'Please Check with Administrator wagnerj@trine.edu - Account is past the expiration date';
+			 header("location: login.php");
+			 die();
+		}
+	
+// find out what kind of threat Level is currently active
+	$sql = 'SELECT * FROM `Threat` ORDER BY `threat_id` DESC LIMIT 1';
+					$stmt = $pdo->prepare($sql);
+					$stmt -> execute(array(
+					));
+				
+					$t_row = $stmt->fetch(PDO::FETCH_ASSOC);
+					$threat_level = $t_row['threat_level'];
+					
+					
+	// check to see if the userhas signed up in the last three months and the threat level is high				
+
+	$signon_date = strtotime($user_signon_date);
+			$diff = $now - $signon_date; 
+			$crit = 3*30*24*3600; // 3 months in secounds
+			
+			if ( $diff < $crit && $threat_level >=3 ) {  // not allowing new users in when the threat level is high
+				 $_SESSION['failure'] = 'Please Check with Administrator wagnerj@trine.edu - Threat level is too high and your account will be restored as soon as possible';
+				 header("location: login.php");
+				 die();
+			}
+			if ($threat_level == 4 && $security != 'admin'){  // locks everyone out except the administrators when the threat level gets to 4
+				 $_SESSION['failure'] = 'Please Check with Administrator wagnerj@trine.edu - Threat level is too high system has been locked down - your account will be restored as soon as possible';
+				 header("location: login.php");
+				 die();
+			}
+				
 
 
 	if (isset($_SESSION['username'])){
@@ -262,8 +234,14 @@
 		
 		}
           
+
+
+         
             echo ('<style> form {display:inline}</style>');
+         //   echo('<form action = "QRExamPrint0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Print Exam"></form> &nbsp;');
             echo('<form action = "QRExamMgmt.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Exam Management"></form> &nbsp;');
+ //           echo('<form action = "QRExamStart.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Start Exam"></form> &nbsp;');
+ //           echo('<form action = "QRExamRetrieve.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Retrieve Exam Results"></form> &nbsp;');
             echo('<form action = "QRAssignmentStart0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Hmwk Management"></form> &nbsp;');
             echo('<form action = "QRQuestionMgmt0.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-dark" type = "submit" value ="Question Mgmt"></form> &nbsp;');
             echo('<form action = "QuestionRepo.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$users_id.'"><input class = "btn btn-outline-success" type = "submit" value ="Quick Question"></form> &nbsp;');
@@ -282,6 +260,9 @@
 		if ($row = $stmt->fetch(PDO::FETCH_ASSOC)!= false) {
 		
 		echo '<a href="suspend_user.php">Suspend / unsuspend one of users you sponsored </a> &nbsp';
+		// echo '<button id = "filter-button" class = "btn btn-outline-danger bs-5 px-1">Show Search and Filters</button>';
+
+		//	echo '<br>';
 		}
 
 		echo '<button id = "spark-line-button" class = "btn btn-outline-secondary bs-3 px-1">Show Sparkines</button>&nbsp';
@@ -290,6 +271,8 @@
 		echo '<div id = "request_prob">';
 		echo '<span class = "fw-bold fs-6">Contributing a New Problem? </span><br>';
 		echo '<a href="requestPblmNum.php" style = "color:blue;"><button title = "Problems have numerical answers and variable parameters" class = "btn btn-outline-primary me-4" style = "color:white;"><i class="bi bi-list-ol"></i> Request Problem Number</buttton></a>';
+		// echo '<a href="requestQuestNum.php" style = "color:green;"><button title = "Questions are multiple choice type questions" class = "btn btn-outline-secondary"><i class="bi bi-list-ol" ></i> Request Question Number</buttton></a>';
+		// echo '<a href="editquest.php" style = "color:gray;"><button title = "Questions are multiple choice type questions" class = "btn btn-outline-secondary"><i class="bi bi-list-ol" ></i> Question Edit </buttton></a>';
 		echo '</div>';
 		
 	}
@@ -364,7 +347,27 @@
 		
 		// add the effectiveness and rating stuff here so I can either display it or compute the average and display that along with the total ratings
 		
-    foreach ($rows as $row) {
+	$qstmnt="SELECT Problem.problem_id AS problem_id,Users.username AS username, Users.first AS name,Problem.subject as subject,Problem.course as course,Problem.primary_concept as p_concept,Users.users_id as users_id,
+	Problem.secondary_concept as s_concept,Problem.title as title,Problem.specif_ref as ref,Problem.status as status, Problem.soln_pblm as soln_pblm,Problem.game_prob_flag as game_prob_flag, 
+	Problem.nm_author as nm_author,Problem.docxfilenm as docxfilenm,Problem.infilenm as infilenm,Problem.pdffilenm as pdffilenm,
+	Problem.eff_stu_1 as eff_stu_1,Problem.eff_stu_2 as eff_stu_2,Problem.eff_stu_3 as eff_stu_3,Problem.eff_stu_4 as eff_stu_4,Problem.eff_stu_5 as eff_stu_5,
+	Problem.diff_stu_1 as diff_stu_1,Problem.diff_stu_2 as diff_stu_2,Problem.diff_stu_3 as diff_stu_3,Problem.diff_stu_4 as diff_stu_4,Problem.diff_stu_5 as diff_stu_5,
+	Problem.t_take1_1 as t_take1_1,Problem.t_take1_2 as t_take1_2,Problem.t_take1_3 as t_take1_3,Problem.t_take1_4 as t_take1_4,Problem.t_take1_5 as t_take1_5,Problem.t_take1_6 as t_take1_6,Problem.t_take1_7 as t_take1_7,
+	Problem.t_take1_np_1 as t_take1_np_1,Problem.t_take1_np_2 as t_take1_np_2,Problem.t_take1_np_3 as t_take1_np_3,Problem.t_take1_np_4 as t_take1_np_4,Problem.t_take1_np_5 as t_take1_np_5, Problem.t_take1_np_6 as t_take1_np_6,Problem.t_take1_np_7 as t_take1_np_7,
+	Problem.t_take2_1 as t_take2_1,Problem.t_take2_2 as t_take2_2,Problem.t_take2_3 as t_take2_3,Problem.t_take2_4 as t_take2_4,Problem.t_take2_5 as t_take2_5,Problem.t_take2_6 as t_take2_6,Problem.t_take2_7 as t_take2_7,
+	Problem.t_b4due_1 as t_b4due_1,Problem.t_b4due_2 as t_b4due_2,Problem.t_b4due_3 as t_b4due_3,Problem.t_b4due_4 as t_b4due_4,Problem.t_b4due_5 as t_b4due_5,Problem.t_b4due_6 as t_b4due_6,Problem.t_b4due_7 as t_b4due_7,
+	Problem.t_b4due_np_1 as t_b4due_np_1,Problem.t_b4due_np_2 as t_b4due_np_2,Problem.t_b4due_np_3 as t_b4due_np_3,Problem.t_b4due_np_4 as t_b4due_np_4,Problem.t_b4due_np_5 as t_b4due_np_5, Problem.t_b4due_np_6 as t_b4due_np_6, Problem.t_b4due_np_7 as t_b4due_np_7,
+	Problem.confidence_1 as confidence_1,Problem.confidence_2 as confidence_2,Problem.confidence_3 as confidence_3,Problem.confidence_4 as confidence_4,Problem.confidence_5 as confidence_5,
+	Problem.confidence_np_1 as confidence_np_1,Problem.confidence_np_2 as confidence_np_2,Problem.confidence_np_3 as confidence_np_3,Problem.confidence_np_4 as confidence_np_4,Problem.confidence_np_5 as confidence_np_5,
+	 Users.university as s_name, Problem.preprob_3 as mc_prelim, Problem.preprob_4 as misc_prelim, Problem.hint_a as hint_a, Problem.hint_b as hint_b, Problem.hint_c as hint_c, Problem.hint_d as hint_d, Problem.hint_e as hint_e,
+	 Problem.hint_f as hint_f,Problem.hint_g as hint_g,Problem.hint_h as hint_h, Problem.hint_i as hint_i, Problem.hint_j as hint_j, Problem.video_clip as video_clip, Problem.simulation as simulation, Problem.demonstration_directions as demo_directions,
+	 Problem.activity_directions as activity_directions, Problem.computation_name as computation_name, Problem.allow_clone as allow_clone, Problem.allow_edit as allow_edit, Problem.parent as parent, Problem.children as children, Problem.orig_contr_id as orig_contr_id,
+	Problem.edit_id1 as edit_id1, Problem.edit_id2 as edit_id2, Problem.edit_id3 as edit_id3
+	FROM Problem LEFT JOIN Users ON Problem.users_id=Users.users_id ORDER BY problem_id DESC";
+
+
+	$stmt = $pdo->query($qstmnt);
+	while ( $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		
 		// needed to put this in for the grader criteria - copied from furthrer down on active
                $sql = "SELECT assign_num FROM Assign WHERE prob_num = :prob_num AND iid = :iid";
@@ -379,19 +382,19 @@
 		
 		
 		
-            if($row['game_prob_flag']== 0 && 
-                (
-                            ( $users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3'] )||
-                        //($security =='stu_contrib' && $user_sponsor_id == $row['users_id']) ||
-                        //  ($security =='stu_contrib' && $user_sponsor_id == $row['users_id']) ||
-                            ($security =='stu_contrib' && $users_id == $row['users_id']) ||
-                        ($security == 'grader' && $row2 !=false)||
-                        ($security == 'admin')||
-                        ($security == 'contrib')||
-                        ($security == 'instruct') ||
-                        ($security == 'TA' && ($row['course'] == $TA_course_1 || $row['course'] == $TA_course_2 || $row['course'] == $TA_course_3 || $row['course'] == $TA_course_4))
-                )
-            )
+	   if($row['game_prob_flag']== 0 && 
+		   (
+				    ( $users_id == $row['edit_id1'] || $users_id == $row['edit_id2'] || $users_id == $row['edit_id3'] )||
+				   //($security =='stu_contrib' && $user_sponsor_id == $row['users_id']) ||
+                   //  ($security =='stu_contrib' && $user_sponsor_id == $row['users_id']) ||
+				    ($security =='stu_contrib' && $users_id == $row['users_id']) ||
+				   ($security == 'grader' && $row2 !=false)||
+				   ($security == 'admin')||
+				   ($security == 'contrib')||
+				   ($security == 'instruct') ||
+				   ($security == 'TA' && ($row['course'] == $TA_course_1 || $row['course'] == $TA_course_2 || $row['course'] == $TA_course_3 || $row['course'] == $TA_course_4))
+		   )
+	   )
 
 
 	   {
@@ -580,6 +583,14 @@
                     }
                     
                     
+                   /*  
+                    $asstmnt = "SELECT Assign.assign_num AS assign_ass_num, Assign.alias_num AS alias_num,Assign.currentclass_id as currentclass_id
+					FROM Assign 
+					WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid=".$users_id.");";
+						
+					$stmt2 = $pdo->query($asstmnt);
+					 $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+                      */
                      
 					if($active_flag == 0){
                             if($status_update =='Circulated'){
@@ -607,6 +618,15 @@
                       ':iid' => $users_id,
                     ));
                     $row2e = $stmt9->fetch(PDO::FETCH_ASSOC); 
+/*                     
+                    $asstmnt = "SELECT Exam.exam_num AS exam_e_num, Exam.alias_num AS e_alias_num,Exam.currentclass_id as e_currentclass_id
+					FROM Exam 
+					WHERE (Exam.problem_id =". $row['problem_id']." AND Exam.iid=".$users_id.");";
+					$stmt2e = $pdo->query($asstmnt);
+                    
+                 
+					 $row2e = $stmt2e->fetch(PDO::FETCH_ASSOC);
+     */                    
                      
                      
 					if($row2e == false){
@@ -627,6 +647,13 @@
                      ':problem_id' => $row['problem_id'],
                       ':iid' => $users_id,
                     ));
+/* 
+
+                $usestmnt = "SELECT Assign.instr_last AS instr_last_nm 
+					FROM Assign 
+					WHERE (Assign.prob_num =". $row['problem_id']." AND Assign.iid <>".$users_id.");";
+						$stmt5 = $pdo->query($usestmnt);
+                    */     
                         
                         
 						$i=1;
@@ -642,12 +669,21 @@
 			echo("</td><td>");
             if ($active_flag > 0){
                 
+                // echo ($row2["currentclass_id"]);
+                 // find the current class from the Currentclass table
               
                 $sql = "SELECT CurrentClass.name AS class_name FROM CurrentClass WHERE currentclass_id = :currentclass_id";
                   $stmt6 = $pdo->prepare($sql);
                     $stmt6 -> execute(array(
                      ':currentclass_id' => $row2['currentclass_id'],
                     ));
+/* 
+              $stmnt = "SELECT CurrentClass.name AS class_name
+					FROM CurrentClass
+					WHERE (currentclass_id = ".$row2['currentclass_id'].");";
+                 $stmt6 = $pdo->query($stmnt);
+                 
+                 */ 
                  
                  $row6 = $stmt6->fetch(PDO::FETCH_ASSOC);
 					if($row6 !== false){
@@ -667,6 +703,15 @@
                      ':currentclass_id' => $row2e['e_currentclass_id'],
                     ));
 
+/* 
+
+
+                 // find the current class from the Currentclass table
+                 $stmnte = "SELECT CurrentClass.name AS class_name_e
+					FROM CurrentClass
+					WHERE (currentclass_id = ".$row2e['e_currentclass_id'].");";
+                 $stmt6e = $pdo->query($stmnte);
+             */     
                  
 				 $row6e = $stmt6e->fetch(PDO::FETCH_ASSOC);
 				 if ($row6e != false){
@@ -716,11 +761,14 @@
 				echo('<form action = "suspendpblm.php" method = "GET"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "submit" value ="susp/uns"></form>');
 				echo("<p class='half-line'>");
 			
+//				echo('<a href="deletepblm.php?problem_id='.$row['problem_id'].'">Del</a> / ');
+			//	echo('<a href="suspendpblm.php?problem_id='.$row['problem_id'].'">Susp-unSus</a> / ');
 			}
 			
 			if ($security != 'grader'){
 			echo('<form action = "QRactivatePblm.php" method = "GET" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "hidden" name = "assign_id" value = "'.$assign_id.'"><input type = "submit" value ="Stage->HW"></form>');
 
+		//	echo('<a href="QRactivatePblm.php?problem_id='.$row['problem_id'].'&users_id='.$users_id.'">Act-deAct</a>');
 				
 			echo("</td><td>");
 			}
@@ -728,6 +776,8 @@
 			if($row['status']!='num issued') {
 				echo('<form action = "bc_preview.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "index" value = "1" ><input type = "submit" value ="Base-case"></form>');
 				echo("&nbsp; ");
+				// echo('<form action = "getGame.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Game"></form>');
+				// echo("&nbsp; ");
 				echo('<form action = "stageExam.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="Stage->Exam"></form>');
 				echo("&nbsp; ");
 				echo('<form action = "getInputMoodleXML.php" method = "POST" target = "_blank"> <input type = "hidden" name = "problem_id" value = "'.$row['problem_id'].'"><input type = "hidden" name = "iid" value = "'.$users_id.'"><input type = "submit" value ="MoodleXML"></form>');
@@ -757,11 +807,13 @@
 
 
 
+	//echo ('"'.$preview.'"');
 ?>
 
 	<script>
 		let show_sparklines = document.getElementById('spark-line-button');
 		show_sparklines.addEventListener("click", function(e) {
+			// console.log("click");
 
 		$(".inlinebar1").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "#7ace4c"});
 		$(".inlinebar2").sparkline("html",{type: "bar", height: "50", barWidth: "10", resize: true, barSpacing: "5", barColor: "orange"});
@@ -787,6 +839,7 @@
 				"aiExclude": [ 0,1,2,3,6,11,17,18] }});
 		
 
+		// jQuery('#table_format').ddTableFilter();
 		} );
 		
 		
@@ -794,6 +847,8 @@
 
 	</table>
 	<p></p>
+	<!-- <p><a href="add.php">Add New Manual</a></P> -->
+	<!--<a href="addPblm.php">Add Data and Pblm Files</a> -->
 	<p></p>
 
 

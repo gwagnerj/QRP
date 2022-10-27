@@ -3531,3 +3531,10 @@ ALTER TABLE CurrentClass
 ADD CONSTRAINT  
 FOREIGN KEY (`course_id`) 
 REFERENCES Course(`course_id`);
+
+
+-- ALTER TABLE QuickQuestionActivity ADD UNIQUE KEY `uidx` (`student_id`, `currentclass_id`,`question_id`,`key_code`);
+
+ALTER TABLE `Student`
+ADD `student_pic_fn` VARCHAR (255)  DEFAULT NULL AFTER `university`,
+ADD `student_pic_show` INT (1)  DEFAULT 1 AFTER `student_pic_fn`

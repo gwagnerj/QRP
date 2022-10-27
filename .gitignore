@@ -10,14 +10,16 @@ plyr-master/*
 student_exam_work/*
 drawing_tool_images/*
 documentation/*
-node_modules
-vendor/*
+node_modules/*
 crypto-js-4.0.0/*
 Delete me/*
 Deleteme/*
 drawingtool/*
 tinyMCE/*
-
-
-
-
+vendor/*
+vendor
+jquery*
+composer*
+composer.lock
+*.json
+composer.lock

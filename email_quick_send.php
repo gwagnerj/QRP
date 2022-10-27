@@ -4,6 +4,8 @@ require_once '../email_password.php';
 require_once "simple_html_dom.php";
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+// use PHPMailer\PHPMailer\PHPMailer;
+// use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';// Load Composer's autoloader
 // require_once "random_compat-2.0.18/lib/random.php"; // needed this for the random_bytes function did not work on the online version
 
