@@ -156,7 +156,7 @@ $html_explan_str = $html_explan;
 				<input class ="form-check-input p-2" type = "checkbox"  > Question Usage & Type</input>
 			</div>
 			<div class = "col-3"  title = "No spelling or gramatical errors and sentences should be clear and easy to read">
-				<input class ="form-check-input p-2" type = "checkbox"  > Spelling/Grammer</input>
+				<input class ="form-check-input p-2" type = "checkbox"  > Spelling/Grammar</input>
 			</div>
 		</div>
 		<div class = "row">
