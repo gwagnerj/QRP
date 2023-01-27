@@ -71,6 +71,7 @@ if (isset($_SESSION['success'])) {
     echo('<form action = "writeQuestionStudentActivity.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-success btn-lg" type = "submit" value ="Check Student Question Activity"></form> &nbsp;');
     echo('<form action = "editActiveQuestion.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-danger btn-lg" type = "submit" value ="Edit Active Bank Questions"></form> &nbsp;');
     echo('<form action = "writeQuestion.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-secondary btn-lg" type = "submit" value ="Write Questions"></form> &nbsp;');
+    echo('<form action = "importQuestion.php" method = "POST"> <input type = "hidden" name = "iid" value = "'.$iid.'"><input class = "btn btn-outline-secondary btn-lg" type = "submit" value ="Import Questions from CSV"></form> &nbsp;');
 
 ?>
 </nav>

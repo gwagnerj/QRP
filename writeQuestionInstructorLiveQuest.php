@@ -99,7 +99,7 @@ if (isset($_GET['question_id'])){
         $select = 'key_'.$l;
         $key[$l] = $question_data[ $select];
 
-        if ($question_data[ $select] != NULL){  //? its null if there is no value for it (that question did not have that part)
+        if ($question_data[ $select] !== NULL){  //? its null if there is no value for it (that question did not have that part)
             $num_options++;
             $sel = '#question_option_'.$l;
             if ($html->find($sel) != NULL){

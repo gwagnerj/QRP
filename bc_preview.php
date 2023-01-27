@@ -35,6 +35,8 @@ $solnfilenm = 'uploads/' . $solnfilenm;
 
 $htmlfilenm = 'uploads/'.$htmlfilenm;
 
+
+
 //             echo ('<h2> htmlfilenm: '.$htmlfilenm.'</h2>');
 
 // read in the names of the variables for the problem

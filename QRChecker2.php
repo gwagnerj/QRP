@@ -2,16 +2,7 @@
 session_start();
 //	if(session_status()!=PHP_SESSION_ACTIVE) session_start();  // put this in to try to get rid of a warning of headers already sent - didn't work
 	require_once "pdo.php";
-/* 
- if (!empty($_GET)) {
-        $_SESSION['got'] = $_GET;
-    } else {
-        if (!empty($_SESSION['got'])) {
-            $_GET = $_SESSION['got'];
-            unset($_SESSION['got']);
-        }
-    }
-   */
+
     if(isset($_GET['activity_id'])) {
         $activity_id = $_GET['activity_id'];
        
@@ -85,7 +76,7 @@ session_start();
      $window_closes = $window_closes->format(' D, M d,  g:i A');
      $window_closes_int = strtotime($window_closes);
      $late_points = $assigntime_data['late_points'];
-     $credit = $assigntime_data['credit'];
+     $credit = $assigntime_data['credit'];  // credit is the late policy set by the instructor and is either penaly that is 'latetoproblem' or 'latetoparts'
      $fixed_percent_decline = $assigntime_data['fixed_percent_decline'];
       $now = new DateTime($activity_data['last_updated_at']);
       $now = $now->format(' D, M d,  g:i A');
@@ -338,16 +329,8 @@ session_start();
          */
      // keep track of the number of tries the student makes
 	// get the count from the activity table __________________________________________can get this from the resp table eventually _____________________________-
- /*  
-   if($count_tot == 0){   // first time no tries initialise count and wrong count
-		for ($j=0;$j<=9;$j++){
-					$wrongCount[$j]=0;
-			
-                  
-				}
-	}
-     */
-     if( $get_flag ==0){ // if we are comming in from this file on a post
+
+    if( $get_flag ==0){ // if we are comming in from this file on a post
     // get the old repsonses from the response table check to see which ones have changed and 
       $i =0;
       $changed_flag = false;
@@ -459,28 +442,10 @@ session_start();
         }
          $i++;
       }
-    //  echo ' changed: ';
-    // var_dump ($changed);
-   //  echo '<br><br><br>';
-        
-    /*  
-      if ($changed_flag){
-            $count_tot++;
-      }
-    */
-		
-    //}	
      
 		for ($j=0; $j<=9; $j++) {
 			if($partsFlag[$j] ) {
 
-         /*        
-                echo 'resp_'.$j.'  '.$resp[$resp_key[$j]] .'<br>';			
-                echo 'tol_key_type_'.$j.'  '.$tol_type[$tol_type_key[$j]].'<br>';			
-                echo 'tol_'.$j.'  '.$tol[$tol_key[$j]] .'<br>';		
-                echo 'soln_'.$j.'  '.$soln[$j].'<br>';		
-                echo '<br><br>';
-                 */
                 
                 if($soln[$j]==0){  // take care of the zero solution case
                     $sol=1;
@@ -848,30 +813,19 @@ session_start();
 	<?php } 
     }
 
-
+//! The latetoparts line below was added 12 jan 2023 'if ($credit == "latetoparts")..secound line had activity_data[p_num_score_net] changed to PScore along with a closing bracket on $activity_data['late_penalty']);}}} about 5 lines below
 	
-	?> 
+	?>
+     <div id = "score_container" >
    <?php if ($credit == "latetoproblems") {?>
-<span class="fw-bold" > Provisional Score on Problem:  <?php echo (round($PScore)) ?> %&nbsp; out of  <?php echo (round($num_score_possible)) ?> %&nbsp;   </span><?php } else { ?>
-<span class="fw-bold" > Provisional Score on Problem:  <?php echo (round($activity_data['p_num_score_net'])); if ($num_score_possible) { echo (' out of '.$num_score_possible);} ?> %&nbsp;   </span> <?php }?>
+<span class="fw-bold score" > Provisional Score on Problem:  <?php echo (round($PScore)) ?> %&nbsp; out of  <?php echo (round($num_score_possible)) ?> %&nbsp;   </span><?php } else { ?>
+<span class="fw-bold score" > Provisional Score on Problem:  <?php echo (round($PScore)); if ($num_score_possible) { echo (' out of '.$num_score_possible);} ?> %&nbsp;   </span> <?php }?>
 <?php if ($credit == "latetoproblems") { if($perc_late_p_prob != 0){if ($PScore >= $perc_late_p_prob){$pscore_less = round($PScore - $perc_late_p_prob); echo (' Less Late Penalty of '.$perc_late_p_prob.'% = '.$pscore_less.'%');} else { echo (' Less Late Penalty of '.$perc_late_p_prob.' % more than points earned'); $pscore_less = 0;}} else {$pscore_less = $PScore; } } else { ?> &nbsp; &nbsp; 
-<?php if($activity_data['late_penalty'] != 0){echo (' Late Penalty: '.$activity_data['late_penalty']);}}?>
+<?php if ($credit == "latetoparts") { if($perc_late_p_part != 0){if ($PScore >= $perc_late_p_part){$pscore_less = round($PScore - $perc_late_p_part); echo (' Less Late Penalty of '.$perc_late_p_part.'% = '.$pscore_less.'%');} else { echo (' Less Late Penalty of '.$perc_late_p_part.' % more than points earned'); $pscore_less = 0;}} else {$pscore_less = $PScore; } } else { ?> &nbsp; &nbsp; 
+<?php if($activity_data['late_penalty'] != 0){echo (' Late Penalty: '.$activity_data['late_penalty']);}}}?>
  <br> note - Score only includes quatitative parts of the problem.  These points awarded when work is uploaded. <br>
- 
- Total Count:<span id = "total_count" > <?php echo (@$count_tot) ?> </span> <br>
- <!--
- Due Date: <?php echo (@$due_date) ?>  Due_Date_int:  <?php echo (@$due_date_int) ?><br>
- Now: <?php echo (@$now) ?>  Now_int:  <?php echo (@$now_int) ?> Duedate-nowInt: <?php echo ($due_date_int - $now_int) ?> <br>  <br>
- nowInt-window_closes_int <?php echo ($now_int-$window_closes_int) ?> <br>  <br>
- Late Penalty: <?php echo (@$late_penalty) ?>   <br>
- late_points: <?php echo (@$late_points) ?>   <br>
- fixed_percent_decline: <?php echo (@$fixed_percent_decline) ?>   <br>
-  days_past_due: <?php echo (@$days_past_due) ?>   <br>
- 
-Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
-
-<br> numerical score possible  <?php echo (round($num_score_possible)) ?> %&nbsp;  
---> 
+</div>
+ Total Count:<span id = "total_count" value = "<?php echo (@$count_tot) ?>"> <?php echo (@$count_tot) ?> </span> <br>
 <?php if ( $pscore_less==$num_score_possible && $pscore_less !=0 && $pscore_less !='' ){$perf_num_score_flag =1;} else {$perf_num_score_flag =0;} ?>
 
 <?php if ( $pscore_less==$num_score_possible && $pscore_less !=0 && $pscore_less !='' && $now_int < $due_date_ec_int){$ec_elgible_flag =1;} else {$ec_elgible_flag =0;} ?>
@@ -896,8 +850,10 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
             <input type="hidden" id = "count_from_check" name="count" value="<?php echo ($count_tot)?>" >
             <input type="hidden" id = "PScore" name="PScore" value="<?php echo ($PScore)?>" >
              <input type="hidden" name="perc_late_p_prob" value="<?php echo ($perc_late_p_prob)?>" >
-             <input type="hidden" name="num_score_possible" value="<?php echo ($num_score_possible)?>" >
-             <input type="hidden" name="pscore_less" value="<?php echo ($pscore_less)?>" >
+             <input type="hidden" id = "num_score_possible" name="num_score_possible"" value="<?php echo ($num_score_possible)?>" >
+             <input type="hidden" id = "pscore_less" name="pscore_less" value="<?php echo ($pscore_less)?>" >
+             <input type="hidden" id = "p_num_score_net"  value="<?php echo ($activity_data['p_num_score_net'])?>" >
+             
 
              <input type="hidden" id = "ec_elgible_flag" name="ec_elgible_flag" value="<?php echo $ec_elgible_flag?>" >
              <input type="hidden" id = "perf_num_score_flag" name="perf_num_score_flag" value="<?php echo $perf_num_score_flag?>" >
@@ -905,42 +861,41 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
 
 
           <!-- <p><input type = "submit"  id = "finish_submit" name = "finish" value="Finish and Proceed to Survey" size="10" style = "width: 30%; background-color: red; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p> -->
-          <p><button type = "submit"  id = "finish_submit" name = "finish" class = "btn btn-danger position-absolute bottom-1 mt-3 end-0 ">Finish and Proceed to Survey <i class="bi bi-skip-end"></i></button>
+          <p><button type = "submit"  id = "finish_submit" name = "finish" class = "btn btn-outline-secondary position-absolute bottom-1 mt-3 end-0 ">Finish and Proceed to Survey <i class="bi bi-skip-end"></i></button>
+          <p><button type = "submit"  id = "finish_submit_perfect" name = "finish" class = "btn btn-danger position-absolute bottom-1 mt-3 end-0 d-none">Finish and Proceed to Survey <i class="bi bi-skip-end"></i></button>
 
     </form>
 
    
     
     
-     <!--
-    
-	<form action="StopExam.php" method="POST" id = "the_form">
-		    <input type="hidden" name="name"  value="<?php echo ($name)?>" >
-            <input type="hidden" name="pin" value="<?php echo ($pin)?>" >
-            <input type="hidden" name="team_id"  value="<?php echo ($team_id)?>" >
-            <input type="hidden" name="problem_id"  value="<?php echo ($problem_id)?>" >
-            <input type="hidden" name="dex" value="<?php echo ($dex)?>" >
-            <input type="hidden" name="exam_num" value="<?php echo ($exam_num)?>" >
-            <input type="hidden" id = "examtime_id" name="examtime_id" value="<?php echo ($examtime_id)?>" >
-            <input type="hidden" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
-            <input type="hidden" name="globephase" id = "globephase" >
-            <input type="hidden" name="iid" value="<?php echo ($iid)?>" >
-           
-        <p><input type="hidden" id = "pblm_score" name="pblm_score" size=3 value="<?php echo($PScore)?>"  
-    <hr>
-	<p><b><font Color="red">Finished:</font></b></p>
-	 <input type="hidden" name="score" value=<?php echo ($score) ?> />
-	   <?php $_SESSION['score'] = round($PScore);  ?>
-	 <b><input type="submit" value="Finished" name="score" style = "width: 30%; background-color:yellow "></b>
-	 <p><br> </p>
-	 <hr>
-	</form>
- -->
 
 	<script>
 
      
 		$(document).ready( function () {
+
+
+
+            const PScore = document.getElementById("PScore");
+            const num_score_possible = document.getElementById("num_score_possible");
+            const p_num_score_net = document.getElementById("p_num_score_net");
+
+            const score_container = document.getElementById("score_container");
+
+            if (num_score_possible.value == 0) {
+                score_container.classList.add("d-none");
+             
+            } else {
+                score_container.classList.remove("d-none");
+            }
+
+
+            if (PScore.value == num_score_possible.value && PScore.value !=0 && PScore.value !=''&& num_score_possible.value !=0 && num_score_possible.value !=''){
+                document.getElementById("finish_submit").classList.add("d-none");
+                document.getElementById("finish_submit_perfect").classList.remove("d-none");
+            }
+
 
             let parts_in_checker = false;
             if (parts_in_checker){
@@ -1004,18 +959,6 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
         
         var activity_id = $('#activity_id').val();
           
-/*   I played with this to sneek values from the iframe to QRdisplayPblm problem and this worked but may as well use AJAX and get it from the activity table
-
-            var count_from_check = 0;
-                var ec_elgible_flag = 0;
-                var changed_flag =0;
-                 count_from_check = $('#count_from_check').val();
-               changed_flag = $('#changed_flag').val();
-               ec_elgible_flag = $('#ec_elgible_flag').val();
-               localStorage.setItem('count_from_check', count_from_check);
-               localStorage.setItem('ec_elgible_flag', ec_elgible_flag);
-               localStorage.setItem('changed_flag', changed_flag);
-                */  
                      var request;
                 function fetchPhase() {
                     request = $.ajax({
@@ -1043,13 +986,6 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
                     });
                 }
                 
-              /*   
-                setInterval(function() {
-                    if (request) request.abort();
-                    fetchPhase();
-                }, 10000);
-
- */
                 // Delay if they take to many total attempts
                         
                             var count_tot = $("#count_tot").val();
@@ -1057,60 +993,6 @@ Due Date for Extra Credit: <?php echo (@$due_date_ec) ?>   <br>
                             console.log ("count_tot = "+count_tot);
                              console.log ("prob_parts = "+prob_parts);
                           
-                            
-/* time delay stuff on JS works but should take care of it for each part not on the total count
-                            var check_form = document.getElementById("check_form"), check_submit = document.getElementById("check_submit");
-                            check_form.onsubmit = function() {
-                                return false;
-                            }
-
-                            check_submit.onclick = function() {
-                            
-                                 if (count_tot > 5*prob_parts){
-                                        $("#t_delay_message").text(" 30s time delay limit exceeded");
-                                      setTimeout(function() {
-                                              check_form.submit();
-                                         }, 30000);
-                                           return false;
-                                  } else if (count_tot > 3*prob_parts){
-                                      $("#t_delay_message").text(" 5s time delay limit exceeded");
-                                      setTimeout(function() {
-                                              check_form.submit();
-                                         }, 5000);
-                                           return false; 
-                                  } else {
-                                      
-                                      check_form.submit();
-                                      return false; 
-                                  }
-                            }       
-                                  */
-        /*      unpredictable results - changed to QR_checker but left the problem up                   
-          if($('#switch_to_bc').val() ==1){
-            window.location.replace("QR_BC_Checker2.php?activity_id="+activity_id);
-
-          }              
-                                 
-   */                               
-                               
-
-/* 
-                          if (count_tot > 3*prob_parts){
-                                
-                               var delayInMilliseconds = 1000; //1 second
-
-                            setTimeout(function() {
-                              //your code to be executed after 1 second
-                            }, delayInMilliseconds); 
-                                
-                                
-                            }
-                         */
-                        
-                  
-
-
-
                 
                      function SubmitAway() { 
                         window.close();

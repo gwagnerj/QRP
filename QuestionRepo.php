@@ -721,6 +721,7 @@ function showResponsesInSidebar(question_id,currentclass_id){
         }
 
 }
+
 // console.log("options",options);
 // console.log("options_str",options_str);
 // console.log("num_parts",num_parts);

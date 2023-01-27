@@ -87,23 +87,25 @@ if ($check_flag ==0 && $status =='sent_back'){
 
     $html = new simple_html_dom();
     $full_htmlfn = 'uploads/'.$htmlfilenm.'.htm';
-    $html -> load_file ($full_htmlfn);
+    $html -> load_file ($full_htmlfn); 
+    // echo($html);
+
     $ret = $html->find('#stem_text_1')[0]->innertext;
     $stem_text_1_str = $ret;
     $num_options = 0;
+
     $i = 0;
     foreach ($letters as $l){
         $select = 'key_'.$l;
-        $key[$l] = $questionwomb_data[ $select];
-        if ($questionwomb_data[ $select] != NULL){  //? its null if there is no value for it (that question did not have that part)
+        $key[$l] = $questionwomb_data[$select];
+        if ($questionwomb_data[$select] !== NULL){  //? its null if there is no value for it (that question did not have that part)
             $num_options++;
             $sel = '#question_option_'.$l;
-            $option_str_ar[$i] = str_replace('##','',$html->find($sel)[0]->innertext);  //? should read in all of the previosu text from the file options that has already been put in
+            $haystack = $html->find($sel)[0]->innertext;
+            $option_str_ar[$i] = str_replace('##','',$html->find($sel)[0]->innertext);  //? should read in all of the previous text from the file options that has already been put in
         }
         $i++;
     }
-//    var_dump($key);
-  // var_dump($option_str_ar);
    //? ________________________________________________________________________________________________________________________________________________________________
 
    //? this is all about getting the question html and put it in the form for editing via tinymce
@@ -131,7 +133,20 @@ if ($check_flag ==0 && $status =='sent_back'){
 //? first set it up for a student coming from moodle_to_writeQuestion.php
 $student_id = 0;
 $iid = 0;
-      
+   
+// determin if we are on a localhost or not
+$localhost = false;
+if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
+    $localhost = true;
+}
+if ($localhost){
+    $student_id = 1;           
+  //  $iid = 3;           
+} else {
+
+
+
+
            if (isset($_POST['student_id'])){   //! uncomment this after testing
                $student_id = $_POST['student_id'];  }
         elseif (isset($_GET['student_id'])) 
@@ -143,6 +158,7 @@ $iid = 0;
             } else {
                 $_SESSION['error'] = "no student_id or iid in writeQuestion";
             }
+}    
     
     // $student_id = 3;            //! elliminate this after editing
 if ($student_id != 0){

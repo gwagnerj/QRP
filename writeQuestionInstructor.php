@@ -94,7 +94,7 @@ if (isset($_GET['questionwomb_id'])){
     foreach ($letters as $l){
         $select = 'key_'.$l;
         $key[$l] = $questionwomb_data[ $select];
-        if ($questionwomb_data[ $select] != NULL){  //? its null if there is no value for it (that question did not have that part)
+        if ($questionwomb_data[ $select] !== NULL){  //? its null if there is no value for it (that question did not have that part)
             $num_options++;
             $sel = '#question_option_'.$l;
             $option_str_ar[$i] = str_replace('##','',$html->find($sel)[0]->innertext);  //? should read in all of the previosu text from the file options that has already been put in

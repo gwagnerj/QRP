@@ -57,7 +57,7 @@
                 $alias_num = $activity_data['alias_num'];
                 $ec_elgible_flag =$activity_data['ec_elgible_flag'];
                 
-           // get how many points they get for tilling out survey
+           // get how many points they get for filling out survey
               $sql = "SELECT * FROM Assigntime WHERE assigntime_id = :assigntime_id";
             $stmt = $pdo->prepare($sql);
             $stmt->execute(array(':assigntime_id' => $assigntime_id));
@@ -260,6 +260,9 @@
 			 
 			 
 			 }
+
+			//  echo '$num_score_possible = '.$num_score_possible.'<br>';
+			//  echo '$p_num_score_net = '.$p_num_score_net.'<br>';
 	  		if($num_score_possible == $p_num_score_net && $p_num_score_net != 0 && $p_num_score_net != '' && $p_num_score_net != null ){$perf_num_score_flag = 1;} else {$perf_num_score_flag = 0;}		
 
 	?>
@@ -316,17 +319,6 @@
         <p></p>
         
         
- <!--       
-    Will submit audio instruction on the solution to one part of the problem for extra credit?<br> 
-		&nbsp &nbsp <input type="radio" name="audio_instruction" value = "yes"  size= 20  >&nbsp &nbsp Yes <br>
-		&nbsp &nbsp <input type="radio" name="audio_instruction" value = "no"  size= 20  >&nbsp &nbsp No  <br>
-
-	<p></p>
-	Will submit written documentation  - Base Case must be solved<br> 
-		&nbsp &nbsp <input type="radio" name="written_instruction" value = "yes"  size= 20  >&nbsp &nbsp Yes <br>
-		&nbsp &nbsp <input type="radio" name="written_instruction" value = "no"  size= 20  >&nbsp &nbsp No  <br>
-	<p></p>
--->
 	</div>
 
 

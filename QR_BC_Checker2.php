@@ -27,7 +27,7 @@ session_start();
 
 
   $attempt_type = 1;  // this will determine how many chances you get
-    
+  $corr_spec_num = array();  // initialize var so we dont get undefined var error 
    // get the needed info from the activity table
    //  Get all of the required info from the Activity Table
     
@@ -268,7 +268,7 @@ session_start();
           $oldresp_flag = 0;
           for ($j=0; $j<=9; $j++) {
               
-             if($corr_spec_num[$j]==1){ 
+             if($corr_spec_num  && $corr_spec_num[$j]==1){ 
                     $resp[$resp_key[$j]]=$soln[$j];  
              }
              
@@ -571,10 +571,9 @@ session_start();
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
         <link rel="stylesheet" href="displayProblem.css"> 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">        <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>       
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
 <style>
 
     #peer_help_button{
@@ -647,7 +646,9 @@ session_start();
 	<div id = "part-a-BC" class = "problem-parts"> a)(<?php echo $assigntime_data['perc_a_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="a" id = "a" size = 10% <?php echo ( $sequential_part_disable_input_ar[0] )?> value="<?php echo (htmlentities($resp['a']))?>" > <?php echo(htmlspecialchars_decode($unit[0])) ?> &nbsp - <b><?php echo ($corr['a']) ?> </b> count <?php echo(@$wrongCount[0].' '); ?> 
 	 <?php 
     if ( (( $activity_data['wcount_bc_a']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[0]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_a']==1 ) && $corr['a']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_a" class= "btn  btn-outline-primary" '.$sequential_part_disable_button_ar[0].'  value="Show Answer"> </span>&nbsp;');}
+     { 
+        echo('<span><input type="button" id="show_answer_button_a" class= "btn  btn-outline-primary show_answer" '.$sequential_part_disable_button_ar[0].'  value="Show Answer"> </span>&nbsp;');
+    }
     if ( (( $activity_data['wcount_bc_a']>= $help_n_hint && @$diff_time_min[0]>= $help_t_hint && $hintaPath != "uploads/default_hints.html") ) )
     {echo '<a href="'.$hintaPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
   //   { echo('<span><input type="button" id="show_hint_button_a" class="btn-default" '.$sequential_part_disable_button_ar[0].' value="'.$hintaPath.'"> </span>&nbsp;');}
@@ -671,7 +672,7 @@ session_start();
 
      <?php 
     if ( (( $activity_data['wcount_bc_b']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[1]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_b']==1 ) && $corr['b']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_b" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[1].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_b" class="btn  btn-outline-primary show_answer" '.$sequential_part_disable_button_ar[1].'  value="Show Answer"> </span>&nbsp;');}
      if ( (( $activity_data['wcount_bc_b']>= $help_n_hint && @$diff_time_min[1]>= $help_t_hint && $hintbPath != "uploads/default_hints.html") ) )
      {echo '<a href="'.$hintbPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
  
@@ -690,7 +691,7 @@ session_start();
 
      <?php 
     if ( (( $activity_data['wcount_bc_c']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[2]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_c']==1 ) && $corr['c']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_c" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[2].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_c" class="btn  btn-outline-primary show_answer" '.$sequential_part_disable_button_ar[2].'  value="Show Answer"> </span>&nbsp;');}
      if ( (( $activity_data['wcount_bc_c']>= $help_n_hint && @$diff_time_min[2]>= $help_t_hint && $hintcPath != "uploads/default_hints.html") ) )
      {echo '<a href="'.$hintcPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
 
@@ -711,7 +712,7 @@ session_start();
 
     <?php 
     if ( (( $activity_data['wcount_bc_d']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[3]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_d']==1 ) && $corr['d']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_d" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[3].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_d" class="btn  btn-outline-primary show_answer" '.$sequential_part_disable_button_ar[3].'  value="Show Answer"> </span>&nbsp;');}
      if ( (( $activity_data['wcount_bc_d']>= $help_n_hint && @$diff_time_min[3]>= $help_t_hint && $hintdPath != "uploads/default_hints.html") ) )
      {echo '<a href="'.$hintdPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
 
@@ -729,7 +730,7 @@ session_start();
 	<div id = "part-e-BC" class = "problem-parts"> e)(<?php echo $assigntime_data['perc_e_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="e" id = "e" size = 10% <?php echo ( $sequential_part_disable_input_ar[4])?> value="<?php echo (htmlentities($resp['e']))?>" > <?php echo(htmlspecialchars_decode($unit[4])) ?> &nbsp - <b><?php echo ($corr['e']) ?> </b> count <?php echo(@$wrongCount[4].' '); ?> 
      <?php 
     if ( (( $activity_data['wcount_bc_e']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[4]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_e']==1 ) && $corr['e']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_e" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[4].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_e" class="btn  btn-outline-primary show_answer" '.$sequential_part_disable_button_ar[4].'  value="Show Answer"> </span>&nbsp;');}
      if ( (( $activity_data['wcount_bc_e']>= $help_n_hint && @$diff_time_min[4]>= $help_t_hint && $hintePath != "uploads/default_hints.html") ) )
      {echo '<a href="'.$hintePath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
 
@@ -748,7 +749,7 @@ session_start();
 	<div id = "part-f-BC" class = "problem-parts"> f)(<?php echo $assigntime_data['perc_f_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="f" id = "f" size = 10% <?php echo ( $sequential_part_disable_input_ar[5])?> value="<?php echo (htmlentities($resp['f']))?>" > <?php echo(htmlspecialchars_decode($unit[5])) ?> &nbsp - <b><?php echo ($corr['f']) ?> </b> count <?php echo(@$wrongCount[5].' '); ?> 
     <?php 
     if ( (( $activity_data['wcount_bc_f']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[5]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_f']==1 ) && $corr['f']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_f" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[5].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_f" class="btn  btn-outline-primary show_answer" '.$sequential_part_disable_button_ar[5].'  value="Show Answer"> </span>&nbsp;');}
      if ( (( $activity_data['wcount_bc_f']>= $help_n_hint && @$diff_time_min[5]>= $help_t_hint && $hintfPath != "uploads/default_hints.html") ) )
      {echo '<a href="'.$hintfPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
 
@@ -768,7 +769,7 @@ session_start();
 	<div id = "part-g-BC" class = "problem-parts"> g)(<?php echo $assigntime_data['perc_g_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="g" id = "g" size = 10% <?php echo ( $sequential_part_disable_input_ar[6])?> value="<?php echo (htmlentities($resp['g']))?>" > <?php echo(htmlspecialchars_decode($unit[6])) ?> &nbsp - <b><?php echo ($corr['g']) ?> </b> count <?php echo(@$wrongCount[6].' '); ?> 
     <?php 
     if ( (( $activity_data['wcount_bc_g']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[6]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_g']==1 ) && $corr['g']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_g" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[6].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_g" class="btn  btn-outline-primary show_answer" '.$sequential_part_disable_button_ar[6].'  value="Show Answer"> </span>&nbsp;');}
      if ( (( $activity_data['wcount_bc_g']>= $help_n_hint && @$diff_time_min[6]>= $help_t_hint && $hintgPath != "uploads/default_hints.html") ) )
      {echo '<a href="'.$hintgPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
 
@@ -786,7 +787,7 @@ session_start();
 	<div id = "part-h-BC" class = "problem-parts"> h)(<?php echo $assigntime_data['perc_h_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="h" id = "h" size = 10% <?php echo ( $sequential_part_disable_input_ar[7])?> value="<?php echo (htmlentities($resp['h']))?>" > <?php echo(htmlspecialchars_decode($unit[7])) ?> &nbsp - <b><?php echo ($corr['h']) ?> </b> count <?php echo(@$wrongCount[7].' '); ?> 
     <?php 
     if ( (( $activity_data['wcount_bc_h']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[7]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_h']==1 ) && $corr['h']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_h" '.$sequential_part_disable_button_ar[7].'  class="btn  btn-outline-primary" value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_h" '.$sequential_part_disable_button_ar[7].'  class="btn  btn-outline-primary show_answer" value="Show Answer"> </span>&nbsp;');}
      if ( (( $activity_data['wcount_bc_h']>= $help_n_hint && @$diff_time_min[7]>= $help_t_hint && $hinthPath != "uploads/default_hints.html") ) )
      {echo '<a href="'.$hinthPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
 
@@ -804,7 +805,7 @@ session_start();
 	<div id = "part-i-BC" class = "problem-parts"> i)(<?php echo $assigntime_data['perc_i_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="i" id = "i" size = 10% <?php echo ( $sequential_part_disable_input_ar[8])?> value="<?php echo (htmlentities($resp['i']))?>" > <?php echo(htmlspecialchars_decode($unit[8])) ?> &nbsp - <b><?php echo ($corr['i']) ?> </b> count <?php echo(@$wrongCount[8].' '); ?> 
 <?php 
     if ( (( $activity_data['wcount_bc_i']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[8]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_i']==1 ) && $corr['i']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_i" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[8].'  value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_i" class="btn  btn-outline-primary show_answer" '.$sequential_part_disable_button_ar[8].'  value="Show Answer"> </span>&nbsp;');}
      if ( (( $activity_data['wcount_bc_i']>= $help_n_hint && @$diff_time_min[8]>= $help_t_hint && $hintiPath != "uploads/default_hints.html") ) )
      {echo '<a href="'.$hintiPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
 
@@ -822,7 +823,7 @@ session_start();
 	<div id = "part-j-BC" class = "problem-parts"> j)(<?php echo $assigntime_data['perc_j_'.$alias_num]; ?>%) <input [ type=number]{width: 5%;} name="j" id = "j" size = 10% <?php echo ( $sequential_part_disable_input_ar[9])?> value="<?php echo (htmlentities($resp['j']))?>" > <?php echo(htmlspecialchars_decode($unit[9])) ?> &nbsp - <b><?php echo ($corr['j']) ?> </b> count <?php echo(@$wrongCount[9].' '); ?> 
    <?php 
     if ( (( $activity_data['wcount_bc_j']>= $assigntime_data['bc_ans_n'] && @$diff_time_min[9]>= $assigntime_data['bc_ans_t'])|| $activity_data['correct_j']==1 ) && $corr['j']!="Correct")
-     { echo('<span><input type="button" id="show_answer_button_j" class="btn  btn-outline-primary" '.$sequential_part_disable_button_ar[9].' value="Show Answer"> </span>&nbsp;');}
+     { echo('<span><input type="button" id="show_answer_button_j" class="btn  btn-outline-primary show_answer" '.$sequential_part_disable_button_ar[9].' value="Show Answer"> </span>&nbsp;');}
      if ( (( $activity_data['wcount_bc_j']>= $help_n_hint && @$diff_time_min[9]>= $help_t_hint && $hintjPath != "uploads/default_hints.html") ) )
      {echo '<a href="'.$hintjPath.'"target = "_blank" class = "btn  btn-outline-primary"> <i class="bi bi-info-circle"></i> Hint - opens in new window </a>';}
 
@@ -835,53 +836,191 @@ session_start();
 	<?php } 
     }
 
-
 	
 	?>
  Base-Case Count: <?php echo ($count_tot) ?>  <span id ="t_delay_message"></span>
 	<!-- <p><input type = "submit" id = "check_submit" name = "check" value="Check" size="10" style = "width: 30%; background-color: #003399; color: white"/> &nbsp &nbsp <b> <font size="4" color="Navy"></font></b></p> -->
-    <p><button type = "submit" id = "check_submit" class = "btn btn-primary mt-2" style="font-size: 1.5rem;" name = "check" > Check <i class="bi bi-card-checklist" ></i> </button>
+   <div class = "container-fluid">
+    <div class = "row mt-3 ms-2">
+        <div class = "col-3">
+            <button type = "submit" id = "check_submit" class = "btn btn-primary" style="font-size: 1.5rem;" name = "check" > Check <i class="bi bi-card-checklist" ></i> </button>
+        </div>
+        <div class = "col-3">
+            <button type = "button" id = "help" class = "btn btn-outline-danger  d-none" style="font-size: 1.0rem;" name = "help" > Help <i class="bi bi-question-circle" ></i> </button>
+            <button type = "button" id = "show_bot_output" class = "btn btn-success d-none me-1 " data-bs-toggle="modal" data-bs-target="#bot_response_modal" style="font-size: 1.0rem;"  > Show Bot Response <i  class="bi bi-robot" ></i> </button>
+            <div id = "spinner" class = "spinner-border text-primary d-none" style="width: 3rem; height: 3rem;" role = "status" style="font-size: 1.5.0rem;" name = "spinner" > </div>
+        </div>
+        
+        <div class = "col-6">
+            <button type = "button" id = "check_list" class = "btn btn-outline-secondary d-none me-1 " data-bs-toggle="modal" data-bs-target="#check_list_modal" style="font-size: 1.0rem;" name = "check_list" > Check List <i  class="bi bi-card-checklist" ></i> </button>
+            <button type = "button" id = "ask_bot" class = "btn btn-outline-secondary d-none me-1" style="font-size: 1.0rem;" name = "ask_bot" > Ask Bot <i  class="bi bi-robot" ></i> </button>
+            <button type = "button" id = "post_to_students" class = "btn btn-outline-secondary d-none " disabled style="font-size: 1.0rem;" name = "post_to_students" > Post ? to Forum <i  class="bi bi-people" ></i> </button>
+            <button type = "button" id = "email_prof" class = "btn btn-outline-secondary d-none " style="font-size: 1.0rem;" disabled data-bs-toggle="modal" data-bs-target="#email_prof_modal" > Email Prof <i  class="bi bi-envelope" ></i> </button>
+        </div>
+    </div>
+    <div class = "row">
+        
+        <div class = "col">
+            <div id = "bot_message" class = "d-none"></div>
+         </div>
 
-             <input type="hidden" name="activity_id" value="<?php echo ($activity_id)?>" >
+    </div>
+  </div>
+             <input type="hidden" id = "activity_id" name="activity_id" value="<?php echo ($activity_id)?>" >
               <input type="hidden" id = "prob_parts" value="<?php echo ($probParts)?>" >
                <input type="hidden" id = "count_tot" value="<?php echo ($count_tot)?>" >
+               <input type="hidden" id = "problem_id" value="<?php echo ($problem_id)?>" >
           
 	</form>
 
-	
+<!-- put a check box list in a  bootstrap 5 modal -->
+<div id="check_list_modal" class = "modal" tabindex="-1" aria-labelledby="list-modal-title" aria-hidden="true">
+ <div class="modal-dialog modal-xl"> 
+    <div class="modal-content">
+                <div class="modal-header">
+                    <div class = "modal-title" id = "list-modal-title"> <h3>Check List for Problem Solving</h3>
+                    <h5> Most common mistakes when solving quatitative problems</h5></div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-check  ">
+                            <input class="form-check-input" type="checkbox" name="check_list[]" value="1" id="check_list_1">
+                            <label class="form-check" for="check_list_1"> Carefully re-read the problem statement and make sure diagram or relisted information matches statement </label> 
+                        </div>
+                        <div class="form-check  ">
+                        <input class="form-check-input" type="checkbox" name="check_list[]" value="2" id="check_list_2">            
+                            <label class="form-check" for="check_list_2"> Make sure you are answering the question being asked </label>
+                        </div>
+                        <div class="form-check">   
+                            <input class="form-check-input" type="checkbox" name="check_list[]" value="3" id="check_list_3">
+                            <label class="form-check" for="check_list_3"> Lower the level of abstraction by taking a basis of calculation  </label>
+                        </div>
+                        <div class="form-check">   
+                            <input class="form-check-input" type="checkbox" name="check_list[]" value="4" id="check_list_4">
+                            <label class="form-check" for="check_list_4"> Make sure calculations with units cancel to expected units </label>
+                        </div>
+                        <div class="form-check">   
+                            <input class="form-check-input" type="checkbox" name="check_list[]" value="5" id="check_list_5">
+                            <label class="form-check" for="check_list_5"> Keep precision in calculation until the end - that is do not round until the end</label>
+                        </div>
+                        <div class="form-check">   
+                            <input class="form-check-input" type="checkbox" name="check_list[]" value="6" id="check_list_6">
+                            <label class="form-check" for="check_list_6"> Take a break from the problem and do something else - come back to it later</label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+      </div>
+  </div>
+ </div>
     
+<div id="bot_response_modal" class = "modal" tabindex="-1" aria-labelledby="bot-response-modal-title" aria-hidden="true">
+ <div class="modal-dialog modal-xl"> 
+    <div class="modal-content">
+                <div class="modal-header">
+                    <div class = "modal-title" id = "bot-response-modal-title"> <h3>OpenAI Model Output</h3>
+                    <h5> Warning - this is the output of a large <span style="color:blue"> language </span> model not an engineering model.  It can give responses that sound reasonable 
+                        but are totally <span style="color:red">wrong!</span> Never the less, its response may be useful and it may spark ideas that you would not have had otherwise.
+                    </h5></div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            <div class="modal-body" id = "bot_output">
+            </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+      </div>
+  </div>
+ </div>
     
-  
+
+<div id="email_prof_modal" class = "modal" tabindex="-1" aria-labelledby="email_prof-modal-title" aria-hidden="true">
+ <div class="modal-dialog modal-xl"> 
+    <div class="modal-content">
+                <div class="modal-header">
+                    <div class = "modal-title" id = "email_prof-modal-title"> <h3>Email Prof</h3>
+                    <h5> To email the professor, you will need to both describe where you are stuch and submit your work with a screenshot or picture.  
+                    </h5></div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            <div class="modal-body" id = "email_modal_body">
+                <div class="row">
+                    <div class="col-12">
+                        <form id = "email_modal_form">
+                        <div class="form-group">
+                            <label for="describe_question">Describe Question</label>
+                            <input type="text" class="form-control" id="describe_question" aria-describedby="emailProf" placeholder="I am having problems with part c"> 
+                        </div>
+                        </form>
+                    </div>   
+                </div>     
+            </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id = "email_prof_submit" class="btn btn-primary" >Submit</button>
+                    </div>
+      </div>
+  </div>
+ </div>
     
-    
-     <!--
-    
-	<form action="StopExam.php" method="POST" id = "the_form">
-		    <input type="hidden" name="name"  value="<?php echo ($name)?>" >
-            <input type="hidden" name="pin" value="<?php echo ($pin)?>" >
-            <input type="hidden" name="team_id"  value="<?php echo ($team_id)?>" >
-            <input type="hidden" name="problem_id"  value="<?php echo ($problem_id)?>" >
-            <input type="hidden" name="dex" value="<?php echo ($dex)?>" >
-            <input type="hidden" name="exam_num" value="<?php echo ($exam_num)?>" >
-            <input type="hidden" id = "examtime_id" name="examtime_id" value="<?php echo ($examtime_id)?>" >
-            <input type="hidden" name="examactivity_id" value="<?php echo ($examactivity_id)?>" >
-            <input type="hidden" name="globephase" id = "globephase" >
-            <input type="hidden" name="iid" value="<?php echo ($iid)?>" >
-           
-        <p><input type="hidden" id = "pblm_score" name="pblm_score" size=3 value="<?php echo($PScore)?>"  
-    <hr>
-	<p><b><font Color="red">Finished:</font></b></p>
-	 <input type="hidden" name="score" value=<?php echo ($score) ?> />
-	   <?php $_SESSION['score'] = round($PScore);  ?>
-	 <b><input type="submit" value="Finished" name="score" style = "width: 30%; background-color:yellow "></b>
-	 <p><br> </p>
-	 <hr>
-	</form>
- -->
+
+ <script src="https://npmcdn.com/pdfjs-dist/build/pdf.js"></script>
 
 	<script>
-  
-  
+ const email_prof_submit = document.getElementById('email_prof_submit');
+ const activity_id = document.getElementById('activity_id').value;
+ const show_bot_output = document.getElementById('show_bot_output');
+ const spinner = document.getElementById('spinner');
+ const email_prof = document.getElementById('email_prof');
+ const post_to_students = document.getElementById('post_to_students');
+ const ask_bot = document.getElementById('ask_bot');
+ const check_list = document.getElementById('check_list');
+ const help = document.getElementById('help');
+ help.addEventListener('click', function(){
+    console.log('help clicked');
+    email_prof.classList.remove('d-none');
+    post_to_students.classList.remove('d-none');
+    ask_bot.classList.remove('d-none');
+    check_list.classList.remove('d-none');
+    help.classList.add('d-none');
+
+ });
+
+    check_list.addEventListener('click', function(){
+        //show the modal
+        $('#check_list_modal').modal('show');
+
+        console.log('check_list clicked');
+    });
+
+ ask_bot.addEventListener('click', function(){
+    console.log('ask_bot clicked');
+    ask_bot_func();
+
+ });
+
+email_prof_submit.addEventListener('click', function(){
+    console.log('email_prof_submit clicked');
+   describe_question = document.getElementById('describe_question').innerText;
+    // change the location of the window to upload_work_for_email.php and include the activity_id and problem_id
+    window.location.href = 'upload_work_for_email.php?activity_id=' + activity_id + '&problem_id=' + problem_id + '&describe_question=' + describe_question;
+});
+
+
+ // set up an eventlistener on the document and if the user clicks any button that has a class of show_answer then display the email_prof button
+    document.addEventListener('click', function(e){
+        // iff the class list conatins show_answer then remove the d-none class
+        if(e.target.classList.contains('show_answer')){
+            help.classList.remove('d-none');
+        }
+    });
+
   $('#show_answer_button_a').click(function(){
         $(this).css('color','red');
        var ans_a = $('#ans_a').val();
@@ -944,18 +1083,92 @@ session_start();
         $('#j').val(ans_j);
     });
 
- 
+
+// get the data for the basecase in the parent document of the iframe
+
+   function ask_bot_func(event) {
+    spinner.classList.remove('d-none');
+//   // Get the form input values
+        const problem_id = document.getElementById('problem_id').value;
+
+        const base_case = parent.document.getElementById('base_case')
+        const base_case_text= base_case.innerText
+        console.log('base_case_text', base_case_text)
+        // find the button with class show_answer that does not hav  display_none and get the id of that button
+        const show_answer_button = document.querySelector('.show_answer:not(.display-none)')
+        console.log ('show_answer_button', show_answer_button)  
+        const show_answer_button_id = show_answer_button.id
+        console.log ('show_answer_button_id', show_answer_button_id)
+        const show_answer_button_id_split = show_answer_button_id.split('_')
+        const show_answer_button_last= show_answer_button_id_split[show_answer_button_id_split.length-1]
+        console.log ('show_answer_button_last', show_answer_button_last)
+        const text_4_inquery = `ans_${show_answer_button_last}`
+        const ans_for_part = document.querySelector(`#${text_4_inquery}`).value;
+        console.log('ans_for_part', ans_for_part)
+    //    console.log('base_case_text', base_case_text)
+
+      let dataToBot = {
+        question_text: base_case_text,
+         part: show_answer_button_last,
+         answer: ans_for_part,
+         problem_id: problem_id
+     };
+
+
+console.log('dataToBot', dataToBot)
+
+  fetch('BC_problem_help_from_bot.php', {
+    method: 'POST',
+    body: JSON.stringify(dataToBot)
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      
+      console.log('data from the AI',data);
+    // if the error flag is false then redirect to the smartForm.php page posting the form_id
+   
+      // make the bot_response_modal modal visible
+        document.getElementById('bot_output').innerHTML = data;
+        const bot_response_modal = document.getElementById('bot_response_modal')
+        console.log('bot_response_modal', bot_response_modal);
+       bot_response_modal.classList.remove('d-none');
+       show_bot_output.classList.remove('d-none');
+       ask_bot.classList.add('d-none');
+       show_bot_output.click();
+       spinner.classList.add('d-none');
+   
+   });
+};
+
+  // get a regular experssion that starts with P then the problem_id then _s_ and end with a .pdf
+  // then get the text from the pdf
   
-   $('#peer_help_button').click(function(){
-     $('#part_a').toggle(); 
-  });
-  $('#TA_help_button').click(function(){
-     $('#test').toggle(); 
-  });
-  $('#instructor_help_button').click(function(){
-     $('#test').toggle(); 
-  });
-         
+
+
+
+function gettext(pdfUrl){
+        var pdf = pdfjsLib.getDocument(pdfUrl);
+        return pdf.then(function(pdf) { // get all pages text
+            var maxPages = pdf.pdfInfo.numPages;
+            var countPromises = []; // collecting all page promises
+            for (var j = 1; j <= maxPages; j++) {
+            var page = pdf.getPage(j);
+
+            var txt = "";
+            countPromises.push(page.then(function(page) { // add page promise
+                var textContent = page.getTextContent();
+                return textContent.then(function(text){ // return content promise
+                return text.items.map(function (s) { return s.str; }).join(''); // value page text 
+                });
+            }));
+            }
+            // Wait for all pages and join text
+            return Promise.all(countPromises).then(function (texts) {
+            return texts.join('');
+            });
+        });
+        }
+
 	</script>
 
 	</main>

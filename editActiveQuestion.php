@@ -26,9 +26,8 @@ if (isset($_POST['iid'])){
         ORDER BY question_id DESC
            ';
        $stmt = $pdo->prepare($sql);
-           $stmt->execute(array(':discipline' => $discipline));
+           $stmt->execute();
            $qw_data = $stmt -> fetchAll();
-        //    var_dump($qw_data);
 
 
     //? comming from an edit and need to see if this is the author 1st reviewer or 2nd reviewer
@@ -102,6 +101,7 @@ table {
         <thead>
             <tr>
                  <th> Select </th>
+                 <th> Duplicate </th>
                 <th> Course </th>
                 <th> Concept </th>
                 <th> Title </th>
@@ -124,6 +124,9 @@ table {
            echo '<tr id = "table_row'.$i.'" class = "table_row">
                     <td >
                    <button type="button" id = "btn_'.$qw_datum["question_id"].'" class = " select btn btn-outline-primary btn-sm '.$qw_datum["course"].'">select</button>
+                    </td>
+                    <td >
+                   <button type="button" id = "dup-btn_'.$qw_datum["question_id"].'" class = " duplicate btn btn-outline-primary btn-sm '.$qw_datum["course"].'">duplicate</button>
                     </td>
                     <td >
                     '.$qw_datum["course"].'
@@ -172,6 +175,7 @@ table {
 
         let table_row = document.getElementsByClassName('table_row');
         let selections = document.getElementsByClassName('select');
+        let duplicates = document.getElementsByClassName('duplicate');
         const iid = document.getElementById('iid').value;
 
         $('#edit_question_tbl').DataTable({"sDom": 'W<"clear">lfrtip',
@@ -185,9 +189,47 @@ table {
                 selections[i].addEventListener('click',(e)=>{
                     let question_id = e.target.id.split('_')[1];
                     let location = 'editActiveQuestionPreview.php?question_id='+question_id+'&iid='+iid;
-                    // let location = 'writeQuestionPromotePreview.php?question_id='+question_id+'&iid='+iid;
                     console.log ('location',location);
                     window.location.href = location;
+                })
+            }
+            for (let i=0; i<duplicates.length; i++) {
+                duplicates[i].addEventListener('click',(e)=>{
+                    let question_id = e.target.id.split('_')[1];
+                  //  let location = 'duplicateActiveQuestionPreview.php?question_id='+question_id+'&iid='+iid;
+                    fetch('duplicateActiveQuestion.php',{method: 'POST',
+                            headers: {
+                                
+                                "Content-Type": "application/json",
+                                "Accept":"application/json, text/plain, */*"
+                            },
+                            body: JSON.stringify({iid:iid,question_id:question_id}),
+                        }).then((response) => {
+                            return response.json();
+                        }).then((data) => {
+                            console.log('data',data);
+                                console.log('new_question_id',data["new_question_id"])
+
+                            if (data){
+
+                                window.location.href = 'editActiveQuestionPreview.php?question_id='+data["new_question_id"]+'&iid='+iid;
+                            } else {
+                                console.log('Something went wrong');
+                            }
+                        })
+
+                    
+
+
+
+
+
+
+
+
+
+                    console.log ('location',location);
+                //    window.location.href = location;
                 })
             }
 
