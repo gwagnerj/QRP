@@ -234,7 +234,15 @@ if ($see_more_courses){
         <header class = "active_card_header mb-2">
             <span id="active_container_title" class="active-conatiner-title text-primary fs-4 me-5 hide ">Active Questions </span>
             <button id="display_all_active_btn" class="btn btn-outline-primary hide ">Display & Responses for Active Questions</button>
-            <button id="display_rescent_activity_btn" class="btn btn-outline-secondary hide ms-5">Display Who Respondedks for me</button>
+            <button id="display_rescent_activity_btn" class="btn btn-outline-secondary hide ms-5">Display Who Responded for me</button>
+            <button id="make_a_problem_questionset_btn" class="btn btn-outline-secondary hide ms-5">Problem Question Set</button>
+            <input id="problem_id" type = "number" min = "1" max = "99999" placeholder = "problem_id" class=" hide ms-5"></input>
+            <span id = "problem_id_error" class = "hide text-danger">Please enter a valid problem_id</span>
+            <span id = "no_problem_id_msg" class = "hide text-danger">No Active Problem with that ID was found</span>
+            <span id = "something_went_wrong_msg" class = "hide text-danger">Something went wrong connecting the problem to the question</span>
+            <span id = "success_msg" class = "hide text-success">Success- the questions and problem are linked</span>
+            <button id="make_problem_question_submit" class="btn btn-primary hide ms-5">Submit</button>
+
         </header>
         <div class="row" id = "active_card_container">        
               
@@ -383,6 +391,9 @@ let data1_flag = true;
 
 const display_all_active_btn = document.getElementById('display_all_active_btn');
 const display_rescent_activity_btn = document.getElementById('display_rescent_activity_btn');
+const make_a_problem_questionset_btn = document.getElementById('make_a_problem_questionset_btn');
+const problem_id = document.getElementById('problem_id');
+const make_problem_question_submit = document.getElementById('make_problem_question_submit');
 
 
 //const quick1_chart_ctx = document.getElementById('quick1_chart').getContext('2d');
@@ -421,6 +432,7 @@ function displayActiveCards (){
     document.getElementById('active_container_title').classList.remove('hide')
     display_all_active_btn.classList.remove('hide')
     display_rescent_activity_btn.classList.remove('hide')
+    make_a_problem_questionset_btn.classList.remove('hide')
 
     currentclass_id = current_classes.querySelector('input[name ="currentclass"]:checked').getAttribute('data-ccid')
     fetch('getActiveQuickQuestion.php',{method: 'POST',
@@ -429,7 +441,7 @@ function displayActiveCards (){
         "Content-Type": "application/json",
         "Accept":"application/json, text/plain, */*"
     },
-    body: JSON.stringify({ currentclass_id:currentclass_id}),
+    body: JSON.stringify({currentclass_id:currentclass_id}),
 })
 .then((res) => res.json())
 .then((data) =>{
@@ -456,6 +468,92 @@ function displayActiveCards (){
 
 
       })
+
+      
+      make_a_problem_questionset_btn.addEventListener('click',()=>{
+        console.log ("make_a_problem_questionset_btn clicked")
+        problem_id.classList.remove('hide')
+        make_problem_question_submit.classList.remove('hide')
+        make_problem_question_submit.addEventListener('click',()=>{
+          let problem_id_value = problem_id.value;
+          if (problem_id_value == "" || problem_id_value == null || isNaN(problem_id_value)){
+            document.getElementById('problem_id_error').classList.remove('hide')
+          }
+          else{
+            document.getElementById('problem_id_error').classList.add('hide')
+            // now create entries in the ProblemQuestionConnect table using the data array and the problem id using a fetch call to problem_question_connect.php
+           
+           // prepare the string to send the problem_question_connect.php file
+          let  problem_question_ids = {};
+            problem_question_ids['problem_id'] = problem_id_value;
+            for (let i = 0; i <data.length; i++){
+              let j = i + 1;
+             let key = `question_${j}`;
+             problem_question_ids[key] = data[i].question_id;
+            }
+           
+            console.log ('data sent to problem_question_connect',JSON.stringify(problem_question_ids))
+
+            fetch('problem_question_connect.php',{method: 'POST',
+            headers: {
+                
+                "Content-Type": "application/json",
+                "Accept":"application/json, text/plain, */*"
+            },
+         
+            body: JSON.stringify({
+              problem_question_ids            }),
+        })
+        .then((res) => res.json())
+          .then((respon)=>{
+            console.log ("respon",respon)
+            if (respon == "success"){
+              console.log ("success")
+              problem_id.classList.add('hide')
+              make_problem_question_submit.classList.add('hide')
+              document.getElementById('problem_id_error').classList.add('hide')
+              document.getElementById('success_msg').classList.remove('hide')
+              document.getElementById('no_problem_id_msg').classList.add('hide')
+              document.getElementById('something_went_wrong_msg').classList.add('hide')
+
+            }
+            else if (respon == 'fail'){
+              console.log ("fail")
+              problem_id.classList.add('hide')
+              make_problem_question_submit.classList.add('hide')
+              document.getElementById('something_went_wrong_msg').classList.remove('hide')
+              document.getElementById('success_msg').classList.add('hide')
+              document.getElementById('no_problem_id_msg').classList.add('hide')
+            }
+            else if (respon == 'problem_not_found'){
+              console.log ("problem_not_found")
+              problem_id.classList.add('hide')
+              make_problem_question_submit.classList.add('hide')
+              document.getElementById('no_problem_id_msg').classList.remove('hide')
+              document.getElementById('something_went_wrong_msg').classList.add('hide')
+              document.getElementById('success_msg').classList.add('hide')
+            } else {
+              console.log ('something else happened',respon)
+            }
+
+
+
+           
+          }
+        
+          )
+          }
+        })
+          // let url_string = `make_problem_questionset.php?course=${course_question}&currentcourse=${send_course_name}&iid=${iid}&problem_id=${problem_id_value}`;
+          // for (let i = 0; i <data.length; i++){
+          //   url_string += `&question_id_${i}=${data[i].question_id}`;
+          // }
+          // url_string += `&current_question_id=${data[0].question_id}`;
+          // console.log ("url_string",url_string);
+          // window.open(url_string, '_blank');
+        })
+        
+
 
       
 

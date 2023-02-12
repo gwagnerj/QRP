@@ -7,13 +7,47 @@ $game_code_err = $first_name_err = $last_name_err = $game_name_err = $vers_code_
     '';
 $game_code = $first_name = $last_name = $game_name = $vers_code = $qrcode = $team_name =
     '';
-$team_cap = 0;
+    $simplify_form = False;  // set to true if the game master printed exams in the form team i player j
+$team_cap = 'no';
 $game_points = '0';
 $checker_only = '0';
 $checker = 'not set';
 $dex_print = '140'; //default value for dex_print
 unset($_SESSION['error']);
 $_SESSION['error'] = '';
+
+
+//? this is the new code to simplify the student registration if the gamemaster has printed form team i and player j
+
+if ($_SERVER['REQUEST_METHOD'] == 'GET'){
+    if(isset($_GET['eexamnow_id'])){
+        $game_code = $_GET['eexamnow_id'];
+    }
+    if(isset($_GET['team'])){
+        $team_num = $_GET['team'];
+    }
+    if(isset($_GET['player'])){
+        $player_num = $_GET['player'];
+        $game_name = 'T'.$_GET['team'].'-Player '.$player_num;
+        if ($player_num == 1){
+            $team_cap = 1;
+        }    if(isset($_GET['team'])){
+                $team_num = $_GET['team'];
+                $team_name = 'Team '.$team_num;
+             }
+    if(isset($_GET['dex_code'])){
+        $vers_code = $_GET['dex_code'];
+        $qrcode = 'yes';
+    }
+    if (isset($_GET['eexamnow_id']) && isset($_GET['dex_code']) && isset($_GET['team']) && isset($_GET['player'])){
+        $simplify_form = True;
+    }
+
+    }
+
+
+
+}
 
 // Processing form data when form is submitted
 
@@ -198,8 +232,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $now = strtotime(date('Y-m-d H:i:s'));
         $diff_time = $now - $updated_at;
         $hrs_diff = $diff_time / 3600;
-        if ($hrs_diff > 8) {
-            // if the game was last updated over 8 hrs ago it is not a current game iven if the globephase is a 0 or 1
+        if ($hrs_diff > 48) {
+            // if the game was last updated over 48 hrs ago it is not a current game iven if the globephase is a 0 or 1
             $_SESSION['error'] =
                 $_SESSION['error'] . '<br>  game is not current';
         }
@@ -346,7 +380,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $_SESSION['success'] = ' Registered for the exam';
                 header(
-                    'Location: stu_exam_frontpage.php?eregistration_id=' .
+                    'Location: stu_exam_frontpage_new.php?eregistration_id=' .
                         $eregistration_id .
                         '&checker=' .
                         $checker
@@ -428,7 +462,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $_SESSION['success'] = ' Registered for the exam';
                 header(
-                    'Location: stu_exam_frontpage.php?eregistration_id=' .
+                    'Location: stu_exam_frontpage_new.php?eregistration_id=' .
                         $eregistration_id .
                         '&checker=' .
                         $checker
@@ -462,7 +496,7 @@ if (isset($_SESSION['error'])) {
     <meta charset="UTF-8">
 <title>QRP Student Game Login</title>
  
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <style type="text/css">
         body{ font: 14px sans-serif; }
         .wrapper{ width: 350px; padding: 20px; }
@@ -473,7 +507,8 @@ if (isset($_SESSION['error'])) {
     </style>
 </head>
 <body>
-    <div class="wrapper">
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <div class="container-xxl">
 	
         <h2>Welcome to Quick Response Game </h2>
        
@@ -481,103 +516,132 @@ if (isset($_SESSION['error'])) {
         <form action="<?php echo htmlspecialchars(
             $_SERVER['PHP_SELF']
         ); ?>" method="POST">
-            
-        <div class="form-group <?php echo !empty($game_code_err)
-            ? 'has-error'
-            : ''; ?>">
-                <label>Game Code</label>
-                <input type="text" name="game_code"class="form-control" value="<?php echo $game_code; ?>"></input>
-                <span class="help-block"><?php echo $game_code_err; ?></span>
-            </div>    
-            <div class="form-group">
-                <label>Game Points</label>
-                <input type="text" name="game_points" class="form-control" value="<?php echo $game_points; ?>"></input>
-               
-            </div>    
-            <div class="form-group <?php echo !empty($team_num_err)
-                ? 'has-error'
-                : ''; ?>">
-                <label>Team Number </label>
+
+        <input type="hidden" id="simplify_form" value="<?php echo $simplify_form; ?>" ></input>
+          
+       <div class = "w-50">   
+
+        <div class = 'long_form'>
+
+                <div class="form-group <?php echo !empty($game_code_err)
+                    ? 'has-error'
+                    : ''; ?>">
+                        <label>Game Code </label>
+                        <input type="text" name="game_code"class="form-control" value="<?php echo $game_code; ?>"></input>
+                        <span class="help-block"><?php echo $game_code_err; ?></span>
+                    </div>    
+                    <div class="form-group">
+                        <label>Game Points</label>
+                        <input type="text" name="game_points" class="form-control" value="<?php echo $game_points; ?>"></input>
+                    
+                    </div>    
+                    <div class="form-group <?php echo !empty($team_num_err)
+                        ? 'has-error'
+                        : ''; ?>">
+                        <label>Team Number </label>
 
 
-                <input type="number" min="1" max="99" name="team_num" class="form-control" value="<?php echo $team_num; ?>">
-                <span class="help-block"><?php echo $team_num_err; ?></span>
-            </div>   
+                        <input type="number" min="1" max="99" name="team_num" class="form-control" value="<?php echo $team_num; ?>">
+                        <span class="help-block"><?php echo $team_num_err; ?></span>
+                    </div> 
+                    
+                    
+                    <div class="  mb-3">
+                   Team Captain 
+                    
+                        
 
-            <label>Team Captain</label>
-            <div class="form-check check">
+                            <label class = "mx-3">  <input type="radio" name="team_cap" class="" id = "team_cap_no" value="no" required <?php if (
+                                $team_cap == '0' ||
+                                $team_cap == ''
+                            ) {
+                                echo 'checked';
+                            } ?> > No </input></label>
+                            <label>  <input type="radio" name="team_cap" class="mt-3 " id = "team_cap_yes" value="yes"  required <?php if (
+                                $team_cap == '1'
+                            ) {
+                                                        echo 'checked';
+                            } ?> > Yes </input></label>
+                            <div id = "team_name_input" > <br>
+                            <label class = "ms-3"> Team Name: </label>
+                                <input type ="text" id = "team_name" name = "team_name" value =  "<?php echo $team_name; ?>" > </input> </h4>
+                                <span id = "team_name_err_message" class="help-block"><?php echo $team_name_err; ?></span>
+                            </div>
+                            <br>
+                        </div>  
+                       
+            </div>
 
-                <label>  <input type="radio" name="team_cap" class="form-control" id = "team_cap_no" value="no" required <?php if (
-                    $team_cap == '0' ||
-                    $team_cap == ''
-                ) {
-                    echo 'checked';
-                } ?> > No </input></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <label>  <input type="radio" name="team_cap" class="form-control" id = "team_cap_yes" value="yes" required <?php if (
-                    $team_cap == '1'
-                ) {
-                    echo 'checked';
-                } ?> > Yes </input></label>
-                 <div id = "team_name_input" > <br>
-                   <label> Team Name: </label>
-                    <input type ="text" id = "team_name" name = "team_name" value =  "<?php echo $team_name; ?>" > </input> </h4>
-                    <span id = "team_name_err_message" class="help-block"><?php echo $team_name_err; ?></span>
-                </div>
-                <br>
-            </div>    
 
-            <div class="form-group <?php echo !empty($first_name_err)
+
+
+            <div class=" mt-2 form-group <?php echo !empty($first_name_err)
                 ? 'has-error'
                 : ''; ?>">
                 <label>First (given) name </label>
                 <input type="text" name="first_name"class="form-control" value="<?php echo $first_name; ?>">
                 <span class="help-block"><?php echo $first_name_err; ?></span>
             </div>    
-            <div class="form-group <?php echo !empty($last_name_err)
+            <div class=" mt-3 form-group <?php echo !empty($last_name_err)
                 ? 'has-error'
                 : ''; ?>">
                 <label>Last (family) Name </label>
                 <input type="text" name="last_name"class="form-control" value="<?php echo $last_name; ?>">
                 <span class="help-block"><?php echo $last_name_err; ?></span>
-            </div>    
-            <div class="form-group <?php echo !empty($game_name_err)
-                ? 'has-error'
-                : ''; ?>">
-                <label>Alias (game name) </label>
-                <input type="text" name="game_name"class="form-control" value="<?php echo $game_name; ?>">
-                <span class="help-block"><?php echo $game_name_err; ?></span>
-            </div>    
-            <div class="form-group <?php echo !empty($vers_code_err)
-                ? 'has-error'
-                : ''; ?>">
-            <label><h4>Do you have a printed form of the game problem?</h4></label><br>
-            <h4> <input  type="radio" id = "yes" name="qrcode" value = "yes" <?php if (
-                $qrcode == 'yes'
-            ) {
-                echo 'checked';
-            } ?> required> <label for="yes"> Yes </Label></input> <span id = "dex_code_input" >
-             Version Code:
-             <input type ="number" id = "vers_code" name = "vers_code" min = "10000" max = "99999" value =  <?php echo $vers_code; ?> > </input> </h4>
+            </div> 
             
-             <span id = "vers_code_err_message" class="help-block"><?php echo $vers_code_err; ?></span>
+            
+            <div class = "long_form">
 
-            <h4> <input type="radio" id = "no" name="qrcode" value = "no" <?php if (
-                $qrcode == 'no'
-            ) {
-                echo 'checked';
-            } ?> > <label for="no"> No </Label></input> </h4>
 
-            </div>    
-            <div>
-           
-              <h4>  <input type="radio" name="will_help" id = "will_help" style = "width:10%; border:2px;
-    height: 1.2em;" value="unchecked" required> I will freely give and accept help from my team mates
+                    <div class="my-4 form-group <?php echo !empty($game_name_err)
+                        ? 'has-error'
+                        : ''; ?>">
+                                <label>Alias (game name) </label>
+                                <input type="text" name="game_name"class="form-control" value="<?php echo $game_name; ?>">
+                                <span class="help-block"><?php echo $game_name_err; ?></span>
+                    </div>   
+                        
+                        
+                        <div class="form-group <?php echo !empty($vers_code_err)
+                            ? 'has-error'
+                            : ''; ?>">
+
+
+            
+                            <h5>Do you have a printed form of the game problem?</h5>
+                            <h4> <input  type="radio" id = "yes" name="qrcode" value = "yes" <?php if (
+                                $qrcode == 'yes'
+                            ) {
+                                echo 'checked';
+                            } ?> required> <label for="yes"> Yes </input> <span id = "dex_code_input" >
+                             Version Code:
+                            <input type ="number" id = "vers_code" name = "vers_code" min = "10000" max = "99999" value =  <?php echo $vers_code; ?> > </input> </h4>
+                           
+                            <span id = "vers_code_err_message" class="help-block"><?php echo $vers_code_err; ?></span>
+
+                            <h4> <input type="radio" id = "no" name="qrcode" value = "no" <?php if (
+                                $qrcode == 'no'
+                            ) {
+                                echo 'checked';
+                            } ?> > <label for="no"> No </Label></input> </h4>
+
+                         </div> 
+                 </div>  <!-- end lower long form --> 
+
+        </div> <!-- end w25 div --> 
+            <div class = "ms-1 my-4">
+     
+              <h4>  <input type="radio" name="will_help" id = "will_help" style = "width:3%; border:2px;
+    height: 1.0em;" value="unchecked" required> I will freely give and accept help from my team mates
                  </input> </h4>
             </div>    
 
             <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Submit">
+                <input type="submit" class="btn btn-primary" disabled value="Submit">
             </div>
+       
+
 		</form>
 		
 		  
@@ -585,6 +649,23 @@ if (isset($_SESSION['error'])) {
     </div>
 
     <script>
+
+        const simplify_form = document.getElementById('simplify_form').value;
+        const long_form = document.querySelectorAll('.long_form');
+
+             if(simplify_form){
+                long_form.forEach(function (element) {
+                    element.style.display = 'none';
+                });
+            }
+              
+
+        const submit_button = document.querySelector('input[type="submit"]');
+        const will_help = document.getElementById('will_help');
+
+        will_help.addEventListener('click', function () {
+            submit_button.disabled = false;
+        });
 
         document.getElementById('dex_code_input').style.visibility='hidden';
         

@@ -77,8 +77,14 @@ session_start();
     } else {
        $student_version_code = 0;
    }
+
+   if (isset($_POST['num_teams'])){
+    $num_teams = $_POST['num_teams'];
+   } else {
+    $num_teams = 0;
+   }
+
    
- // echo "print_blanks ".$print_blanks."<br>";
 
 
  
@@ -87,7 +93,6 @@ session_start();
  
   $complete = '';
     $alias_num = '';
-    $iid = '';
     $cclass_id = '';
     $pin = '';
     $exam_code ='';
@@ -414,14 +419,8 @@ line-height: 3;
           }
             
         }
-    }  elseif ($exam_version == 2){ // we have a limited number of versions of the printed exam
+    }  elseif ($exam_version == 2 && $num_teams ==0){ // we have a limited number of versions of the printed exam
     
-    
-    
-
-        // echo(' exam_version: '.$exam_version);
-        // echo(' num_versions: '.$num_versions);
-         //$sets = 2;
            for ($set=1;$set<=$sets;$set++)  {
                    for( $ver=0;$ver<$num_versions;$ver++){
                       
@@ -433,15 +432,9 @@ line-height: 3;
                            $header_stuff ->find('#stu_name',0)->innertext = $stu_name;
                           $header_stuff ->find('#course',0)->innertext = $cclass_name;
                            $header_stuff ->find('#exam_num',0)->innertext = $exam_num;
-                          
-
-                      
-                      
                       
                       
                         $dex = $index_start + $ver;  
-                        
-                        
                         
                            // make the dex code by hassing the dex
                            $key = rand(1,9);
@@ -462,7 +455,6 @@ line-height: 3;
 
                         // Make the QRcode 
 
-      //                      var_dump($game_flag);
                             $qrcode_text =  'https://www.qrproblems.org/QRP/QRExamRegistration.php?dex_code='.$dex_code; 
 
                             if ($game_flag == "1"){  //! change it if its a game
@@ -541,37 +533,37 @@ line-height: 3;
                         }
           
 
-          $problem = $html->find('#problem',0);
-          
-           for( $i=0;$i<$nv;$i++){
-                   if($row['v_'.($i+1)]!='Null' ){
-                        if(!$print_blanks){
-                          $problem = preg_replace($pattern[$i],$vari[$i],$problem);
-                      } else {
-                        $problem = preg_replace($pattern[$i],$blanks_vari[$i],$problem);
+                $problem = $html->find('#problem',0);
+                
+                for( $i=0;$i<$nv;$i++){
+                        if($row['v_'.($i+1)]!='Null' ){
+                              if(!$print_blanks){
+                                $problem = preg_replace($pattern[$i],$vari[$i],$problem);
+                            } else {
+                              $problem = preg_replace($pattern[$i],$blanks_vari[$i],$problem);
+                            }
+                          }
                       }
-                    }
-                }
-          // put the images into the problem statement part of the document     
-            $dom = new DOMDocument();
-           libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
-               $dom->loadHTML('<?xml encoding="utf-8" ?>' . $problem);
-               $images = $dom->getElementsByTagName('img');
-                foreach ($images as $image) {
-                    $src = $image->getAttribute('src');
-                     $src = 'uploads/'.$src;
-                     $src = urldecode($src);
-                     $type = pathinfo($src, PATHINFO_EXTENSION);
-                     $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
-                     $image->setAttribute("src", $base64); 
-                     $problem = $dom->saveHTML();
-               }
+                  // put the images into the problem statement part of the document     
+                    $dom = new DOMDocument();
+                  libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
+                      $dom->loadHTML('<?xml encoding="utf-8" ?>' . $problem);
+                      $images = $dom->getElementsByTagName('img');
+                        foreach ($images as $image) {
+                            $src = $image->getAttribute('src');
+                            $src = 'uploads/'.$src;
+                            $src = urldecode($src);
+                            $type = pathinfo($src, PATHINFO_EXTENSION);
+                            $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+                            $image->setAttribute("src", $base64); 
+                            $problem = $dom->saveHTML();
+                      }
                
                // turn problem back into and simple_html_dom object that I can replace the varaible images on 
                
-              // var_dump($problem);
-               $problem =str_get_html($problem); 
-  //              var_dump($problem);
+                  // var_dump($problem);
+                  $problem =str_get_html($problem); 
+  
                
                $keep = 0;
                
@@ -595,37 +587,325 @@ line-height: 3;
                          $keep = 0;
                     }
                }
-               catch(Exception $e){
- //              catch(){
-                   echo 'there was an error';
-               }
-                       
-            // only include the document above the checker
-               $this_html ='<br>'.$problem;
-         
-           // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
-               for( $i=0;$i<$nv;$i++){
-                     if($row['v_'.($i+1)]!='Null' ){
-                      if(!$print_blanks){
-                        $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
-                        } else {
-                          $this_html = preg_replace($pattern[$i],$blanks_vari[$i],$this_html);
-                        }                
-                       }
-                }
-                
-                  echo $this_html; 
-                   echo  '<p style="page-break-before: always"> ';        
-                      
-                      
-                      
-                      
+                  catch(Exception $e){
+                      echo 'there was an error';
                   }
+                       
+                // only include the document above the checker
+                  $this_html ='<br>'.$problem;
+            
+              // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+                  for( $i=0;$i<$nv;$i++){
+                        if($row['v_'.($i+1)]!='Null' ){
+                          if(!$print_blanks){
+                            $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+                            } else {
+                              $this_html = preg_replace($pattern[$i],$blanks_vari[$i],$this_html);
+                            }                
+                          }
+                    }
+                    
+                      echo $this_html; 
+                      echo  '<p style="page-break-before: always"> ';        
+                          
+                          
+                          
+                          
+                      }
           
                        
             }        
          }
-    }        
+
+         
+    }   elseif($exam_version == 2 && $num_teams >0) { //! we are doing printing out text set for each team and student i
+      for ($team=1;$team<=$num_teams;$team++)  {
+        for( $ver=0;$ver<$num_versions;$ver++){
+          $player = $ver+1;
+
+            // check to see if there is an active exam already going on for this iid and this eexamtime_id if so we probably got disconnected and need to reconnect to the ongoing exam and
+            $sql = 'SELECT eexamtime_id FROM Eexamtime 
+            WHERE exam_num = :exam_num AND iid = :iid';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':exam_num' => $exam_num,
+                ':iid' => $iid,
+            ]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            // var_dump('row',$row);
+            // echo 'iid = '.$iid.' exam_num = '.$exam_num;
+            $eexamtime_id = $row['eexamtime_id'];
+
+
+
+
+            $sql = "SELECT * FROM `Eexamtime` 
+                    LEFT JOIN Eexamnow ON Eexamtime.eexamtime_id = Eexamnow.eexamtime_id  
+                    WHERE Eexamtime.iid = :iid 
+                          AND Eexamtime.eexamtime_id = :eexamtime_id 
+                          AND Eexamnow.end_of_phase > CURRENT_TIMESTAMP() 
+                          AND Eexamnow.globephase != 3
+                      ";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':iid' => $iid,
+                ':eexamtime_id' => $eexamtime_id,
+            ]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($row == false) {
+              // we have to put in a new entry and get the values from the table we need
+              $exam_code = rand(100, 9999);
+              $sql =
+                  'INSERT INTO `Eexamnow` (eexamtime_id,exam_code,end_of_phase) VALUES (:eexamtime_id,:exam_code, DATE_ADD(now(), INTERVAL 1 YEAR))';
+              $stmt = $pdo->prepare($sql);
+              $stmt->execute([
+                  ':eexamtime_id' => $eexamtime_id,
+                  ':exam_code' => $exam_code,
+              ]);
+              $eexamnow_id = $pdo->lastInsertId();
+              // echo ('eexamnow_id=: '.$eexamnow_id);
+              // get the value of the number of groups and put it in the qrexamtime table
+      
+                  $sql = "UPDATE `Eexamtime`
+                  SET `number_teams` =:number_teams,game_flag = :game_flag
+                    WHERE eexamtime_id = :eexamtime_id";
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->execute([
+                      ':number_teams' => $num_teams,
+                      ':eexamtime_id' => $eexamtime_id,
+                      ':game_flag' => 1,
+                  ]);
+              
+          }
+           else {
+              // we are coming in from the QRExamMgmt but have an existing running exam going (disconnected or whatever)/ get the information from the table
+              $eexamnow_id = $row['eexamnow_id'];
+              // $globephase = $row['globephase'];
+              // $end_of_phase = $row['end_of_phase'];
+              // $exam_code = $row['exam_code'];
+              // $_SESSION['error'] = 'Exam is already running';
+          }
+      
+
+
+
+
+
+
+
+
+
+
+             $stu_name = '<u> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>';      
+              
+               $header_stuff = new simple_html_dom();
+               $header_stuff -> load_file('exam_problem_print_header_stuff.html');
+                     // subbing in the header
+                $header_stuff ->find('#stu_name',0)->innertext = $stu_name;
+               $header_stuff ->find('#course',0)->innertext = $cclass_name;
+                $header_stuff ->find('#exam_num',0)->innertext = $exam_num;
+                $header_stuff ->find('#team',0)->innertext = 'Team: '.$team;
+                if ($player == 1){
+                  $header_stuff ->find('#player',0)->innertext = 'Player: '.$player.' You <b>ARE</b> the Team Captain';
+                } else {
+                  $header_stuff ->find('#player',0)->innertext = 'Player: '.$player.' You are <b>NOT</b> the Team Captain';
+                }
+               
+                $header_stuff ->find('#game_number',0)->innertext = 'Game Number: '.$eexamnow_id;
+           
+           
+                 $dex = $index_start + $ver;  
+                
+             
+                // make the dex code by hassing the dex
+                $key = rand(1,9);
+                $last_dig = rand(0,9);
+                
+                 If ($dex <10){
+                     $mid_three = $dex +300+$last_dig;
+                 } elseif($dex < 100){
+                     $mid_three = $dex +600+$last_dig;
+                 } else {
+                     
+                     $mid_three = $dex +$key+$last_dig;
+                    
+                 }
+             $dex_code = $key.$mid_three.$last_dig;
+             
+            // echo(' dex_code:  '.$dex_code);
+
+             // Make the QRcode 
+
+                 $qrcode_text =  'https://www.qrproblems.org/QRP/QRExamRegistration.php?dex_code='.$dex_code; 
+
+                 if ($game_flag == "1"){  //! change it if its a game
+                   $qrcode_text =  'https://www.qrproblems.org/QRP/index.php?dex_code='.$dex_code.'&team='.$team.'&player='.$player.'&iid='.$iid.'&eexamnow_id='.$eexamnow_id; 
+                 
+                 }
+                                 
+                 $file = 'uploads/temp_exam'.$dex_code.' png';   // where the qrimage is going to be stored in uploads directory
+                   
+                 // $ecc stores error correction capability('L') 
+                 $ecc = 'M'; 
+                 $pixel_size = 2; 
+                 $frame_size = 1; 
+                   
+                 // Generates QR Code and Stores it in directory given 
+                   QRcode::png($qrcode_text, $file, $ecc, $pixel_size, $frame_size); 
+                  // QRcode::png($text); 
+                 // Displaying the stored QR code from directory 
+             
+ //!              $qrcode = "<span ><img src='".$file."'><br>URL: qrproblems.org/QRP version code: ".$dex_code."</span>"; 
+               $qrcode = "<span ><img src='".$file."'><br>URL: ".$qrcode_text." </span>"; 
+                 $header_stuff ->find('#qr_code_id',0)->innertext = $qrcode;
+                 echo($header_stuff);
+                echo ('<hr>');
+                 
+           //  echo ($qrcode);
+            
+              
+          foreach($eexam_data as $exam_datum){
+             //      echo $exam_datum['problem_id'];
+          
+             
+             $problem_id = $exam_datum['problem_id'];
+             $sql = "SELECT * FROM Problem WHERE problem_id = :problem_id";
+             $stmt = $pdo->prepare($sql);
+             $stmt->execute(array(':problem_id' => $problem_id));
+             $pblm_data = $stmt -> fetch();
+             $contrib_id = $pblm_data['users_id'];
+             $nm_author = $pblm_data['nm_author'];
+             $specif_ref = $pblm_data['specif_ref'];
+             $htmlfilenm = $pblm_data['htmlfilenm'];
+             
+             
+
+             $htmlfilenm = "uploads/".$htmlfilenm;
+             $alias_num = $exam_datum['alias_num'];      
+              
+             echo ('<br>'.$alias_num.')'); 
+              
+              
+              $html = new simple_html_dom();
+               $html->load_file($htmlfilenm);
+
+             // read in the names of the variables for the problem
+             $nv = 0;  // number of non-null variables
+            for ($i = 0; $i <= 13; $i++) {
+                 if($pblm_data['nv_'.($i+1)]!='Null' ){
+                     $nvar[$i]=$pblm_data['nv_'.($i+1)];
+                     $nv++;
+                  }
+            }
+     
+             $stmt = $pdo->prepare("SELECT * FROM Input where problem_id = :problem_id AND dex = :dex");
+             $stmt->execute(array(":problem_id" => $problem_id, ":dex" => $dex));
+             $row = $stmt->fetch();
+           
+            // Read in the value for the input variables
+            
+             for ($i = 0; $i < $nv; $i++) {
+                 if($row['v_'.($i+1)]!='Null' ){
+                     $vari[$i] = $row['v_'.($i+1)];
+                     $num_chars_vari[$i]= strlen($vari[$i]);
+                     $blanks_vari[$i]='<span class = "blank_space">';
+                     for ($j = 0; $j < 3*$num_chars_vari[$i];$j++){$blanks_vari[$i]= $blanks_vari[$i].'_';}
+                     $blanks_vari[$i]=$blanks_vari[$i].'</span>';
+                             $pattern[$i]= '/##'.$nvar[$i].',.+?##/';
+                 }
+             }
+
+
+     $problem = $html->find('#problem',0);
+     
+     for( $i=0;$i<$nv;$i++){
+             if($row['v_'.($i+1)]!='Null' ){
+                   if(!$print_blanks){
+                     $problem = preg_replace($pattern[$i],$vari[$i],$problem);
+                 } else {
+                   $problem = preg_replace($pattern[$i],$blanks_vari[$i],$problem);
+                 }
+               }
+           }
+       // put the images into the problem statement part of the document     
+         $dom = new DOMDocument();
+       libxml_use_internal_errors(true); // this gets rid of the warning that the p tag isn't closed explicitly
+           $dom->loadHTML('<?xml encoding="utf-8" ?>' . $problem);
+           $images = $dom->getElementsByTagName('img');
+             foreach ($images as $image) {
+                 $src = $image->getAttribute('src');
+                 $src = 'uploads/'.$src;
+                 $src = urldecode($src);
+                 $type = pathinfo($src, PATHINFO_EXTENSION);
+                 $base64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($src));
+                 $image->setAttribute("src", $base64); 
+                 $problem = $dom->saveHTML();
+           }
+    
+    // turn problem back into and simple_html_dom object that I can replace the varaible images on 
+    
+       // var_dump($problem);
+       $problem =str_get_html($problem); 
+
+    
+    $keep = 0;
+    
+    try{
+        $varImages = $problem -> find('.var_image');
+        foreach($varImages as $varImage) {
+           $var_image_id = $varImage -> id;  
+           
+            for( $i=0;$i<$nv;$i++){
+               if(trim($var_image_id) == trim($vari[$i])){$keep = 1;} 
+             } 
+             
+             If ($keep==0){
+                 //  get rid of the caption and the image
+                    $varImage->find('.MsoNormal',0)->outertext = '';
+                    $varImage->find('.MsoCaption',0)->outertext = '';
+             } else {
+                  //  get rid of the caption 
+                 $varImage->find('.MsoCaption',0)->outertext = '';
+             }
+              $keep = 0;
+         }
+    }
+       catch(Exception $e){
+           echo 'there was an error';
+       }
+            
+     // only include the document above the checker
+       $this_html ='<br>'.$problem;
+ 
+   // substitute all of the variables with their values - since the variable images do not fit the pattern they wont be replaced
+       for( $i=0;$i<$nv;$i++){
+             if($row['v_'.($i+1)]!='Null' ){
+               if(!$print_blanks){
+                 $this_html = preg_replace($pattern[$i],$vari[$i],$this_html);
+                 } else {
+                   $this_html = preg_replace($pattern[$i],$blanks_vari[$i],$this_html);
+                 }                
+               }
+         }
+         
+           echo $this_html; 
+           echo  '<p style="page-break-before: always"> ';        
+               
+               
+               
+               
+           }
+
+            
+ }        
+}
+
+
+
+      
+    }     
         
 
  die();
@@ -715,7 +995,7 @@ echo '</script>';
 <script>
  $(document).ready(function(){
 
- 
+   console.log ('does this do anything');
      var examactivity_id = pass['examactivity_id']; 
      var stu_name = pass['stu_name']; 
      var reflection_button_flag = pass['reflection_button_flag'];
@@ -761,188 +1041,6 @@ echo '</script>';
             });
         
 
- /*    
-    var activity_id = pass['activity_id']; 
-     var stu_name = pass['stu_name']; 
-     var reflection_button_flag = pass['reflection_button_flag'];
-
-      var reflect_flag = pass['reflect_flag']; 
-      var explore_flag = pass['explore_flag']; 
-      var connect_flag = pass['connect_flag']; 
-      var society_flag = pass['society_flag']; 
-      var ref_choice = pass['ref_choice']; 
-      var perc_ref = pass['perc_ref'];
-      var perc_exp = pass['perc_exp'];
-      var perc_con = pass['perc_con'];
-      var perc_soc = pass['perc_soc'];
-      var switch_to_bc = pass['switch_to_bc'];
-       if (switch_to_bc == 1){
-         $('#base_case').show();
-         $('#BC_checker').show();
-          $("#problem").hide(); 
-         $('#reflections').hide();
-          $("#checker").hide();
-           $('#basecasebutton').hide();
-          $('#qrcode_id_bc').hide();
-          $('#reflectionsbutton').hide();
-          $('#qrcode_id').hide(); 
-         
-             $('#checkerbutton').prop('value','to QR code'); 
-          var bc_display = true;
-        } else {
-            var bc_display = false;
-                 $('#qrcode_id_bc').hide();
-                 $('#qrcode_id').hide();
-                $('#base_case').hide();
-                $('#directions').hide();
-                $('#BC_checker').hide();
-               $('#basecasebutton').prop('value','to Base-case');
-                $('#checkerbutton').prop('value','to QR code'); 
-        }
-         //Turn this off for now - will release this feature later   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  
-          
-    
-    
-     var qr_code = false;
-     var myFrame = document.getElementById('checker2').contentWindow
-    
-    $("#checker2").on("load", function () {
-               //  var total_count = $("#checker2").contents().find("#total_count").html();
-                var total_count = $("#checker2").contents().find("#total_count").text();
-                 var PScore = $("#checker2").contents().find("#PScore").val();
-                  switch_to_bc = $("#checker2").contents().find("#switch_to_bc").val();
-                 
-                var parent_test = document.getElementById('checker2').contentWindow.test;
-              
-                   var test2 = myFrame.test;
-                
-              //  console.log('test from parent: '+test);  
-             
-                   console.log('blah: '+total_count);
-                  console.log('PScore: '+PScore);
-                    console.log('switch_to_bc: '+switch_to_bc);
-                
-
-                if (switch_to_bc == 1){
-                     $('#base_case').show();
-                     $('#BC_checker').show();
-                      $("#problem").hide(); 
-                     $('#reflections').hide();
-                      $("#checker").hide();
-                      $('#basecasebutton').hide();
-                      $('#qrcode_id_bc').hide();
-                      $('#reflectionsbutton').hide();
-                      $('#qrcode_id').hide();
-                      $('#checkerbutton').prop('value','to QR code'); 
-                      bc_display = true;
-                }
-        });
-   
-    
-     
-    
-    
-    if(reflect_flag == 0 && ref_choice == 0){$("#reflect").hide(); }    
-    if(explore_flag == 0 && ref_choice == 0){$("#explore").hide(); }    
-    if(connect_flag == 0 && ref_choice == 0){$("#connect").hide(); }    
-    if(society_flag == 0 && ref_choice == 0){$("#society").hide(); }    
-    
-    
-  $('#basecasebutton').click(function(){
-        if(bc_display == false){bc_display =true;}else{bc_display =false;}
-      
-            if(bc_display && qr_code){
-                    $("#problem").hide(); 
-                    $("#base_case").show();                        
-                    $("#checker").hide();
-                    $("#BC_checker").hide();
-                    $('#qrcode_id').hide();
-                    $('#qrcode_id_bc').show();
-                    $('#reflections').hide();
-                    $('#reflectionsbutton').hide();
-                    $('#basecasebutton').prop('value','to Problem');
-                   // $("#btnAddProfile").prop('value', 'Save');
-            } else if(!bc_display && qr_code){
-                    $("#problem").show(); 
-                    $("#base_case").hide();                        
-                    $("#checker").hide();
-                    $("#BC_checker").hide();
-                    $('#qrcode_id').show();
-                    $('#qrcode_id_bc').hide();
-                      $('#reflections').show();
-                    $('#basecasebutton').prop('value','to Base-case');
-            }else if(bc_display && !qr_code){
-                    $("#problem").hide(); 
-                    $("#base_case").show();                        
-                    $("#checker").hide();
-                    $("#BC_checker").show();
-                    $('#qrcode_id').hide();
-                    $('#qrcode_id_bc').hide();
-                     $('#reflections').hide();
-                    $('#reflectionsbutton').hide();
-                     $('#basecasebutton').prop('value','to Problem');
-            } else {
-                    $("#problem").show(); 
-                    $("#base_case").hide();                        
-                    $("#checker").show();
-                    $("#BC_checker").hide();
-                    $('#qrcode_id').hide();
-                    $('#qrcode_id_bc').hide();
-                    $('#reflections').show();
-                     $('#basecasebutton').prop('value','to Base-case');
-            }
-
-        
-     });
-   
-      
-     $('#checkerbutton').click(function(){
-        if(qr_code == false){qr_code =true;}else{qr_code =false;}
-        
-
-        if(bc_display && qr_code){
-                    $("#problem").hide(); 
-                    $("#base_case").show();                        
-                    $("#checker").hide();
-                    $("#BC_checker").hide();
-                    $('#qrcode_id').hide();
-                    $('#qrcode_id_bc').show();
-                     $('#reflections').hide();
-                    $('#reflectionsbutton').hide();
-                      $('#checkerbutton').prop('value','to Checker'); 
-            } else if(!bc_display && qr_code){
-                    $("#problem").show(); 
-                    $("#base_case").hide();                        
-                    $("#checker").hide();
-                    $("#BC_checker").hide();
-                    $('#qrcode_id').show();
-                    $('#qrcode_id_bc').hide();
-                     $('#reflections').show();
-                    $('#checkerbutton').prop('value','to Checker'); 
-            }else if(bc_display && !qr_code){
-                    $("#problem").hide(); 
-                    $("#base_case").show();                        
-                    $("#checker").hide();
-                    $("#BC_checker").show();
-                    $('#qrcode_id').hide();
-                    $('#qrcode_id_bc').hide();
-                    $('#reflections').hide();
-                    $('#reflectionsbutton').hide();
-                    $('#checkerbutton').prop('value','to QR code'); 
-            } else {
-                    $("#problem").show(); 
-                    $("#base_case").hide();                        
-                    $("#checker").show();
-                    $("#BC_checker").hide();
-                    $('#qrcode_id').hide();
-                    $('#qrcode_id_bc').hide();
-                     $('#reflections').show();
-                    $('#checkerbutton').prop('value','to QR code'); 
-            }
-
-    });
- */
 });
 
  </script>

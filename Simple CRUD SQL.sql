@@ -3538,3 +3538,16 @@ REFERENCES Course(`course_id`);
 ALTER TABLE `Student`
 ADD `student_pic_fn` VARCHAR (255)  DEFAULT NULL AFTER `university`,
 ADD `student_pic_show` INT (1)  DEFAULT 1 AFTER `student_pic_fn`
+
+CREATE TABLE IF NOT EXISTS `ProblemQuestionConnect` (
+  `problemquestionconnect_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `problem_id` INT(11) NOT NULL,
+  `question_id` INT(11) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`problemquestionconnect_id`),
+  CONSTRAINT problemquestion UNIQUE (`problem_id`,`question_id`),
+  CONSTRAINT FOREIGN KEY (`problem_id`) REFERENCES Problem (problem_id),
+  CONSTRAINT FOREIGN KEY (`question_id`) REFERENCES Question (question_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  
